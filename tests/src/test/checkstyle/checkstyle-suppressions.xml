@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+    <suppress checks="VisibilityModifier" files=".*AggregatedValidationException.java"/>
+    <suppress checks="VisibilityModifier" files=".*UnrecognizedExceptionOccurredException.java"/>
+    <suppress checks="VisibilityModifier" files=".*ValidationError.java"/>
+    <suppress checks="VisibilityModifier" files=".*Injector.java"/>
+    <suppress checks="IllegalCatchCheck" files="NamedMethodSerializationCPMethod.java"/>
+    <suppress checks="IllegalCatchCheck" files="DataTransferObjectPackageScanner.java"/>
+    <suppress checks="IllegalCatchCheck" files="ReflectionMethodSerializationCPMethod.java"/>
+    <suppress checks="ParameterNumber" files="SerializedObjectWithPrimitives.java"/>
+    <suppress checks="IllegalCatchCheck" files="Unmarshallers.java"/>
+    <suppress checks="IllegalCatchCheck" files="Serializer.java"/>
+    <suppress checks="IllegalCatchCheck" files="Deserializer|When"/>
+    <suppress checks="MethodLength" files="Deserializer"/>
+    <suppress checks="MethodLength" files="MapMaidBuilder"/>
+    <suppress checks="VisibilityModifier" files="MapMaidBuilder"/>
+    <suppress
+            checks="MagicNumber|MethodName|IllegalCatch|LineLength|MethodLength|FinalParameters|LineLength|InnerTypeLast"
+            files="Examples|Instances"/>
+    <suppress checks="VisibilityModifier" files="AComplexValidatedType|ACyclicType|User"/>
+    <suppress checks="MethodName|Regex" files="Examples"/>
+    <suppress checks="ClassFanOutComplexityCheck" files="MapMaidBuilder.java"/>
+    <suppress checks="RedundantModifier" files="DefaultPackageScanner.java"/>
+    <suppress checks="MethodName|MagicNumber|LineLength|FileLength|MethodLength|ClassDataAbstractionCoupling" files=".*Specs"/>
+    <suppress checks="ExplicitInitialization" files=".*"/>
+    <suppress checks="ParameterNumber" files="AComplexTypeWithDifferentCollections"/>
+
+    <suppress checks="TrailingComment|Regex|MethodLength"
+              files="PackageScannerExample|MarshallingExamples|DocExample1|DetectorExample|ExceptionExamples"/>
+
+    <suppress checks="CommentsIndentation" files="UsageExamples" />
+</suppressions>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.quantummaid</groupId>
+        <artifactId>quantummaid-opensource-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <packaging>pom</packaging>
+    <groupId>de.quantummaid.mapmaid</groupId>
+    <artifactId>mapmaid-parent</artifactId>
+    <version>1.6.26</version>
+    <modules>
+        <module>core</module>
+        <module>integrations</module>
+        <module>tests</module>
+    </modules>
+    <description>
+        MapMaid is a modern mapping framework in the scope of mapping data in
+        Json, XML, or YAML format into DTOs composed and vice versa.
+    </description>
+    <url>https://github.com/quantummaid/mapmaid</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Richard Hauswald</name>
+            <email>richard.hauswald@quantummaid.de</email>
+            <organization>Richard Hauswald</organization>
+            <organizationUrl>http://www.quantummaid.de</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/quantummaid/mapmaid</url>
+        <connection>scm:git:git://github.com/quantummaid/mapmaid.git</connection>
+        <developerConnection>scm:git:git@github.com:quantummaid/mapmaid.git</developerConnection>
+    </scm>
+
+    <!--
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.quantummaid</groupId>
+                <artifactId>dokumaid</artifactId>
+                <version>1.1</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <files>
+                                <file>docs/00_UserGuide.md</file>
+                                <file>docs/01_QuickStart.md</file>
+                                <file>docs/03_BasicUsage.md</file>
+                                <file>docs/04_Exceptions.md</file>
+                                <file>docs/Marshalling.md</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    -->
+
+</project>
