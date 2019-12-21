@@ -27,11 +27,11 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>1.6.26</version>
+        <version>1.6.27</version>
     </parent>
     <packaging>jar</packaging>
     <artifactId>core</artifactId>
-    <version>1.6.26</version>
+    <version>1.6.27</version>
     <name>MapMaid - Core Library</name>
 
     <properties>
