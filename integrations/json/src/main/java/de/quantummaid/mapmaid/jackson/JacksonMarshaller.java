@@ -19,8 +19,10 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.json;
+package de.quantummaid.mapmaid.jackson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
@@ -29,17 +31,24 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JsonRecipe implements Recipe {
+public final class JacksonMarshaller implements Recipe {
+    private final ObjectMapper objectMapper;
 
-    public static Recipe jsonMarshaller() {
-        return new JsonRecipe();
+    public static JacksonMarshaller jacksonMarshallerJson(final ObjectMapper objectMapper) {
+        return new JacksonMarshaller(objectMapper);
     }
 
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-        mapMaidBuilder.usingJsonMarshaller(JsonMarshallers.jsonMarshaller(), JsonMarshallers.jsonUnmarshaller());
+        final SimpleModule simpleModule = new SimpleModule();
+        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
+        this.objectMapper.setSerializationInclusion(NON_NULL);
+        this.objectMapper.registerModule(simpleModule);
+        mapMaidBuilder.usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue);
     }
 }

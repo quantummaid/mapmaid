@@ -21,8 +21,11 @@
 
 package de.quantummaid.mapmaid.json;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
+
+import static de.quantummaid.mapmaid.builder.recipes.marshallers.jackson.JacksonMarshaller.jacksonMarshallerJson;
 
 public final class JsonMarshallerExample {
     private static final String PACKAGE_TO_SCAN = "fgerwgfr";
@@ -32,7 +35,7 @@ public final class JsonMarshallerExample {
     public void jsonMarshallerExample() {
         //Showcase start json
         MapMaid.aMapMaid(PACKAGE_TO_SCAN)
-                .usingRecipe(JsonRecipe.jsonMarshaller())
+                .usingRecipe(jacksonMarshallerJson(new ObjectMapper()))
                 .build();
         //Showcase end json
     }
