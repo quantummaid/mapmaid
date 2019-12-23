@@ -7,7 +7,7 @@ identify these special classes. In this section, we describe how to control whic
 
 The builder provides the possibility to register a list of package names, that are scanned _recursively_:
 
-<!---[CodeSnippet](core/src/test/java/de/quantummaid/mapmaid/docs/PackageScannerExample.java config)-->
+<!--[CodeSnippet](config)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid(PACKAGE_TO_SCAN_1, PACKAGE_TO_SCAN_2 /* etc.*/)
         /* further configuration */
@@ -20,11 +20,10 @@ The builder of MapMaid accepts a
 of packages. This interface has a single method `List<Class<?>> scan();` that is responsible for returning classes that
 are suspect to being a custom primitive or a serialized object:
 
-<!---[CodeSnippet](core/src/main/java/de/quantummaid/mapmaid/builder/scanning/PackageScanner.java)-->
+<!--[CodeSnippet](core/src/main/java/de/quantummaid/mapmaid/builder/scanning/PackageScanner.java)-->
 ```java
 public interface PackageScanner {
     List<Class<?>> scan();
-mmm
 }
 ``` 
 
@@ -33,7 +32,7 @@ You might want to control which packages are scanned by MapMaid to reduce startu
 [DefaultPackageScanner](../core/src/main/java/de/quantummaid/mapmaid/builder/DefaultPackageScanner.java) provides 
 factory methods that allow to whitelist or blacklist certain packages and/or classes: 
 
-<!---[CodeSnippet](core/src/test/java/de/quantummaid/mapmaid/docs/PackageScannerExample.java api)-->
+<!--[CodeSnippet](api)-->
 ```java
 MapMaid.aMapMaid(DefaultPackageScanner.defaultPackageScanner(
         List.of(THE_PACKAGE_NAMES_TO_SCAN_RECURSIVELY), // TODO
@@ -57,9 +56,9 @@ There are cases, where classpath scanning is not a desired feature, e.g. high-se
 platforms like AWS Lambda, where cold start costs are an issue. In these cases, just build MapMaid without a list
 of packages:
 
-<!---[CodeSnippet](core/src/test/java/de/quantummaid/mapmaid/docs/DocExample1.java withoutPackageScanning)-->
+<!---[CodeSnippet](withoutPackageScanning)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid()
+MapMaid.aMapMaid()
         /* further configuration */
         .build();
 ```  
@@ -186,7 +185,7 @@ instance of the
 and configure the preferred Custom Primitive serialization/deserialization method names, Serialized Object 
 deserialization method name, and class name patterns to use for Serialized Object.
 
-<!---[CodeSnippet](core/src/test/java/de/quantummaid/mapmaid/docs/DetectorExample.java detector)-->
+<!--[CodeSnippet](detector)-->
 ```java
 MapMaid.aMapMaid("de.quantummaid.mapmaid.examples")
         .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)

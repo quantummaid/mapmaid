@@ -26,10 +26,9 @@ MapMaid's Json marshaller can be accessed by integrating the following dependenc
 You can tell you MapMaid instance to use it like this:
 <!---[CodeSnippet](json)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(PACKAGE_TO_SCAN)
-        .usingRecipe(JsonRecipe.jsonMarshaller())
+final MapMaid mapMaid = aMapMaid()
+        .usingRecipe(jacksonMarshallerJson())
         .build();
-
 ```
 
 ### XML
@@ -46,8 +45,8 @@ MapMaid's XML marshaller can be accessed by integrating the following dependency
 You can tell you MapMaid instance to use it like this:
 <!---[CodeSnippet](xml)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(PACKAGE_TO_SCAN)
-        .usingRecipe(XmlRecipe.xmlMarshaller())
+final MapMaid mapMaid = aMapMaid()
+        .usingRecipe(jacksonMarshallerXml())
         .build();
 ```
 
@@ -64,8 +63,8 @@ You can tell you MapMaid instance to use it like this:
 
 <!---[CodeSnippet](yaml)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(PACKAGE_TO_SCAN)
-        .usingRecipe(yamlMarshaller())
+final MapMaid mapMaid = aMapMaid()
+        .usingRecipe(jacksonMarshallerYaml())
         .build();
 ```
 
@@ -177,6 +176,13 @@ Note: If you wish to marshall in/from XML, don't forget to add the appropriate d
 ### Yaml with ObjectMapper
 
 <!---[CodeSnippet](yamlWithObjectMapper)-->
+```java
+final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+
+final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+        .usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+        .build();
+```
 
 
 Note: don't forget to add the appropriate dependency to use the YAMLFactory with the ObjectMapper.

@@ -97,13 +97,12 @@
         </profile>
     </profiles>
 
-    <!--
     <build>
         <plugins>
             <plugin>
                 <groupId>de.quantummaid</groupId>
-                <artifactId>dokumaid</artifactId>
-                <version>1.1</version>
+                <artifactId>documaid</artifactId>
+                <version>1.2</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
@@ -112,19 +111,11 @@
                         </goals>
                         <phase>validate</phase>
                         <configuration>
-                            <files>
-                                <file>docs/00_UserGuide.md</file>
-                                <file>docs/01_QuickStart.md</file>
-                                <file>docs/03_BasicUsage.md</file>
-                                <file>docs/04_Exceptions.md</file>
-                                <file>docs/Marshalling.md</file>
-                            </files>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-    -->
 
 </project>

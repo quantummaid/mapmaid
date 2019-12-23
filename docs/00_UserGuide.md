@@ -2,7 +2,6 @@
 This guide walks you through the features of MapMaid, how to configure MapMaid, and how to get the most out of it.
 
 
-
 Check out also our [Quick Start](QuickStart.md) if you only want to get started coding or take a look into the 
 definition of [Custom Primitives](Concepts.md#custom-primitives) and 
 [Serialized Objects](Concepts.md#serialized-objects) if you are wondering what those are.

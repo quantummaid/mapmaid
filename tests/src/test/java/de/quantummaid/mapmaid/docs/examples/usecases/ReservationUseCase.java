@@ -26,6 +26,6 @@ import de.quantummaid.mapmaid.docs.examples.entities.Reservation;
 public final class ReservationUseCase {
 
     public void makeReservation(final Reservation reservation) {
-        throw new UnsupportedOperationException();
+        // TODO implement
     }
 }

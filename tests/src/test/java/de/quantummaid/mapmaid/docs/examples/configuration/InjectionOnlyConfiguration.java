@@ -25,14 +25,17 @@ import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.docs.examples.entities.Reservation;
 import de.quantummaid.mapmaid.docs.examples.entities.ReservationDao;
 
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionRecipe.injectionOnly;
 
 public final class InjectionOnlyConfiguration {
 
     public MapMaid mapMaid() {
-        return MapMaid.aMapMaid()
+        //Showcase start injectionOnly
+        return aMapMaid()
                 .withManuallyAddedType(Reservation.class)
                 .usingRecipe(injectionOnly(ReservationDao.class))
                 .build();
+        //Showcase end injectionOnly
     }
 }

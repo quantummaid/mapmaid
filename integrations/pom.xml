@@ -39,8 +39,6 @@
 
     <modules>
         <module>scanning</module>
-        <module>json</module>
-        <module>xml</module>
-        <module>yaml</module>
+        <module>jackson</module>
     </modules>
 </project>
