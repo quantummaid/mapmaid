@@ -42,7 +42,7 @@
             ${project.basedir}/src/test/spotbugs/spotbugs-exclude.xml
         </spotbugs.excludeFilterFile>
 
-        <dependency-update-file-checksum>011fae2eedc84420d0a4f30f16486022</dependency-update-file-checksum>
+        <dependency-update-file-checksum>a949b51c3f94b8f3e02a109cd954d9a5</dependency-update-file-checksum>
         <plugin-update-file-checksum>a9c106f16f2d959e2db68534062e7623</plugin-update-file-checksum>
     </properties>
 
