@@ -7,9 +7,9 @@ identify these special classes. In this section, we describe how to control whic
 
 The builder provides the possibility to register a list of package names, that are scanned _recursively_:
 
-<!--[CodeSnippet](config)-->
+<!---[CodeSnippet](config)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(PACKAGE_TO_SCAN_1, PACKAGE_TO_SCAN_2 /* etc.*/)
+MapMaid.aMapMaid(PACKAGE_TO_SCAN_1, PACKAGE_TO_SCAN_2 /* etc.*/)
         /* further configuration */
         .build();
 ```
@@ -20,7 +20,7 @@ The builder of MapMaid accepts a
 of packages. This interface has a single method `List<Class<?>> scan();` that is responsible for returning classes that
 are suspect to being a custom primitive or a serialized object:
 
-<!--[CodeSnippet](core/src/main/java/de/quantummaid/mapmaid/builder/scanning/PackageScanner.java)-->
+<!---[CodeSnippet not yet working](file=core/src/main/java/de/quantummaid/mapmaid/builder/scanning/PackageScanner.java)-->
 ```java
 public interface PackageScanner {
     List<Class<?>> scan();
@@ -32,7 +32,7 @@ You might want to control which packages are scanned by MapMaid to reduce startu
 [DefaultPackageScanner](../core/src/main/java/de/quantummaid/mapmaid/builder/DefaultPackageScanner.java) provides 
 factory methods that allow to whitelist or blacklist certain packages and/or classes: 
 
-<!--[CodeSnippet](api)-->
+<!---[CodeSnippet](api)-->
 ```java
 MapMaid.aMapMaid(DefaultPackageScanner.defaultPackageScanner(
         List.of(THE_PACKAGE_NAMES_TO_SCAN_RECURSIVELY), // TODO
@@ -185,9 +185,9 @@ instance of the
 and configure the preferred Custom Primitive serialization/deserialization method names, Serialized Object 
 deserialization method name, and class name patterns to use for Serialized Object.
 
-<!--[CodeSnippet](detector)-->
+<!---[CodeSnippet](detector)-->
 ```java
-MapMaid.aMapMaid("de.quantummaid.mapmaid.examples")
+MapMaid.aMapMaid("de.quantummaid.examples")
         .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)
         .withDetector(ConventionalDetectors.conventionalDetector(
                 "myCustomPrimitiveSerializationMethodName",

@@ -26,17 +26,20 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>1.0.0</version>
+        <version>0.9.0</version>
     </parent>
     <packaging>pom</packaging>
+
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
     <version>1.6.27</version>
+
     <modules>
         <module>core</module>
         <module>integrations</module>
         <module>tests</module>
     </modules>
+
     <description>
         MapMaid is a modern mapping framework in the scope of mapping data in
         Json, XML, or YAML format into DTOs composed and vice versa.
@@ -66,6 +69,9 @@
         <developerConnection>scm:git:git@github.com:quantummaid/mapmaid.git</developerConnection>
     </scm>
 
+    <properties>
+        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
+    </properties>
 
     <profiles>
         <profile>
@@ -94,28 +100,8 @@
                 <module>core</module>
                 <module>integrations</module>
             </modules>
+
         </profile>
     </profiles>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>de.quantummaid</groupId>
-                <artifactId>documaid</artifactId>
-                <version>1.2</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
