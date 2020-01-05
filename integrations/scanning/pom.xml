@@ -21,20 +21,23 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>integrations-parent</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.2</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-scanning</artifactId>
 
     <name>MapMaid - Integrations - Scanning</name>
+
+    <properties>
+        <plugin-update-file-checksum>a9c106f16f2d959e2db68534062e7623</plugin-update-file-checksum>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -61,12 +64,6 @@
             <version>5.6.0-M1</version>
         </dependency>
     </dependencies>
-
-
-
-    <properties>
-        <plugin-update-file-checksum>a9c106f16f2d959e2db68534062e7623</plugin-update-file-checksum>
-    </properties>
 
     <profiles>
         <profile>
