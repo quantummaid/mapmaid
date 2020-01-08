@@ -26,17 +26,13 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>integrations-parent</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.6</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-jackson</artifactId>
 
     <name>MapMaid - Integrations - Jackson</name>
-
-    <properties>
-        <plugin-update-file-checksum>a9c106f16f2d959e2db68534062e7623</plugin-update-file-checksum>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -65,7 +61,6 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>2.10.2</version>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -79,57 +74,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>deployToMavenCentral</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>deployToMavenCentral</name>
-                </property>
-            </activation>
-
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-enforcer-plugin</artifactId>
-                            <version>${maven-enforcer-plugin-version}</version>
-                            <executions>
-                                <execution>
-                                    <id>enforce-checksum</id>
-                                    <goals>
-                                        <goal>enforce</goal>
-                                    </goals>
-                                    <phase>verify</phase>
-                                    <configuration>
-                                        <rules>
-                                            <requireMavenVersion>
-                                                <version>3.6</version>
-                                            </requireMavenVersion>
-                                            <requireFileChecksum>
-                                                <message>Outdated dependencies detected</message>
-                                                <file>target/dependency-updates.txt</file>
-                                                <checksum>${dependency-update-file-checksum}</checksum>
-                                                <type>md5</type>
-                                            </requireFileChecksum>
-                                            <requireFileChecksum>
-                                                <message>Outdated plugins detected</message>
-                                                <file>target/plugin-updates.txt</file>
-                                                <checksum>${plugin-update-file-checksum}</checksum>
-                                                <type>md5</type>
-                                            </requireFileChecksum>
-                                        </rules>
-                                        <fail>true</fail>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
 </project>
