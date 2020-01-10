@@ -62,7 +62,7 @@ public final class ClassScannerRecipe implements Recipe {
 
     private final List<Class<?>> classes;
 
-    public static ClassScannerRecipe addAllReferencedClassesIs(final Class<?>... classes) {
+    public static ClassScannerRecipe addAllReferencedClassesIn(final Class<?>... classes) {
         validateNotNull(classes, "classes");
         return new ClassScannerRecipe(asList(classes));
     }

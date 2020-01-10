@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder;
 
+import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -49,9 +50,25 @@ public final class RequiredCapabilities {
         return new RequiredCapabilities(false, true);
     }
 
+    public static RequiredCapabilities fromDefinition(final Definition definition) {
+        final boolean serialization = definition.serializer().isPresent();
+        final boolean deserialization = definition.deserializer().isPresent();
+        return new RequiredCapabilities(serialization, deserialization);
+    }
+
     public void add(final RequiredCapabilities other) {
         this.serialization = this.serialization || other.serialization;
         this.deserialization = this.deserialization || other.deserialization;
+    }
+
+    public boolean contains(final RequiredCapabilities other) {
+        if (other.serialization && !this.serialization) {
+            return false;
+        }
+        if (other.deserialization && !this.deserialization) {
+            return false;
+        }
+        return true;
     }
 
     public boolean hasDeserialization() {

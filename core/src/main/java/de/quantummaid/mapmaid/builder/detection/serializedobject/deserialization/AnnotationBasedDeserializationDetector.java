@@ -55,7 +55,7 @@ public final class AnnotationBasedDeserializationDetector implements SerializedO
 
     @Override
     public Optional<SerializedObjectDeserializer> detect(final ClassType type, final SerializationFields fields) {
-        final List<ResolvedMethod> annotatedDeserializationMethods = ResolvedMethod.resolvePublicMethods(type).stream()
+        final List<ResolvedMethod> annotatedDeserializationMethods = ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(type).stream()
                 .filter(resolvedMethod -> isStatic(resolvedMethod.method().getModifiers()))
                 .filter(method -> method.method().getAnnotationsByType(this.annotation).length > 0)
                 .collect(toList());

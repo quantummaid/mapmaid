@@ -66,7 +66,7 @@ public final class TypeResolver {
     }
 
     private static ResolvedType resolveTypeVariable(final TypeVariable<?> typeVariable, final ClassType fullType) {
-        final TypeVariableName typeVariableName = TypeVariableName.typeVariableName(typeVariable);
+        final TypeVariableName typeVariableName = typeVariableName(typeVariable);
         return fullType.resolveTypeVariable(typeVariableName);
     }
 

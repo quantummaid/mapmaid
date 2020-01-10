@@ -23,16 +23,15 @@ package de.quantummaid.mapmaid.builder.conventional;
 
 import de.quantummaid.mapmaid.builder.conventional.annotations.*;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.customprimitive.CustomPrimitiveDefinitionFactory;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.CustomPrimitiveDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.CustomPrimitiveSerializationDetector;
-import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.ConstructorBasedDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SerializedObjectDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
 import de.quantummaid.mapmaid.mapper.universal.UniversalBoolean;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNumber;
 import de.quantummaid.mapmaid.mapper.universal.UniversalString;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CustomPrimitiveDefinitionFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +46,7 @@ import static de.quantummaid.mapmaid.builder.detection.customprimitive.serializa
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.ClassFilter.allowAll;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializedObjectDefinitionFactory.serializedObjectFactory;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.AnnotationBasedDeserializationDetector.annotationBasedDeserialzer;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.ConstructorBasedDeserializationDetector.constructorBased;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.MatchingMethodDeserializationDetector.matchingMethodBased;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.NamedMethodDeserializationDetector.namedMethodBased;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SetterBasedDeserializationDetector.setterBasedDeserializationDetector;
@@ -112,10 +112,10 @@ public final class ConventionalDefinitionFactories {
         fieldDetectors.add(annotationBased(MapMaidSerializedField.class));
         fieldDetectors.add(modifierBased());
 
+        final SerializedObjectDeserializationDetector matchingMethod = matchingMethodBased(deserializationMethodName);
         final SerializedObjectDeserializationDetector namedMethodBased = namedMethodBased(deserializationMethodName);
         final SerializedObjectDeserializationDetector singleMethod = singleMethodBased();
-        final SerializedObjectDeserializationDetector matchingMethod = matchingMethodBased(deserializationMethodName);
-        final SerializedObjectDeserializationDetector constructor = ConstructorBasedDeserializationDetector.constructorBased();
+        final SerializedObjectDeserializationDetector constructor = constructorBased();
         final List<SerializedObjectDeserializationDetector> deserializationDetectors =
                 asList(namedMethodBased, singleMethod, matchingMethod, constructor);
 

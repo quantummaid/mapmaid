@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.detection.Detector;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
-import de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -34,18 +33,23 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static de.quantummaid.mapmaid.builder.DefinitionsCollector.definitionsCollector;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serializationOnly;
+import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
+import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DefinitionsBuilder {
-    private final DefinitionsCollector<TypeDeserializer> deserializers = DefinitionsCollector.definitionsCollector("deserializer");
-    private final DefinitionsCollector<TypeSerializer> serializers = DefinitionsCollector.definitionsCollector("serializer");
+    private final DefinitionsCollector<TypeDeserializer> deserializers = definitionsCollector("deserializer");
+    private final DefinitionsCollector<TypeSerializer> serializers = definitionsCollector("serializer");
 
     private final BuildContextLog contextLog;
     private final Detector detector;
@@ -97,7 +101,7 @@ public final class DefinitionsBuilder {
         if (this.serializers.isPresent(type)) {
             return;
         }
-        detector.detect(type, RequiredCapabilities.serializationOnly(), contextLog).ifPresent(definition -> {
+        detector.detect(type, serializationOnly(), contextLog).ifPresent(definition -> {
             contextLog.log(type, "added because it is a dependency");
             definition.serializer().ifPresent(serializer -> {
                 this.serializers.add(type, serializer);
@@ -109,10 +113,11 @@ public final class DefinitionsBuilder {
     private void diveIntoSerializerChildren(final TypeSerializer serializer,
                                             final Detector detector,
                                             final BuildContextLog contextLog) {
-        serializer.requiredTypes().forEach(requiredType -> recurseSerializers(requiredType, detector, contextLog.stepInto(requiredType.assignableType())));
+        serializer.requiredTypes().forEach(requiredType ->
+                recurseSerializers(requiredType, detector, contextLog.stepInto(requiredType.assignableType())));
     }
 
-    public Definitions build() {
+    public Definitions build(final Map<Definition, RequiredCapabilities> partialRequirements) {
         final Set<ResolvedType> allTypes = new HashSet<>();
         allTypes.addAll(this.deserializers.keys());
         allTypes.addAll(this.serializers.keys());
@@ -120,15 +125,15 @@ public final class DefinitionsBuilder {
         final Map<ResolvedType, Definition> definitions = allTypes.stream()
                 .map(this::definitionForType)
                 .collect(toMap(Definition::type, definition -> definition));
-        return Definitions.definitions(this.contextLog, definitions);
+        return definitions(this.contextLog, partialRequirements, definitions);
     }
 
     private Definition definitionForType(final ResolvedType type) {
         final TypeDeserializer deserializer = this.deserializers.get(type).orElse(null);
         final TypeSerializer serializer = this.serializers.get(type).orElse(null);
 
-        if(deserializer != null || serializer != null) {
-            return GeneralDefinition.generalDefinition(type, serializer, deserializer);
+        if (deserializer != null || serializer != null) {
+            return generalDefinition(type, serializer, deserializer);
         }
 
         throw new UnsupportedOperationException("It is not clear what type of definition to assign to " + type.description());

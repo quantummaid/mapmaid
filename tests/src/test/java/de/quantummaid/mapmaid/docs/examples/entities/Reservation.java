@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.docs.examples.entities;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

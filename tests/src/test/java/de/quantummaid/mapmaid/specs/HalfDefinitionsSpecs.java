@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serializationOnly;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIs;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
@@ -123,7 +123,7 @@ public final class HalfDefinitionsSpecs {
     @Test
     public void classScannerRecipeRegistersReturnTypesAsSerializationOnly() {
         given(aMapMaid()
-                .usingRecipe(addAllReferencedClassesIs(RepositoryWithSerializationOnlyType.class))
+                .usingRecipe(addAllReferencedClassesIn(RepositoryWithSerializationOnlyType.class))
                 .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
                 .build()
         )
@@ -139,7 +139,7 @@ public final class HalfDefinitionsSpecs {
     public void classScannerRecipeRegistersParametersAsDeserializationOnly() {
         given(
                 aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIs(RepositoryWithDeserializationOnlyType.class))
+                        .usingRecipe(addAllReferencedClassesIn(RepositoryWithDeserializationOnlyType.class))
                         .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
                         .build()
         )

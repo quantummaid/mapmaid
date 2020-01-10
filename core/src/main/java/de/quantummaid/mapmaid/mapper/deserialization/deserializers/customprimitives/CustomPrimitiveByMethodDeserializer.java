@@ -60,11 +60,10 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
                     deserializationMethod, type);
         }
         final Class<?>[] deserializationMethodParameterTypes = deserializationMethod.getParameterTypes();
-        if (deserializationMethodParameterTypes.length != 1 ||
-                !deserializationMethodParameterTypes[0].equals(String.class)) {
+        if (deserializationMethodParameterTypes.length != 1) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization method %s configured for the custom primitive of type %s must " +
-                            "accept only one parameter of type String",
+                            "accept only one parameter",
                     deserializationMethod, type);
         }
         if (deserializationMethod.getReturnType() != type) {

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.definitions;
 
+import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.mapper.DefinitionScanLog;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.mapper.definitions.DefinitionNotFoundException.definitionNotFound;
+import static de.quantummaid.mapmaid.mapper.definitions.validation.FullRequirements.fullRequirements;
 import static java.lang.String.format;
 import static java.util.Optional.of;
 
@@ -44,15 +47,23 @@ public final class Definitions {
     private final Map<ResolvedType, Definition> definitions;
 
     public static Definitions definitions(final DefinitionScanLog definitionScanLog,
+                                          final Map<Definition, RequiredCapabilities> partialRequirements,
                                           final Map<ResolvedType, Definition> definitions) {
         final Definitions definitionsObject = new Definitions(definitionScanLog, definitions);
+
+
+        fullRequirements(partialRequirements, definitionsObject).validate(definitionsObject);
+
+
         definitionsObject.validateNoUnsupportedOutgoingReferences();
+
+
         return definitionsObject;
     }
 
     public Definition getDefinitionForType(final ResolvedType targetType) {
         return getOptionalDefinitionForType(targetType)
-                .orElseThrow(() -> DefinitionNotFoundException.definitionNotFound(targetType, dump()));
+                .orElseThrow(() -> definitionNotFound(targetType, dump()));
     }
 
     public Optional<Definition> getOptionalDefinitionForType(final ResolvedType targetType) {
@@ -64,10 +75,10 @@ public final class Definitions {
 
     private void validateNoUnsupportedOutgoingReferences() {
         this.definitions.values().forEach(definition -> {
-            if(definition.deserializer().isPresent()) {
+            if (definition.deserializer().isPresent()) {
                 validateDeserialization(definition.type(), definition.type(), new LinkedList<>());
             }
-            if(definition.serializer().isPresent()) {
+            if (definition.serializer().isPresent()) {
                 validateSerialization(definition.type(), definition.type(), new LinkedList<>());
             }
         });

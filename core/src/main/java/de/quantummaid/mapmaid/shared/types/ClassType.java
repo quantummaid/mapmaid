@@ -34,6 +34,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.shared.types.UnresolvableTypeVariableException.unresolvableTypeVariableException;
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.joining;
@@ -85,15 +86,15 @@ public final class ClassType implements ResolvedType {
                 .collect(toList());
     }
 
-    public ResolvedType resolveTypeVariable(final TypeVariableName name) {
+    ResolvedType resolveTypeVariable(final TypeVariableName name) {
         if (!this.typeParameters.containsKey(name)) {
-            throw new UnsupportedOperationException(format("No type variable with name '%s'", name.name()));
+            throw unresolvableTypeVariableException(name);
         }
         return this.typeParameters.get(name);
     }
 
     public List<ResolvedMethod> publicMethods() {
-        return ResolvedMethod.resolvePublicMethods(this);
+        return ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(this);
     }
 
     public List<ResolvedConstructor> publicConstructors() {

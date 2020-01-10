@@ -52,7 +52,7 @@ public final class GetterFieldDetector implements FieldDetector {
 
     @Override
     public List<SerializationField> detect(final ClassType type) {
-        return ResolvedMethod.resolvePublicMethods(type).stream()
+        return ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(type).stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("get"))
                 .filter(resolvedMethod -> !isStatic(resolvedMethod.method().getModifiers()))
                 .filter(resolvedMethod -> resolvedMethod.method().getReturnType() != TYPE)

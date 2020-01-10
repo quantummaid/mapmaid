@@ -21,12 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +34,7 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -44,7 +44,7 @@ public final class NamedMethodDeserializationDetector implements SerializedObjec
     private final String deserializationMethodName;
 
     public static SerializedObjectDeserializationDetector namedMethodBased(final String deserializationMethodName) {
-        NotNullValidator.validateNotNull(deserializationMethodName, "deserializationMethodName");
+        validateNotNull(deserializationMethodName, "deserializationMethodName");
         return new NamedMethodDeserializationDetector(deserializationMethodName);
     }
 

@@ -51,7 +51,7 @@ public final class Age {
     private final int value;
 
     // TODO
-    public static Age fromStringValue(final int value) {
+    public static Age fromIntValue(final int value) {
         return new Age(value);
     }
 
@@ -142,7 +142,7 @@ import lombok.ToString;
 public final class LoggedIn {
     private final boolean value;
 
-    public static LoggedIn fromStringValue(final boolean value) {
+    public static LoggedIn fromBooleanValue(final boolean value) {
         return new LoggedIn(value);
     }
 
@@ -315,7 +315,20 @@ public final class StreetName {
 
 package de.quantummaid.mapmaid.docs.examples.customprimitives;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TownName {
+    private final String name;
+
+    public static TownName townName(final String name) {
+        return new TownName(name);
+    }
 }
 
 ```
@@ -345,7 +358,20 @@ public final class TownName {
 
 package de.quantummaid.mapmaid.docs.examples.customprimitives;
 
-public class ZipCode {
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ZipCode {
+    private final String zipCode;
+
+    public static ZipCode zipCode(final String zipCode) {
+        return new ZipCode(zipCode);
+    }
 }
 
 ```

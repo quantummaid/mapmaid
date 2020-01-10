@@ -23,8 +23,6 @@ package de.quantummaid.mapmaid.mapper.deserialization;
 
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
-import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrorsMapping;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationMappings;
@@ -34,6 +32,8 @@ import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -50,6 +50,7 @@ import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -146,7 +147,11 @@ public final class Deserializer {
                               final MarshallingType marshallingType,
                               final InjectorLambda injectorProducer) {
         final Definition definition = this.definitions.getDefinitionForType(targetType);
-        final Class<? extends Universal> universalRequirement = definition.deserializer().orElseThrow().universalRequirement();
+        final Class<? extends Universal> universalRequirement = definition
+                .deserializer()
+                .orElseThrow(() -> new RuntimeException(
+                        format("No deserializer registered for type '%s'", targetType.description())))
+                .universalRequirement();
         final Universal unmarshalled = this.unmarshallers.unmarshalTo(universalRequirement, input, marshallingType);
         return deserialize(unmarshalled, targetType, injectorProducer);
     }

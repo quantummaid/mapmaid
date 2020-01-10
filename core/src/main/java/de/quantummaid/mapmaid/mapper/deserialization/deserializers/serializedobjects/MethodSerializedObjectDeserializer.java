@@ -57,7 +57,7 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         final List<ResolvedType> parameterTypes = requiredFields.stream()
                 .map(ResolvedField::type)
                 .collect(toList());
-        final List<ResolvedMethod> resolvedMethods = ResolvedMethod.resolvePublicMethods(type);
+        final List<ResolvedMethod> resolvedMethods = ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(type);
         final ResolvedMethod method = resolvedMethods.stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().equals(methodName))
                 .filter(resolvedMethod -> resolvedMethod.hasParameters(parameterTypes))

@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.shared.types.resolver;
 
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.UnresolvableTypeVariableException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter.res
 import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -49,12 +50,22 @@ public final class ResolvedMethod {
     private final List<ResolvedParameter> parameters;
     private final Method method;
 
-    public static List<ResolvedMethod> resolvePublicMethods(final ClassType fullType) {
+    @SuppressWarnings("unchecked")
+    public static List<ResolvedMethod> resolvePublicMethodsWithResolvableTypeVariables(final ClassType fullType) {
         final Class<?> type = fullType.assignableType();
         final Method[] declaredMethods = type.getDeclaredMethods();
         return stream(declaredMethods)
                 .filter(method -> isPublic(method.getModifiers()))
-                .map(method -> resolveMethod(method, fullType))
+                .map(method -> {
+                    try {
+                        return of(resolveMethod(method, fullType));
+                    } catch (final UnresolvableTypeVariableException e) {
+                        return empty();
+                    }
+                })
+                .map(o -> (Optional<ResolvedMethod>) o)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(toList());
     }
 

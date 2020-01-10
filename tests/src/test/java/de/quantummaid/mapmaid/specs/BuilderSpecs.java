@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIs;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 
 public final class BuilderSpecs {
 
@@ -69,7 +69,7 @@ public final class BuilderSpecs {
     public void referencesInClassesCanBeScanned() {
         Given.given(
                 aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIs(MyRepository.class))
+                        .usingRecipe(addAllReferencedClassesIn(MyRepository.class))
                         .build()
         )
                 .when().theDefinitionsAreQueried()

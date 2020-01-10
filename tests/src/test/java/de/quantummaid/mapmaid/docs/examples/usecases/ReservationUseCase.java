@@ -21,11 +21,18 @@
 
 package de.quantummaid.mapmaid.docs.examples.usecases;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import de.quantummaid.mapmaid.docs.examples.entities.Reservation;
+
+import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
 
 public final class ReservationUseCase {
 
+    public static Name name() {
+        throw wrongMethodCalledException();
+    }
+
     public void makeReservation(final Reservation reservation) {
-        // TODO implement
+        throw wrongMethodCalledException();
     }
 }
