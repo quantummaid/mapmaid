@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CustomPrimitiveDefinitionFactory;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.CustomPrimitiveDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.CustomPrimitiveSerializationDetector;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializedObjectDefinitionFactory;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SerializedObjectDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
 import de.quantummaid.mapmaid.mapper.universal.UniversalBoolean;
@@ -79,7 +80,7 @@ public final class ConventionalDefinitionFactories {
     private ConventionalDefinitionFactories() {
     }
 
-    public static DefinitionFactory nameAndConstructorBasedCustomPrimitiveDefinitionFactory(
+    public static CustomPrimitiveDefinitionFactory nameAndConstructorBasedCustomPrimitiveDefinitionFactory(
             final String serializationMethodName,
             final String deserializationMethodName) {
         return CustomPrimitiveDefinitionFactory.customPrimitiveFactory(
@@ -89,13 +90,13 @@ public final class ConventionalDefinitionFactories {
         );
     }
 
-    public static DefinitionFactory customPrimitiveMethodAnnotationFactory() {
+    public static CustomPrimitiveDefinitionFactory customPrimitiveMethodAnnotationFactory() {
         final CustomPrimitiveSerializationDetector serializationDetector = annotationBasedSerializer(MapMaidPrimitiveSerializer.class);
         final CustomPrimitiveDeserializationDetector deserializationDetector = annotationBasedDeserializer(MapMaidPrimitiveDeserializer.class);
         return CustomPrimitiveDefinitionFactory.customPrimitiveFactory(serializationDetector, deserializationDetector);
     }
 
-    public static DefinitionFactory customPrimitiveClassAnnotationFactory() {
+    public static CustomPrimitiveDefinitionFactory customPrimitiveClassAnnotationFactory() {
         final CustomPrimitiveSerializationDetector serializationDetector =
                 classAnnotationBasedSerializer(MapMaidPrimitive.class, MapMaidPrimitive::serializationMethodName);
         final CustomPrimitiveDeserializationDetector deserializationDetector =
@@ -103,11 +104,11 @@ public final class ConventionalDefinitionFactories {
         return CustomPrimitiveDefinitionFactory.customPrimitiveFactory(serializationDetector, deserializationDetector);
     }
 
-    public static DefinitionFactory pojoSerializedObjectFactory() {
+    public static SerializedObjectDefinitionFactory pojoSerializedObjectFactory() {
         return serializedObjectFactory(allowAll(), singletonList(getterFieldDetector()), singletonList(setterBasedDeserializationDetector()));
     }
 
-    public static DefinitionFactory allSerializedObjectFactory(final String deserializationMethodName) {
+    public static SerializedObjectDefinitionFactory allSerializedObjectFactory(final String deserializationMethodName) {
         final List<FieldDetector> fieldDetectors = new LinkedList<>();
         fieldDetectors.add(annotationBased(MapMaidSerializedField.class));
         fieldDetectors.add(modifierBased());
@@ -125,6 +126,9 @@ public final class ConventionalDefinitionFactories {
     public static DefinitionFactory serializedObjectClassAnnotationFactory() {
         final FieldDetector fieldDetector = annotationBased(MapMaidSerializedField.class);
         final SerializedObjectDeserializationDetector deserializationDetector = annotationBasedDeserialzer(MapMaidDeserializationMethod.class);
+        throw new UnsupportedOperationException(); // TODO
+        /*
         return serializedObjectFactory(allowAll(), asList(fieldDetector), singletonList(deserializationDetector));
+         */
     }
 }

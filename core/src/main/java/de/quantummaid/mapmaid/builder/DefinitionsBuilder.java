@@ -125,7 +125,7 @@ public final class DefinitionsBuilder {
         final Map<ResolvedType, Definition> definitions = allTypes.stream()
                 .map(this::definitionForType)
                 .collect(toMap(Definition::type, definition -> definition));
-        return definitions(this.contextLog, partialRequirements, definitions);
+        return definitions(this.contextLog, definitions);
     }
 
     private Definition definitionForType(final ResolvedType type) {

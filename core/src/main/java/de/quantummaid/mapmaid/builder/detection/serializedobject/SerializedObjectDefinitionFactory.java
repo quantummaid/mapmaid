@@ -21,20 +21,19 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.DeserializerFactory;
+import de.quantummaid.mapmaid.builder.detection.SerializerFactory;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SerializedObjectDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.ModifierFieldDetector;
-import de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -50,15 +49,15 @@ import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.ClassFilter.allowAll;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.CodeNeedsToBeCompiledWithParameterNamesException.validateParameterNamesArePresent;
-import static java.util.Collections.singletonList;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializedObjectDefinitionFactory implements DefinitionFactory {
+public final class SerializedObjectDefinitionFactory implements SerializerFactory, DeserializerFactory {
     private final ClassFilter filter;
     private final List<FieldDetector> fieldDetectors;
     private final List<SerializedObjectDeserializationDetector> detectors;
@@ -71,23 +70,61 @@ public final class SerializedObjectDefinitionFactory implements DefinitionFactor
     public static DefinitionFactory serializedObjectFactory(
             final ClassFilter filter,
             final List<SerializedObjectDeserializationDetector> detectors) {
-        return serializedObjectFactory(filter, singletonList(ModifierFieldDetector.modifierBased()), detectors);
+        throw new UnsupportedOperationException(); // TODO
+        //return serializedObjectFactory(filter, singletonList(ModifierFieldDetector.modifierBased()), detectors);
     }
 
-    public static DefinitionFactory serializedObjectFactory(
+    public static SerializedObjectDefinitionFactory serializedObjectFactory(
             final ClassFilter filter,
             final List<FieldDetector> fieldDetectors,
             final List<SerializedObjectDeserializationDetector> detectors) {
-        NotNullValidator.validateNotNull(filter, "filter");
-        NotNullValidator.validateNotNull(fieldDetectors, "fieldDetectors");
-        NotNullValidator.validateNotNull(detectors, "detectors");
+        validateNotNull(filter, "filter");
+        validateNotNull(fieldDetectors, "fieldDetectors");
+        validateNotNull(detectors, "detectors");
         return new SerializedObjectDefinitionFactory(filter, fieldDetectors, detectors);
     }
 
     @Override
+    public List<Prioritized<TypeDeserializer>> analyseForDeserializer(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        if (!this.filter.filter(type)) {
+            return emptyList();
+        }
+        validateParameterNamesArePresent(type.assignableType());
+
+        return this.detectors.stream()
+                .map(detector -> detector.detect(type))
+                .flatMap(List::stream)
+                .collect(toList());
+    }
+
+    @Override
+    public Optional<TypeSerializer> analyseForSerializer(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return empty();
+        }
+        if (!this.filter.filter(type)) {
+            return empty();
+        }
+        validateParameterNamesArePresent(type.assignableType());
+
+        final ClassType classType = (ClassType) type;
+        final List<SerializationField> serializationFieldsList = this.fieldDetectors.stream()
+                .map(fieldDetector -> fieldDetector.detect(classType))
+                .flatMap(Collection::stream)
+                .filter(distinctByKey(SerializationField::name))
+                .collect(toList());
+        final SerializationFields serializationFields = SerializationFields.serializationFields(serializationFieldsList);
+        return (Optional<TypeSerializer>) (Object) SerializedObjectSerializer.serializedObjectSerializer(serializationFields);
+    }
+
+    /*
+    @Override
     public Optional<Definition> analyze(final ResolvedType type,
                                         final RequiredCapabilities capabilities) {
-        if(!(type instanceof ClassType)) {
+        if (!(type instanceof ClassType)) {
             return empty();
         }
         if (!this.filter.filter(type)) {
@@ -126,6 +163,7 @@ public final class SerializedObjectDefinitionFactory implements DefinitionFactor
         }
         return empty();
     }
+     */
 
     private static <T> Predicate<T> distinctByKey(final Function<T, String> key) {
         final Set<String> alreadySeenKeys = ConcurrentHashMap.newKeySet();

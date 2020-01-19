@@ -21,22 +21,23 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static de.quantummaid.mapmaid.builder.detection.priority.Priority.FACTORY;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.Common.detectDeserializerMethods;
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer.methodDeserializer;
+import static java.util.stream.Collectors.toList;
 
+// TODO remove
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -47,12 +48,10 @@ public final class SingleMethodDeserializationDetector implements SerializedObje
     }
 
     @Override
-    public Optional<SerializedObjectDeserializer> detect(final ClassType type, final SerializationFields fields) {
-        final List<ResolvedMethod> deserializerCandidates = Common.detectDeserializerMethods(type);
-        if (deserializerCandidates.size() == 1) {
-            final ResolvedMethod method = deserializerCandidates.get(0);
-            return of(MethodSerializedObjectDeserializer.methodDeserializer(type, method));
-        }
-        return empty();
+    public List<Prioritized<TypeDeserializer>> detect(final ResolvedType type) {
+        return detectDeserializerMethods(type).stream()
+                .map(resolvedMethod -> methodDeserializer((ClassType) type, resolvedMethod))
+                .map(deserializer -> Prioritized.prioritized(deserializer, FACTORY))
+                .collect(toList());
     }
 }

@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
@@ -40,8 +41,12 @@ public final class Common {
     private Common() {
     }
 
-    public static List<ResolvedMethod> detectDeserializerMethods(final ClassType type) {
-        return type.publicMethods().stream()
+    public static List<ResolvedMethod> detectDeserializerMethods(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        final ClassType classType = (ClassType) type;
+        return classType.publicMethods().stream()
                 .filter(resolvedMethod -> isStatic(resolvedMethod.method().getModifiers()))
                 .filter(resolvedMethod -> {
                     final Optional<ResolvedType> resolvedType = resolvedMethod.returnType();

@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization
 
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.IncompatibleCustomPrimitiveException;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
@@ -33,6 +34,7 @@ import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -56,7 +58,7 @@ public final class ClassAnnotationBasedCustomPrimitiveDeserializationDetector<T 
     }
 
     @Override
-    public Optional<CustomPrimitiveDeserializer> detect(final CachedReflectionType cachedReflectionType) {
+    public List<Prioritized<CustomPrimitiveDeserializer>> detect(final CachedReflectionType cachedReflectionType) {
         final Class<?> type = cachedReflectionType.type();
         final T[] annotations = type.getAnnotationsByType(this.annotationType);
         if (annotations.length == 1) {

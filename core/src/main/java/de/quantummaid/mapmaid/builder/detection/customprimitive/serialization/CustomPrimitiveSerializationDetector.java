@@ -26,6 +26,6 @@ import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflection
 
 import java.util.Optional;
 
-public interface CustomPrimitiveSerializationDetector {
+public interface CustomPrimitiveSerializationDetector { // TODO
     Optional<CustomPrimitiveSerializer> detect(CachedReflectionType type);
 }

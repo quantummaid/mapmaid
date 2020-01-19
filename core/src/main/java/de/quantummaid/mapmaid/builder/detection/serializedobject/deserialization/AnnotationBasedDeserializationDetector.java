@@ -21,11 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,11 +34,13 @@ import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
+import static de.quantummaid.mapmaid.builder.detection.priority.Priority.ANNOTATED;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer.methodDeserializer;
 import static java.lang.reflect.Modifier.isStatic;
-import static java.util.Optional.empty;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -54,14 +56,18 @@ public final class AnnotationBasedDeserializationDetector implements SerializedO
     }
 
     @Override
-    public Optional<SerializedObjectDeserializer> detect(final ClassType type, final SerializationFields fields) {
-        final List<ResolvedMethod> annotatedDeserializationMethods = ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(type).stream()
+    public List<Prioritized<TypeDeserializer>> detect(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        final ClassType classType = (ClassType) type;
+        final List<ResolvedMethod> annotatedDeserializationMethods = ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(classType).stream()
                 .filter(resolvedMethod -> isStatic(resolvedMethod.method().getModifiers()))
                 .filter(method -> method.method().getAnnotationsByType(this.annotation).length > 0)
                 .collect(toList());
 
         if (annotatedDeserializationMethods.isEmpty()) {
-            return empty();
+            return emptyList();
         }
 
         final int annotatedMethods = annotatedDeserializationMethods.size();
@@ -74,6 +80,6 @@ public final class AnnotationBasedDeserializationDetector implements SerializedO
             );
         }
         final ResolvedMethod deserializationMethod = annotatedDeserializationMethods.get(0);
-        return Optional.of(MethodSerializedObjectDeserializer.methodDeserializer(type, deserializationMethod));
+        return List.of(prioritized(methodDeserializer(classType, deserializationMethod), ANNOTATED));
     }
 }

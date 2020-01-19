@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.mapper.definitions;
 
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.mapper.DefinitionScanLog;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -35,7 +34,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.mapper.definitions.DefinitionNotFoundException.definitionNotFound;
-import static de.quantummaid.mapmaid.mapper.definitions.validation.FullRequirements.fullRequirements;
 import static java.lang.String.format;
 import static java.util.Optional.of;
 
@@ -47,17 +45,10 @@ public final class Definitions {
     private final Map<ResolvedType, Definition> definitions;
 
     public static Definitions definitions(final DefinitionScanLog definitionScanLog,
-                                          final Map<Definition, RequiredCapabilities> partialRequirements,
                                           final Map<ResolvedType, Definition> definitions) {
         final Definitions definitionsObject = new Definitions(definitionScanLog, definitions);
-
-
-        fullRequirements(partialRequirements, definitionsObject).validate(definitionsObject);
-
-
+        //fullRequirements(partialRequirements, definitionsObject).validate(definitionsObject);
         definitionsObject.validateNoUnsupportedOutgoingReferences();
-
-
         return definitionsObject;
     }
 

@@ -34,6 +34,7 @@ public interface Expectation {
         return result -> {
             assertThat(result.initializationException().isPresent(), is(true));
             final Throwable exception = result.initializationException().get();
+            exception.printStackTrace();
             assertThat(exception.getMessage(), is(message));
         };
     }

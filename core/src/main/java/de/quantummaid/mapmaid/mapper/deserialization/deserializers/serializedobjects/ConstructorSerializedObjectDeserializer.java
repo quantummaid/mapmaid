@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
@@ -50,8 +51,8 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
     private final ResolvedConstructor factoryConstructor;
     private final List<String> parameterNames;
 
-    public static SerializedObjectDeserializer createDeserializer(final ClassType type,
-                                                                  final ResolvedConstructor deserializationConstructor) {
+    public static TypeDeserializer createDeserializer(final ClassType type,
+                                                      final ResolvedConstructor deserializationConstructor) {
         validateDeserializerModifiers(type, deserializationConstructor);
         return verifiedDeserializationDTOConstructor(deserializationConstructor);
     }

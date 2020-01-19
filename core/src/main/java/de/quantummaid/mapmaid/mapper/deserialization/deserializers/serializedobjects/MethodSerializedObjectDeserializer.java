@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
@@ -51,9 +52,9 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
     private final ResolvedMethod factoryMethod;
     private final List<String> parameterNames;
 
-    public static SerializedObjectDeserializer methodNameDeserializer(final ClassType type,
-                                                                      final String methodName,
-                                                                      final List<ResolvedField> requiredFields) {
+    public static TypeDeserializer methodNameDeserializer(final ClassType type,
+                                                          final String methodName,
+                                                          final List<ResolvedField> requiredFields) {
         final List<ResolvedType> parameterTypes = requiredFields.stream()
                 .map(ResolvedField::type)
                 .collect(toList());
@@ -69,8 +70,8 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         return methodDeserializer(type, method);
     }
 
-    public static SerializedObjectDeserializer methodDeserializer(final ClassType type,
-                                                                  final ResolvedMethod deserializationMethod) {
+    public static TypeDeserializer methodDeserializer(final ClassType type,
+                                                      final ResolvedMethod deserializationMethod) {
         validateDeserializerModifiers(type, deserializationMethod);
         return verifiedDeserializationDTOMethod(deserializationMethod);
     }

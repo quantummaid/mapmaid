@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.detection;
 
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
+import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.util.Optional.empty;
 
 @ToString
 @EqualsAndHashCode
@@ -92,6 +91,9 @@ public final class SimpleDetector implements Detector {
                                                  final RequiredCapabilities capabilities,
                                                  final List<DefinitionFactory> factories,
                                                  final BuildContextLog contextLog) {
+        throw new UnsupportedOperationException();
+        /*
+        TODO
         if (!isSupported(type)) {
             contextLog.logReject(type, "type is not supported because it contains wildcard generics (\"?\")");
             return empty();
@@ -107,8 +109,10 @@ public final class SimpleDetector implements Detector {
             }
         }
         return empty();
+         */
     }
 
+    // TODO
     private static boolean isSupported(final ResolvedType resolvedType) {
         if(resolvedType.isWildcard()) {
             return false;

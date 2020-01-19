@@ -23,10 +23,15 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive;
 
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.DeserializerFactory;
+import de.quantummaid.mapmaid.builder.detection.SerializerFactory;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.CustomPrimitiveDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.CustomPrimitiveSerializationDetector;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -47,7 +52,7 @@ import static java.util.Optional.of;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CustomPrimitiveDefinitionFactory implements DefinitionFactory {
+public final class CustomPrimitiveDefinitionFactory implements DefinitionFactory, SerializerFactory, DeserializerFactory {
     private final CustomPrimitiveSerializationDetector serializationDetector;
     private final List<CustomPrimitiveDeserializationDetector> deserializationDetectors;
 
@@ -60,10 +65,24 @@ public final class CustomPrimitiveDefinitionFactory implements DefinitionFactory
     }
 
     @Override
+    public List<Prioritized<TypeDeserializer>> analyseForDeserializer(final ResolvedType type) {
+        final CachedReflectionType cachedReflectionType = cachedReflectionType(type.assignableType()); // TODO
+        return this.deserializationDetectors.stream()
+                .map(detector -> detector.detect(cachedReflectionType))
+                .flatMap(Optional::stream)
+                .findFirst();
+    }
+
+    @Override
+    public Optional<TypeSerializer> analyseForSerializer(final ResolvedType type) {
+        final CachedReflectionType cachedReflectionType = cachedReflectionType(type.assignableType());
+        return (Optional<TypeSerializer>) (Object) this.serializationDetector.detect(cachedReflectionType); // TODO
+    }
+
+    @Override
     public Optional<Definition> analyze(final ResolvedType type,
                                         final RequiredCapabilities capabilities) {
         final CachedReflectionType cachedReflectionType = cachedReflectionType(type.assignableType());
-
         final Optional<CustomPrimitiveSerializer> serializer;
         if (capabilities.hasSerialization()) {
             serializer = this.serializationDetector.detect(cachedReflectionType);

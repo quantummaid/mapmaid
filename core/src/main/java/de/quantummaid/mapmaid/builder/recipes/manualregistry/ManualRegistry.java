@@ -26,8 +26,8 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
@@ -108,7 +108,7 @@ public final class ManualRegistry implements Recipe {
                                                final String deserializationMethodName) {
         final ClassType fullType = fromClassWithoutGenerics(type);
         final List<ResolvedField> resolvedFields = resolvedPublicFields(fullType);
-        final SerializedObjectDeserializer deserializer = methodNameDeserializer(fullType, deserializationMethodName, resolvedFields);
+        final TypeDeserializer deserializer = methodNameDeserializer(fullType, deserializationMethodName, resolvedFields);
         final SerializationFields serializationFields = serializationFields(FIELD_DETECTOR.detect(fullType));
         final SerializedObjectSerializer serializer = serializedObjectSerializer(serializationFields).orElseThrow();
 

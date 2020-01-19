@@ -23,8 +23,13 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive;
 
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.DeserializerFactory;
+import de.quantummaid.mapmaid.builder.detection.SerializerFactory;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -33,12 +38,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
+import static de.quantummaid.mapmaid.builder.detection.priority.Priority.HARDCODED;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.function.Function.identity;
@@ -46,7 +56,7 @@ import static java.util.function.Function.identity;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BuiltInPrimitivesFactory implements DefinitionFactory {
+public final class BuiltInPrimitivesFactory implements DefinitionFactory, SerializerFactory, DeserializerFactory {
     private static final Map<ResolvedType, Definition> PRIMITIVE_DEFINITIONS;
 
     static {
@@ -66,7 +76,7 @@ public final class BuiltInPrimitivesFactory implements DefinitionFactory {
         PRIMITIVE_DEFINITIONS.put(fromClassWithoutGenerics(String.class), toCustomPrimitiveDefinition(String.class, identity()));
     }
 
-    public static DefinitionFactory builtInPrimitivesFactory() {
+    public static BuiltInPrimitivesFactory builtInPrimitivesFactory() {
         return new BuiltInPrimitivesFactory();
     }
 
@@ -77,6 +87,22 @@ public final class BuiltInPrimitivesFactory implements DefinitionFactory {
             return of(PRIMITIVE_DEFINITIONS.get(type));
         }
         return empty();
+    }
+
+    @Override
+    public Optional<TypeSerializer> analyseForSerializer(final ResolvedType type) {
+        if (PRIMITIVE_DEFINITIONS.containsKey(type)) {
+            return PRIMITIVE_DEFINITIONS.get(type).serializer();
+        }
+        return empty();
+    }
+
+    @Override
+    public List<Prioritized<TypeDeserializer>> analyseForDeserializer(final ResolvedType type) {
+        if (PRIMITIVE_DEFINITIONS.containsKey(type)) {
+            return singletonList(prioritized(PRIMITIVE_DEFINITIONS.get(type).deserializer().get(), HARDCODED));
+        }
+        return emptyList();
     }
 
     private static <T> Definition toCustomPrimitiveDefinition(final Class<T> type,

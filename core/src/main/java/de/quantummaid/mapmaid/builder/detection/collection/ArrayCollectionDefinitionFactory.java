@@ -23,8 +23,12 @@ package de.quantummaid.mapmaid.builder.detection.collection;
 
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.DeserializerFactory;
+import de.quantummaid.mapmaid.builder.detection.SerializerFactory;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.CollectionDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.collections.CollectionSerializer;
 import de.quantummaid.mapmaid.shared.types.ArrayType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -44,10 +48,30 @@ import static java.util.Optional.of;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArrayCollectionDefinitionFactory implements DefinitionFactory {
+public final class ArrayCollectionDefinitionFactory implements DefinitionFactory, SerializerFactory, DeserializerFactory {
 
-    public static DefinitionFactory arrayFactory() {
+    public static ArrayCollectionDefinitionFactory arrayFactory() {
         return new ArrayCollectionDefinitionFactory();
+    }
+
+    @Override
+    public Optional<TypeDeserializer> analyseForDeserializer(final ResolvedType type) {
+        if (!(type instanceof ArrayType)) {
+            return empty();
+        }
+        final ResolvedType genericType = ((ArrayType) type).componentType();
+        final CollectionDeserializer deserializer = arrayDeserializer(genericType);
+        return of(deserializer);
+    }
+
+    @Override
+    public Optional<TypeSerializer> analyseForSerializer(final ResolvedType type) {
+        if (!(type instanceof ArrayType)) {
+            return empty();
+        }
+        final ResolvedType genericType = ((ArrayType) type).componentType();
+        final CollectionSerializer serializer = arraySerializer(genericType);
+        return of(serializer);
     }
 
     @Override

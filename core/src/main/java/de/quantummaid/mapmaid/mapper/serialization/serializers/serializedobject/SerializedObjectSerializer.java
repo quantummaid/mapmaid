@@ -47,6 +47,7 @@ import static java.util.Optional.*;
 public final class SerializedObjectSerializer implements TypeSerializer {
     private final SerializationFields fields;
 
+    // TODO do not return optional
     public static Optional<SerializedObjectSerializer> serializedObjectSerializer(final SerializationFields fields) {
         NotNullValidator.validateNotNull(fields, "fields");
         if (fields.isEmpty()) {

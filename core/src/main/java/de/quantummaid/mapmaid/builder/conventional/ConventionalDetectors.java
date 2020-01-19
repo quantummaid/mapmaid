@@ -21,11 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.conventional;
 
-import de.quantummaid.mapmaid.builder.detection.Detector;
+import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.customprimitive.CustomPrimitiveDefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializedObjectDefinitionFactory;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.conventional.DetectorBuilder.detectorBuilder;
+import static de.quantummaid.mapmaid.builder.conventional.NewDetectorBuilder.detectorBuilder;
+
 
 @ToString
 @EqualsAndHashCode
@@ -41,7 +44,7 @@ public final class ConventionalDetectors {
     private ConventionalDetectors() {
     }
 
-    public static Detector conventionalDetector() {
+    public static NewSimpleDetector conventionalDetector() {
         return conventionalDetector("stringValue",
                 "fromStringValue",
                 "deserialize",
@@ -49,18 +52,20 @@ public final class ConventionalDetectors {
         );
     }
 
-    public static Detector conventionalDetector(final String customPrimitiveSerializationMethodName,
-                                                final String customPrimitiveDeserializationMethodName,
-                                                final String serializedObjectDeserializationMethodName,
-                                                final String... serializedObjectNameDetectionPatterns) {
+    public static NewSimpleDetector conventionalDetector(final String customPrimitiveSerializationMethodName,
+                                                         final String customPrimitiveDeserializationMethodName,
+                                                         final String serializedObjectDeserializationMethodName,
+                                                         final String... serializedObjectNameDetectionPatterns) {
+        final SerializedObjectDefinitionFactory pojoFactory = ConventionalDefinitionFactories.pojoSerializedObjectFactory();
+        final SerializedObjectDefinitionFactory serializedObjectDefinitionFactory = ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName);
         return detectorBuilder()
                 .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveSerializationMethodName, customPrimitiveDeserializationMethodName)
-                .withSerializedObjectFactory(ConventionalDefinitionFactories.pojoSerializedObjectFactory())
-                .withSerializedObjectFactory(ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName))
+                .withSerializerFactory(pojoFactory).withDeserializerFactory(pojoFactory)
+                .withSerializerFactory(serializedObjectDefinitionFactory).withDeserializerFactory(serializedObjectDefinitionFactory)
                 .build();
     }
 
-    public static Detector conventionalDetectorWithAnnotations() {
+    public static NewSimpleDetector conventionalDetectorWithAnnotations() {
         return conventionalDetectorWithAnnotations("stringValue",
                 "fromStringValue",
                 "deserialize",
@@ -68,16 +73,19 @@ public final class ConventionalDetectors {
         );
     }
 
-    public static Detector conventionalDetectorWithAnnotations(
+    public static NewSimpleDetector conventionalDetectorWithAnnotations(
             final String customPrimitiveSerializationMethodName,
             final String customPrimitiveDeserializationMethodName,
             final String serializedObjectDeserializationMethodName,
             final String... serializedObjectNameDetectionPatterns) {
+        final CustomPrimitiveDefinitionFactory annotationFactory = ConventionalDefinitionFactories.customPrimitiveClassAnnotationFactory();
+        final CustomPrimitiveDefinitionFactory primitiveAnnotations = ConventionalDefinitionFactories.customPrimitiveMethodAnnotationFactory();
+        final SerializedObjectDefinitionFactory other = ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName);
         return detectorBuilder()
-                .withCustomPrimitiveFactory(ConventionalDefinitionFactories.customPrimitiveClassAnnotationFactory())
-                .withCustomPrimitiveFactory(ConventionalDefinitionFactories.customPrimitiveMethodAnnotationFactory())
+                .withSerializerFactory(annotationFactory).withDeserializerFactory(annotationFactory)
+                .withSerializerFactory(primitiveAnnotations).withDeserializerFactory(primitiveAnnotations)
                 .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveSerializationMethodName, customPrimitiveDeserializationMethodName)
-                .withSerializedObjectFactory(ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName))
+                .withSerializerFactory(other).withDeserializerFactory(other)
                 .build();
     }
 }

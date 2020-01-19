@@ -23,8 +23,13 @@ package de.quantummaid.mapmaid.builder.detection.collection;
 
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.DeserializerFactory;
+import de.quantummaid.mapmaid.builder.detection.SerializerFactory;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.CollectionDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.collections.CollectionSerializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -34,16 +39,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Function;
 
+import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
+import static de.quantummaid.mapmaid.builder.detection.priority.Priority.HARDCODED;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ListCollectionDeserializer.listDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ListCollectionSerializer.listSerializer;
 import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
 import static de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType.unresolvedType;
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-public final class NativeJavaCollectionDefinitionFactory implements DefinitionFactory {
+public final class NativeJavaCollectionDefinitionFactory implements DefinitionFactory, SerializerFactory, DeserializerFactory {
     private static final Map<Class<?>, Function<ResolvedType, Definition>> FACTORIES = new HashMap<>(20);
 
     static {
@@ -68,8 +76,36 @@ public final class NativeJavaCollectionDefinitionFactory implements DefinitionFa
         });
     }
 
-    public static DefinitionFactory nativeJavaCollectionsFactory() {
+    public static NativeJavaCollectionDefinitionFactory nativeJavaCollectionsFactory() {
         return new NativeJavaCollectionDefinitionFactory();
+    }
+
+    @Override
+    public List<Prioritized<TypeDeserializer>> analyseForDeserializer(final ResolvedType type) {
+        if (!FACTORIES.containsKey(type.assignableType())) {
+            return Collections.emptyList();
+        }
+        if (type.typeParameters().size() != 1) {
+            throw new UnsupportedOperationException(format(
+                    "This should never happen. A collection of type '%s' has more than one type parameter", type.description()));
+        }
+        final ResolvedType genericType = ((ClassType) type).typeParameter(typeVariableName("E"));
+        final Definition definition = FACTORIES.get(type.assignableType()).apply(genericType);
+        return singletonList(prioritized(definition.deserializer().get(), HARDCODED));
+    }
+
+    @Override
+    public Optional<TypeSerializer> analyseForSerializer(final ResolvedType type) {
+        if (!FACTORIES.containsKey(type.assignableType())) {
+            return empty();
+        }
+        if (type.typeParameters().size() != 1) {
+            throw new UnsupportedOperationException(format(
+                    "This should never happen. A collection of type '%s' has more than one type parameter", type.description()));
+        }
+        final ResolvedType genericType = ((ClassType) type).typeParameter(typeVariableName("E"));
+        final Definition definition = FACTORIES.get(type.assignableType()).apply(genericType);
+        return definition.serializer();
     }
 
     @Override

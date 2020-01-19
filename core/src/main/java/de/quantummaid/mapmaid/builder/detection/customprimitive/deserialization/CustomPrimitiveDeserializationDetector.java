@@ -21,11 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CustomPrimitiveDeserializationDetector {
-    Optional<CustomPrimitiveDeserializer> detect(CachedReflectionType type);
+    List<Prioritized<CustomPrimitiveDeserializer>> detect(CachedReflectionType type);
 }
