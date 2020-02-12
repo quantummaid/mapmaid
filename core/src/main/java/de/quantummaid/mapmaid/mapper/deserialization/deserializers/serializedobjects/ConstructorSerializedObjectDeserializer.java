@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.lang.reflect.Modifier.isPublic;
@@ -104,5 +105,10 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
                     "The deserialization constructor %s configured for the SerializedObject of type %s must return the DTO",
                     deserializationConstructor, type);
         }
+    }
+
+    @Override
+    public String description() {
+        return createDescription(this.factoryConstructor.describe());
     }
 }

@@ -23,12 +23,9 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
@@ -42,7 +39,9 @@ import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.constantDeserializer;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer.constantSerializer;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 
 public final class IndirectOverrideDefinitionsSpecs {
@@ -54,8 +53,8 @@ public final class IndirectOverrideDefinitionsSpecs {
                         .withManuallyAddedType(AComplexType.class)
                         .withManuallyAddedDefinition(generalDefinition(
                                 fromClassWithoutGenerics(ANumber.class),
-                                (CustomPrimitiveSerializer) object -> "23",
-                                (CustomPrimitiveDeserializer) value -> ANumber.fromInt(23)
+                                constantSerializer("23"),
+                                constantDeserializer(ANumber.fromInt(23))
                         ))
                         .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
                         .build()
@@ -72,9 +71,9 @@ public final class IndirectOverrideDefinitionsSpecs {
                         .withManuallyAddedType(AComplexNestedType.class)
                         .withManuallyAddedDefinition(generalDefinition(
                                 fromClassWithoutGenerics(AComplexType.class),
-                                SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
+                                de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
                                         List.of(SerializationField.serializationField(fromClassWithoutGenerics(AString.class), "foo", object -> AString.fromStringValue("bar")))
-                                )).get(),
+                                )),
                                 new SerializedObjectDeserializer() {
                                     @Override
                                     public Object deserialize(final Map<String, Object> elements) throws Exception {
@@ -84,6 +83,11 @@ public final class IndirectOverrideDefinitionsSpecs {
                                     @Override
                                     public DeserializationFields fields() {
                                         return DeserializationFields.deserializationFields(Map.of("foo", fromClassWithoutGenerics(AString.class)));
+                                    }
+
+                                    @Override
+                                    public String description() {
+                                        throw new UnsupportedOperationException(); // TODO
                                     }
                                 }
                         ))

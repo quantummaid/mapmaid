@@ -25,6 +25,8 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulSerializer;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -44,6 +46,8 @@ public final class UndetectableSerializer extends StatefulSerializer {
 
     @Override
     public Report getDefinition() {
-        return failure("unable to detect serializer"); // TODO
+        final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
+        final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
+        return failure(collectionResult, "unable to detect serializer"); // TODO
     }
 }

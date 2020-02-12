@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,9 @@ import lombok.ToString;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -41,8 +43,8 @@ public final class ListCollectionDeserializer implements CollectionDeserializer 
 
     public static CollectionDeserializer listDeserializer(final ResolvedType componentType,
                                                           final Function<List<Object>, Collection<Object>> mapper) {
-        NotNullValidator.validateNotNull(componentType, "componentType");
-        NotNullValidator.validateNotNull(mapper, "mapper");
+        validateNotNull(componentType, "componentType");
+        validateNotNull(mapper, "mapper");
         return new ListCollectionDeserializer(componentType, mapper);
     }
 
@@ -54,5 +56,10 @@ public final class ListCollectionDeserializer implements CollectionDeserializer 
     @Override
     public ResolvedType contentType() {
         return this.componentType;
+    }
+
+    @Override
+    public String description() {
+        return format("deserializing a collection with content type '%s'", this.componentType.description());
     }
 }

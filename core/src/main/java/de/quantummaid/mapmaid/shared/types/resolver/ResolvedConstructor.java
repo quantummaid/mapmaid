@@ -64,4 +64,8 @@ public final class ResolvedConstructor {
     public Constructor<?> constructor() {
         return this.constructor;
     }
+
+    public String describe() {
+        return this.constructor.toGenericString();
+    }
 }

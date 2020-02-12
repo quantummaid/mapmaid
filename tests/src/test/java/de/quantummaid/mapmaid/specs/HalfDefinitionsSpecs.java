@@ -104,8 +104,15 @@ public final class HalfDefinitionsSpecs {
                 .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("Type 'de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString' is not registered but " +
-                        "needs to be in order to support serialization of 'de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableSerializationOnlyComplexType'");
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString: unable to detect serializer\n" +
+                        "\n" +
+                        "de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString:\n" +
+                        "Mode: serialization-only\n" +
+                        "How it is serialized:\n" +
+                        "\tNo serializer available\n" +
+                        "Why it needs to be serializable:\n" +
+                        "\t- because of de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableSerializationOnlyComplexType\n" +
+                        "Ignored features for serialization:");
     }
 
     @Test
@@ -116,8 +123,15 @@ public final class HalfDefinitionsSpecs {
                 .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("Type 'de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString' is not registered " +
-                        "but needs to be in order to support deserialization of 'de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableDeserializationOnlyComplexType'");
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString: unable to detect deserializer\n" +
+                        "\n" +
+                        "de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString:\n" +
+                        "Mode: deserialization-only\n" +
+                        "How it is deserialized:\n" +
+                        "\tNo deserializer available\n" +
+                        "Why it needs to be deserializable:\n" +
+                        "\t- because of de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableDeserializationOnlyComplexType\n" +
+                        "Ignored features for deserialization:");
     }
 
     @Test

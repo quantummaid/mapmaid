@@ -24,8 +24,9 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.IncompatibleCustomPrimitiveException;
 import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.builder.detection.priority.Priority;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,11 +35,12 @@ import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static java.util.Optional.empty;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 @ToString
@@ -58,15 +60,18 @@ public final class ClassAnnotationBasedCustomPrimitiveDeserializationDetector<T 
     }
 
     @Override
-    public List<Prioritized<CustomPrimitiveDeserializer>> detect(final CachedReflectionType cachedReflectionType) {
+    public List<Prioritized<TypeDeserializer>> detect(final CachedReflectionType cachedReflectionType) {
         final Class<?> type = cachedReflectionType.type();
         final T[] annotations = type.getAnnotationsByType(this.annotationType);
         if (annotations.length == 1) {
             final T annotation = annotations[0];
             return findDeserializerMethod(type, annotation)
-                    .map(method -> CustomPrimitiveByMethodDeserializer.createDeserializer(type, method));
+                    .map(method -> CustomPrimitiveByMethodDeserializer.createDeserializer(type, method))
+                    .map(customPrimitiveDeserializer -> Prioritized.prioritized(customPrimitiveDeserializer, Priority.ANNOTATED))
+                    .map(Collections::singletonList)
+                    .orElseGet(Collections::emptyList);
         }
-        return empty();
+        return emptyList();
     }
 
     private Optional<Method> findDeserializerMethod(final Class<?> type, final T annotation) {

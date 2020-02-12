@@ -21,16 +21,32 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.mixed_getter_fields;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.resolving.hints.DeserializerHints.enforceFieldsFor;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MixedGetterFieldsExample {
 
     @Test
     public void mixedGetterFieldsExample() {
+        final AddALotRequest addALotRequest = new AddALotRequest();
+        addALotRequest.setName(Name.fromStringValue("qwer"));
+        addALotRequest.setTownNameA(TownName.townName("a"));
+        addALotRequest.setTownNameB(TownName.townName("b"));
+
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO")
+                .withDeserializedForm(addALotRequest)
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"name\": \"qwer\",\n" +
+                        "  \"townNameA\": \"a\",\n" +
+                        "  \"townNameB\": \"b\"\n" +
+                        "}")
+                .withAllScenariosFailing("TODO", (mapMaidBuilder, capabilities) ->
+                        enforceFieldsFor(AddALotRequest.class, "streetName", "townNameA", "townNameB")) // TODO
                 .run();
     }
 }

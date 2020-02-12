@@ -30,7 +30,7 @@ public final class LongBasedExample {
     @Test
     public void longBasedExample() {
         scenarioBuilderFor(Quantity.class)
-                .withSerializedForm("1")
+                .withSerializedForm("1.0")
                 .withDeserializedForm(Quantity.fromStringValue(1L))
                 .withAllScenariosSuccessful()
                 .run();

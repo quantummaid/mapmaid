@@ -21,10 +21,13 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
@@ -37,6 +40,26 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
 public interface CustomPrimitiveDeserializer extends TypeDeserializer {
+
+    static CustomPrimitiveDeserializer constantDeserializer(final Object constant) {
+        return new CustomPrimitiveDeserializer() {
+            @Override
+            public Object deserialize(final Object value) throws Exception {
+                return constant;
+            }
+
+            @Override
+            public String description() {
+                return constant.toString();
+            }
+        };
+    }
+
+    static String createDescription(final CustomPrimitiveDeserializer customPrimitiveDeserializer,
+                                    final String deserializer) {
+        final Class<?> baseType = customPrimitiveDeserializer.baseType();
+        return format("as custom primitive based on type '%s' using %s", baseType.getSimpleName(), deserializer);
+    }
 
     @Override
     default List<ResolvedType> requiredTypes() {
@@ -65,8 +88,10 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
                               final ExceptionTracker exceptionTracker,
                               final Injector injector,
                               final DeserializerCallback callback,
-                              final CustomPrimitiveMappings customPrimitiveMappings) {
-        final UniversalPrimitive universalPrimitive = castSafely(input, UniversalPrimitive.class, exceptionTracker);
+                              final CustomPrimitiveMappings customPrimitiveMappings,
+                              final ResolvedType resolvedType,
+                              final DebugInformation debugInformation) {
+        final UniversalPrimitive universalPrimitive = castSafely(input, UniversalPrimitive.class, exceptionTracker, resolvedType, debugInformation);
         try {
             final Class<?> baseType = baseType();
             final Object mapped = customPrimitiveMappings.fromUniversal(universalPrimitive, baseType);
@@ -76,5 +101,13 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
             exceptionTracker.track(e, message);
             return null;
         }
+    }
+
+    @Override
+    default boolean mirrors(final TypeSerializer serializer) {
+        if (!(serializer instanceof CustomPrimitiveSerializer)) {
+            return false;
+        }
+        return true; // TODO
     }
 }

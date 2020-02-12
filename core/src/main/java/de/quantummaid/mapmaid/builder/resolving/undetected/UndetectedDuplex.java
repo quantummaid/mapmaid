@@ -22,19 +22,21 @@
 package de.quantummaid.mapmaid.builder.resolving.undetected;
 
 import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDuplex;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.duplex;
 import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingDuplex.resolvingDuplex;
 import static de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableDuplex.undetectableDuplex;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -49,20 +51,17 @@ public final class UndetectedDuplex extends StatefulDuplex {
     }
 
     @Override
-    public StatefulDefinition detect(final NewSimpleDetector detector, final BuildContextLog log) {
-        if (this.context.type().description().equals("de.quantummaid.mapmaid.testsupport.domain.valid.AComplexTypeWithDoublesDto")) {
-            System.out.println("merp");
+    public StatefulDefinition detect(final NewSimpleDetector detector,
+                                     final BuildContextLog log,
+                                     final Disambiguators disambiguators) {
+        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final DetectionResult<DisambiguationResult> result = detector.detect(
+                this.context.type(), log, scanInformationBuilder, duplex(), disambiguators);
+        if (result.isFailure()) {
+            return undetectableDuplex(this.context, format("no duplex detected:%n%s", result.reasonForFailure()));
         }
-        final Optional<TypeDeserializer> deserializer = detector.detectDeserializer(this.context.type(), log);
-        if (deserializer.isEmpty()) {
-            return undetectableDuplex(this.context);
-        }
-        this.context.setDeserializer(deserializer.get());
-        final Optional<TypeSerializer> serializer = detector.detectSerializer(this.context.type(), log);
-        if (serializer.isEmpty()) {
-            return undetectableDuplex(this.context);
-        }
-        this.context.setSerializer(serializer.get());
+        this.context.setDeserializer(result.result().deserializer());
+        this.context.setSerializer(result.result().serializer());
         return resolvingDuplex(this.context);
     }
 }

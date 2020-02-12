@@ -21,11 +21,21 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.serialization_only.example2;
 
+import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class SerializationOnlyExample {
+
+    public static void main(String[] args) {
+        // TODO
+        final MapMaid mapMaid = aMapMaid()
+                .withManuallyAddedType(AddALotRequest.class, deserializationOnly())
+                .build();
+    }
 
     @Test
     public void serializationOnlyExample() {

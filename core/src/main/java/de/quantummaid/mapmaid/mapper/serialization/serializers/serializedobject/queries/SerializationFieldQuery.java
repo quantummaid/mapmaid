@@ -23,4 +23,8 @@ package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject
 
 public interface SerializationFieldQuery {
     Object query(Object object);
+
+    default String describe() {
+        return this.toString();
+    }
 }

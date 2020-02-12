@@ -40,7 +40,7 @@ public final class NormalExampleMode implements ExampleMode {
     private final RequiredCapabilities capabilities;
 
     public static ExampleMode withAllCapabilities() {
-        return new NormalExampleMode(RequiredCapabilities.all());
+        return new NormalExampleMode(RequiredCapabilities.duplex());
     }
 
     public static ExampleMode deserializationOnly() {

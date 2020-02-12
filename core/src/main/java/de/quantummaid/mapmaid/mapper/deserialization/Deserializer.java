@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
@@ -37,7 +39,6 @@ import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -46,10 +47,12 @@ import lombok.ToString;
 import java.util.Map;
 import java.util.Set;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer.internalDeserializer;
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 
 @ToString
@@ -61,23 +64,25 @@ public final class Deserializer {
     private final Unmarshallers unmarshallers;
     private final InternalDeserializer internalDeserializer;
     private final InjectorFactory injectorFactory;
+    private final DebugInformation debugInformation;
 
     public static Deserializer theDeserializer(final MarshallerRegistry<Unmarshaller> unmarshallerRegistry,
                                                final Definitions definitions,
                                                final CustomPrimitiveMappings customPrimitiveMappings,
                                                final ValidationMappings exceptionMapping,
                                                final ValidationErrorsMapping onValidationErrors,
-                                               final InjectorFactory injectorFactory) {
-        NotNullValidator.validateNotNull(unmarshallerRegistry, "unmarshallerRegistry");
-        NotNullValidator.validateNotNull(definitions, "definitions");
-        NotNullValidator.validateNotNull(customPrimitiveMappings, "customPrimitiveMappings");
-        NotNullValidator.validateNotNull(exceptionMapping, "validationMappings");
-        NotNullValidator.validateNotNull(onValidationErrors, "onValidationErrors");
-        NotNullValidator.validateNotNull(injectorFactory, "injectorFactory");
-
+                                               final InjectorFactory injectorFactory,
+                                               final DebugInformation debugInformation) {
+        validateNotNull(unmarshallerRegistry, "unmarshallerRegistry");
+        validateNotNull(definitions, "definitions");
+        validateNotNull(customPrimitiveMappings, "customPrimitiveMappings");
+        validateNotNull(exceptionMapping, "validationMappings");
+        validateNotNull(onValidationErrors, "onValidationErrors");
+        validateNotNull(injectorFactory, "injectorFactory");
+        validateNotNull(debugInformation, "debugInformation");
         final Unmarshallers unmarshallers = unmarshallers(unmarshallerRegistry);
         final InternalDeserializer internalDeserializer = internalDeserializer(definitions, customPrimitiveMappings, onValidationErrors);
-        return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, injectorFactory);
+        return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, injectorFactory, debugInformation);
     }
 
     public <T> T deserializeFromMap(final Map<String, Object> input,
@@ -137,7 +142,7 @@ public final class Deserializer {
                              final Class<T> targetType,
                              final MarshallingType marshallingType,
                              final InjectorLambda injectorProducer) {
-        NotNullValidator.validateNotNull(input, "input");
+        validateNotNull(input, "input");
         final ClassType resolvedType = ClassType.fromClassWithoutGenerics(targetType);
         return (T) deserialize(input, resolvedType, marshallingType, injectorProducer);
     }
@@ -149,23 +154,33 @@ public final class Deserializer {
         final Definition definition = this.definitions.getDefinitionForType(targetType);
         final Class<? extends Universal> universalRequirement = definition
                 .deserializer()
-                .orElseThrow(() -> new RuntimeException(
-                        format("No deserializer registered for type '%s'", targetType.description())))
+                .orElseThrow(() -> {
+                    final ScanInformation scanInformation = this.debugInformation.scanInformationFor(definition.type());
+                    return mapMaidException(
+                            format("No deserializer registered for type '%s'", targetType.description()), scanInformation);
+                })
                 .universalRequirement();
-        final Universal unmarshalled = this.unmarshallers.unmarshalTo(universalRequirement, input, marshallingType);
-        return deserialize(unmarshalled, targetType, injectorProducer);
+        try {
+            final Universal unmarshalled = this.unmarshallers.unmarshalTo(universalRequirement, input, marshallingType);
+            return deserialize(unmarshalled, targetType, injectorProducer);
+        } catch (final UnmarshallingException e) {
+            final ScanInformation scanInformation = this.debugInformation.scanInformationFor(targetType);
+            throw mapMaidException(format(
+                    "Error during unmarshalling for type '%s' with input '%s'",
+                    targetType.description(), input), e, scanInformation);
+        }
     }
 
     private <T> T deserialize(final Universal input,
                               final ResolvedType targetType,
                               final InjectorLambda injectorProducer) {
-        NotNullValidator.validateNotNull(input, "input");
-        NotNullValidator.validateNotNull(targetType, "targetType");
-        NotNullValidator.validateNotNull(injectorProducer, "jsonInjector");
+        validateNotNull(input, "input");
+        validateNotNull(targetType, "targetType");
+        validateNotNull(injectorProducer, "jsonInjector");
         final ExceptionTracker exceptionTracker = ExceptionTracker.emptyTracker(input, this.validationMappings);
         final Injector injector = this.injectorFactory.create();
         injectorProducer.setupInjector(injector);
-        return this.internalDeserializer.deserialize(input, targetType, exceptionTracker, injector);
+        return this.internalDeserializer.deserialize(input, targetType, exceptionTracker, injector, debugInformation);
     }
 
     public Set<MarshallingType> supportedMarshallingTypes() {

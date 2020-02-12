@@ -46,7 +46,7 @@ public final class ResolvingDeserializer extends StatefulDeserializer {
     @Override
     public StatefulDefinition resolve() {
         this.context.deserializer().requiredTypes().forEach(requirement ->
-                this.context.processor().dispatch(
+                this.context.dispatch(
                         Signal.addDeserialization(requirement, becauseOf(this.context.type()))));
         return resolvedDeserializer(this.context);
     }

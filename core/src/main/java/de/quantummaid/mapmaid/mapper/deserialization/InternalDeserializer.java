@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -59,8 +60,9 @@ final class InternalDeserializer implements DeserializerCallback {
     <T> T deserialize(final Universal input,
                       final ResolvedType targetType,
                       final ExceptionTracker exceptionTracker,
-                      final Injector injector) {
-        final T result = (T) this.deserializeRecursive(input, targetType, exceptionTracker, injector);
+                      final Injector injector,
+                      final DebugInformation debugInformation) {
+        final T result = (T) this.deserializeRecursive(input, targetType, exceptionTracker, injector, debugInformation);
         final ValidationResult validationResult = exceptionTracker.validationResult();
         if (validationResult.hasValidationErrors()) {
             this.onValidationErrors.map(validationResult.validationErrors());
@@ -72,7 +74,8 @@ final class InternalDeserializer implements DeserializerCallback {
     public Object deserializeRecursive(final Universal input,
                                        final ResolvedType targetType,
                                        final ExceptionTracker exceptionTracker,
-                                       final Injector injector) {
+                                       final Injector injector,
+                                       final DebugInformation debugInformation) {
         final Optional<Object> namedDirectInjection = injector.getDirectInjectionForPropertyPath(exceptionTracker.getPosition());
         if (namedDirectInjection.isPresent()) {
             return namedDirectInjection.get();
@@ -91,9 +94,10 @@ final class InternalDeserializer implements DeserializerCallback {
 
         final Definition definition = this.definitions.getDefinitionForType(targetType);
         try {
-            final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() ->
-                    new UnsupportedOperationException(format("No deserializer configured for '%s'", definition.type().description())));
-            return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings);
+            final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
+                return new UnsupportedOperationException(format("No deserializer configured for '%s'", definition.type().description())); // TODO
+            });
+            return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
         } catch (final WrongInputStructureException e) {
             exceptionTracker.track(e, e.getMessage());
             return null;

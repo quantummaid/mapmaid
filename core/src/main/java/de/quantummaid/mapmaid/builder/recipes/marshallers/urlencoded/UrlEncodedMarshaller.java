@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public final class UrlEncodedMarshaller implements Marshaller {
     @Override
     public String marshal(final Object object) {
         NotNullValidator.validateNotNull(object, "object");
-        final List<KeyValue> parts = new LinkedList<>();
+        final List<KeyValue> parts = new ArrayList<>(10);
         marshal(Key.emptyKey(), parts, object);
         return parts.stream()
                 .map(KeyValue::render)

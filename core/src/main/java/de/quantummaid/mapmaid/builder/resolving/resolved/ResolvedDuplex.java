@@ -25,11 +25,15 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDuplex;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
+import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
@@ -46,7 +50,10 @@ public final class ResolvedDuplex extends StatefulDuplex {
 
     @Override
     public Report getDefinition() {
-        final Definition definition = generalDefinition(this.context.type(), this.context.serializer(), this.context.deserializer());
-        return success(definition);
+        final TypeSerializer serializer = this.context.serializer();
+        final TypeDeserializer deserializer = this.context.deserializer();
+        final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
+        final ScanInformation scanInformation = this.context.scanInformationBuilder().build(serializer, deserializer);
+        return success(collectionResult(definition, scanInformation));
     }
 }

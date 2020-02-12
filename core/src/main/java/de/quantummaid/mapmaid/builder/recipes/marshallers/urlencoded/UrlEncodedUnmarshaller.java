@@ -27,8 +27,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +67,7 @@ public final class UrlEncodedUnmarshaller implements Unmarshaller {
     private List<Object> parseArray(final Key key,
                                     final List<KeyElement> children,
                                     final ParsedUrlEncoded parsed) {
-        final List<Object> list = new LinkedList<>();
+        final List<Object> list = new ArrayList<>(children.size());
         children.forEach(child -> {
             final Object childValue = parseFromKey(key.child(child), parsed);
             list.add(child.asArrayIndex(), childValue);

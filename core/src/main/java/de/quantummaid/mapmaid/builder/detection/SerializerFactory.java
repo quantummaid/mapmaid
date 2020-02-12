@@ -24,8 +24,9 @@ package de.quantummaid.mapmaid.builder.detection;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SerializerFactory {
-    Optional<TypeSerializer> analyseForSerializer(ResolvedType type);
+    List<TypeSerializer> analyseForSerializer(ResolvedType type);
 }

@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -41,7 +41,7 @@ public final class ClassModel {
     private final List<MethodModel> methods;
 
     public static ClassModel classModel(final String name) {
-        return new ClassModel(name, new LinkedList<>(), new LinkedList<>());
+        return new ClassModel(name, new ArrayList<>(5), new ArrayList<>(5));
     }
 
     public ClassModel withField(final FieldModel field) {

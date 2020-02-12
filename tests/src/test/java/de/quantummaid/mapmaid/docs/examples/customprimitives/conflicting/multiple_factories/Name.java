@@ -26,11 +26,13 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Name {
-    private final String value;
+    final String value;
 
     // TODO auch noch für dto
 
@@ -39,6 +41,6 @@ public final class Name {
     }
 
     public static Name yetAnotherName(final String value) {
-        return new Name(value);
+        throw wrongMethodCalledException();
     }
 }

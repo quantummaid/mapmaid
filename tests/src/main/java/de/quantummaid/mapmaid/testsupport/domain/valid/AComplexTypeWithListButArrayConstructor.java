@@ -36,7 +36,7 @@ import static java.util.Arrays.asList;
 public final class AComplexTypeWithListButArrayConstructor {
     public final List<ANumber> list;
 
-    public static AComplexTypeWithListButArrayConstructor deserialize(final ANumber[] array) {
-        return new AComplexTypeWithListButArrayConstructor(asList(array));
+    public static AComplexTypeWithListButArrayConstructor deserialize(final ANumber[] list) {
+        return new AComplexTypeWithListButArrayConstructor(asList(list));
     }
 }

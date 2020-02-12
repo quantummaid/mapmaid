@@ -31,6 +31,8 @@ import de.quantummaid.mapmaid.builder.models.conventional.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.conventional.Subject;
 import de.quantummaid.mapmaid.builder.models.conventionalwithclassnamefactories.EmailDto;
 import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -87,7 +89,11 @@ public final class ConventionalBuilderTest {
 
     @Test
     public void testEmailSerialization() {
-        final String result = theConventionalMapMaidInstance().serializer().serializeToJson(EMAIL);
+        final MapMaid mapMaid = theConventionalMapMaidInstance();
+        final DebugInformation debugInformation = mapMaid.debugInformation();
+        System.out.println(debugInformation.scanInformationFor(Email.class).render());
+        System.out.println(debugInformation.scanInformationFor(Body.class).render());
+        final String result = mapMaid.serializer().serializeToJson(EMAIL);
         assertThat(result, is(EMAIL_JSON));
     }
 

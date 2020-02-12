@@ -46,7 +46,7 @@ public final class ResolvingSerializer extends StatefulSerializer {
     @Override
     public StatefulDefinition resolve() {
         this.context.serializer().requiredTypes().forEach(type ->
-                this.context.processor().dispatch(Signal.addSerialization(type, becauseOf(this.context.type()))));
+                this.context.dispatch(Signal.addSerialization(type, becauseOf(this.context.type()))));
         return resolvedSerializer(this.context);
     }
 }

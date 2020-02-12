@@ -30,7 +30,7 @@ public final class TransientFieldExample {
     @Test
     public void transientFieldExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosFailing("TODO", null) // TODO
                 .run();
     }
 }

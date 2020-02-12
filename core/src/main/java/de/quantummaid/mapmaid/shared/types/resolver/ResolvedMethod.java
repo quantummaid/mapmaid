@@ -36,10 +36,12 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.shared.types.TypeResolver.resolveType;
 import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter.resolveParameters;
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.*;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -103,5 +105,26 @@ public final class ResolvedMethod {
 
     public Method method() {
         return this.method;
+    }
+
+    public String describe() {
+        final String returnType = ofNullable(this.returnType)
+                .map(type -> type.assignableType().getSimpleName())
+                .orElse("void");
+        final String name = this.method.getName();
+        final String fullSignature = this.method.toGenericString();
+        final String parametersString = this.parameters.stream()
+                .map(resolvedParameter -> {
+                    final String type = resolvedParameter.type().simpleDescription();
+                    final String parameterName = resolvedParameter.parameter().getName();
+                    return format("%s %s", type, parameterName);
+                })
+                .collect(joining(", "));
+        return format(
+                "'%s %s(%s)' [%s]",
+                returnType,
+                name,
+                parametersString,
+                fullSignature);
     }
 }

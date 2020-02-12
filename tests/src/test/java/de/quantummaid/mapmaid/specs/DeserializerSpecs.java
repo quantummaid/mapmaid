@@ -21,11 +21,14 @@
 
 package de.quantummaid.mapmaid.specs;
 
+import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.testsupport.domain.valid.*;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.MapMaidInstances.theExampleMapMaidWithAllMarshallers;
 
 public final class DeserializerSpecs {
 
@@ -122,11 +125,11 @@ public final class DeserializerSpecs {
         Given.givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidDeserializes("{\"number1\";\"1\",\"number2\":\"2\",\"stringA\"=\"a\",\"stringB\":\"b\"}")
                 .from(json()).toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Could not unmarshal map from input {" +
+                .anExceptionIsThrownWithAMessageContaining("Error during unmarshalling for type 'de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType' with input '{" +
                         "\"number1\";\"1\"," +
                         "\"number2\":\"2\"," +
                         "\"stringA\"=\"a\"," +
-                        "\"stringB\":\"b\"}");
+                        "\"stringB\":\"b\"}'");
     }
 
     @Test
@@ -144,9 +147,13 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenJsonWithValidValues_whenDeserializing_thenReturnsObject() {
+        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
+        final ScanInformation scanInformation = mapMaid.debugInformation().scanInformationFor(AComplexTypeWithValidations.class);
+        System.out.println(scanInformation.render());
         Given.givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidDeserializes("{\"number1\":\"21\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}")
                 .from(json()).toTheType(AComplexTypeWithValidations.class)
+                .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexTypeWithValidations.deserialize(
                         AString.fromStringValue("a"),
                         AString.fromStringValue("b"),
@@ -165,8 +172,15 @@ public final class DeserializerSpecs {
 
     @Test
     public void deserializerCanFindFactoryMethodsWithArrays() {
+        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
+        final String render = mapMaid.debugInformation().scanInformationFor(AComplexTypeWithListButArrayConstructor.class).render();
+        System.out.println(render);
+
+        final String render1 = mapMaid.debugInformation().scanInformationFor(ANumber[].class).render();
+        System.out.println(render1);
+
         Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidDeserializes("{array: [\"1\"]}").from(json()).toTheType(AComplexTypeWithListButArrayConstructor.class)
+                .when().mapMaidDeserializes("{list: [\"1\"]}").from(json()).toTheType(AComplexTypeWithListButArrayConstructor.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexTypeWithListButArrayConstructor.deserialize(new ANumber[]{ANumber.fromInt(1)}));
     }

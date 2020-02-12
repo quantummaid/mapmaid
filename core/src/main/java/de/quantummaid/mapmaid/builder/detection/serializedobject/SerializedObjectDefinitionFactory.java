@@ -29,9 +29,6 @@ import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization
 import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -41,17 +38,12 @@ import lombok.ToString;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.ClassFilter.allowAll;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.CodeNeedsToBeCompiledWithParameterNamesException.validateParameterNamesArePresent;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions.serializationFieldOptions;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Collections.emptyList;
-import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -92,7 +84,10 @@ public final class SerializedObjectDefinitionFactory implements SerializerFactor
         if (!this.filter.filter(type)) {
             return emptyList();
         }
-        validateParameterNamesArePresent(type.assignableType());
+        if (Collection.class.isAssignableFrom(type.assignableType())) {
+            return emptyList(); // TODO
+        }
+        //validateParameterNamesArePresent(type.assignableType()); TODO
 
         return this.detectors.stream()
                 .map(detector -> detector.detect(type))
@@ -101,72 +96,23 @@ public final class SerializedObjectDefinitionFactory implements SerializerFactor
     }
 
     @Override
-    public Optional<TypeSerializer> analyseForSerializer(final ResolvedType type) {
+    public List<TypeSerializer> analyseForSerializer(final ResolvedType type) {
         if (!(type instanceof ClassType)) {
-            return empty();
+            return emptyList();
         }
         if (!this.filter.filter(type)) {
-            return empty();
+            return emptyList();
         }
-        validateParameterNamesArePresent(type.assignableType());
 
         final ClassType classType = (ClassType) type;
-        final List<SerializationField> serializationFieldsList = this.fieldDetectors.stream()
+        final SerializationFieldOptions serializationFieldOptions = serializationFieldOptions();
+        this.fieldDetectors.stream()
                 .map(fieldDetector -> fieldDetector.detect(classType))
                 .flatMap(Collection::stream)
-                .filter(distinctByKey(SerializationField::name))
-                .collect(toList());
-        final SerializationFields serializationFields = SerializationFields.serializationFields(serializationFieldsList);
-        return (Optional<TypeSerializer>) (Object) SerializedObjectSerializer.serializedObjectSerializer(serializationFields);
-    }
-
-    /*
-    @Override
-    public Optional<Definition> analyze(final ResolvedType type,
-                                        final RequiredCapabilities capabilities) {
-        if (!(type instanceof ClassType)) {
-            return empty();
+                .forEach(serializationFieldOptions::add);
+        if (serializationFieldOptions.isEmpty()) {
+            return emptyList();
         }
-        if (!this.filter.filter(type)) {
-            return empty();
-        }
-        validateParameterNamesArePresent(type.assignableType());
-
-        final ClassType classType = (ClassType) type;
-
-        final SerializationFields serializationFields;
-        final Optional<SerializedObjectSerializer> serializer;
-        if (capabilities.hasSerialization()) {
-            final List<SerializationField> serializationFieldsList = this.fieldDetectors.stream()
-                    .map(fieldDetector -> fieldDetector.detect(classType))
-                    .flatMap(Collection::stream)
-                    .filter(distinctByKey(SerializationField::name))
-                    .collect(toList());
-            serializationFields = SerializationFields.serializationFields(serializationFieldsList);
-            serializer = SerializedObjectSerializer.serializedObjectSerializer(serializationFields);
-        } else {
-            serializationFields = SerializationFields.empty();
-            serializer = empty();
-        }
-
-        Optional<SerializedObjectDeserializer> deserializer = empty();
-        if (capabilities.hasDeserialization()) {
-            deserializer = this.detectors.stream()
-                    .map(detector -> detector.detect(classType, serializationFields))
-                    .flatMap(Optional::stream)
-                    .findFirst();
-        }
-        if (serializer.isPresent() || deserializer.isPresent()) {
-            return of(GeneralDefinition.generalDefinition(
-                    classType, serializer.orElse(null), deserializer.orElse(null))
-            );
-        }
-        return empty();
-    }
-     */
-
-    private static <T> Predicate<T> distinctByKey(final Function<T, String> key) {
-        final Set<String> alreadySeenKeys = ConcurrentHashMap.newKeySet();
-        return element -> alreadySeenKeys.add(key.apply(element));
+        return List.of(serializationFieldOptions);
     }
 }

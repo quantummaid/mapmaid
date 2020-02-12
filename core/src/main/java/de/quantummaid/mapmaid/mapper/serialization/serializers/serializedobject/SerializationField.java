@@ -34,6 +34,7 @@ import lombok.ToString;
 import java.lang.reflect.Field;
 
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.*;
 
 @ToString
@@ -75,6 +76,10 @@ public final class SerializationField {
     public Object query(final Object object) {
         NotNullValidator.validateNotNull(object, "object");
         return this.query.query(object);
+    }
+
+    public String describe() {
+        return format("%s [%s] via %s", this.name, this.type.description(), this.query.describe());
     }
 
     private static void validateFieldModifiers(final ResolvedType type, final Field field) {

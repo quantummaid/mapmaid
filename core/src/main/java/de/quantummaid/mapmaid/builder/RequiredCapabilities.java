@@ -38,7 +38,7 @@ public final class RequiredCapabilities {
         return new RequiredCapabilities(false, false);
     }
 
-    public static RequiredCapabilities all() {
+    public static RequiredCapabilities duplex() {
         return new RequiredCapabilities(true, true);
     }
 

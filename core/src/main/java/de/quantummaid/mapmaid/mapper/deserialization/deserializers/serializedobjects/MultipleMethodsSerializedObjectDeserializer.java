@@ -72,4 +72,9 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
     public DeserializationFields fields() {
         return this.deserializationFields;
     }
+
+    @Override
+    public String description() {
+        throw new UnsupportedOperationException(); // TODO
+    }
 }

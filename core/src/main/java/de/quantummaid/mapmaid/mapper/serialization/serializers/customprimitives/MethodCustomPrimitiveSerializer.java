@@ -88,4 +88,14 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
                     this.serializationMethod, object.getClass(), object), e);
         }
     }
+
+    @Override
+    public Class<?> baseType() {
+        return this.serializationMethod.getReturnType(); // TODO
+    }
+
+    @Override
+    public String description() {
+        return this.serializationMethod.toGenericString();
+    }
 }

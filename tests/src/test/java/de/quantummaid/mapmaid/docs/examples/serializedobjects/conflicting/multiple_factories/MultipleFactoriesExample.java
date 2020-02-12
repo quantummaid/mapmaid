@@ -31,7 +31,7 @@ public final class MultipleFactoriesExample {
     @Test
     public void multipleFactoriesExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosFailing("TODO", null) // TODO multiple fixes
                 .run();
     }
 }

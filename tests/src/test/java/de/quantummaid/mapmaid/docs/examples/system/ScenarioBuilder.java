@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.docs.examples.system;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation;
 import de.quantummaid.mapmaid.docs.examples.system.mode.ExampleMode;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -33,14 +35,17 @@ import lombok.ToString;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static de.quantummaid.mapmaid.docs.examples.system.Result.emptyResult;
 import static de.quantummaid.mapmaid.docs.examples.system.expectation.DeserializationSuccessfulExpectation.deserializationWas;
 import static de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation.*;
 import static de.quantummaid.mapmaid.docs.examples.system.expectation.SerializationSuccessfulExpectation.serializationWas;
+import static de.quantummaid.mapmaid.docs.examples.system.mode.FixedExampleMode.*;
 import static de.quantummaid.mapmaid.docs.examples.system.mode.NormalExampleMode.*;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -74,6 +79,18 @@ public final class ScenarioBuilder {
         return this;
     }
 
+    // TODO fix -> MapMateBuilder, multiple fixes
+    public ScenarioBuilder withAllScenariosFailing(final String message, final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
+        // TODO use other method
+        withScenario(withAllCapabilities(), initializationFailed(message));
+        withScenario(fixedWithAllCapabilities(fix), deserializationWas(this.deserializedForm), serializationWas(this.serializedForm));
+        withScenario(deserializationOnly(), initializationFailed(message));
+        withScenario(fixedDeserializationOnly(fix), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        withScenario(serializationOnly(), initializationFailed(message));
+        withScenario(fixedSerializationOnly(fix), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        return this;
+    }
+
     public ScenarioBuilder withAllScenariosFailing(final String message) {
         withScenario(withAllCapabilities(), initializationFailed(message));
         withScenario(deserializationOnly(), initializationFailed(message));
@@ -90,15 +107,15 @@ public final class ScenarioBuilder {
 
     public ScenarioBuilder withDeserializationOnly() {
         withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
-        withScenario(serializationOnly(), initializationFailed("TODO"));
-        withScenario(withAllCapabilities(), initializationFailed("TODO"));
+        withScenario(serializationOnly(), initializationFailed(format("%s: unable to detect serializer", this.type.description())));
+        withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
         return this;
     }
 
     public ScenarioBuilder withSerializationOnly() {
         withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
-        withScenario(deserializationOnly(), initializationFailed("TODO"));
-        withScenario(withAllCapabilities(), initializationFailed("TODO"));
+        withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserializer", this.type.description())));
+        withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
         return this;
     }
 
@@ -119,6 +136,7 @@ public final class ScenarioBuilder {
         try {
             mapMaid = mode.provideMapMaid(this.type);
         } catch (final Throwable throwable) {
+            throwable.printStackTrace();
             result.withInitializationException(throwable);
             return result;
         }
@@ -128,6 +146,7 @@ public final class ScenarioBuilder {
                     .serialize(this.deserializedForm, this.type, json(), stringObjectMap -> stringObjectMap);
             result.withSerializationResult(serialized);
         } catch (final Throwable throwable) {
+            throwable.printStackTrace();
             result.withSerializationException(throwable);
         }
 
@@ -135,6 +154,7 @@ public final class ScenarioBuilder {
             final Object deserialized = mapMaid.deserializer().deserialize(this.serializedForm, this.type, json());
             result.withDeserializationResult(deserialized);
         } catch (final Throwable throwable) {
+            throwable.printStackTrace();
             result.withDeserializationException(throwable);
         }
 

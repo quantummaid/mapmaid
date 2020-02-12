@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.multip
 
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {
@@ -30,7 +31,14 @@ public final class MultipleFactoriesExample {
     @Test
     public void multipleFactoriesExample() {
         scenarioBuilderFor(Name.class)
-                .withAllScenariosFailing("TODO")
+                .withDeserializedForm(Name.anotherName("foo"))
+                .withSerializedForm("\"foo\"")
+                .withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.multiple_factories.Name: unable to detect",
+                        (mapMaidBuilder, capabilities) -> {
+                            System.out.println("capabilities = " + capabilities);
+                            mapMaidBuilder.withManuallyAddedDefinition(
+                                    customPrimitive(Name.class, name -> name.value, Name::anotherName), capabilities);
+                        })
                 .run();
     }
 }

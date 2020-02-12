@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.docs.examples.system.generator.lowlevel.ClassModel.classModel;
@@ -44,7 +44,7 @@ public final class CustomPrimitive {
     private final List<String> factories;
 
     public static CustomPrimitive customPrimitive(final String name, final String backingType) {
-        return new CustomPrimitive(name, backingType, new LinkedList<>());
+        return new CustomPrimitive(name, backingType, new ArrayList<>(3));
     }
 
     public String render() {

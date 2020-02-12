@@ -36,6 +36,8 @@ import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledExcep
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ARequest {
+    public static final ARequest A_REQUEST = new ARequest(new Name[]{Name.fromStringValue("qwer")});
+
     public final Name[] names;
 
     public static ARequest aRequest(final Map<Name, Name> names) {

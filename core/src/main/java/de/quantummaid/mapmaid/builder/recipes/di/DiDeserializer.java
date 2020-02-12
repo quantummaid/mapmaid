@@ -41,4 +41,9 @@ public final class DiDeserializer implements CustomPrimitiveDeserializer {
     public Object deserialize(final Object value) {
         return this.injector.getInstance();
     }
+
+    @Override
+    public String description() {
+        return "dependency injection";
+    }
 }

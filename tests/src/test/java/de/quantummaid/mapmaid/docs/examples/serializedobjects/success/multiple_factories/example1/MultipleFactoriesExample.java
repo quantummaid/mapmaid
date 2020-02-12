@@ -27,10 +27,15 @@ import org.junit.jupiter.api.Test;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {
+
     @Test
     public void multipleFactoriesExample() {
         scenarioBuilderFor(AddRegionCall.class)
-                .withSerializedForm("")
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"regionNameA\": \"qwer\",\n" +
+                        "  \"regionNameB\": \"foo\"\n" +
+                        "}")
                 .withDeserializedForm(AddRegionCall.giveMeTheRegion(RegionName.someMethod("qwer"), RegionName.someMethod("foo")))
                 .withAllScenariosSuccessful()
                 .run();

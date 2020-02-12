@@ -56,6 +56,11 @@ public final class ArrayCollectionDeserializer implements CollectionDeserializer
     }
 
     @Override
+    public String description() {
+        return "array deserialization";
+    }
+
+    @Override
     public String classification() {
         return "Collection";
     }

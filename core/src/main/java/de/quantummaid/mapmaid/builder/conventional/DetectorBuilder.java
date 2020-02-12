@@ -24,15 +24,12 @@ package de.quantummaid.mapmaid.builder.conventional;
 import de.quantummaid.mapmaid.builder.detection.DefinitionFactory;
 import de.quantummaid.mapmaid.builder.detection.Detector;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
-import de.quantummaid.mapmaid.builder.detection.collection.ArrayCollectionDefinitionFactory;
-import de.quantummaid.mapmaid.builder.detection.collection.NativeJavaCollectionDefinitionFactory;
-import de.quantummaid.mapmaid.builder.detection.customprimitive.BuiltInPrimitivesFactory;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -46,8 +43,7 @@ public final class DetectorBuilder {
     private final List<DefinitionFactory> serializedObjectDefinitionFactories;
 
     public static DetectorBuilder detectorBuilder() {
-        final DetectorBuilder detectorBuilder = new DetectorBuilder(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        detectorBuilder.withCustomPrimitiveFactory(BuiltInPrimitivesFactory.builtInPrimitivesFactory());
+        final DetectorBuilder detectorBuilder = new DetectorBuilder(new ArrayList<>(5), new ArrayList<>(5), new ArrayList<>(5));
         return detectorBuilder;
     }
 
@@ -61,10 +57,14 @@ public final class DetectorBuilder {
                                                                              final String deserializationMethodName) {
         validateNotNull(serializationMethodName, "serializationMethodName");
         validateNotNull(deserializationMethodName, "deserializationMethodName");
+        throw new UnsupportedOperationException();
+        /*
+        TODO
         final DefinitionFactory factory = ConventionalDefinitionFactories.nameAndConstructorBasedCustomPrimitiveDefinitionFactory(
                 serializationMethodName,
                 deserializationMethodName);
         return withCustomPrimitiveFactory(factory);
+         */
     }
 
     public DetectorBuilder withCustomPrimitiveFactory(final DefinitionFactory factory) {
@@ -80,8 +80,6 @@ public final class DetectorBuilder {
     }
 
     public Detector build() {
-        withCollectionFactory(ArrayCollectionDefinitionFactory.arrayFactory());
-        withCollectionFactory(NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory());
         return SimpleDetector.detector(this.collectionFactories, this.customPrimitiveDefinitionFactories, this.serializedObjectDefinitionFactories);
     }
 }

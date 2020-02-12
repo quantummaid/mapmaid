@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.join;
@@ -37,11 +37,11 @@ final class TrackingPosition {
     private final List<String> positions;
 
     static TrackingPosition empty() {
-        return new TrackingPosition(new LinkedList<>());
+        return new TrackingPosition(new ArrayList<>(5));
     }
 
     TrackingPosition next(final String name) {
-        final List<String> newPositions = new LinkedList<>(this.positions);
+        final List<String> newPositions = new ArrayList<>(this.positions);
         newPositions.add(name);
         return new TrackingPosition(newPositions);
     }

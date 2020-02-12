@@ -33,8 +33,8 @@ import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledExcep
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AddRegionCall {
-    private final RegionName regionNameA;
-    private final RegionName regionNameB;
+    public final RegionName regionNameA;
+    public final RegionName regionNameB;
 
     public static AddRegionCall addRegionCall() {
         throw wrongMethodCalledException();

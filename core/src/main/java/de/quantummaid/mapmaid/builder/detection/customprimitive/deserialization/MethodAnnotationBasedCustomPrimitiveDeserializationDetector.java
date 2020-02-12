@@ -23,8 +23,8 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization
 
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.IncompatibleCustomPrimitiveException;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,11 +34,12 @@ import lombok.ToString;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
+import static de.quantummaid.mapmaid.builder.detection.priority.Priority.ANNOTATED;
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer.createDeserializer;
 import static java.util.Arrays.stream;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -54,14 +55,14 @@ public final class MethodAnnotationBasedCustomPrimitiveDeserializationDetector i
     }
 
     @Override
-    public Optional<CustomPrimitiveDeserializer> detect(final CachedReflectionType type) {
+    public List<Prioritized<TypeDeserializer>> detect(final CachedReflectionType type) {
         final Method[] typeMethods = type.methods();
         final List<Method> deserializerMethods = stream(typeMethods)
                 .filter(method -> method.getAnnotationsByType(this.annotation).length > 0)
                 .collect(toList());
 
         if (deserializerMethods.isEmpty()) {
-            return empty();
+            return emptyList();
         }
         if (deserializerMethods.size() != 1) {
             throw IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException(
@@ -73,6 +74,6 @@ public final class MethodAnnotationBasedCustomPrimitiveDeserializationDetector i
             );
         }
         final Method deserializationMethod = deserializerMethods.get(0);
-        return of(CustomPrimitiveByMethodDeserializer.createDeserializer(type.type(), deserializationMethod));
+        return List.of(prioritized(createDeserializer(type.type(), deserializationMethod), ANNOTATED));
     }
 }

@@ -22,16 +22,19 @@
 package de.quantummaid.mapmaid.builder.resolving.undetected;
 
 import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableDeserializer;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
 import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingDeserializer.resolvingDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableDeserializer.undetectableDeserializer;
 
@@ -48,12 +51,16 @@ public final class UndetectedDeserializer extends StatefulDeserializer {
     }
 
     @Override
-    public StatefulDefinition detect(final NewSimpleDetector detector, final BuildContextLog log) {
-        final Optional<TypeDeserializer> deserializer = detector.detectDeserializer(this.context.type(), log);
-        if (deserializer.isEmpty()) {
+    public StatefulDefinition detect(final NewSimpleDetector detector,
+                                     final BuildContextLog log,
+                                     final Disambiguators disambiguators) {
+        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final DetectionResult<DisambiguationResult> result = detector.detect(
+                this.context.type(), log, scanInformationBuilder, deserializationOnly(), disambiguators);
+        if (result.isFailure()) {
             return undetectableDeserializer(this.context);
         }
-        this.context.setDeserializer(deserializer.get());
+        this.context.setDeserializer(result.result().deserializer());
         return resolvingDeserializer(this.context);
     }
 }

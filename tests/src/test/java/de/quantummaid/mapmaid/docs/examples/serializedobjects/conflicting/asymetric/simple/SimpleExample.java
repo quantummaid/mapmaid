@@ -30,7 +30,9 @@ public final class SimpleExample {
     @Test
     public void simpleExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosFailing("TODO", (mapMaidBuilder, capabilities) -> {
+                    throw new UnsupportedOperationException(); // TODO
+                }) // TODO
                 .run();
     }
 }

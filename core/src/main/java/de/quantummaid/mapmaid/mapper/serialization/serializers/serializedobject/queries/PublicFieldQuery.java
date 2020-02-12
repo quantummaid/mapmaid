@@ -28,6 +28,8 @@ import lombok.ToString;
 
 import java.lang.reflect.Field;
 
+import static java.lang.String.format;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -45,5 +47,10 @@ public final class PublicFieldQuery implements SerializationFieldQuery {
         } catch (final IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String describe() {
+        return format("public field '%s'", this.field.getName());
     }
 }

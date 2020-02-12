@@ -33,4 +33,9 @@ public final class DiSerializer implements CustomPrimitiveSerializer {
     public Object serialize(final Object object) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String description() {
+        return "dependency injection";
+    }
 }

@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
@@ -43,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -53,11 +56,13 @@ public final class Serializer implements SerializationCallback {
     private final MarshallerRegistry<Marshaller> marshallers;
     private final Definitions definitions;
     private final CustomPrimitiveMappings customPrimitiveMappings;
+    private final DebugInformation debugInformation;
 
     public static Serializer theSerializer(final MarshallerRegistry<Marshaller> marshallers,
                                            final Definitions definitions,
-                                           final CustomPrimitiveMappings customPrimitiveMappings) {
-        return new Serializer(marshallers, definitions, customPrimitiveMappings);
+                                           final CustomPrimitiveMappings customPrimitiveMappings,
+                                           final DebugInformation debugInformation) {
+        return new Serializer(marshallers, definitions, customPrimitiveMappings, debugInformation);
     }
 
     public Set<MarshallingType> supportedMarshallingTypes() {
@@ -139,8 +144,11 @@ public final class Serializer implements SerializationCallback {
         final SerializationTracker childTracker = tracker.trackToProhibitCyclicReferences(object);
         final Definition definition = this.definitions.getDefinitionForType(type);
         return definition.serializer()
-                .orElseThrow(() -> new UnsupportedOperationException(
-                        format("No serializer configured for type '%s'", definition.type().description())))
+                .orElseThrow(() -> {
+                    final ScanInformation scanInformation = this.debugInformation.scanInformationFor(type);
+                    return mapMaidException(
+                            format("No serializer configured for type '%s'", definition.type().description()), scanInformation);
+                })
                 .serialize(object, this, childTracker, this.customPrimitiveMappings);
     }
 

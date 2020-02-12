@@ -31,7 +31,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Prioritized<T> {
+public final class Prioritized<T> implements Comparable<Prioritized<T>> {
     private final T value;
     private final Priority priority;
 
@@ -39,5 +39,18 @@ public final class Prioritized<T> {
         validateNotNull(value, "value");
         validateNotNull(priority, "priority");
         return new Prioritized<>(value, priority);
+    }
+
+    public T value() {
+        return this.value;
+    }
+
+    public Priority priority() {
+        return this.priority;
+    }
+
+    @Override
+    public int compareTo(final Prioritized<T> o) {
+        return this.priority.compareTo(o.priority);
     }
 }

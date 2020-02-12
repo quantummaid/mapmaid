@@ -30,7 +30,7 @@ public final class ArrayToMapExample {
     @Test
     public void arrayToMapExample() {
         scenarioBuilderFor(ARequest.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosFailing("TODO", null) // TODO
                 .run();
     }
 }

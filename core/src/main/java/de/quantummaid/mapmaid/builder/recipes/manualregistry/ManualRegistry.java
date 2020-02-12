@@ -26,30 +26,21 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.ModifierFieldDetector.modifierBased;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
-import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer.methodNameDeserializer;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
-import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedField.resolvedPublicFields;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -61,9 +52,9 @@ import static java.util.Arrays.stream;
 public final class ManualRegistry implements Recipe {
     private static final FieldDetector FIELD_DETECTOR = modifierBased();
 
-    private final List<Definition> definitions = new LinkedList<>();
-    private final List<Class<?>> manuallyAddedCustomPrimitiveTypes = new LinkedList<>();
-    private final List<Class<?>> manuallyAddedSerializedObjectTypes = new LinkedList<>();
+    private final List<Definition> definitions = new ArrayList<>(10);
+    private final List<Class<?>> manuallyAddedCustomPrimitiveTypes = new ArrayList<>(10);
+    private final List<Class<?>> manuallyAddedSerializedObjectTypes = new ArrayList<>(10);
 
     public static ManualRegistry manuallyRegisteredTypes() {
         return new ManualRegistry();
@@ -72,10 +63,31 @@ public final class ManualRegistry implements Recipe {
     public <T> ManualRegistry withCustomPrimitive(final Class<T> type,
                                                   final Function<T, String> serializationMethod,
                                                   final Function<String, T> deserializationMethod) {
-        return this.withCustomPrimitive(generalDefinition(
-                fromClassWithoutGenerics(type),
-                (CustomPrimitiveSerializer) object -> serializationMethod.apply(type.cast(object)),
-                (CustomPrimitiveDeserializer) value -> deserializationMethod.apply((String) value)));
+        final CustomPrimitiveSerializer serializer = new CustomPrimitiveSerializer() {
+            @Override
+            public Object serialize(final Object object) {
+                return serializationMethod.apply(type.cast(object));
+            }
+
+            @Override
+            public String description() {
+                return serializationMethod.toString();
+            }
+        };
+
+        final CustomPrimitiveDeserializer deserializer = new CustomPrimitiveDeserializer() {
+            @Override
+            public Object deserialize(final Object value) throws Exception {
+                return deserializationMethod.apply((String) value);
+            }
+
+            @Override
+            public String description() {
+                return deserializationMethod.toString();
+            }
+        };
+
+        return this.withCustomPrimitive(generalDefinition(fromClassWithoutGenerics(type), serializer, deserializer));
     }
 
     public ManualRegistry withCustomPrimitive(final Definition customPrimitive) {
@@ -84,10 +96,10 @@ public final class ManualRegistry implements Recipe {
                     "The customPrimitive %s has already been added for type %s", customPrimitive, customPrimitive.type().description()));
         }
         this.definitions.add(customPrimitive);
-
         return this;
     }
 
+    // TODO ?
     public ManualRegistry withCustomPrimitives(final Class<?>... customPrimitiveTypes) {
         stream(customPrimitiveTypes).forEach(type -> validateNotNull(type, "type"));
         this.manuallyAddedCustomPrimitiveTypes.addAll(asList(customPrimitiveTypes));
@@ -106,6 +118,8 @@ public final class ManualRegistry implements Recipe {
     public ManualRegistry withSerializedObject(final Class<?> type,
                                                final Field[] serializedFields,
                                                final String deserializationMethodName) {
+        throw new UnsupportedOperationException(); // TODO
+        /*
         final ClassType fullType = fromClassWithoutGenerics(type);
         final List<ResolvedField> resolvedFields = resolvedPublicFields(fullType);
         final TypeDeserializer deserializer = methodNameDeserializer(fullType, deserializationMethodName, resolvedFields);
@@ -114,6 +128,7 @@ public final class ManualRegistry implements Recipe {
 
         final Definition serializedObject = generalDefinition(fullType, serializer, deserializer);
         return this.withSerializedObject(serializedObject);
+         */
     }
 
     public ManualRegistry withSerializedObjects(final Class<?>... serializedObjectTypes) {

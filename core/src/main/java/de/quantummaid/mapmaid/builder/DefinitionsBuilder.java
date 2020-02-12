@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.detection.Detector;
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -33,7 +34,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -117,7 +117,7 @@ public final class DefinitionsBuilder {
                 recurseSerializers(requiredType, detector, contextLog.stepInto(requiredType.assignableType())));
     }
 
-    public Definitions build(final Map<Definition, RequiredCapabilities> partialRequirements) {
+    public Definitions build(final DebugInformation debugInformation) {
         final Set<ResolvedType> allTypes = new HashSet<>();
         allTypes.addAll(this.deserializers.keys());
         allTypes.addAll(this.serializers.keys());
@@ -125,7 +125,7 @@ public final class DefinitionsBuilder {
         final Map<ResolvedType, Definition> definitions = allTypes.stream()
                 .map(this::definitionForType)
                 .collect(toMap(Definition::type, definition -> definition));
-        return definitions(this.contextLog, definitions);
+        return definitions(this.contextLog, definitions, debugInformation);
     }
 
     private Definition definitionForType(final ResolvedType type) {

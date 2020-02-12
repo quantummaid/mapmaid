@@ -21,10 +21,8 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.mixed_getter_fields;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example2.StreetName;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.multiple_static_factories.example1.RegionName;
 import lombok.*;
 
 @ToString
@@ -33,16 +31,16 @@ import lombok.*;
 public final class AddALotRequest {
     @Setter
     @Getter
-    private StreetName streetName;
+    private Name name;
 
     @Setter
     @Getter
-    private TownName townName;
+    private TownName townNameA;
 
     @Setter
     @Getter
-    private RegionName regionName;
+    private TownName townNameB;
 
-    @Setter // TODO public felder setzten nicht impl in doku
-    public CountryName countryName;
+    @Setter // TODO public felder setzen nicht impl in doku
+    public TownName townNameC;
 }

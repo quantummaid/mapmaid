@@ -33,4 +33,9 @@ public class InjectionDeserializer implements CustomPrimitiveDeserializer {
     public Object deserialize(final Object value) throws Exception {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String description() {
+        return "always inject";
+    }
 }

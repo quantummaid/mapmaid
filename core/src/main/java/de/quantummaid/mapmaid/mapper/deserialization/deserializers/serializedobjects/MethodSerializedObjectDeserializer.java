@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static java.lang.reflect.Modifier.*;
 import static java.util.stream.Collectors.joining;
@@ -102,6 +103,11 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
     @Override
     public DeserializationFields fields() {
         return this.fields;
+    }
+
+    @Override
+    public String description() {
+        return createDescription(this.factoryMethod.describe());
     }
 
     private static void validateDeserializerModifiers(final ClassType type, final ResolvedMethod deserializationMethod) {

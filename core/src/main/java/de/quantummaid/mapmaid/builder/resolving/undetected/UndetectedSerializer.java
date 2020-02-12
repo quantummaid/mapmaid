@@ -22,17 +22,19 @@
 package de.quantummaid.mapmaid.builder.resolving.undetected;
 
 import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulSerializer;
-import de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serializationOnly;
+import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingSerializer.resolvingSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableSerializer.undetectableSerializer;
 
 @ToString
@@ -48,12 +50,16 @@ public final class UndetectedSerializer extends StatefulSerializer {
     }
 
     @Override
-    public StatefulDefinition detect(final NewSimpleDetector detector, final BuildContextLog log) {
-        final Optional<TypeSerializer> serializer = detector.detectSerializer(this.context.type(), log);
-        if (serializer.isEmpty()) {
+    public StatefulDefinition detect(final NewSimpleDetector detector,
+                                     final BuildContextLog log,
+                                     final Disambiguators disambiguators) {
+        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final DetectionResult<DisambiguationResult> result = detector.detect(
+                this.context.type(), log, scanInformationBuilder, serializationOnly(), disambiguators);
+        if (result.isFailure()) {
             return undetectableSerializer(this.context);
         }
-        this.context.setSerializer(serializer.get());
-        return ResolvingSerializer.resolvingSerializer(this.context);
+        this.context.setSerializer(result.result().serializer());
+        return resolvingSerializer(this.context);
     }
 }

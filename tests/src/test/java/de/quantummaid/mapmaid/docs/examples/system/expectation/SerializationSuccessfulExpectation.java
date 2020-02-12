@@ -45,7 +45,7 @@ public final class SerializationSuccessfulExpectation implements Expectation {
 
     @Override
     public void ensure(final Result result) {
-        assertThat(result.serializationResult().isPresent(), is(true));
+        assertThat("serialization could be completed", result.serializationResult().isPresent(), is(true));
         final Object serializationResult = result.serializationResult().get();
         assertThat(serializationResult, is(this.expectedSerializationResult));
     }

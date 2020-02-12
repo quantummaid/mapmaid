@@ -23,14 +23,15 @@ package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.single_fa
 
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
-import de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder;
 import org.junit.jupiter.api.Test;
+
+import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class SingleFactoryExample {
 
     @Test
     public void singleFactoryExample() {
-        ScenarioBuilder.scenarioBuilderFor(AddALotRequest.class)
+        scenarioBuilderFor(AddALotRequest.class)
                 .withSerializedForm("" +
                         "{\n" +
                         "  \"townName\": \"b\",\n" +

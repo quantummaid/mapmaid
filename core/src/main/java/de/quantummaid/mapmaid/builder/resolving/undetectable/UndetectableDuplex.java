@@ -25,6 +25,8 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDuplex;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -33,17 +35,23 @@ import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
 @ToString
 @EqualsAndHashCode
 public final class UndetectableDuplex extends StatefulDuplex {
+    private final String reason;
 
-    private UndetectableDuplex(final Context context) {
+    private UndetectableDuplex(final Context context,
+                               final String reason) {
         super(context);
+        this.reason = reason;
     }
 
-    public static StatefulDefinition undetectableDuplex(final Context context) {
-        return new UndetectableDuplex(context);
+    public static StatefulDefinition undetectableDuplex(final Context context,
+                                                        final String reason) {
+        return new UndetectableDuplex(context, reason);
     }
 
     @Override
     public Report getDefinition() {
-        return failure("unable to detect duplex"); // TODO
+        final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
+        final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
+        return failure(collectionResult,"unable to detect duplex: " + this.reason); // TODO
     }
 }

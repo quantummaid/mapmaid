@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithWildc
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class TypeWildcardSpecs {
@@ -34,11 +35,24 @@ public final class TypeWildcardSpecs {
     public void collectionsWithTypeWildcardsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithWildcardedCollection.class)
+                        .withManuallyAddedType(AComplexTypeWithWildcardedCollection.class, deserializationOnly())
                         .build())
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("Type 'java.util.List<?>' is not registered but needs to be in order to support deserialization of 'de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithWildcardedCollection'.\n" +
-                        "Log entries for 'java.util.List<?>'\n");
+                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex: no duplex detected:\n" +
+                        "type '?' is not supported because it contains wildcard generics (\"?\")\n" +
+                        "\n" +
+                        "?:\n" +
+                        "Mode: duplex\n" +
+                        "How it is serialized:\n" +
+                        "\tNo serializer available\n" +
+                        "Why it needs to be serializable:\n" +
+                        "\t- because of java.util.List<?>\n" +
+                        "Ignored features for serialization:\n" +
+                        "How it is deserialized:\n" +
+                        "\tNo deserializer available\n" +
+                        "Why it needs to be deserializable:\n" +
+                        "\t- because of java.util.List<?>\n" +
+                        "Ignored features for deserialization:");
     }
 
     @Test
@@ -49,7 +63,20 @@ public final class TypeWildcardSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("Type 'java.util.List<?>' is not registered but needs to be in order to support deserialization of 'de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithTypeWildcards'.\n" +
-                        "Log entries for 'java.util.List<?>'\n");
+                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex: no duplex detected:\n" +
+                        "type '?' is not supported because it contains wildcard generics (\"?\")\n" +
+                        "\n" +
+                        "?:\n" +
+                        "Mode: duplex\n" +
+                        "How it is serialized:\n" +
+                        "\tNo serializer available\n" +
+                        "Why it needs to be serializable:\n" +
+                        "\t- because of java.util.List<?>\n" +
+                        "Ignored features for serialization:\n" +
+                        "How it is deserialized:\n" +
+                        "\tNo deserializer available\n" +
+                        "Why it needs to be deserializable:\n" +
+                        "\t- because of java.util.List<?>\n" +
+                        "Ignored features for deserialization:");
     }
 }

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import lombok.ToString;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException;
 import static java.lang.String.format;
@@ -42,8 +44,8 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
     private final Class<?> baseType;
     private final Constructor<?> constructor;
 
-    public static CustomPrimitiveDeserializer createDeserializer(final Class<?> type,
-                                                                 final Constructor<?> constructor) {
+    public static TypeDeserializer createDeserializer(final Class<?> type,
+                                                      final Constructor<?> constructor) {
         final int modifiers = constructor.getModifiers();
         if (!isPublic(modifiers)) {
             throw incompatibleCustomPrimitiveException(
@@ -99,6 +101,11 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
                     format("Unexpected error invoking deserialization constructor %s for serialized custom primitive %s",
                             this.constructor, value), e);
         }
+    }
+
+    @Override
+    public String description() {
+        return createDescription(this, this.constructor.toGenericString());
     }
 
     @Override

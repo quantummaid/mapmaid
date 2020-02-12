@@ -29,7 +29,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Priority {
+public final class Priority implements Comparable<Priority> {
     public static final Priority USER_PROVIDED = priority(100);
     public static final Priority HARDCODED = priority(90);
     public static final Priority ANNOTATED = priority(87);
@@ -38,7 +38,7 @@ public final class Priority {
     public static final Priority CONSTRUCTOR = priority(70);
     public static final Priority POJO = priority(60);
 
-    private final int priority;
+    private final Integer priority;
 
     public static Priority priority(final int priority) {
         return new Priority(priority);
@@ -46,5 +46,14 @@ public final class Priority {
 
     public boolean higherThan(final Priority other) {
         return this.priority > other.priority;
+    }
+
+    public int value() {
+        return this.priority;
+    }
+
+    @Override
+    public int compareTo(final Priority o) {
+        return this.priority.compareTo(o.priority) * -1;
     }
 }

@@ -26,7 +26,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +38,12 @@ import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prio
 import static de.quantummaid.mapmaid.builder.detection.priority.Priority.ANNOTATED;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer.methodDeserializer;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
+// TODO implement it differently?
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -51,7 +52,7 @@ public final class AnnotationBasedDeserializationDetector implements SerializedO
 
     public static SerializedObjectDeserializationDetector annotationBasedDeserialzer(
             final Class<? extends Annotation> annotation) {
-        NotNullValidator.validateNotNull(annotation, "annotation");
+        validateNotNull(annotation, "annotation");
         return new AnnotationBasedDeserializationDetector(annotation);
     }
 

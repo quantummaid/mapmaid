@@ -21,8 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.detection;
 
+import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -31,11 +37,14 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.util.Optional.empty;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -51,51 +60,46 @@ public final class NewSimpleDetector {
         return new NewSimpleDetector(serializerFactories, deserializerFactories);
     }
 
-    public Optional<TypeSerializer> detectSerializer(final ResolvedType type,
-                                                     final BuildContextLog parentLog) {
+    // TODO return value
+    public DetectionResult<DisambiguationResult> detect(final ResolvedType type,
+                                                        final BuildContextLog parentLog,
+                                                        final ScanInformationBuilder scanInformationBuilder,
+                                                        final RequiredCapabilities capabilities,
+                                                        final Disambiguators disambiguators) {
         if (!isSupported(type)) {
             parentLog.logReject(type, "type is not supported because it contains wildcard generics (\"?\")");
-            return empty();
-        }
-        for (final SerializerFactory factory : this.serializerFactories) {
-            final BuildContextLog factoryContextLog = parentLog.stepInto(factory.getClass());
-            final Optional<TypeSerializer> analyzedClass = factory.analyseForSerializer(type);
-            if (analyzedClass.isPresent()) {
-                factoryContextLog.log(type, "know how to handle this type");
-                return analyzedClass;
-            } else {
-                factoryContextLog.logReject(type, "do not know how to handle this type");
-            }
-        }
-        return empty();
-    }
-
-    public Optional<TypeDeserializer> detectDeserializer(final ResolvedType type,
-                                                         final BuildContextLog parentLog) {
-        if (!isSupported(type)) {
-            parentLog.logReject(type, "type is not supported because it contains wildcard generics (\"?\")");
-            return empty();
+            return failure(format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description()));
         }
 
-        /*
-        this.deserializerFactories.stream()
-                .forEach(deserializerFactory -> );
-         */
+        scanInformationBuilder.resetScan();
 
-        for (final DeserializerFactory factory : this.deserializerFactories) {
-            final BuildContextLog factoryContextLog = parentLog.stepInto(factory.getClass());
-            final List<Prioritized<TypeDeserializer>> deserializers = factory.analyseForDeserializer(type);
-            throw new UnsupportedOperationException(); // TODO
-            /*
-            if (analyzedClass.isPresent()) {
-                factoryContextLog.log(type, "know how to handle this type");
-                return analyzedClass;
-            } else {
-                factoryContextLog.logReject(type, "do not know how to handle this type");
-            }
-             */
+        final List<TypeSerializer> serializers;
+        if (capabilities.hasSerialization()) {
+            serializers = this.serializerFactories.stream()
+                    .map(serializerFactory -> serializerFactory.analyseForSerializer(type))
+                    .flatMap(Collection::stream)
+                    .collect(toList());
+            serializers.forEach(scanInformationBuilder::addSerializer);
+        } else {
+            serializers = null;
         }
-        return empty();
+
+        final List<TypeDeserializer> deserializers;
+        if(capabilities.hasDeserialization()) {
+            deserializers = this.deserializerFactories.stream()
+                    .map(deserializerFactory -> deserializerFactory.analyseForDeserializer(type))
+                    .flatMap(Collection::stream)
+                    .sorted()
+                    .map(Prioritized::value)
+                    .collect(toList());
+            deserializers.forEach(scanInformationBuilder::addDeserializer);
+        } else {
+            deserializers = null;
+        }
+
+        final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
+        final SerializersAndDeserializers serializersAndDeserializers = serializersAndDeserializers(serializers, deserializers);
+        return disambiguator.disambiguate(type, serializersAndDeserializers, scanInformationBuilder);
     }
 
     private static boolean isSupported(final ResolvedType resolvedType) {

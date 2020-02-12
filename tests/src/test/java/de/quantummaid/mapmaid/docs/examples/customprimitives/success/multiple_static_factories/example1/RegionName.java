@@ -46,4 +46,8 @@ public final class RegionName {
     public static RegionName yetAnotherMethod(final Name name) {
         throw wrongMethodCalledException();
     }
+
+    public String value() {
+        return this.value;
+    }
 }

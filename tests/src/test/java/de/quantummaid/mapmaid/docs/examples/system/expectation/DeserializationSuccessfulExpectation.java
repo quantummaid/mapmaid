@@ -44,7 +44,7 @@ public final class DeserializationSuccessfulExpectation implements Expectation {
 
     @Override
     public void ensure(final Result result) {
-        assertThat(result.deserializationResult().isPresent(), is(true));
+        assertThat("deserialization did provide a result", result.deserializationResult().isPresent(), is(true));
         final Object deserializationResult = result.deserializationResult().get();
         assertThat(deserializationResult, is(this.expectedDeserializationResult));
     }

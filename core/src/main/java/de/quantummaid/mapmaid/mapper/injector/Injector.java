@@ -22,15 +22,15 @@
 package de.quantummaid.mapmaid.mapper.injector;
 
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
 import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +43,9 @@ import static de.quantummaid.mapmaid.mapper.injector.UniversalInjection.universa
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Injector {
-    private final List<UniversalInjection> universalInjections = new LinkedList<>();
-    private final List<NamedDirectInjection> namedDirectInjections = new LinkedList<>();
-    private final List<TypedDirectInjection> typedDirectInjections = new LinkedList<>();
+    private final List<UniversalInjection> universalInjections = new ArrayList<>(5);
+    private final List<NamedDirectInjection> namedDirectInjections = new ArrayList<>(5);
+    private final List<TypedDirectInjection> typedDirectInjections = new ArrayList<>(5);
 
     static Injector empty() {
         return new Injector();

@@ -44,7 +44,7 @@ public final class Unreasoned extends StatefulDefinition {
 
     @Override
     public StatefulDefinition addSerialization(final Reason reason) {
-        this.context.addSerializationReason(reason);
+        this.context.scanInformationBuilder().addSerializationReason(reason);
         return undetectedSerializer(this.context);
     }
 
@@ -55,7 +55,7 @@ public final class Unreasoned extends StatefulDefinition {
 
     @Override
     public StatefulDefinition addDeserialization(final Reason reason) {
-        this.context.addDeserializationReason(reason);
+        this.context.scanInformationBuilder().addDeserializationReason(reason);
         return undetectedDeserializer(this.context);
     }
 

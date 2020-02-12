@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.docs.examples.system.Result;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -32,10 +33,10 @@ public interface Expectation {
 
     static Expectation initializationFailed(final String message) {
         return result -> {
-            assertThat(result.initializationException().isPresent(), is(true));
+            assertThat("exception occurred during initialization", result.initializationException().isPresent(), is(true));
             final Throwable exception = result.initializationException().get();
             exception.printStackTrace();
-            assertThat(exception.getMessage(), is(message));
+            assertThat(exception.getMessage(), containsString(message));
         };
     }
 
@@ -45,9 +46,9 @@ public interface Expectation {
 
     static Expectation serializationFailed(final String message) {
         return result -> {
-            assertThat(result.serializationException().isPresent(), is(true));
+            assertThat("exception occurred during serialization", result.serializationException().isPresent(), is(true));
             final Throwable exception = result.serializationException().get();
-            assertThat(exception.getMessage(), is(message));
+            assertThat(exception.getMessage(), containsString(message));
         };
     }
 
@@ -57,9 +58,9 @@ public interface Expectation {
 
     static Expectation deserializationFailed(final String message) {
         return result -> {
-            assertThat(result.deserializationException().isPresent(), is(true));
+            assertThat("exception occurred during deserialization", result.deserializationException().isPresent(), is(true));
             final Throwable exception = result.deserializationException().get();
-            assertThat(exception.getMessage(), is(message));
+            assertThat(exception.getMessage(), containsString(message));
         };
     }
 

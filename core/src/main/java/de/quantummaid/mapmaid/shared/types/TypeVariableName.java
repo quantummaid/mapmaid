@@ -49,10 +49,6 @@ public final class TypeVariableName {
         return typeVariableName(typeVariable.getName());
     }
 
-    public static TypeVariableName arrayComponentName() {
-        return typeVariableName("C");
-    }
-
     public static List<TypeVariableName> typeVariableNamesOf(final Class<?> type) {
         return stream(type.getTypeParameters())
                 .map(TypeVariableName::typeVariableName)

@@ -25,11 +25,14 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDeserializer;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
+import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
@@ -46,7 +49,9 @@ public final class ResolvedDeserializer extends StatefulDeserializer {
 
     @Override
     public Report getDefinition() {
-        final Definition definition = generalDefinition(this.context.type(), null, this.context.deserializer());
-        return success(definition);
+        final TypeDeserializer deserializer = this.context.deserializer();
+        final Definition definition = generalDefinition(this.context.type(), null, deserializer);
+        final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, deserializer);
+        return success(collectionResult(definition, scanInformation));
     }
 }

@@ -36,10 +36,10 @@ public final class DetectorExample {
         MapMaid.aMapMaid("de.quantummaid.examples")
                 .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)
                 .withDetector(ConventionalDetectors.conventionalDetector(
-                        "myCustomPrimitiveSerializationMethodName",
+                        //"myCustomPrimitiveSerializationMethodName", TODO
                         "myCustomPrimitiveDeserializationMethodName",
-                        "mySerializedObjectDeserializationMethodName",
-                        ".*Dto"))
+                        "mySerializedObjectDeserializationMethodName"
+                        /*, ".*Dto" TODO */))
                 .build();
         //Showcase end detector
     }

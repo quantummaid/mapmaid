@@ -32,7 +32,7 @@ public abstract class StatefulDeserializer extends StatefulDefinition {
 
     @Override
     public StatefulDefinition addDeserialization(final Reason reason) {
-        this.context.addDeserializationReason(reason);
+        this.context.scanInformationBuilder().addDeserializationReason(reason);
         return this;
     }
 
@@ -48,7 +48,7 @@ public abstract class StatefulDeserializer extends StatefulDefinition {
 
     @Override
     public StatefulDefinition addSerialization(final Reason reason) {
-        this.context.addSerializationReason(reason);
+        this.context.scanInformationBuilder().addSerializationReason(reason);
         return undetectedDuplex(this.context);
     }
 

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
@@ -31,5 +32,6 @@ public interface DeserializerCallback {
     Object deserializeRecursive(Universal input,
                                 ResolvedType targetType,
                                 ExceptionTracker exceptionTracker,
-                                Injector injector);
+                                Injector injector,
+                                DebugInformation debugInformation);
 }

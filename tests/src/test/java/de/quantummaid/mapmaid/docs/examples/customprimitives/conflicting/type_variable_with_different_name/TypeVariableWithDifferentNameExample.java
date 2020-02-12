@@ -21,18 +21,30 @@
 
 package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name;
 
+import de.quantummaid.mapmaid.shared.types.ClassType;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
+import static de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name.Street.street;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
+import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithGenerics;
 import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
-import static de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType.unresolvedType;
+import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
 
 public final class TypeVariableWithDifferentNameExample {
 
     @Test
     public void typeVariableWithDifferentNameExample() {
-        scenarioBuilderFor(unresolvedType(Street.class).resolve(resolvedType(Object.class)))
-                .withAllScenariosFailing("TODO")
+        final ClassType resolvedType = fromClassWithGenerics(Street.class, Map.of(typeVariableName("T"), resolvedType(Object.class)));
+        scenarioBuilderFor(resolvedType)
+                .withDeserializedForm(street("foo"))
+                .withSerializedForm("\"foo\"")
+                .withAllScenariosFailing("ede.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name.Street<java.lang.Object>: unable to detect", (mapMaidBuilder, capabilities) -> mapMaidBuilder
+                        .withManuallyAddedDefinition(customPrimitive(resolvedType,
+                                object -> ((Street<Object>) object).stringValue(),
+                                Street::street), capabilities)) // TODO usage
                 .run();
     }
 }

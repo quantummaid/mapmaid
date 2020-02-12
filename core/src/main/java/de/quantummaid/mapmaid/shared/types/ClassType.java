@@ -113,6 +113,17 @@ public final class ClassType implements ResolvedType {
     }
 
     @Override
+    public String simpleDescription() {
+        if (this.typeParameters.isEmpty()) {
+            return this.clazz.getSimpleName();
+        }
+        final String parametersString = this.typeParameters().stream()
+                .map(ResolvedType::simpleDescription)
+                .collect(joining(", ", "<", ">"));
+        return this.clazz.getName() + parametersString;
+    }
+
+    @Override
     public boolean isAbstract() {
         if (this.clazz.isPrimitive()) {
             return false;

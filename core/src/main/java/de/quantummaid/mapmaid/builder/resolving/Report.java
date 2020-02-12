@@ -21,39 +21,40 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Report {
-    private final Definition definition;
+    private final CollectionResult result;
     private final String errorMessage;
 
-    public static Report success(final Definition definition) {
-        validateNotNull(definition, "definition");
-        return new Report(definition, null);
+    public static Report success(final CollectionResult result) {
+        validateNotNull(result, "result");
+        return new Report(result, null);
     }
 
-    public static Report failure(final String errorMessage) {
+    public static Report failure(final CollectionResult result, final String errorMessage) {
         validateNotNull(errorMessage, "errorMessage");
-        return new Report(null, errorMessage);
+        return new Report(result, errorMessage);
     }
 
     public boolean isSuccess() {
-        return nonNull(this.definition);
+        return isNull(this.errorMessage);
     }
 
-    public Definition definition() {
-        validateNotNull(this.definition, "definition");
-        return this.definition;
+    public CollectionResult result() {
+        validateNotNull(this.result, "result");
+        return this.result;
     }
 
     public String errorMessage() {

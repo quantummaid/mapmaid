@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.IncompatibleCustomPrimitiveException;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
@@ -33,10 +33,13 @@ import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -55,15 +58,17 @@ public final class ClassAnnotationBasedCustomPrimitiveSerializationDetector<T ex
     }
 
     @Override
-    public Optional<CustomPrimitiveSerializer> detect(final CachedReflectionType cachedReflectionType) {
+    public List<TypeSerializer> detect(final CachedReflectionType cachedReflectionType) {
         final Class<?> type = cachedReflectionType.type();
         final T[] annotations = type.getAnnotationsByType(this.annotationType);
         if (annotations.length == 1) {
             final T annotation = annotations[0];
             return this.findSerializerMethod(type, annotation)
-                    .map(method -> MethodCustomPrimitiveSerializer.createSerializer(type, method));
+                    .map(method -> MethodCustomPrimitiveSerializer.createSerializer(type, method))
+                    .stream()
+                    .collect(toList());
         }
-        return Optional.empty();
+        return emptyList();
     }
 
     private Optional<Method> findSerializerMethod(final Class<?> type, final T annotation) {

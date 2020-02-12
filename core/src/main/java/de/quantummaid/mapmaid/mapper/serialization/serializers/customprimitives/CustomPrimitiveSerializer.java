@@ -34,6 +34,20 @@ import static java.util.Collections.emptyList;
 
 public interface CustomPrimitiveSerializer extends TypeSerializer {
 
+    static CustomPrimitiveSerializer constantSerializer(final String constant) {
+        return new CustomPrimitiveSerializer() {
+            @Override
+            public Object serialize(final Object object) {
+                return constant;
+            }
+
+            @Override
+            public String description() {
+                return constant;
+            }
+        };
+    }
+
     @Override
     default List<ResolvedType> requiredTypes() {
         return emptyList();
@@ -48,6 +62,10 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
                                 final CustomPrimitiveMappings customPrimitiveMappings) {
         final Object serialized = serialize(object);
         return customPrimitiveMappings.toUniversal(serialized);
+    }
+
+    default Class<?> baseType() {
+        return String.class; // TODO
     }
 
     @Override

@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.map_to_array;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -30,8 +29,16 @@ public final class MapToArrayExample {
 
     @Test
     public void mapToArrayExample() {
-        scenarioBuilderFor(ResolvedType.class)
-                .withAllScenariosFailing("TODO")
+        scenarioBuilderFor(ARequest.class)
+                .withDeserializedForm(ARequest.A_REQUEST)
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"names\": [\n" +
+                        "    \"qwer\"\n" +
+                        "  ]\n" +
+                        "}")
+                .withSerializationOnly()
+                //.withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.map_to_array.ARequest: unable to detect") // TODO
                 .run();
     }
 }

@@ -53,6 +53,10 @@ public interface ResolvedType {
 
     String description();
 
+    default String simpleDescription() {
+        return description();
+    }
+
     default boolean isInstantiatable() {
         if (isAbstract()) {
             return false;

@@ -23,19 +23,25 @@ package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.const
 
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 public final class AddALotRequest {
     public final Name name;
     public final TownName townNameA;
     public final TownName townNameB;
     public final TownName townNameC;
+
+    public AddALotRequest(final Name name,
+                          final TownName townNameA,
+                          final TownName townNameB,
+                          final TownName townNameC) {
+        throw wrongMethodCalledException();
+    }
 
     public static AddALotRequest addALotRequest(final Name name,
                                                 final TownName townNameA,

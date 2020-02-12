@@ -48,7 +48,7 @@ public final class CachedReflectionType {
 
     public Method[] methods() {
         if (this.methods == null) {
-            this.methods = this.type.getMethods();
+            this.methods = this.type.getDeclaredMethods();
         }
         return this.methods;
     }

@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -47,9 +47,9 @@ public final class MethodModel {
     public static MethodModel method(final String name) {
         return new MethodModel(name,
                 "void",
-                new LinkedList<>(),
-                new LinkedList<>(),
-                new LinkedList<>());
+                new ArrayList<>(5),
+                new ArrayList<>(5),
+                new ArrayList<>(5));
     }
 
     public MethodModel withReturnType(final String returnType) {

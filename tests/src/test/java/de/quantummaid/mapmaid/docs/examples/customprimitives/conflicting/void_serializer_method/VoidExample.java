@@ -30,7 +30,7 @@ public final class VoidExample {
     @Test
     public void voidExample() {
         scenarioBuilderFor(GroupName.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosFailing("TODO", null) // TODO
                 .run();
     }
 }

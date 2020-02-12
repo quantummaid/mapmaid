@@ -28,12 +28,13 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
+// TODO
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -42,11 +43,11 @@ public final class BuildContextLog implements DefinitionScanLog {
     private final List<ContextLogEntry> entries;
 
     public static BuildContextLog emptyLog() {
-        return new BuildContextLog(new LinkedList<>(), new LinkedList<>());
+        return new BuildContextLog(new ArrayList<>(10), new ArrayList<>(10));
     }
 
     public BuildContextLog stepInto(final Class<?> origin) {
-        final LinkedList<Class<?>> newOrigin = new LinkedList<>(this.origin);
+        final List<Class<?>> newOrigin = new ArrayList<>(this.origin);
         newOrigin.add(origin);
         return new BuildContextLog(newOrigin, this.entries);
     }

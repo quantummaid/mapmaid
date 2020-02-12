@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.KeyElement.keyElement;
@@ -41,7 +41,7 @@ final class Key {
     private final List<KeyElement> parts;
 
     static Key emptyKey() {
-        return new Key(new LinkedList<>());
+        return new Key(new ArrayList<>(5));
     }
 
     static Key parseKey(final String string) {
@@ -52,7 +52,7 @@ final class Key {
         final String head = string.substring(0, string.indexOf("["));
         final String tail = string.substring(string.indexOf("[") + 1, string.length() - 1);
         final String[] tailElements = tail.split("]\\[");
-        final List<KeyElement> elements = new LinkedList<>();
+        final List<KeyElement> elements = new ArrayList<>(tailElements.length + 1);
         elements.add(keyElement(head));
         stream(tailElements)
                 .map(KeyElement::keyElement)
@@ -89,7 +89,7 @@ final class Key {
 
     Key child(final KeyElement element) {
         NotNullValidator.validateNotNull(element, "element");
-        final List<KeyElement> newParts = new LinkedList<>(this.parts);
+        final List<KeyElement> newParts = new ArrayList<>(this.parts);
         newParts.add(element);
         return new Key(newParts);
     }

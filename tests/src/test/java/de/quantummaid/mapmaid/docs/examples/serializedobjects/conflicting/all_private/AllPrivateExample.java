@@ -21,8 +21,11 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.all_private;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class AllPrivateExample {
@@ -30,7 +33,25 @@ public final class AllPrivateExample {
     @Test
     public void allPrivateExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("Unable to register type 'de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.all_private.AddALotRequest'")
+                .withDeserializedForm(AddALotRequest.addALotRequest())
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"name\": \"a\",\n" +
+                        "  \"townNameA\": \"b\",\n" +
+                        "  \"townNameB\": \"c\",\n" +
+                        "  \"townNameC\": \"d\"\n" +
+                        "}")
+                .withAllScenariosFailing(
+                        "de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.all_private.AddALotRequest: unable to detect",
+                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withManuallyAddedDefinition(
+                                serializedObjectOfType(AddALotRequest.class)
+                                        .withField("name", Name.class, object -> Name.fromStringValue("a"))
+                                        .withField("townNameA", TownName.class, object -> TownName.townName("b"))
+                                        .withField("townNameB", TownName.class, object -> TownName.townName("c"))
+                                        .withField("townNameC", TownName.class, object -> TownName.townName("d"))
+                                        .deserializedUsing((field1, field2, field3, field4) -> AddALotRequest.addALotRequest())
+                                        .create(), capabilities) // TODO
+                )
                 .run();
     }
 }

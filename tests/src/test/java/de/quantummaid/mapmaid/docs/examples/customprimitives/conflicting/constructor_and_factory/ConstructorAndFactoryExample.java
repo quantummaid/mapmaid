@@ -30,7 +30,7 @@ public final class ConstructorAndFactoryExample {
     @Test
     public void constructorAndFactoryExample() {
         scenarioBuilderFor(Name.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosSuccessful()
                 .run();
     }
 }

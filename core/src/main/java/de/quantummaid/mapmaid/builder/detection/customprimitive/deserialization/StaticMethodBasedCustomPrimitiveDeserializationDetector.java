@@ -22,9 +22,11 @@
 package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization;
 
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
-import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
+import de.quantummaid.mapmaid.builder.detection.priority.Priority;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,14 +35,11 @@ import lombok.ToString;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 
@@ -64,33 +63,21 @@ public final class StaticMethodBasedCustomPrimitiveDeserializationDetector imple
     }
 
     @Override
-    public Optional<CustomPrimitiveDeserializer> detect(final CachedReflectionType type) {
-        return findDeserializerMethod(type).map(method -> CustomPrimitiveByMethodDeserializer.createDeserializer(type.type(), method));
+    public List<Prioritized<TypeDeserializer>> detect(final CachedReflectionType type) {
+        return findDeserializerMethod(type).stream()
+                .map(method -> CustomPrimitiveByMethodDeserializer.createDeserializer(type.type(), method))
+                .map(customPrimitiveDeserializer -> Prioritized.prioritized(customPrimitiveDeserializer, Priority.FACTORY))
+                .collect(toList());
     }
 
-    private Optional<Method> findDeserializerMethod(final CachedReflectionType type) {
-        final List<Method> deserializerMethodCandidates = stream(type.methods())
+    private List<Method> findDeserializerMethod(final CachedReflectionType type) {
+        return stream(type.methods())
                 .filter(method -> isStatic(method.getModifiers()))
                 .filter(method -> isPublic(method.getModifiers()))
                 .filter(method -> method.getReturnType().equals(type.type()))
                 .filter(method -> method.getParameterCount() == 1)
                 .filter(method -> this.mappings.isPrimitiveType(method.getParameterTypes()[0]))
                 .collect(toList());
-
-        final List<Method> methodsMatchingName = deserializerMethodCandidates.stream()
-                .filter(method -> this.deserializationMethodName.matcher(method.getName()).matches())
-                .collect(toList());
-        if (methodsMatchingName.size() > 0) {
-            return of(methodsMatchingName.get(0));
-        }
-
-        final List<Method> methodsMatchingClassName = deserializerMethodCandidates.stream()
-                .filter(method -> method.getName().toLowerCase().contains(type.type().getSimpleName().toLowerCase()))
-                .collect(toList());
-        if (methodsMatchingClassName.size() > 0) {
-            return of(methodsMatchingClassName.get(0));
-        }
-        return empty();
     }
 
 }

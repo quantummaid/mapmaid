@@ -21,11 +21,12 @@
 
 package de.quantummaid.mapmaid;
 
+import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import de.quantummaid.mapmaid.builder.scanning.PackageScanner;
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.scanning.PackageScanner;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,7 @@ import lombok.ToString;
 public final class MapMaid {
     private final Serializer serializer;
     private final Deserializer deserializer;
+    private final DebugInformation debugInformation;
 
     public static MapMaidBuilder aMapMaid(final String... packageNames) {
         return MapMaidBuilder.mapMaidBuilder(packageNames);
@@ -47,8 +49,10 @@ public final class MapMaid {
         return MapMaidBuilder.mapMaidBuilder(packageScanner);
     }
 
-    public static MapMaid mapMaid(final Serializer serializer, final Deserializer deserializer) {
-        return new MapMaid(serializer, deserializer);
+    public static MapMaid mapMaid(final Serializer serializer,
+                                  final Deserializer deserializer,
+                                  final DebugInformation debugInformation) {
+        return new MapMaid(serializer, deserializer, debugInformation);
     }
 
     public Serializer serializer() {
@@ -93,5 +97,9 @@ public final class MapMaid {
 
     public <T> T deserialize(final String json, final ResolvedType targetType, final MarshallingType marshallingType) {
         return this.deserializer.deserialize(json, targetType, marshallingType);
+    }
+
+    public DebugInformation debugInformation() {
+        return this.debugInformation;
     }
 }

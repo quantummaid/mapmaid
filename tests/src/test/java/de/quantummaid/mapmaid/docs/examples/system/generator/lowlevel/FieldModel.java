@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -41,7 +41,7 @@ public final class FieldModel {
     private final List<String> modifiers;
 
     public static FieldModel field(final String name, final String type) {
-        return new FieldModel(name, type, new LinkedList<>());
+        return new FieldModel(name, type, new ArrayList<>(5));
     }
 
     public FieldModel withModifier(final String modifier) {

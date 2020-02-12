@@ -22,18 +22,17 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexTypeWithCollections;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.givenTheExampleMapMaidWithAllMarshallers;
 
 public final class SchematicSpecs {
 
     @Test
     public void wrongSchemaFormatCausesSensibleException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidDeserializes("{\"arrayList\": {}, \"array\": []}").from(json()).toTheType(AComplexTypeWithCollections.class)
-                .anExceptionIsThrownWithAMessageContaining("Unrecognized exception deserializing field 'arrayList': " +
-                        "Requiring the input to be an 'collection' but found '{}' at 'arrayList'");
+                .anExceptionIsThrownWithAMessageContaining("Requiring the input to be an 'collection' but found '{}' at 'arrayList'");
     }
 }

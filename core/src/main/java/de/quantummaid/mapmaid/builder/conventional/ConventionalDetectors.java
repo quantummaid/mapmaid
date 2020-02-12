@@ -33,58 +33,40 @@ import static de.quantummaid.mapmaid.builder.conventional.NewDetectorBuilder.det
 @ToString
 @EqualsAndHashCode
 public final class ConventionalDetectors {
-    private static final String[] DEFAULT_CLASS_PATTERNS = {
-            ".*DTO",
-            ".*Dto",
-            ".*Request",
-            ".*Response",
-            ".*State",
-    };
 
     private ConventionalDetectors() {
     }
 
     public static NewSimpleDetector conventionalDetector() {
-        return conventionalDetector("stringValue",
-                "fromStringValue",
-                "deserialize",
-                DEFAULT_CLASS_PATTERNS
-        );
+        return conventionalDetector("fromStringValue", "deserialize");
     }
 
-    public static NewSimpleDetector conventionalDetector(final String customPrimitiveSerializationMethodName,
-                                                         final String customPrimitiveDeserializationMethodName,
-                                                         final String serializedObjectDeserializationMethodName,
-                                                         final String... serializedObjectNameDetectionPatterns) {
+    public static NewSimpleDetector conventionalDetector(final String customPrimitiveDeserializationMethodName,
+                                                         final String serializedObjectDeserializationMethodName) {
         final SerializedObjectDefinitionFactory pojoFactory = ConventionalDefinitionFactories.pojoSerializedObjectFactory();
         final SerializedObjectDefinitionFactory serializedObjectDefinitionFactory = ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName);
         return detectorBuilder()
-                .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveSerializationMethodName, customPrimitiveDeserializationMethodName)
+                .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveDeserializationMethodName)
                 .withSerializerFactory(pojoFactory).withDeserializerFactory(pojoFactory)
                 .withSerializerFactory(serializedObjectDefinitionFactory).withDeserializerFactory(serializedObjectDefinitionFactory)
                 .build();
     }
 
     public static NewSimpleDetector conventionalDetectorWithAnnotations() {
-        return conventionalDetectorWithAnnotations("stringValue",
-                "fromStringValue",
-                "deserialize",
-                DEFAULT_CLASS_PATTERNS
-        );
+        return conventionalDetectorWithAnnotations("fromStringValue",
+                "deserialize");
     }
 
     public static NewSimpleDetector conventionalDetectorWithAnnotations(
-            final String customPrimitiveSerializationMethodName,
             final String customPrimitiveDeserializationMethodName,
-            final String serializedObjectDeserializationMethodName,
-            final String... serializedObjectNameDetectionPatterns) {
+            final String serializedObjectDeserializationMethodName) {
         final CustomPrimitiveDefinitionFactory annotationFactory = ConventionalDefinitionFactories.customPrimitiveClassAnnotationFactory();
         final CustomPrimitiveDefinitionFactory primitiveAnnotations = ConventionalDefinitionFactories.customPrimitiveMethodAnnotationFactory();
         final SerializedObjectDefinitionFactory other = ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName);
         return detectorBuilder()
                 .withSerializerFactory(annotationFactory).withDeserializerFactory(annotationFactory)
                 .withSerializerFactory(primitiveAnnotations).withDeserializerFactory(primitiveAnnotations)
-                .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveSerializationMethodName, customPrimitiveDeserializationMethodName)
+                .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveDeserializationMethodName)
                 .withSerializerFactory(other).withDeserializerFactory(other)
                 .build();
     }

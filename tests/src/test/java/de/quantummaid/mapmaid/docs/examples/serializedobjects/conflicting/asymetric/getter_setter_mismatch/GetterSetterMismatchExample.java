@@ -30,7 +30,7 @@ public final class GetterSetterMismatchExample {
     @Test
     public void getterSetterMismatchExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO")
+                .withAllScenariosFailing("TODO", null) // TODO
                 .run();
     }
 }

@@ -21,6 +21,9 @@
 
 package de.quantummaid.mapmaid.mapper.definitions;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.MapMaidException;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.DefinitionScanLog;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -28,7 +31,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,10 +48,10 @@ public final class Definitions {
     private final Map<ResolvedType, Definition> definitions;
 
     public static Definitions definitions(final DefinitionScanLog definitionScanLog,
-                                          final Map<ResolvedType, Definition> definitions) {
+                                          final Map<ResolvedType, Definition> definitions,
+                                          final DebugInformation debugInformation) {
         final Definitions definitionsObject = new Definitions(definitionScanLog, definitions);
-        //fullRequirements(partialRequirements, definitionsObject).validate(definitionsObject);
-        definitionsObject.validateNoUnsupportedOutgoingReferences();
+        definitionsObject.validateNoUnsupportedOutgoingReferences(debugInformation);
         return definitionsObject;
     }
 
@@ -64,33 +67,44 @@ public final class Definitions {
         return of(this.definitions.get(targetType));
     }
 
-    private void validateNoUnsupportedOutgoingReferences() {
+    private void validateNoUnsupportedOutgoingReferences(final DebugInformation debugInformation) {
         this.definitions.values().forEach(definition -> {
             if (definition.deserializer().isPresent()) {
-                validateDeserialization(definition.type(), definition.type(), new LinkedList<>());
+                validateDeserialization(
+                        definition.type(),
+                        definition.type(),
+                        new ArrayList<>(this.definitions.size()),
+                        debugInformation);
             }
             if (definition.serializer().isPresent()) {
-                validateSerialization(definition.type(), definition.type(), new LinkedList<>());
+                validateSerialization(definition.type(), definition.type(), new ArrayList<>(this.definitions.size()));
             }
         });
     }
 
-    private void validateDeserialization(final ResolvedType candidate, final ResolvedType reason, final List<ResolvedType> alreadyVisited) {
+    private void validateDeserialization(final ResolvedType candidate,
+                                         final ResolvedType reason,
+                                         final List<ResolvedType> alreadyVisited,
+                                         final DebugInformation debugInformation) {
         if (alreadyVisited.contains(candidate)) {
             return;
         }
         alreadyVisited.add(candidate);
-        final Definition definition = getOptionalDefinitionForType(candidate).orElseThrow(() ->
-                new UnsupportedOperationException(
-                        format("Type '%s' is not registered but needs to be in order to support deserialization of '%s'.%s",
-                                candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate))));
+        final Definition definition = getOptionalDefinitionForType(candidate).orElseThrow(() -> {
+            final ScanInformation candidateInformation = debugInformation.scanInformationFor(candidate);
+            final ScanInformation reasonInformation = debugInformation.scanInformationFor(reason);
+            return MapMaidException.mapMaidException(
+                    format("Type '%s' is not registered but needs to be in order to support deserialization of '%s'.%s",
+                            candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)),
+                    candidateInformation, reasonInformation);
+        });
 
         if (definition.deserializer().isEmpty()) {
             throw new UnsupportedOperationException(
                     format("'%s' is not deserializable but needs to be in order to support deserialization of '%s'. %s",
                             candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)));
         } else {
-            definition.deserializer().get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited));
+            definition.deserializer().get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited, debugInformation));
         }
     }
 

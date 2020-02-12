@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException;
 import static java.lang.String.format;
@@ -39,10 +41,10 @@ import static java.lang.String.format;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiveDeserializer {
     private final Class<?> baseType;
-    private final Method deserializationMethod;
+    private final Method deserializationMethod; // TODO resolved method
 
-    public static CustomPrimitiveDeserializer createDeserializer(final Class<?> type,
-                                                                 final Method deserializationMethod) {
+    public static TypeDeserializer createDeserializer(final Class<?> type,
+                                                      final Method deserializationMethod) {
         final int deserializationMethodModifiers = deserializationMethod.getModifiers();
         if (!Modifier.isPublic(deserializationMethodModifiers)) {
             throw incompatibleCustomPrimitiveException(
@@ -92,6 +94,15 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         } catch (final InvocationTargetException e) {
             throw handleInvocationTargetException(e, value);
         }
+    }
+
+    public Method method() {
+        return this.deserializationMethod;
+    }
+
+    @Override
+    public String description() {
+        return createDescription(this, this.deserializationMethod.toGenericString());
     }
 
     private Exception handleInvocationTargetException(final InvocationTargetException e, final Object value) {

@@ -22,51 +22,48 @@
 package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
 import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Method;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer.createSerializer;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.reflect.Modifier.*;
 import static java.util.Arrays.stream;
-import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MethodNameBasedCustomPrimitiveSerializationDetector implements CustomPrimitiveSerializationDetector {
     private final CustomPrimitiveMappings mappings;
-    private final Pattern serializationMethodName;
 
-    public static CustomPrimitiveSerializationDetector methodNameBased(final CustomPrimitiveMappings mappings,
-                                                                       final String pattern) {
-        NotNullValidator.validateNotNull(mappings, "mappings");
-        NotNullValidator.validateNotNull(pattern, "pattern");
-        return new MethodNameBasedCustomPrimitiveSerializationDetector(mappings, compile(pattern));
+    // TODO rename
+    public static CustomPrimitiveSerializationDetector methodBased(final CustomPrimitiveMappings mappings) {
+        validateNotNull(mappings, "mappings");
+        return new MethodNameBasedCustomPrimitiveSerializationDetector(mappings);
     }
 
     @Override
-    public Optional<CustomPrimitiveSerializer> detect(final CachedReflectionType type) {
-        return findSerializerMethod(type.methods())
-                .map(method -> MethodCustomPrimitiveSerializer.createSerializer(type.type(), method));
-    }
-
-    private Optional<Method> findSerializerMethod(final Method[] methods) {
-        return stream(methods)
+    public List<TypeSerializer> detect(final CachedReflectionType type) {
+        if(type.type().getSimpleName().contains("Quantity")) {
+            System.out.println("type = " + type);
+        }
+        final List<TypeSerializer> serializers = stream(type.methods())
                 .filter(method -> !isStatic(method.getModifiers()))
                 .filter(method -> !isAbstract(method.getModifiers()))
                 .filter(method -> isPublic(method.getModifiers()))
                 .filter(method -> this.mappings.isPrimitiveType(method.getReturnType()))
                 .filter(method -> method.getParameterCount() == 0)
-                .filter(method -> this.serializationMethodName.matcher(method.getName()).matches())
-                .findFirst();
+                .filter(method -> !method.getName().equals("toString")) // TODO
+                .filter(method ->! method.getName().equals("hashCode")) // TODO
+                .map(method -> createSerializer(type.type(), method))
+                .collect(toList());
+        return serializers;
     }
 }

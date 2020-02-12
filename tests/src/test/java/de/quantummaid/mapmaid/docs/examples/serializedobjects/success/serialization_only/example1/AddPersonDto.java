@@ -36,4 +36,6 @@ public final class AddPersonDto {
     static AddPersonDto init() {
         return new AddPersonDto(Name.fromStringValue("asdf"));
     }
+
+    // TODO a package private factory / constructor example
 }

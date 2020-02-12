@@ -27,7 +27,6 @@ import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +35,10 @@ import lombok.ToString;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
-import static java.util.Optional.*;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Optional.ofNullable;
 
 @ToString
 @EqualsAndHashCode
@@ -47,13 +46,12 @@ import static java.util.Optional.*;
 public final class SerializedObjectSerializer implements TypeSerializer {
     private final SerializationFields fields;
 
-    // TODO do not return optional
-    public static Optional<SerializedObjectSerializer> serializedObjectSerializer(final SerializationFields fields) {
-        NotNullValidator.validateNotNull(fields, "fields");
+    public static SerializedObjectSerializer serializedObjectSerializer(final SerializationFields fields) {
+        validateNotNull(fields, "fields");
         if (fields.isEmpty()) {
-            return empty();
+            throw new IllegalArgumentException("fields must not be empty");
         }
-        return of(new SerializedObjectSerializer(fields));
+        return new SerializedObjectSerializer(fields);
     }
 
     public SerializationFields fields() {
@@ -80,6 +78,14 @@ public final class SerializedObjectSerializer implements TypeSerializer {
             map.put(name, serializedValue);
         });
         return universalObject(map);
+    }
+
+    @Override
+    public String description() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("as serialized object with fields:\n");
+        stringBuilder.append(this.fields.describe());
+        return stringBuilder.toString();
     }
 
     @Override

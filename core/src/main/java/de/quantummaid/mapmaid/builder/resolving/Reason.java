@@ -27,6 +27,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,11 +36,20 @@ public final class Reason {
     private final String reason;
     private final ResolvedType parent;
 
+    public static Reason reason(final String reason) {
+        validateNotNull(reason, "reason");
+        return new Reason(reason, null);
+    }
+
     public static Reason manuallyAdded() {
-        return new Reason("manually added", null);
+        return reason("manually added");
     }
 
     public static Reason becauseOf(final ResolvedType parent) {
-        return new Reason("because of", parent);
+        return new Reason(String.format("because of %s", parent.description()), parent);
+    }
+
+    public String render() {
+        return this.reason;
     }
 }
