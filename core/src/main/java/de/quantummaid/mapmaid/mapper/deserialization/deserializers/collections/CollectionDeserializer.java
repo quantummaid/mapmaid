@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
-import de.quantummaid.mapmaid.builder.resolving.hints.symmetry.mirror.Mirror;
+import de.quantummaid.mapmaid.builder.resolving.hints.Mirror;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;

@@ -21,8 +21,11 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class TransientFieldExample {
@@ -30,7 +33,28 @@ public final class TransientFieldExample {
     @Test
     public void transientFieldExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO", null) // TODO
+
+                .withDeserializedForm(AddALotRequest.addALotRequest(Name.fromStringValue("foo"), TownName.townName("bar")))
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"name\": \"foo\",\n" +
+                        "  \"townName\": \"bar\"\n" +
+                        "}")
+
+
+                //.withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field.AddALotRequest: unable to detect") // TODO
+                .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field.AddALotRequest: unable to detect")
+                .withDeserializationOnlySuccessful()
+                .withSerializationOnlyFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field.AddALotRequest: unable to detect")
+
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withManuallyAddedDefinition(
+                        serializedObjectOfType(AddALotRequest.class)
+                                .withField("name", Name.class, object -> object.name)
+                                .withField("townName", TownName.class, object -> object.townName)
+                                .deserializedUsing(AddALotRequest::addALotRequest)
+                                .create(),
+                        capabilities))
+
                 .run();
     }
 }

@@ -21,9 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,6 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
-import static de.quantummaid.mapmaid.builder.detection.priority.Priority.HARDCODED;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveAsEnumDeserializer.enumDeserializer;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -47,10 +44,10 @@ public final class EnumCustomPrimitiveDeserializationDetector implements CustomP
     }
 
     @Override
-    public List<Prioritized<TypeDeserializer>> detect(final CachedReflectionType type) {
-        if (!Enum.class.isAssignableFrom(type.type())) {
+    public List<TypeDeserializer> detect(final ResolvedType type) {
+        if (!Enum.class.isAssignableFrom(type.assignableType())) {
             return emptyList();
         }
-        return singletonList(prioritized(enumDeserializer((Class<? extends Enum<?>>) type.type()), HARDCODED)); // TODO
+        return singletonList(enumDeserializer(type));
     }
 }

@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing;
 
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -65,10 +64,9 @@ public final class Processor {
         this.states = this.states.addState(statefulDefinition);
     }
 
-    public Map<ResolvedType, CollectionResult> collect(final NewSimpleDetector detector,
-                                                       final BuildContextLog log,
+    public Map<ResolvedType, CollectionResult> collect(final SimpleDetector detector,
                                                        final Disambiguators disambiguators) {
-        resolveRecursively(detector, log, disambiguators);
+        resolveRecursively(detector, disambiguators);
         final Map<ResolvedType, Report> reports = this.states.collect();
 
         final Map<ResolvedType, CollectionResult> definitions = new HashMap<>(reports.size());
@@ -84,19 +82,18 @@ public final class Processor {
         return definitions;
     }
 
-    private void resolveRecursively(final NewSimpleDetector detector,
-                                    final BuildContextLog log,
+    private void resolveRecursively(final SimpleDetector detector,
                                     final Disambiguators disambiguators) {
         while (!this.pendingSignals.isEmpty()) {
             final Signal signal = this.pendingSignals.remove();
             this.states = this.states.apply(signal, this);
         }
-        final States detected = this.states.apply(detect(detector, log, disambiguators), this);
+        final States detected = this.states.apply(detect(detector, disambiguators), this);
         final States resolved = detected.apply(resolve(), this);
         this.states = resolved;
 
         if (!this.pendingSignals.isEmpty()) {
-            resolveRecursively(detector, log, disambiguators);
+            resolveRecursively(detector, disambiguators);
         }
     }
 }

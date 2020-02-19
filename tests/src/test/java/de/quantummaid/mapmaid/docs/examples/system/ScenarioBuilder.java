@@ -81,30 +81,63 @@ public final class ScenarioBuilder {
 
     // TODO fix -> MapMateBuilder, multiple fixes
     public ScenarioBuilder withAllScenariosFailing(final String message, final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        // TODO use other method
-        withScenario(withAllCapabilities(), initializationFailed(message));
+        withAllScenariosFailing(message);
+        withFixedScenarios(fix);
+        return this;
+    }
+
+    public ScenarioBuilder withFixedScenarios(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
         withScenario(fixedWithAllCapabilities(fix), deserializationWas(this.deserializedForm), serializationWas(this.serializedForm));
-        withScenario(deserializationOnly(), initializationFailed(message));
         withScenario(fixedDeserializationOnly(fix), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
-        withScenario(serializationOnly(), initializationFailed(message));
         withScenario(fixedSerializationOnly(fix), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
         return this;
     }
 
     public ScenarioBuilder withAllScenariosFailing(final String message) {
+        withDuplexFailing(message);
+        withDeserializationOnlyFailing(message);
+        withSerializationOnlyFailing(message);
+        return this;
+    }
+
+    public ScenarioBuilder withDuplexFailing(final String message) {
         withScenario(withAllCapabilities(), initializationFailed(message));
-        withScenario(deserializationOnly(), initializationFailed(message));
+        return this;
+    }
+
+    public ScenarioBuilder withSerializationOnlyFailing(final String message) {
         withScenario(serializationOnly(), initializationFailed(message));
         return this;
     }
 
+    public ScenarioBuilder withDeserializationOnlyFailing(final String message) {
+        withScenario(deserializationOnly(), initializationFailed(message));
+        return this;
+    }
+
     public ScenarioBuilder withAllScenariosSuccessful() {
-        withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
-        withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        withDuplexSuccessful();
+        withSerializationOnlySuccessful();
+        withDeserializationOnlySuccessful();
+        return this;
+    }
+
+    public ScenarioBuilder withDuplexSuccessful() {
         withScenario(withAllCapabilities(), deserializationWas(this.deserializedForm), serializationWas(this.serializedForm));
         return this;
     }
 
+    public ScenarioBuilder withSerializationOnlySuccessful() {
+        withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        return this;
+    }
+
+    public ScenarioBuilder withDeserializationOnlySuccessful() {
+        withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        return this;
+    }
+
+    // TODO replace methods
     public ScenarioBuilder withDeserializationOnly() {
         withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
         withScenario(serializationOnly(), initializationFailed(format("%s: unable to detect serializer", this.type.description())));
@@ -112,6 +145,7 @@ public final class ScenarioBuilder {
         return this;
     }
 
+    // TODO replace methods
     public ScenarioBuilder withSerializationOnly() {
         withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
         withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserializer", this.type.description())));

@@ -21,11 +21,9 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.simple;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example1.GroupName;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example2.StreetName;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example1.GroupName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.multiple_static_factories.example1.RegionName;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +36,14 @@ import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledExcep
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AddALotRequest {
     public final StreetName streetName;
-    public final TownName townName;
-    public final RegionName regionName;
-    public final CountryName countryName;
+    public final TownName townNameA;
+    public final TownName townNameB;
+    public final TownName townNameC;
 
     public static AddALotRequest addALotRequest(final GroupName groupName,
-                                                final TownName townName,
-                                                final RegionName regionName,
-                                                final CountryName countryName) {
+                                                final TownName townNameA,
+                                                final TownName townNameB,
+                                                final TownName townNameC) {
         throw wrongMethodCalledException();
     }
 }

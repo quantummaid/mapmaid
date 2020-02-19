@@ -48,6 +48,6 @@ public final class UndetectableDeserializer extends StatefulDeserializer {
     public Report getDefinition() {
         final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
         final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
-        return failure(collectionResult, "unable to detect deserializer"); // TODO
+        return failure(collectionResult, "unable to detect deserializer");
     }
 }

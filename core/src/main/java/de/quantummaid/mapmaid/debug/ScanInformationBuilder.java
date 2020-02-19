@@ -61,7 +61,6 @@ public final class ScanInformationBuilder {
         this.deserializers.put(deserializer, new ArrayList<>(1));
     }
 
-    // TODO call
     public void resetScan() {
         this.serializers.clear();
         this.deserializers.clear();

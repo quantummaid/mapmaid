@@ -21,63 +21,54 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
-import de.quantummaid.mapmaid.builder.detection.priority.Priority;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.regex.Pattern;
 
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
-import static java.util.Arrays.stream;
-import static java.util.regex.Pattern.compile;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StaticMethodBasedCustomPrimitiveDeserializationDetector implements CustomPrimitiveDeserializationDetector {
-    private static final Pattern MATCH_ALL = compile(".*");
-
     private final CustomPrimitiveMappings mappings;
-    private final Pattern deserializationMethodName;
 
     public static CustomPrimitiveDeserializationDetector staticMethodBased(final CustomPrimitiveMappings mappings) {
-        return new StaticMethodBasedCustomPrimitiveDeserializationDetector(mappings, MATCH_ALL);
-    }
-
-    public static CustomPrimitiveDeserializationDetector staticMethodBased(final CustomPrimitiveMappings mappings, final String pattern) {
-        NotNullValidator.validateNotNull(mappings, "mappings");
-        NotNullValidator.validateNotNull(pattern, "pattern");
-        return new StaticMethodBasedCustomPrimitiveDeserializationDetector(mappings, compile(pattern));
+        validateNotNull(mappings, "mappings");
+        return new StaticMethodBasedCustomPrimitiveDeserializationDetector(mappings);
     }
 
     @Override
-    public List<Prioritized<TypeDeserializer>> detect(final CachedReflectionType type) {
-        return findDeserializerMethod(type).stream()
-                .map(method -> CustomPrimitiveByMethodDeserializer.createDeserializer(type.type(), method))
-                .map(customPrimitiveDeserializer -> Prioritized.prioritized(customPrimitiveDeserializer, Priority.FACTORY))
+    public List<TypeDeserializer> detect(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        return findDeserializerMethod((ClassType) type).stream()
+                .map(method -> CustomPrimitiveByMethodDeserializer.createDeserializer(type, method))
                 .collect(toList());
     }
 
-    private List<Method> findDeserializerMethod(final CachedReflectionType type) {
-        return stream(type.methods())
-                .filter(method -> isStatic(method.getModifiers()))
-                .filter(method -> isPublic(method.getModifiers()))
-                .filter(method -> method.getReturnType().equals(type.type()))
-                .filter(method -> method.getParameterCount() == 1)
-                .filter(method -> this.mappings.isPrimitiveType(method.getParameterTypes()[0]))
+    private List<ResolvedMethod> findDeserializerMethod(final ClassType type) {
+        return type.publicMethods().stream()
+                .filter(method -> isStatic(method.method().getModifiers()))
+                .filter(method -> isPublic(method.method().getModifiers()))
+                .filter(method -> method.returnType().isPresent())
+                .filter(method -> method.returnType().get().equals(type))
+                .filter(method -> method.parameters().size() == 1)
+                .filter(method -> this.mappings.isPrimitiveType(method.parameters().get(0).type().assignableType()))
                 .collect(toList());
     }
-
 }

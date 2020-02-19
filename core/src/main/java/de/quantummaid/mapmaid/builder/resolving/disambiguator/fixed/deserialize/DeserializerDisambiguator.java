@@ -26,5 +26,5 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import java.util.List;
 
 public interface DeserializerDisambiguator {
-    TypeDeserializer disambiguate(List<TypeDeserializer> deserializers);
+    TypeDeserializer disambiguate(List<? extends TypeDeserializer> deserializers);
 }

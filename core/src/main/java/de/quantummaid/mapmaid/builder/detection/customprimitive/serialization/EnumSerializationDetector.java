@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +44,8 @@ public final class EnumSerializationDetector implements CustomPrimitiveSerializa
     }
 
     @Override
-    public List<TypeSerializer> detect(final CachedReflectionType type) {
-        if (!Enum.class.isAssignableFrom(type.type())) {
+    public List<TypeSerializer> detect(final ResolvedType type) {
+        if (!Enum.class.isAssignableFrom(type.assignableType())) {
             return emptyList();
         }
         return singletonList(enumCustomPrimitiveSerializer());

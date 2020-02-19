@@ -21,13 +21,16 @@
 
 package de.quantummaid.mapmaid.builder.conventional;
 
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CustomPrimitiveDefinitionFactory;
-import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializedObjectDefinitionFactory;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.StaticMethodDeserializationDetector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.conventional.NewDetectorBuilder.detectorBuilder;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.ConstructorBasedDeserializationDetector.constructorBased;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SetterBasedDeserializationDetector.setterBasedDeserializationDetector;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldDetector.getterFieldDetector;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.ModifierFieldDetector.modifierBased;
 
 
 @ToString
@@ -37,37 +40,13 @@ public final class ConventionalDetectors {
     private ConventionalDetectors() {
     }
 
-    public static NewSimpleDetector conventionalDetector() {
-        return conventionalDetector("fromStringValue", "deserialize");
-    }
-
-    public static NewSimpleDetector conventionalDetector(final String customPrimitiveDeserializationMethodName,
-                                                         final String serializedObjectDeserializationMethodName) {
-        final SerializedObjectDefinitionFactory pojoFactory = ConventionalDefinitionFactories.pojoSerializedObjectFactory();
-        final SerializedObjectDefinitionFactory serializedObjectDefinitionFactory = ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName);
+    public static SimpleDetector conventionalDetector() {
         return detectorBuilder()
-                .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveDeserializationMethodName)
-                .withSerializerFactory(pojoFactory).withDeserializerFactory(pojoFactory)
-                .withSerializerFactory(serializedObjectDefinitionFactory).withDeserializerFactory(serializedObjectDefinitionFactory)
-                .build();
-    }
-
-    public static NewSimpleDetector conventionalDetectorWithAnnotations() {
-        return conventionalDetectorWithAnnotations("fromStringValue",
-                "deserialize");
-    }
-
-    public static NewSimpleDetector conventionalDetectorWithAnnotations(
-            final String customPrimitiveDeserializationMethodName,
-            final String serializedObjectDeserializationMethodName) {
-        final CustomPrimitiveDefinitionFactory annotationFactory = ConventionalDefinitionFactories.customPrimitiveClassAnnotationFactory();
-        final CustomPrimitiveDefinitionFactory primitiveAnnotations = ConventionalDefinitionFactories.customPrimitiveMethodAnnotationFactory();
-        final SerializedObjectDefinitionFactory other = ConventionalDefinitionFactories.allSerializedObjectFactory(serializedObjectDeserializationMethodName);
-        return detectorBuilder()
-                .withSerializerFactory(annotationFactory).withDeserializerFactory(annotationFactory)
-                .withSerializerFactory(primitiveAnnotations).withDeserializerFactory(primitiveAnnotations)
-                .withNameAndConstructorBasedCustomPrimitiveFactory(customPrimitiveDeserializationMethodName)
-                .withSerializerFactory(other).withDeserializerFactory(other)
+                .withFactoryAndConstructorBasedCustomPrimitiveFactory()
+                .withFieldDetector(getterFieldDetector()).withSerializedObjectDeserializer(setterBasedDeserializationDetector())
+                .withFieldDetector(modifierBased())
+                .withSerializedObjectDeserializer(StaticMethodDeserializationDetector.staticMethodBased())
+                .withSerializedObjectDeserializer(constructorBased())
                 .build();
     }
 }

@@ -37,8 +37,8 @@ public final class DetectorExample {
                 .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)
                 .withDetector(ConventionalDetectors.conventionalDetector(
                         //"myCustomPrimitiveSerializationMethodName", TODO
-                        "myCustomPrimitiveDeserializationMethodName",
-                        "mySerializedObjectDeserializationMethodName"
+                        //"myCustomPrimitiveDeserializationMethodName",
+                        //"mySerializedObjectDeserializationMethodName"
                         /*, ".*Dto" TODO */))
                 .build();
         //Showcase end detector

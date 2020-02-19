@@ -31,8 +31,8 @@ public final class CyclicReferencesSpecs {
 
     @Test
     public void givenCyclicType_whenSerializing_thenThrowsError() {
-        final ACyclicType given1 = ACyclicType.deserialize(AString.fromStringValue("a"));
-        final ACyclicType given2 = ACyclicType.deserialize(AString.fromStringValue("b"));
+        final ACyclicType given1 = ACyclicType.deserialize(AString.fromStringValue("a"), null);
+        final ACyclicType given2 = ACyclicType.deserialize(AString.fromStringValue("b"), null);
         given1.aCyclicType = given2;
         given2.aCyclicType = given1;
 

@@ -25,19 +25,15 @@ import de.quantummaid.mapmaid.builder.detection.DeserializerFactory;
 import de.quantummaid.mapmaid.builder.detection.SerializerFactory;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.CustomPrimitiveDeserializationDetector;
 import de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.CustomPrimitiveSerializationDetector;
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collection;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType.cachedReflectionType;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.stream.Collectors.toList;
 
@@ -57,20 +53,10 @@ public final class CustomPrimitiveDefinitionFactory implements SerializerFactory
     }
 
     @Override
-    public List<Prioritized<TypeDeserializer>> analyseForDeserializer(final ResolvedType type) {
-        final CachedReflectionType cachedReflectionType = cachedReflectionType(type.assignableType()); // TODO
+    public List<TypeDeserializer> analyseForDeserializer(final ResolvedType type) {
         return this.deserializationDetectors.stream()
-                .map(detector -> detector.detect(cachedReflectionType))
+                .map(detector -> detector.detect(type))
                 .flatMap(List::stream)
-                .collect(toList());
-    }
-
-    @Override
-    public List<TypeSerializer> analyseForSerializer(final ResolvedType type) {
-        final CachedReflectionType cachedReflectionType = cachedReflectionType(type.assignableType()); // TODO
-        return this.serializationDetectors.stream()
-                .map(detector -> detector.detect(cachedReflectionType))
-                .flatMap(Collection::stream)
                 .collect(toList());
     }
 }

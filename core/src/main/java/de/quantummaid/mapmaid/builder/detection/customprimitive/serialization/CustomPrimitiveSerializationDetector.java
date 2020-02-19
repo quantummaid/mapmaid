@@ -21,11 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
-public interface CustomPrimitiveSerializationDetector { // TODO
-    List<TypeSerializer> detect(CachedReflectionType type);
+public interface CustomPrimitiveSerializationDetector {
+    List<TypeSerializer> detect(ResolvedType type);
 }

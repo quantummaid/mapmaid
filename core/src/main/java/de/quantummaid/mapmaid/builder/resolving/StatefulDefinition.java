@@ -21,10 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.hints.Hints;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import static de.quantummaid.mapmaid.mapper.definitions.validation.statemachine.proxy.StateProxy.createStateProxyIfNotAlready;
@@ -56,8 +54,7 @@ public abstract class StatefulDefinition {
         return this.context.type();
     }
 
-    public StatefulDefinition detect(final NewSimpleDetector detector,
-                                     final BuildContextLog log,
+    public StatefulDefinition detect(final SimpleDetector detector,
                                      final Disambiguators disambiguators) {
         return this;
     }

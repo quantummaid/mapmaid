@@ -21,15 +21,13 @@
 
 package de.quantummaid.mapmaid.builder.resolving.undetected;
 
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDeserializer;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableDeserializer;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -51,12 +49,11 @@ public final class UndetectedDeserializer extends StatefulDeserializer {
     }
 
     @Override
-    public StatefulDefinition detect(final NewSimpleDetector detector,
-                                     final BuildContextLog log,
+    public StatefulDefinition detect(final SimpleDetector detector,
                                      final Disambiguators disambiguators) {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(), log, scanInformationBuilder, deserializationOnly(), disambiguators);
+                this.context.type(), scanInformationBuilder, deserializationOnly(), disambiguators);
         if (result.isFailure()) {
             return undetectableDeserializer(this.context);
         }

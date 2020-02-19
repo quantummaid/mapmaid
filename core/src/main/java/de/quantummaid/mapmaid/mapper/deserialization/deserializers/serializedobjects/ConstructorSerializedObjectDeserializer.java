@@ -52,7 +52,7 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
     private final ResolvedConstructor factoryConstructor;
     private final List<String> parameterNames;
 
-    public static TypeDeserializer createDeserializer(final ClassType type,
+    public static SerializedObjectDeserializer createDeserializer(final ClassType type,
                                                       final ResolvedConstructor deserializationConstructor) {
         validateDeserializerModifiers(type, deserializationConstructor);
         return verifiedDeserializationDTOConstructor(deserializationConstructor);

@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -32,8 +31,6 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
-import static de.quantummaid.mapmaid.builder.detection.priority.Priority.CONSTRUCTOR;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.ConstructorSerializedObjectDeserializer.createDeserializer;
 import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor.resolvePublicConstructors;
 import static java.util.Collections.emptyList;
@@ -49,14 +46,13 @@ public final class ConstructorBasedDeserializationDetector implements Serialized
     }
 
     @Override
-    public List<Prioritized<TypeDeserializer>> detect(final ResolvedType type) {
+    public List<SerializedObjectDeserializer> detect(final ResolvedType type) {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
         final ClassType classType = (ClassType) type;
         return resolvePublicConstructors(classType).stream()
                 .map(constructor -> createDeserializer(classType, constructor))
-                .map(deserializer -> prioritized(deserializer, CONSTRUCTOR))
                 .collect(toList());
     }
 }

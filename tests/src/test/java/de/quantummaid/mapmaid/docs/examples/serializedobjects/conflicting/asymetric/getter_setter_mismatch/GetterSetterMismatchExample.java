@@ -21,16 +21,26 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.getter_setter_mismatch;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class GetterSetterMismatchExample {
 
+    // TODO not conflicting?
     @Test
     public void getterSetterMismatchExample() {
+        final AddALotRequest addALotRequest = new AddALotRequest();
+        addALotRequest.setTownName(TownName.townName("foo"));
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO", null) // TODO
+                .withDeserializedForm(addALotRequest)
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"townName\": \"foo\"\n" +
+                        "}")
+                .withDuplexSuccessful()
+                .withDeserializationOnlySuccessful()
                 .run();
     }
 }

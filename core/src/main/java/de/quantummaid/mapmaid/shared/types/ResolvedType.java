@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.shared.types;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.shared.types.ArrayType.fromArrayClass;
@@ -35,10 +34,6 @@ public interface ResolvedType {
         } else {
             return fromClassWithoutGenerics(type);
         }
-    }
-
-    static ResolvedType resolveType(final Type type, final ClassType fullType) {
-        return TypeResolver.resolveType(type, fullType);
     }
 
     Class<?> assignableType();

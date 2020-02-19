@@ -21,14 +21,12 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example2.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
 
 @ToString
 @EqualsAndHashCode
@@ -40,6 +38,6 @@ public final class AddALotRequest {
     // TODO mit injection sollte es nicht failen
     public static AddALotRequest addALotRequest(final Name name,
                                                 final TownName townName) {
-        throw wrongMethodCalledException();
+        return new AddALotRequest(name, townName);
     }
 }

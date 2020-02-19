@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
 public interface SerializedObjectDeserializationDetector {
-    List<Prioritized<TypeDeserializer>> detect(ResolvedType type);
+    List<SerializedObjectDeserializer> detect(ResolvedType type);
 }

@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject;
 
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,13 +41,13 @@ public final class SerializedObjectBuilder_2<X, A, B> {
 
     @SuppressWarnings("unchecked")
     public <C> SerializedObjectBuilder_3<X, A, B, C> withField(final String name,
-                                                            final Class<C> type,
-                                                            final Query<X, C> query) {
+                                                               final Class<C> type,
+                                                               final Query<X, C> query) {
         this.builder.addField(field(type, name, (Query<Object, Object>) query));
         return serializedObjectBuilder_3(this.builder);
     }
 
-    public Recipe deserializedUsing(final Deserializer_2<X, A, B> deserializer) {
+    public Builder deserializedUsing(final Deserializer_2<X, A, B> deserializer) {
         this.builder.setDeserializer(deserializer);
         return this.builder;
     }

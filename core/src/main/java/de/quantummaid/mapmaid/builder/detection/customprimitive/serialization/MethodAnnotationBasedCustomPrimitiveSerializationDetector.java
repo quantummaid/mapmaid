@@ -22,9 +22,11 @@
 package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
 import de.quantummaid.mapmaid.builder.conventional.annotations.MapMaidPrimitiveSerializer;
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +34,12 @@ import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.detection.customprimitive.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -52,14 +54,16 @@ public final class MethodAnnotationBasedCustomPrimitiveSerializationDetector imp
     }
 
     @Override
-    public List<TypeSerializer> detect(final CachedReflectionType type) {
-        final Method[] typeMethods = type.methods();
-        final List<Method> serializerMethods = stream(typeMethods)
-                .filter(method -> method.getAnnotationsByType(MapMaidPrimitiveSerializer.class).length > 0)
+    public List<TypeSerializer> detect(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        final List<ResolvedMethod> serializerMethods = ((ClassType) type).publicMethods().stream()
+                .filter(method -> method.method().getAnnotationsByType(MapMaidPrimitiveSerializer.class).length > 0)
                 .collect(toList());
 
         if (serializerMethods.isEmpty()) {
-            return Collections.emptyList();
+            return emptyList();
         }
         if (serializerMethods.size() != 1) {
             throw incompatibleCustomPrimitiveException(
@@ -70,7 +74,7 @@ public final class MethodAnnotationBasedCustomPrimitiveSerializationDetector imp
                     type
             );
         }
-        final Method deserializationMethod = serializerMethods.get(0);
-        return List.of(MethodCustomPrimitiveSerializer.createSerializer(type.type(), deserializationMethod));
+        final ResolvedMethod deserializationMethod = serializerMethods.get(0);
+        return List.of(MethodCustomPrimitiveSerializer.createSerializer(type, deserializationMethod));
     }
 }

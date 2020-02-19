@@ -93,10 +93,12 @@ public final class ClassType implements ResolvedType {
         return this.typeParameters.get(name);
     }
 
+    // TODO all methods
     public List<ResolvedMethod> publicMethods() {
         return ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables(this);
     }
 
+    // TODO all constructors
     public List<ResolvedConstructor> publicConstructors() {
         return ResolvedConstructor.resolvePublicConstructors(this);
     }

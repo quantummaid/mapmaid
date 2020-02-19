@@ -101,11 +101,11 @@ public final class ActualScanInformation implements ScanInformation {
     }
 
     private boolean isSerializable() {
-        return !this.serializationReasons.isEmpty(); // TODO
+        return !this.serializationReasons.isEmpty();
     }
 
     private boolean isDeserializable() {
-        return !this.deserializationReasons.isEmpty(); // TODO
+        return !this.deserializationReasons.isEmpty();
     }
 
     private String renderSerializer() {

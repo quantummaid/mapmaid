@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
@@ -34,8 +33,6 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
-import static de.quantummaid.mapmaid.builder.detection.priority.Priority.FACTORY;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer.methodDeserializer;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.emptyList;
@@ -51,10 +48,9 @@ public final class StaticMethodDeserializationDetector implements SerializedObje
     }
 
     @Override
-    public List<Prioritized<TypeDeserializer>> detect(final ResolvedType type) {
+    public List<SerializedObjectDeserializer> detect(final ResolvedType type) {
         return detectDeserializerMethods(type).stream()
                 .map(method -> methodDeserializer((ClassType) type, method))
-                .map(deserializer -> prioritized(deserializer, FACTORY))
                 .collect(toList());
     }
 

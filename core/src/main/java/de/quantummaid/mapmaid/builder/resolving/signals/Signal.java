@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.signals;
 
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -32,8 +31,8 @@ import java.util.Optional;
 
 public interface Signal {
 
-    static Signal detect(final NewSimpleDetector detector, final BuildContextLog log, final Disambiguators disambiguators) {
-        return definition -> definition.detect(detector, log, disambiguators);
+    static Signal detect(final SimpleDetector detector, final Disambiguators disambiguators) {
+        return definition -> definition.detect(detector, disambiguators);
     }
 
     static Signal addSerialization(final ResolvedType type, final Reason reason) {

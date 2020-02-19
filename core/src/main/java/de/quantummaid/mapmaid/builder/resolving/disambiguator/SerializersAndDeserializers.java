@@ -22,16 +22,13 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Objects.isNull;
@@ -41,7 +38,7 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SerializersAndDeserializers {
     private final List<TypeSerializer> serializers;
-    private final List<TypeDeserializer> deserializers;
+    private final List<? extends TypeDeserializer> deserializers;
 
     public static SerializersAndDeserializers serializersOnly(final List<TypeSerializer> serializers) {
         validateNotNull(serializers, "serializers");
@@ -54,7 +51,7 @@ public final class SerializersAndDeserializers {
     }
 
     public static SerializersAndDeserializers serializersAndDeserializers(final List<TypeSerializer> serializers,
-                                                                          final List<TypeDeserializer> deserializers) {
+                                                                          final List<? extends TypeDeserializer> deserializers) {
         return new SerializersAndDeserializers(serializers, deserializers);
     }
 
@@ -66,11 +63,11 @@ public final class SerializersAndDeserializers {
         return isNull(this.deserializers);
     }
 
-    public List<TypeDeserializer> deserializers() {
-        return this.deserializers;
-    }
-
     public List<TypeSerializer> serializers() {
         return this.serializers;
+    }
+
+    public List<? extends TypeDeserializer> deserializers() {
+        return this.deserializers;
     }
 }

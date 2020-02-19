@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.hints.symmetry.mirror;
+package de.quantummaid.mapmaid.builder.resolving.hints;
 
 import de.quantummaid.mapmaid.shared.types.ArrayType;
 import de.quantummaid.mapmaid.shared.types.ClassType;

@@ -21,9 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ import java.util.List;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer.createSerializer;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.reflect.Modifier.*;
-import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -43,26 +44,26 @@ import static java.util.stream.Collectors.toList;
 public final class MethodNameBasedCustomPrimitiveSerializationDetector implements CustomPrimitiveSerializationDetector {
     private final CustomPrimitiveMappings mappings;
 
-    // TODO rename
     public static CustomPrimitiveSerializationDetector methodBased(final CustomPrimitiveMappings mappings) {
         validateNotNull(mappings, "mappings");
         return new MethodNameBasedCustomPrimitiveSerializationDetector(mappings);
     }
 
     @Override
-    public List<TypeSerializer> detect(final CachedReflectionType type) {
-        if(type.type().getSimpleName().contains("Quantity")) {
-            System.out.println("type = " + type);
+    public List<TypeSerializer> detect(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
         }
-        final List<TypeSerializer> serializers = stream(type.methods())
-                .filter(method -> !isStatic(method.getModifiers()))
-                .filter(method -> !isAbstract(method.getModifiers()))
-                .filter(method -> isPublic(method.getModifiers()))
-                .filter(method -> this.mappings.isPrimitiveType(method.getReturnType()))
-                .filter(method -> method.getParameterCount() == 0)
-                .filter(method -> !method.getName().equals("toString")) // TODO
-                .filter(method ->! method.getName().equals("hashCode")) // TODO
-                .map(method -> createSerializer(type.type(), method))
+        final List<TypeSerializer> serializers = ((ClassType) type).publicMethods().stream()
+                .filter(method -> !isStatic(method.method().getModifiers()))
+                .filter(method -> !isAbstract(method.method().getModifiers()))
+                .filter(method -> isPublic(method.method().getModifiers()))
+                .filter(method -> method.returnType().isPresent())
+                .filter(method -> this.mappings.isPrimitiveType(method.returnType().get().assignableType()))
+                .filter(method -> method.parameters().size() == 0)
+                .filter(method -> !method.method().getName().equals("toString")) // TODO
+                .filter(method -> !method.method().getName().equals("hashCode")) // TODO
+                .map(method -> createSerializer(type, method))
                 .collect(toList());
         return serializers;
     }

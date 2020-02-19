@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.builder.scanning;
 
 import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -46,7 +45,6 @@ public final class PackageScannerRecipe implements Recipe {
 
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-            final BuildContextLog contextLog = mapMaidBuilder.contextLog().stepInto(PackageScannerRecipe.class);
-        this.packageScanner.scan().forEach(type -> mapMaidBuilder.withManuallyAddedType(fromClassWithoutGenerics(type), contextLog));
+        this.packageScanner.scan().forEach(type -> mapMaidBuilder.withManuallyAddedType(fromClassWithoutGenerics(type)));
     }
 }

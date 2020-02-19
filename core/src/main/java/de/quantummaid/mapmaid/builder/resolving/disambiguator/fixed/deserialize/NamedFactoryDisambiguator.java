@@ -36,8 +36,7 @@ public final class NamedFactoryDisambiguator implements DeserializerDisambiguato
     private final String factoryName;
 
     @Override
-    public TypeDeserializer disambiguate(final List<TypeDeserializer> deserializers) {
-
-        return null;
+    public TypeDeserializer disambiguate(final List<? extends TypeDeserializer> deserializers) {
+        throw new UnsupportedOperationException(); // TODO
     }
 }

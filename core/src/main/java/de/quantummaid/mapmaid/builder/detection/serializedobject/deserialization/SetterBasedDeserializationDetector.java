@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.priority.Prioritized;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
@@ -38,8 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.quantummaid.mapmaid.builder.detection.priority.Prioritized.prioritized;
-import static de.quantummaid.mapmaid.builder.detection.priority.Priority.POJO;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MultipleMethodsSerializedObjectDeserializer.multipleMethodsSerializedObjectDeserializer;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
@@ -56,7 +53,7 @@ public final class SetterBasedDeserializationDetector implements SerializedObjec
     }
 
     @Override
-    public List<Prioritized<TypeDeserializer>> detect(final ResolvedType type) {
+    public List<SerializedObjectDeserializer> detect(final ResolvedType type) {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
@@ -83,7 +80,7 @@ public final class SetterBasedDeserializationDetector implements SerializedObjec
             fieldMap.put(name, resolvedMethod);
         });
 
-        return of(prioritized(multipleMethodsSerializedObjectDeserializer(zeroArgumentsConstructor.get().constructor(), fieldMap), POJO));
+        return of(multipleMethodsSerializedObjectDeserializer(zeroArgumentsConstructor.get(), fieldMap));
     }
 
     private static String extractSetterFieldName(final String methodName) {

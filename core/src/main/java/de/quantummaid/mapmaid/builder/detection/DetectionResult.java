@@ -28,6 +28,7 @@ import lombok.ToString;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Objects.nonNull;
@@ -84,5 +85,12 @@ public final class DetectionResult<T> {
         }
         final X mapped = mapper.apply(this.result);
         return success(mapped);
+    }
+
+    public DetectionResult<T> or(final Supplier<DetectionResult<T>> alternative) {
+        if (isFailure()) {
+            return alternative.get();
+        }
+        return this;
     }
 }

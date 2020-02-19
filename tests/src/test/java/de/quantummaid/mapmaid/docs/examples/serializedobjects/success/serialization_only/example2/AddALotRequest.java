@@ -37,8 +37,8 @@ public final class AddALotRequest {
     public static final AddALotRequest EXAMPLE = new AddALotRequest(
             Name.fromStringValue("a"),
             TownName.townName("b"),
-            TownName.townName("c"),
-            TownName.townName("d"));
+            null,
+            null);
 
     public final Name name;
     public final TownName townNameA;
@@ -49,6 +49,6 @@ public final class AddALotRequest {
                                                 final TownName townNameA,
                                                 final TownName townNameB,
                                                 final TownName townNameC) {
-        throw wrongMethodCalledException();
+        return new AddALotRequest(name, townNameA, townNameB, townNameC);
     }
 }

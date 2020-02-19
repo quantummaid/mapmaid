@@ -22,10 +22,9 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import de.quantummaid.mapmaid.builder.conventional.NewDetectorBuilder;
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
@@ -62,8 +61,8 @@ import static de.quantummaid.mapmaid.builder.RequiredCapabilities.fromDefinition
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DefaultDisambiguator.defaultDisambiguator;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguator.defaultDisambiguator;
 import static de.quantummaid.mapmaid.builder.resolving.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
 import static de.quantummaid.mapmaid.builder.resolving.signals.Signal.addDeserialization;
@@ -79,9 +78,8 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 import static java.util.Arrays.stream;
 
 public final class MapMaidBuilder {
-    private final BuildContextLog contextLog = BuildContextLog.emptyLog();
     private final DependencyRegistry dependencyRegistry = dependencyRegistry(
-            dependency(NewSimpleDetector.class, () -> this.detector)
+            dependency(SimpleDetector.class, () -> this.detector)
     );
 
     private final Processor processor = processor();
@@ -98,7 +96,7 @@ public final class MapMaidBuilder {
     private Map<MarshallingType, Unmarshaller> unmarshallerMap = new HashMap<>(1);
     private volatile InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory();
 
-    private NewSimpleDetector detector = ConventionalDetectors.conventionalDetector();
+    private SimpleDetector detector = ConventionalDetectors.conventionalDetector();
 
     public static MapMaidBuilder mapMaidBuilder(final String... packageNames) {
         if (packageNames != null) {
@@ -125,13 +123,13 @@ public final class MapMaidBuilder {
         return withDetector(detector.build());
     }
 
-    public MapMaidBuilder withDetector(final NewSimpleDetector detector) {
+    public MapMaidBuilder withDetector(final SimpleDetector detector) {
         this.detector = detector;
         return this;
     }
 
     public MapMaidBuilder withManuallyAddedType(final Class<?> type) {
-        return withManuallyAddedType(fromClassWithoutGenerics(type), this.contextLog);
+        return withManuallyAddedType(fromClassWithoutGenerics(type));
     }
 
     public MapMaidBuilder withManuallyAddedType(final Class<?> type,
@@ -162,13 +160,6 @@ public final class MapMaidBuilder {
             this.processor.dispatch(addDeserialization(type, reason));
         }
         return this;
-    }
-
-
-    public MapMaidBuilder withManuallyAddedType(final ResolvedType type, final BuildContextLog contextLog) {
-        validateNotNull(type, "type");
-        contextLog.stepInto(MapMaidBuilder.class).log(type, "added");
-        return withManuallyAddedType(type);
     }
 
     public MapMaidBuilder withManuallyAddedType(final ResolvedType type) {
@@ -287,16 +278,12 @@ public final class MapMaidBuilder {
         return this;
     }
 
-    public BuildContextLog contextLog() {
-        return this.contextLog;
-    }
-
     public MapMaid build() {
         this.recipes.forEach(recipe -> recipe.init(this.dependencyRegistry));
         this.recipes.forEach(recipe -> recipe.cook(this, this.dependencyRegistry));
 
         final Disambiguators disambiguators = disambiguators(defaultDisambiguator(), this.specialDisambiguators);
-        final Map<ResolvedType, CollectionResult> result = this.processor.collect(this.detector, this.contextLog, disambiguators);
+        final Map<ResolvedType, CollectionResult> result = this.processor.collect(this.detector, disambiguators);
 
         final Map<ResolvedType, Definition> definitionsMap = new HashMap<>(result.size());
         final Map<ResolvedType, ScanInformation> scanInformationMap = new HashMap<>(result.size());
@@ -306,7 +293,7 @@ public final class MapMaidBuilder {
         });
 
         final DebugInformation debugInformation = debugInformation(scanInformationMap);
-        final Definitions definitions = definitions(this.contextLog, definitionsMap, debugInformation);
+        final Definitions definitions = definitions(definitionsMap, debugInformation);
 
         final MarshallerRegistry<Marshaller> marshallerRegistry = marshallerRegistry(this.marshallerMap);
         final Serializer serializer = theSerializer(marshallerRegistry, definitions, CUSTOM_PRIMITIVE_MAPPINGS, debugInformation);

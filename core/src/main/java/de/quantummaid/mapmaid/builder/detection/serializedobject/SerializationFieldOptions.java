@@ -21,13 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.resolving.hints.symmetry.mirror.Mirror;
-import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
+import de.quantummaid.mapmaid.builder.resolving.hints.Mirror;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
-import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -45,7 +41,7 @@ import static java.util.Optional.of;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializationFieldOptions implements TypeSerializer {
+public final class SerializationFieldOptions {
     private final Map<String, List<SerializationField>> options;
 
     public static SerializationFieldOptions serializationFieldOptions() {
@@ -114,28 +110,5 @@ public final class SerializationFieldOptions implements TypeSerializer {
         return options.stream()
                 .filter(field -> Mirror.mirrors(field.type(), type))
                 .findFirst();
-    }
-
-    @Override
-    public List<ResolvedType> requiredTypes() {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public Universal serialize(final Object object,
-                               final SerializationCallback callback,
-                               final SerializationTracker tracker,
-                               final CustomPrimitiveMappings customPrimitiveMappings) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public String description() {
-        return this.options.toString(); // TODO
-    }
-
-    @Override
-    public String classification() {
-        throw new UnsupportedOperationException(); // TODO
     }
 }

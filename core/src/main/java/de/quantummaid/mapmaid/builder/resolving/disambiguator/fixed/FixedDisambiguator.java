@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.deserialize.DeserializerDisambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.serializer.SerializerDisambiguator;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions;
 import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
@@ -57,6 +58,7 @@ public final class FixedDisambiguator implements Disambiguator {
 
     @Override
     public DetectionResult<DisambiguationResult> disambiguate(final ResolvedType type,
+                                                              final SerializedObjectOptions serializedObjectOptions,
                                                               final SerializersAndDeserializers serializersAndDeserializers,
                                                               final ScanInformationBuilder scanInformationBuilder) {
         if (serializersAndDeserializers.serializationOnly()) {
@@ -81,14 +83,14 @@ public final class FixedDisambiguator implements Disambiguator {
             final TypeSerializer serializer = this.serializerDisambiguator.disambiguate(serializersAndDeserializers.serializers());
             final SerializersAndDeserializers fixedSerializersAndDeserializers = serializersAndDeserializers(
                     singletonList(serializer), serializersAndDeserializers.deserializers());
-            return this.defaultDisambiguator.disambiguate(type, fixedSerializersAndDeserializers, scanInformationBuilder);
+            return this.defaultDisambiguator.disambiguate(type, null, fixedSerializersAndDeserializers, scanInformationBuilder); // TODO
         }
 
         if (nonNull(this.deserializerDisambiguator)) {
             final TypeDeserializer deserializer = this.deserializerDisambiguator.disambiguate(serializersAndDeserializers.deserializers());
             final SerializersAndDeserializers fixedSerializersAndDeserializers = serializersAndDeserializers(
                     serializersAndDeserializers.serializers(), singletonList(deserializer));
-            return this.defaultDisambiguator.disambiguate(type, fixedSerializersAndDeserializers, scanInformationBuilder);
+            return this.defaultDisambiguator.disambiguate(type, null, fixedSerializersAndDeserializers, scanInformationBuilder); // TODO
         }
 
 

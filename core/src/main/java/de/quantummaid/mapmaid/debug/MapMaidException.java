@@ -26,7 +26,7 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import static java.lang.String.format;
 
 public final class MapMaidException extends RuntimeException {
-    private static final String URL = "https://github.com/quantummaid/mapmaid/tree/master/docs"; // TODO
+    private static final String URL = "https://github.com/quantummaid/mapmaid/tree/master/docs";
 
     private MapMaidException(final String message,
                              final Throwable cause) {

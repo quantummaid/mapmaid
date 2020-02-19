@@ -52,6 +52,6 @@ public final class UndetectableDuplex extends StatefulDuplex {
     public Report getDefinition() {
         final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
         final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
-        return failure(collectionResult,"unable to detect duplex: " + this.reason); // TODO
+        return failure(collectionResult,"unable to detect duplex:\n" + this.reason);
     }
 }

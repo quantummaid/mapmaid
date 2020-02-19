@@ -30,9 +30,7 @@ public final class SimpleExample {
     @Test
     public void simpleExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO", (mapMaidBuilder, capabilities) -> {
-                    throw new UnsupportedOperationException(); // TODO
-                }) // TODO
+                .withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.simple.AddALotRequest: unable to detect")
                 .run();
     }
 }

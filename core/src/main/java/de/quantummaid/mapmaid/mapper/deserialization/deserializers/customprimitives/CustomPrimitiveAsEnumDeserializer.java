@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +40,10 @@ import static java.util.stream.Collectors.toMap;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveAsEnumDeserializer implements CustomPrimitiveDeserializer {
-    private final Class<? extends Enum<?>> enumType;
+    private final ResolvedType enumType;
     private final Map<String, ? extends Enum<?>> valuesMap;
 
-    public static CustomPrimitiveDeserializer enumDeserializer(final Class<? extends Enum<?>> enumType) {
+    public static CustomPrimitiveDeserializer enumDeserializer(final ResolvedType enumType) {
         final Enum<?>[] values = values(enumType);
         final Map<String, ? extends Enum<?>> valuesMap = Arrays.stream(values)
                 .collect(toMap(Enum::name, value -> value));
@@ -52,7 +53,7 @@ public final class CustomPrimitiveAsEnumDeserializer implements CustomPrimitiveD
     @Override
     public Object deserialize(final Object value) {
         if (!this.valuesMap.containsKey(value)) {
-            throw mapMaidException(format("'%s' is not valid value of enum %s", value, this.enumType.getName())); // TODO append enum
+            throw mapMaidException(format("'%s' is not valid value of enum %s", value, this.enumType.description())); // TODO append enum
             // TODO test
         }
         return this.valuesMap.get(value);
@@ -60,12 +61,12 @@ public final class CustomPrimitiveAsEnumDeserializer implements CustomPrimitiveD
 
     @Override
     public String description() {
-        return format("as custom primitive using values of enum %s", this.enumType.getName());
+        return format("as custom primitive using values of enum %s", this.enumType.description());
     }
 
-    private static Enum<?>[] values(final Class<? extends Enum<?>> enumType) {
+    private static Enum<?>[] values(final ResolvedType enumType) {
         try {
-            final Method method = enumType.getDeclaredMethod("values");
+            final Method method = enumType.assignableType().getDeclaredMethod("values");
             return (Enum<?>[]) method.invoke(null);
         } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new UnsupportedOperationException("This should never happen", e);

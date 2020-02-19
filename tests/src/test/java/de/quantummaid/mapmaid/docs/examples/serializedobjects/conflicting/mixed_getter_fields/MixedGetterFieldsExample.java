@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.exam
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.resolving.hints.DeserializerHints.enforceFieldsFor;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MixedGetterFieldsExample {
@@ -45,8 +44,9 @@ public final class MixedGetterFieldsExample {
                         "  \"townNameA\": \"a\",\n" +
                         "  \"townNameB\": \"b\"\n" +
                         "}")
-                .withAllScenariosFailing("TODO", (mapMaidBuilder, capabilities) ->
-                        enforceFieldsFor(AddALotRequest.class, "streetName", "townNameA", "townNameB")) // TODO
+                .withAllScenariosFailing("TODO", (mapMaidBuilder, capabilities) -> {
+                    //enforceFieldsFor(AddALotRequest.class, "streetName", "townNameA", "townNameB");
+                }) // TODO
                 .run();
     }
 }

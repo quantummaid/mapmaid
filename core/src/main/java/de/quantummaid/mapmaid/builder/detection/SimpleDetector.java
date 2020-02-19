@@ -22,99 +22,125 @@
 package de.quantummaid.mapmaid.builder.detection;
 
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.CustomPrimitiveDeserializationDetector;
+import de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.CustomPrimitiveSerializationDetector;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SerializedObjectDeserializationDetector;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.FieldDetector;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions.serializationFieldOptions;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions.serializedObjectOptions;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SimpleDetector implements Detector {
-    private final List<DefinitionFactory> collectionDefinitionFactories;
-    private final List<DefinitionFactory> customPrimitiveDefinitionFactories;
-    private final List<DefinitionFactory> serializedObjectDefinitionFactories;
+public final class SimpleDetector {
+    private final List<FieldDetector> fieldDetectors;
+    private final List<SerializedObjectDeserializationDetector> serializedObjectDeserializationDetectors;
+    private final List<CustomPrimitiveSerializationDetector> customPrimitiveSerializationDetectors;
+    private final List<CustomPrimitiveDeserializationDetector> customPrimitiveDeserializationDetectors;
 
-    public static Detector detector(final List<DefinitionFactory> collectionDefinitionFactories,
-                                    final List<DefinitionFactory> customPrimitiveDefinitionFactories,
-                                    final List<DefinitionFactory> serializedObjectDefinitionFactories) {
-        validateNotNull(collectionDefinitionFactories, "collectionDefinitionFactories");
-        validateNotNull(customPrimitiveDefinitionFactories, "customPrimitiveDefinitionFactories");
-        validateNotNull(serializedObjectDefinitionFactories, "serializedObjectDefinitionFactories");
-        return new SimpleDetector(collectionDefinitionFactories, customPrimitiveDefinitionFactories, serializedObjectDefinitionFactories);
+    public static SimpleDetector detector(final List<FieldDetector> fieldDetectors,
+                                          final List<SerializedObjectDeserializationDetector> serializedObjectDeserializationDetectors,
+                                          final List<CustomPrimitiveSerializationDetector> customPrimitiveSerializationDetectors,
+                                          final List<CustomPrimitiveDeserializationDetector> customPrimitiveDeserializationDetectors) {
+        validateNotNull(fieldDetectors, "fieldDetectors");
+        validateNotNull(serializedObjectDeserializationDetectors, "serializedObjectDeserializationDetectors");
+        validateNotNull(customPrimitiveSerializationDetectors, "customPrimitiveSerializationDetectors");
+        validateNotNull(customPrimitiveDeserializationDetectors, "customPrimitiveDeserializationDetectors");
+        return new SimpleDetector(
+                fieldDetectors,
+                serializedObjectDeserializationDetectors,
+                customPrimitiveSerializationDetectors,
+                customPrimitiveDeserializationDetectors
+        );
     }
 
-    @Override
-    public Optional<? extends Definition> detect(final ResolvedType type,
-                                                 final RequiredCapabilities capabilities,
-                                                 final BuildContextLog parentLog) {
-        final BuildContextLog contextLog = parentLog.stepInto(SimpleDetector.class);
-        final Optional<? extends Definition> collection = detectCollectionDefinition(type, capabilities, contextLog);
-        if (collection.isPresent()) {
-            return collection;
-        }
-
-        final Optional<? extends Definition> customPrimitive = detectCustomPrimitive(type, capabilities, contextLog);
-        if (customPrimitive.isPresent()) {
-            return customPrimitive;
-        }
-        return detectSerializedObject(type, capabilities, contextLog);
-    }
-
-    private Optional<Definition> detectCollectionDefinition(final ResolvedType type,
-                                                            final RequiredCapabilities capabilities,
-                                                            final BuildContextLog contextLog) {
-        return detectIn(type, capabilities, this.collectionDefinitionFactories, contextLog);
-    }
-
-    private Optional<Definition> detectCustomPrimitive(final ResolvedType type,
-                                                       final RequiredCapabilities capabilities,
-                                                       final BuildContextLog contextLog) {
-        return detectIn(type, capabilities, this.customPrimitiveDefinitionFactories, contextLog);
-    }
-
-    private Optional<Definition> detectSerializedObject(final ResolvedType type,
+    public DetectionResult<DisambiguationResult> detect(final ResolvedType type,
+                                                        final ScanInformationBuilder scanInformationBuilder,
                                                         final RequiredCapabilities capabilities,
-                                                        final BuildContextLog contextLog) {
-        return detectIn(type, capabilities, this.serializedObjectDefinitionFactories, contextLog);
-    }
-
-    private static Optional<Definition> detectIn(final ResolvedType type,
-                                                 final RequiredCapabilities capabilities,
-                                                 final List<DefinitionFactory> factories,
-                                                 final BuildContextLog contextLog) {
-        throw new UnsupportedOperationException();
-        /*
-        TODO
+                                                        final Disambiguators disambiguators) {
         if (!isSupported(type)) {
-            contextLog.logReject(type, "type is not supported because it contains wildcard generics (\"?\")");
-            return empty();
+            return failure(format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description()));
         }
-        for (final DefinitionFactory factory : factories) {
-            final BuildContextLog factoryContextLog = contextLog.stepInto(factory.getClass());
-            final Optional<Definition> analyzedClass = factory.analyze(type, capabilities);
-            if (analyzedClass.isPresent()) {
-                factoryContextLog.log(type, "know how to handle this type");
-                return analyzedClass;
+
+        scanInformationBuilder.resetScan();
+
+        final List<TypeSerializer> customPrimitiveSerializers;
+        final List<SerializationFieldOptions> serializationFieldOptionsList;
+        if (capabilities.hasSerialization()) {
+            customPrimitiveSerializers = this.customPrimitiveSerializationDetectors.stream()
+                    .map(detector -> detector.detect(type))
+                    .flatMap(Collection::stream)
+                    .collect(toList());
+            customPrimitiveSerializers.forEach(scanInformationBuilder::addSerializer);
+
+            final SerializationFieldOptions serializationFieldOptions = serializationFieldOptions();
+            this.fieldDetectors.stream()
+                    .map(fieldDetector -> fieldDetector.detect(type))
+                    .flatMap(Collection::stream)
+                    .forEach(serializationFieldOptions::add);
+            if(serializationFieldOptions.isEmpty()) {
+                serializationFieldOptionsList = emptyList();
             } else {
-                factoryContextLog.logReject(type, "do not know how to handle this type");
+                serializationFieldOptionsList = singletonList(serializationFieldOptions);
             }
+            // TODO add to scan information
+        } else {
+            customPrimitiveSerializers = null;
+            serializationFieldOptionsList = null;
         }
-        return empty();
-         */
+
+        final List<SerializedObjectDeserializer> serializedObjectDeserializers;
+        final List<TypeDeserializer> customPrimitiveDeserializers;
+        if (capabilities.hasDeserialization()) {
+            serializedObjectDeserializers = this.serializedObjectDeserializationDetectors.stream()
+                    .map(detector -> detector.detect(type))
+                    .flatMap(Collection::stream)
+                    .collect(toList());
+            serializedObjectDeserializers.forEach(scanInformationBuilder::addDeserializer);
+            customPrimitiveDeserializers = this.customPrimitiveDeserializationDetectors.stream()
+                    .map(detector -> detector.detect(type))
+                    .flatMap(Collection::stream)
+                    .collect(toList());
+            customPrimitiveDeserializers.forEach(scanInformationBuilder::addDeserializer);
+        } else {
+            serializedObjectDeserializers = null;
+            customPrimitiveDeserializers = null;
+        }
+
+        final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
+        final SerializedObjectOptions serializedObjectOptions = serializedObjectOptions(serializationFieldOptionsList, serializedObjectDeserializers);
+        final SerializersAndDeserializers customPrimitiveOptions = serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
+        return disambiguator.disambiguate(type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder);
     }
 
-    // TODO
     private static boolean isSupported(final ResolvedType resolvedType) {
-        if(resolvedType.isWildcard()) {
+        if (resolvedType.isWildcard()) {
             return false;
         }
         return resolvedType.typeParameters().stream()

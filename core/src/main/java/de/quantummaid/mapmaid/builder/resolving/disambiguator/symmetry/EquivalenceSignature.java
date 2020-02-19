@@ -41,24 +41,13 @@ import java.util.Optional;
 public final class EquivalenceSignature implements Comparable<EquivalenceSignature> {
     private final Map<String, ResolvedType> fields;
 
-    public static EquivalenceSignature ofDeserializer(final TypeDeserializer deserializer) {
-        if (!(deserializer instanceof SerializedObjectDeserializer)) { // TODO
-            return new EquivalenceSignature(new HashMap<>(0));
-        }
-        final Map<String, ResolvedType> fields = ((SerializedObjectDeserializer) deserializer).fields().fields();
+    public static EquivalenceSignature ofDeserializer(final SerializedObjectDeserializer deserializer) {
+        final Map<String, ResolvedType> fields = deserializer.fields().fields();
         return new EquivalenceSignature(fields);
     }
 
-    public Optional<TypeSerializer> match(final TypeSerializer serializer) {
-        if (!(serializer instanceof SerializationFieldOptions)) {
-            if (this.fields.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return Optional.of(serializer);
-            }
-        }
-        final SerializationFieldOptions serializationFieldOptions = (SerializationFieldOptions) serializer;
-        return serializationFieldOptions.instantiate(this.fields);
+    public Optional<TypeSerializer> match(final SerializationFieldOptions serializer) {
+        return serializer.instantiate(this.fields);
     }
 
     public int size() {

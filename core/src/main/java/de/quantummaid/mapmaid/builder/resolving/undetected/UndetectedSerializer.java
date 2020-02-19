@@ -21,9 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.undetected;
 
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.detection.NewSimpleDetector;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulSerializer;
@@ -50,12 +49,11 @@ public final class UndetectedSerializer extends StatefulSerializer {
     }
 
     @Override
-    public StatefulDefinition detect(final NewSimpleDetector detector,
-                                     final BuildContextLog log,
+    public StatefulDefinition detect(final SimpleDetector detector,
                                      final Disambiguators disambiguators) {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(), log, scanInformationBuilder, serializationOnly(), disambiguators);
+                this.context.type(), scanInformationBuilder, serializationOnly(), disambiguators);
         if (result.isFailure()) {
             return undetectableSerializer(this.context);
         }

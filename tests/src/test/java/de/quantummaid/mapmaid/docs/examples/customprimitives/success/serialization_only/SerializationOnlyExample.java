@@ -36,7 +36,10 @@ public final class SerializationOnlyExample {
         scenarioBuilderFor(DateFormatted.class)
                 .withSerializedForm("\"01-01-2010\"")
                 .withDeserializedForm(fromDate(new GregorianCalendar(2010, Calendar.JANUARY, 1).getTime()))
-                .withSerializationOnly()
+                //.withSerializationOnlySuccessful()
+                //.withDuplexFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.success.serialization_only.DateFormatted: unable to detect")
+                //.withDeserializationOnlyFailing("TODO") TODO
+                //.withSerializationOnly()
                 .run();
     }
 }

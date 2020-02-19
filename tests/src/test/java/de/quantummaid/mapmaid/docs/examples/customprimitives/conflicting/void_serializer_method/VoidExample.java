@@ -30,7 +30,11 @@ public final class VoidExample {
     @Test
     public void voidExample() {
         scenarioBuilderFor(GroupName.class)
-                .withAllScenariosFailing("TODO", null) // TODO
+                .withDeserializedForm(GroupName.groupName("foo"))
+                .withSerializedForm("\"foo\"")
+                .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.void_serializer_method.GroupName: unable to detect")
+                .withSerializationOnlyFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.void_serializer_method.GroupName: unable to detect")
+                .withDeserializationOnlySuccessful()
                 .run();
     }
 }

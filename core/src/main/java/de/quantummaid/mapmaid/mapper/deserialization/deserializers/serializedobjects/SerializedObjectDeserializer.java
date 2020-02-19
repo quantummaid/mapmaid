@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.quantummaid.mapmaid.builder.resolving.hints.symmetry.mirror.Mirror.mirrorsFields;
+import static de.quantummaid.mapmaid.builder.resolving.hints.Mirror.mirrorsFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static java.lang.String.format;

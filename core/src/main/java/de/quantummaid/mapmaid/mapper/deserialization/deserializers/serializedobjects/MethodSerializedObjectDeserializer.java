@@ -71,7 +71,7 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         return methodDeserializer(type, method);
     }
 
-    public static TypeDeserializer methodDeserializer(final ClassType type,
+    public static SerializedObjectDeserializer methodDeserializer(final ClassType type,
                                                       final ResolvedMethod deserializationMethod) {
         validateDeserializerModifiers(type, deserializationMethod);
         return verifiedDeserializationDTOMethod(deserializationMethod);

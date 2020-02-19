@@ -22,11 +22,13 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 public interface Disambiguator {
     DetectionResult<DisambiguationResult> disambiguate(ResolvedType type,
+                                                       SerializedObjectOptions serializedObjectOptions,
                                                        SerializersAndDeserializers serializersAndDeserializers,
                                                        ScanInformationBuilder scanInformationBuilder);
 }

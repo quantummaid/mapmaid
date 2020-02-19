@@ -24,7 +24,6 @@ package de.quantummaid.mapmaid.mapper.definitions;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.mapper.DefinitionScanLog;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -44,13 +43,11 @@ import static java.util.Optional.of;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Definitions {
-    private final DefinitionScanLog definitionScanLog;
     private final Map<ResolvedType, Definition> definitions;
 
-    public static Definitions definitions(final DefinitionScanLog definitionScanLog,
-                                          final Map<ResolvedType, Definition> definitions,
+    public static Definitions definitions(final Map<ResolvedType, Definition> definitions,
                                           final DebugInformation debugInformation) {
-        final Definitions definitionsObject = new Definitions(definitionScanLog, definitions);
+        final Definitions definitionsObject = new Definitions(definitions);
         definitionsObject.validateNoUnsupportedOutgoingReferences(debugInformation);
         return definitionsObject;
     }
@@ -94,15 +91,15 @@ public final class Definitions {
             final ScanInformation candidateInformation = debugInformation.scanInformationFor(candidate);
             final ScanInformation reasonInformation = debugInformation.scanInformationFor(reason);
             return MapMaidException.mapMaidException(
-                    format("Type '%s' is not registered but needs to be in order to support deserialization of '%s'.%s",
-                            candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)),
+                    format("Type '%s' is not registered but needs to be in order to support deserialization of '%s'",
+                            candidate.description(), reason.description()),
                     candidateInformation, reasonInformation);
         });
 
         if (definition.deserializer().isEmpty()) {
             throw new UnsupportedOperationException(
-                    format("'%s' is not deserializable but needs to be in order to support deserialization of '%s'. %s",
-                            candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)));
+                    format("'%s' is not deserializable but needs to be in order to support deserialization of '%s'",
+                            candidate.description(), reason.description()));
         } else {
             definition.deserializer().get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited, debugInformation));
         }
@@ -120,8 +117,8 @@ public final class Definitions {
 
         if (definition.serializer().isEmpty()) {
             throw new UnsupportedOperationException(
-                    format("'%s' is not serializable but needs to be in order to support serialization of '%s'. %s",
-                            candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)));
+                    format("'%s' is not serializable but needs to be in order to support serialization of '%s'",
+                            candidate.description(), reason.description()));
         } else {
             definition.serializer().get().requiredTypes().forEach(type -> validateSerialization(type, reason, alreadyVisited));
         }
