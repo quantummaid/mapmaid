@@ -54,7 +54,7 @@ public final class PackageScannerExample {
                 List.of(THE_PACKAGE_NAMES_TO_BLACKLIST_RECURSIVELY), // TODO
                 List.of(THE_LIST_OF_CLASSES_TO_EXCLUDE)) // TODO
         )
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .build();
         //Showcase end api
     }

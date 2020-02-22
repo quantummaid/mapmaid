@@ -95,9 +95,13 @@ public final class ScenarioBuilder {
 
     public ScenarioBuilder withAllScenariosFailing(final String message) {
         withDuplexFailing(message);
-        withDeserializationOnlyFailing(message);
-        withSerializationOnlyFailing(message);
+        withDeserializationFailing(message);
+        withSerializationFailing(message);
         return this;
+    }
+
+    public ScenarioBuilder withDuplexFailing() {
+        return withDuplexFailing(format("%s: unable to detect duplex", this.type.description()));
     }
 
     public ScenarioBuilder withDuplexFailing(final String message) {
@@ -105,12 +109,20 @@ public final class ScenarioBuilder {
         return this;
     }
 
-    public ScenarioBuilder withSerializationOnlyFailing(final String message) {
+    public ScenarioBuilder withSerializationFailing() {
+        return withSerializationFailing(format("%s: unable to detect serializer", this.type.description()));
+    }
+
+    public ScenarioBuilder withSerializationFailing(final String message) {
         withScenario(serializationOnly(), initializationFailed(message));
         return this;
     }
 
-    public ScenarioBuilder withDeserializationOnlyFailing(final String message) {
+    public ScenarioBuilder withDeserializationFailing() {
+        return withDeserializationFailing(format("%s: unable to detect deserializer", this.type.description()));
+    }
+
+    public ScenarioBuilder withDeserializationFailing(final String message) {
         withScenario(deserializationOnly(), initializationFailed(message));
         return this;
     }
@@ -118,7 +130,7 @@ public final class ScenarioBuilder {
     public ScenarioBuilder withAllScenariosSuccessful() {
         withDuplexSuccessful();
         withSerializationOnlySuccessful();
-        withDeserializationOnlySuccessful();
+        withDeserializationSuccessful();
         return this;
     }
 
@@ -127,12 +139,16 @@ public final class ScenarioBuilder {
         return this;
     }
 
-    public ScenarioBuilder withSerializationOnlySuccessful() {
-        withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+    public ScenarioBuilder withSerializationOnlySuccessful(final String serializedForm) {
+        withScenario(serializationOnly(), serializationWas(serializedForm), deserializationFailedForNotSupported(this.type));
         return this;
     }
 
-    public ScenarioBuilder withDeserializationOnlySuccessful() {
+    public ScenarioBuilder withSerializationOnlySuccessful() {
+        return withSerializationOnlySuccessful(this.serializedForm);
+    }
+
+    public ScenarioBuilder withDeserializationSuccessful() {
         withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
         return this;
     }
@@ -140,8 +156,10 @@ public final class ScenarioBuilder {
     // TODO replace methods
     public ScenarioBuilder withDeserializationOnly() {
         withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
-        withScenario(serializationOnly(), initializationFailed(format("%s: unable to detect serializer", this.type.description())));
-        withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
+        //withScenario(serializationOnly(), initializationFailed(format("%s: unable to detect serializer", this.type.description())));
+        withSerializationFailing();
+        withDuplexFailing();
+        //withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
         return this;
     }
 
@@ -149,7 +167,8 @@ public final class ScenarioBuilder {
     public ScenarioBuilder withSerializationOnly() {
         withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
         withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserializer", this.type.description())));
-        withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
+        //withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
+        withDuplexFailing();
         return this;
     }
 

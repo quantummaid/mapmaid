@@ -124,18 +124,21 @@ public final class Definitions {
         }
     }
 
+    // TODO to debug information
     public int countCustomPrimitives() {
         return (int) this.definitions.values().stream()
                 .filter(definition -> definition.classification().equals("Custom Primitive"))
                 .count();
     }
 
+    // TODO to debug information
     public int countSerializedObjects() {
         return (int) this.definitions.values().stream()
                 .filter(definition -> definition.classification().equals("Serialized Object"))
                 .count();
     }
 
+    // TODO löschen
     public String dump() {
         final StringBuilder stringBuilder = new StringBuilder(10);
         stringBuilder.append("------------------------------\n");

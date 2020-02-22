@@ -55,10 +55,12 @@ public final class MapMaid {
         return new MapMaid(serializer, deserializer, debugInformation);
     }
 
+    // TODO advanced
     public Serializer serializer() {
         return this.serializer;
     }
 
+    // TODO advanced
     public Deserializer deserializer() {
         return this.deserializer;
     }
@@ -91,12 +93,13 @@ public final class MapMaid {
         return this.deserializer.deserialize(xml, targetType, MarshallingType.xml());
     }
 
-    public <T> T deserialize(final String json, final Class<T> targetType, final MarshallingType marshallingType) {
-        return this.deserializer.deserialize(json, targetType, marshallingType);
+    // TODO to advanced
+    public <T> T deserialize(final String input, final Class<T> targetType, final MarshallingType marshallingType) {
+        return this.deserializer.deserialize(input, targetType, marshallingType);
     }
 
-    public <T> T deserialize(final String json, final ResolvedType targetType, final MarshallingType marshallingType) {
-        return this.deserializer.deserialize(json, targetType, marshallingType);
+    public <T> T deserialize(final String input, final ResolvedType targetType, final MarshallingType marshallingType) {
+        return this.deserializer.deserialize(input, targetType, marshallingType);
     }
 
     public DebugInformation debugInformation() {

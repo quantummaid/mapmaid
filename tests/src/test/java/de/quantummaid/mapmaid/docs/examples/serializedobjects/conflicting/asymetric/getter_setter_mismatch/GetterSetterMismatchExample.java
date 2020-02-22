@@ -40,7 +40,7 @@ public final class GetterSetterMismatchExample {
                         "  \"townName\": \"foo\"\n" +
                         "}")
                 .withDuplexSuccessful()
-                .withDeserializationOnlySuccessful()
+                .withDeserializationSuccessful()
                 .run();
     }
 }

@@ -47,7 +47,7 @@ public final class MultipleFactoriesExample {
                         "  \"townNameC\": \"townNameC\"\n" +
                         "}")
                 .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.multiple_factories.AddALotRequest: unable to detect")
-                .withDeserializationOnlyFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.multiple_factories.AddALotRequest: unable to detect")
+                .withDeserializationFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.multiple_factories.AddALotRequest: unable to detect")
                 .withSerializationOnlySuccessful()
                 .withFixedScenarios(
                         (mapMaidBuilder, capabilities) ->

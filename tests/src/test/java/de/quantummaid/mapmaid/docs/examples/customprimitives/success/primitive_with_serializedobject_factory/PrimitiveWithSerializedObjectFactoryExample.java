@@ -32,7 +32,8 @@ public final class PrimitiveWithSerializedObjectFactoryExample {
         scenarioBuilderFor(Name.class)
                 .withSerializedForm("\"qwer\"")
                 .withDeserializedForm(Name.EXAMPLE)
-                .withAllScenariosSuccessful()
+                .withSerializationOnly()
+                //.withAllScenariosSuccessful()
                 .run();
     }
 }

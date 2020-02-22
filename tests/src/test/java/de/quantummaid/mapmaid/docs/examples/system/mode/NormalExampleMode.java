@@ -44,18 +44,18 @@ public final class NormalExampleMode implements ExampleMode {
     }
 
     public static ExampleMode deserializationOnly() {
-        return new NormalExampleMode(RequiredCapabilities.deserializationOnly());
+        return new NormalExampleMode(RequiredCapabilities.deserialization());
     }
 
     public static ExampleMode serializationOnly() {
-        return new NormalExampleMode(RequiredCapabilities.serializationOnly());
+        return new NormalExampleMode(RequiredCapabilities.serialization());
     }
 
     @Override
     public MapMaid provideMapMaid(final ResolvedType type) {
         return aMapMaid()
-                .withManuallyAddedType(type, this.capabilities)
-                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller())
+                .mapping(type, this.capabilities)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build();
     }
 

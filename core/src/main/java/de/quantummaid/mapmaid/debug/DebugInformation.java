@@ -43,6 +43,8 @@ public final class DebugInformation {
         return new DebugInformation(scanInformations);
     }
 
+    // TODO komplette liste
+
     public ScanInformation scanInformationFor(final Class<?> type) {
         return scanInformationFor(resolvedType(type));
     }

@@ -42,11 +42,11 @@ public final class RequiredCapabilities {
         return new RequiredCapabilities(true, true);
     }
 
-    public static RequiredCapabilities serializationOnly() {
+    public static RequiredCapabilities serialization() {
         return new RequiredCapabilities(true, false);
     }
 
-    public static RequiredCapabilities deserializationOnly() {
+    public static RequiredCapabilities deserialization() {
         return new RequiredCapabilities(false, true);
     }
 

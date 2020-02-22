@@ -48,7 +48,7 @@ public final class SerializedObjectBuilder_3<X, A, B, C> {
         return serializedObjectBuilder_4(this.builder);
     }
 
-    public Recipe deserializedUsing(final Deserializer_3<X, A, B, C> deserializer) {
+    public Builder deserializedUsing(final Deserializer_3<X, A, B, C> deserializer) {
         this.builder.setDeserializer(deserializer);
         return this.builder;
     }

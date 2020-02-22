@@ -37,8 +37,8 @@ public final class SerializationOnlyExample {
                         "}")
                 .withDeserializedForm(AddALotRequest.EXAMPLE)
                 .withSerializationOnlySuccessful()
-                .withDeserializationOnlySuccessful()
-                .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.success.serialization_only.example2.AddALotRequest: unable to detect duplex: no duplex detected:")
+                .withDeserializationSuccessful()
+                .withDuplexFailing()
                 .run();
     }
 }

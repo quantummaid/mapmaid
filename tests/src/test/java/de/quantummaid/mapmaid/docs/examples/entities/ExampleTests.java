@@ -31,8 +31,8 @@ public final class ExampleTests {
     @Test
     public void test() {
         aMapMaid()
-                .withManuallyAddedType(Pojo.class)
-                .withManuallyAddedType(Reservation.class)
+                .mapping(Pojo.class)
+                .mapping(Reservation.class)
                 .usingRecipe(injectionOnly(ReservationDao.class))
                 .build();
     }

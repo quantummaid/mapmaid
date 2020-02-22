@@ -29,11 +29,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.shared.types.TypeResolver.resolveType;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.isPublic;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -50,7 +52,7 @@ public final class ResolvedField {
         return stream(type.getFields())
                 .filter(field -> isPublic(field.getModifiers()))
                 .filter(field -> !isStatic(field.getModifiers())) // TODO no?
-                .filter(field -> !isTransient(field.getModifiers())) // TODO no
+                .filter(field -> !Modifier.isTransient(field.getModifiers())) // TODO no
                 .map(field -> {
                     final ResolvedType resolved = resolveType(field.getGenericType(), fullType);
                     return resolvedField(field.getName(), resolved, field);
@@ -77,5 +79,10 @@ public final class ResolvedField {
 
     public Field field() {
         return this.field;
+    }
+
+    public boolean isTransient() {
+        final int modifiers = this.field.getModifiers();
+        return Modifier.isTransient(modifiers);
     }
 }

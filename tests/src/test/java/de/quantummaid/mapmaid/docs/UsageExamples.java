@@ -52,7 +52,7 @@ public class UsageExamples {
         //Showcase start jsonInstance
         final Gson gson = new Gson();
         final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .build();
         //Showcase end jsonInstance
 
@@ -73,7 +73,8 @@ public class UsageExamples {
         //Showcase start yamlInstance
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-                .usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .build();
         //Showcase end yamlInstance
 
@@ -99,13 +100,14 @@ public class UsageExamples {
         final XStream xStream = new XStream(new DomDriver());
         xStream.alias("root", Map.class);
         final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-                .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public <T> T unmarshal(final String input, final Class<T> type) {
-                        return (T) xStream.fromXML(input, type);
-                    }
-                })
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                        .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public <T> T unmarshal(final String input, final Class<T> type) {
+                                return (T) xStream.fromXML(input, type);
+                            }
+                        }))
                 .build();
         //Showcase end xmlInstance
 
@@ -144,7 +146,8 @@ public class UsageExamples {
         //Showcase start example1
         final Gson gson = new Gson();
         final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-                .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                        .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
                 .build();
         //Showcase end example1
 

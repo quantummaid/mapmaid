@@ -79,7 +79,7 @@ public final class WithPrimitivesBuilderTest {
     );
 
     private static final MapMaid MAP_MAID = MapMaid.aMapMaid()
-            .withManuallyAddedType(SerializedObjectWithPrimitives.class)
+            .mapping(SerializedObjectWithPrimitives.class)
             .usingRecipe(jacksonMarshallerJson(new ObjectMapper()))
             .build();
 

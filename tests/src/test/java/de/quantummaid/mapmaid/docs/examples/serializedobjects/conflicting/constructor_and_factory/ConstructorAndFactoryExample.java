@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.constructor_and_factory;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -30,6 +32,19 @@ public final class ConstructorAndFactoryExample {
     @Test
     public void constructorAndFactoryExample() {
         scenarioBuilderFor(AddALotRequest.class)
+                .withDeserializedForm(AddALotRequest.addALotRequest(
+                        Name.fromStringValue("a"),
+                        TownName.townName("b"),
+                        TownName.townName("c"),
+                        TownName.townName("d")
+                ))
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"name\": \"a\",\n" +
+                        "  \"townNameA\": \"b\",\n" +
+                        "  \"townNameB\": \"c\",\n" +
+                        "  \"townNameC\": \"d\"\n" +
+                        "}")
                 .withAllScenariosSuccessful()
                 .run();
     }

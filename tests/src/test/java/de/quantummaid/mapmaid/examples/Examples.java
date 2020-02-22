@@ -35,7 +35,7 @@ public final class Examples {
     static MapMaid get() {
         return MapMaid.aMapMaid("de.quantummaid.mapmaid.examples.domain")
                 .withExceptionIndicatingValidationError(IllegalArgumentException.class)
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .build();
     }
 

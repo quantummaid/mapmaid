@@ -48,17 +48,18 @@ public final class FixedExampleMode implements ExampleMode {
     }
 
     public static ExampleMode fixedDeserializationOnly(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        return new FixedExampleMode(fix, RequiredCapabilities.deserializationOnly());
+        return new FixedExampleMode(fix, RequiredCapabilities.deserialization());
     }
 
     public static ExampleMode fixedSerializationOnly(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        return new FixedExampleMode(fix, RequiredCapabilities.serializationOnly());
+        return new FixedExampleMode(fix, RequiredCapabilities.serialization());
     }
 
     @Override
     public MapMaid provideMapMaid(final ResolvedType type) {
         final MapMaidBuilder mapMaidBuilder = aMapMaid()
-                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller());
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()));
         this.fix.accept(mapMaidBuilder, this.capabilities);
         return mapMaidBuilder.build();
     }

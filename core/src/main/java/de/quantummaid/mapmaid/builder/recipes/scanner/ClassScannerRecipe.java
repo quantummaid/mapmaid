@@ -35,8 +35,8 @@ import lombok.ToString;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serializationOnly;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
@@ -72,14 +72,14 @@ public final class ClassScannerRecipe implements Recipe {
             if (!OBJECT_METHODS.contains(method.method().getName())) {
                 method.parameters().stream()
                         .map(ResolvedParameter::type)
-                        .forEach(type -> builder.withManuallyAddedType(
+                        .forEach(type -> builder.mapping(
                                 type,
-                                deserializationOnly(),
+                                deserialization(),
                                 format("because parameter type of method %s", method.describe())));
                 method.returnType()
-                        .ifPresent(type -> builder.withManuallyAddedType(
+                        .ifPresent(type -> builder.mapping(
                                 type,
-                                serializationOnly(),
+                                serialization(),
                                 format("because return type of method %s", method.describe())));
             }
         }

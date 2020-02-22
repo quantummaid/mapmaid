@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.simple;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -30,7 +32,31 @@ public final class SimpleExample {
     @Test
     public void simpleExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.simple.AddALotRequest: unable to detect")
+                .withDeserializedForm(
+                        AddALotRequest.addALotRequest(
+                                Name.fromStringValue("a"),
+                                TownName.townName("b"),
+                                TownName.townName("c"),
+                                TownName.townName("d")
+                        )
+                )
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"groupName\": \"a\",\n" +
+                        "  \"townNameA\": \"b\",\n" +
+                        "  \"townNameB\": \"c\",\n" +
+                        "  \"townNameC\": \"d\"\n" +
+                        "}")
+                .withDeserializationSuccessful()
+                .withSerializationOnlySuccessful("" +
+                        "{\n" +
+                        "  \"streetName\": \"a\",\n" +
+                        "  \"townNameA\": \"b\",\n" +
+                        "  \"townNameB\": \"c\",\n" +
+                        "  \"townNameC\": \"d\"\n" +
+                        "}")
+                .withDuplexFailing()
+                // TODO add fix
                 .run();
     }
 }

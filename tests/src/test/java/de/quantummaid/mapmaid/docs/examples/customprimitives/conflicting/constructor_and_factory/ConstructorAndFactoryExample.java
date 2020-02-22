@@ -30,6 +30,8 @@ public final class ConstructorAndFactoryExample {
     @Test
     public void constructorAndFactoryExample() {
         scenarioBuilderFor(Name.class)
+                .withSerializedForm("\"foo\"")
+                .withDeserializedForm(Name.fromStringValue("foo"))
                 .withAllScenariosSuccessful()
                 .run();
     }

@@ -32,7 +32,6 @@ import de.quantummaid.mapmaid.builder.models.conventional.Subject;
 import de.quantummaid.mapmaid.builder.models.conventionalwithclassnamefactories.EmailDto;
 import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
 import de.quantummaid.mapmaid.debug.DebugInformation;
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -82,7 +81,7 @@ public final class ConventionalBuilderTest {
         return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.conventional",
                 "de.quantummaid.mapmaid.builder.models.conventionalwithclassnamefactories",
                 "de.quantummaid.mapmaid.builder.models.constructor")
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

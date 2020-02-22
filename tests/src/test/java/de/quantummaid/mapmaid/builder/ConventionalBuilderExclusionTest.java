@@ -64,7 +64,7 @@ public final class ConventionalBuilderExclusionTest {
                         "de.quantummaid.mapmaid.builder.models.customconvention"),
                 List.of())
         )
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

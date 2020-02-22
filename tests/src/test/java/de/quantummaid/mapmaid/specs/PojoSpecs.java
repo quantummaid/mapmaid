@@ -38,8 +38,8 @@ public final class PojoSpecs {
     public void gettersCanBeDetectedAsFields() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithGetters.class)
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .mapping(AComplexTypeWithGetters.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(
@@ -59,8 +59,8 @@ public final class PojoSpecs {
     public void settersCanBeDetectedAsFields() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithSetters.class)
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .mapping(AComplexTypeWithSetters.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +

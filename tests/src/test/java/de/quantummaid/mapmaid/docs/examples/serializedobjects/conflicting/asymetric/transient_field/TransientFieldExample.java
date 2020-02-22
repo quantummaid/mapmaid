@@ -33,20 +33,18 @@ public final class TransientFieldExample {
     @Test
     public void transientFieldExample() {
         scenarioBuilderFor(AddALotRequest.class)
-
                 .withDeserializedForm(AddALotRequest.addALotRequest(Name.fromStringValue("foo"), TownName.townName("bar")))
                 .withSerializedForm("" +
                         "{\n" +
                         "  \"name\": \"foo\",\n" +
                         "  \"townName\": \"bar\"\n" +
                         "}")
-
-
-                //.withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field.AddALotRequest: unable to detect") // TODO
-                .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field.AddALotRequest: unable to detect")
-                .withDeserializationOnlySuccessful()
-                .withSerializationOnlyFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.transient_field.AddALotRequest: unable to detect")
-
+                .withSerializationOnlySuccessful("" +
+                        "{\n" +
+                        "  \"townName\": \"bar\"\n" +
+                        "}")
+                .withDuplexFailing()
+                .withDeserializationSuccessful()
                 .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withManuallyAddedDefinition(
                         serializedObjectOfType(AddALotRequest.class)
                                 .withField("name", Name.class, object -> object.name)
@@ -54,7 +52,6 @@ public final class TransientFieldExample {
                                 .deserializedUsing(AddALotRequest::addALotRequest)
                                 .create(),
                         capabilities))
-
                 .run();
     }
 }

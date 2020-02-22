@@ -55,9 +55,12 @@ import static java.lang.String.format;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DefaultDisambiguator implements Disambiguator {
+    private final Preferences<TypeDeserializer> customPrimitivePreferences;
+    private final Preferences<TypeDeserializer> serializedObjectPreferences;
 
-    public static DefaultDisambiguator defaultDisambiguator() {
-        return new DefaultDisambiguator();
+    public static DefaultDisambiguator defaultDisambiguator(final Preferences<TypeDeserializer> customPrimitivePreferences,
+                                                            final Preferences<TypeDeserializer> serializedObjectPreferences) {
+        return new DefaultDisambiguator(customPrimitivePreferences, serializedObjectPreferences);
     }
 
     @Override
@@ -82,13 +85,13 @@ public final class DefaultDisambiguator implements Disambiguator {
         }
 
         if (customPrimitiveSerializersAndDeserializers.deserializationOnly()) {
-            final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(customPrimitiveSerializersAndDeserializers);
+            final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(customPrimitiveSerializersAndDeserializers, customPrimitivePreferences, serializedObjectPreferences);
             if (!deserializer.isFailure()) {
                 scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
                         format("less priority than %s", deserializer.result().description()));
             }
             return deserializer
-                    .or(() -> pickDeserializer(serializedObjectOptions.toSerializersAndDeserializers()))
+                    .or(() -> pickDeserializer(serializedObjectOptions.toSerializersAndDeserializers(), customPrimitivePreferences, serializedObjectPreferences))
                     .map(DisambiguationResult::deserializationOnlyResult);
         }
 
@@ -105,7 +108,7 @@ public final class DefaultDisambiguator implements Disambiguator {
                 scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
                         format("less priority than %s", serializer.result().description()));
             }
-            final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(serializersAndDeserializers);
+            final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(serializersAndDeserializers, this.customPrimitivePreferences, serializedObjectPreferences);
             if (!deserializer.isFailure()) {
                 scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
                         format("less priority than %s", deserializer.result().description()));
@@ -133,7 +136,7 @@ public final class DefaultDisambiguator implements Disambiguator {
             scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(), format("most symmetry in %s", serializer.result().description()));
         }
 
-        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(symmetricResult);
+        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(symmetricResult, this.customPrimitivePreferences, serializedObjectPreferences);
         if (!deserializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(), format("most symmetry in %s", deserializer.result().description()));
         }

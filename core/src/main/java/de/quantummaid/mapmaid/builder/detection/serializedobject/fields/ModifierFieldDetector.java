@@ -50,6 +50,7 @@ public final class ModifierFieldDetector implements FieldDetector {
             return emptyList();
         }
         return ResolvedField.resolvedPublicFields((ClassType) type).stream()
+                .filter(resolvedField -> !resolvedField.isTransient()) // TODO
                 .map(resolvedField -> SerializationField.fromPublicField(type, resolvedField))
                 .collect(toList());
     }

@@ -40,7 +40,10 @@ public final class AddALotRequest {
                           final TownName townNameA,
                           final TownName townNameB,
                           final TownName townNameC) {
-        throw wrongMethodCalledException();
+        this.name = name;
+        this.townNameA = townNameA;
+        this.townNameB = townNameB;
+        this.townNameC = townNameC;
     }
 
     public static AddALotRequest addALotRequest(final Name name,

@@ -77,6 +77,7 @@ public final class GeneralDefinition implements Definition {
         return this.type;
     }
 
+    // TODO
     @Override
     public String classification() {
         return this.classification;

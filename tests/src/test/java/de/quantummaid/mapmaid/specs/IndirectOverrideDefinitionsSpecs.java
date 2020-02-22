@@ -50,13 +50,15 @@ public final class IndirectOverrideDefinitionsSpecs {
     public void customDeserializationForCustomPrimitiveOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexType.class)
+                        .mapping(AComplexType.class)
                         .withManuallyAddedDefinition(generalDefinition(
                                 fromClassWithoutGenerics(ANumber.class),
                                 constantSerializer("23"),
                                 constantDeserializer(ANumber.fromInt(23))
                         ))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .withAdvancedSettings(advancedBuilder -> {
+                            advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller());
+                        })
                         .build()
         )
                 .when().mapMaidDeserializes("42").from(json()).toTheType(ANumber.class)
@@ -64,11 +66,12 @@ public final class IndirectOverrideDefinitionsSpecs {
                 .theDeserializedObjectIs(ANumber.fromInt(23));
     }
 
+    // TODO refactor
     @Test
     public void customDeserializationForSerializedObjectOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexNestedType.class)
+                        .mapping(AComplexNestedType.class)
                         .withManuallyAddedDefinition(generalDefinition(
                                 fromClassWithoutGenerics(AComplexType.class),
                                 de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
@@ -91,7 +94,7 @@ public final class IndirectOverrideDefinitionsSpecs {
                                     }
                                 }
                         ))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("{\"foo\": \"qwer\"}").from(json()).toTheType(AComplexType.class)

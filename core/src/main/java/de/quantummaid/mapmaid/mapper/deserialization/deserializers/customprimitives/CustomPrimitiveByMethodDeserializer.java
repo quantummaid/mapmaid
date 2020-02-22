@@ -45,7 +45,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiveDeserializer {
     private final ResolvedType baseType;
-    private final Method deserializationMethod; // TODO resolved method
+    private final ResolvedMethod deserializationMethod;
 
     // TODO remove checks
     public static TypeDeserializer createDeserializer(final ResolvedType type,
@@ -83,7 +83,7 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         }
 
         final ResolvedType baseType = parameters.get(0).type();
-        return new CustomPrimitiveByMethodDeserializer(baseType, deserializationMethod.method());
+        return new CustomPrimitiveByMethodDeserializer(baseType, deserializationMethod);
     }
 
     @Override
@@ -94,7 +94,7 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
     @Override
     public Object deserialize(final Object value) throws Exception {
         try {
-            return this.deserializationMethod.invoke(null, value);
+            return this.deserializationMethod.method().invoke(null, value);
         } catch (final IllegalAccessException e) {
             throw customPrimitiveSerializationMethodCallException(format(
                     "Unexpected error invoking deserialization method %s for serialized custom primitive %s",
@@ -105,12 +105,12 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
     }
 
     public Method method() {
-        return this.deserializationMethod;
+        return this.deserializationMethod.method();
     }
 
     @Override
     public String description() {
-        return createDescription(this, this.deserializationMethod.toGenericString());
+        return createDescription(this, this.deserializationMethod.describe());
     }
 
     private Exception handleInvocationTargetException(final InvocationTargetException e, final Object value) {

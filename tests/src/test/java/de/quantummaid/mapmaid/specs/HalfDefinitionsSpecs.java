@@ -29,8 +29,8 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serializationOnly;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
@@ -41,8 +41,9 @@ public final class HalfDefinitionsSpecs {
     public void aCustomPrimitiveCanBeSerializationOnly() {
         given(
                 aMapMaid()
-                        .withManuallyAddedType(ASerializationOnlyString.class, serializationOnly())
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .mapping(ASerializationOnlyString.class, serialization())
+                        .withAdvancedSettings(advancedBuilder ->
+                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyString.init()).withMarshallingType(json())
@@ -54,8 +55,9 @@ public final class HalfDefinitionsSpecs {
     public void aCustomPrimitiveCanBeDeserializationOnly() {
         given(
                 aMapMaid()
-                        .withManuallyAddedType(ADeserializationOnlyString.class, deserializationOnly())
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .mapping(ADeserializationOnlyString.class, deserialization())
+                        .withAdvancedSettings(advancedBuilder ->
+                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("\"foo\"").from(json()).toTheType(ADeserializationOnlyString.class)
@@ -67,8 +69,9 @@ public final class HalfDefinitionsSpecs {
     public void aSerializedObjectCanBeSerializationOnly() {
         given(
                 aMapMaid()
-                        .withManuallyAddedType(ASerializationOnlyComplexType.class, serializationOnly())
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .mapping(ASerializationOnlyComplexType.class, serialization())
+                        .withAdvancedSettings(advancedBuilder ->
+                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(json())
@@ -83,8 +86,9 @@ public final class HalfDefinitionsSpecs {
     public void aSerializedObjectCanBeDeserializationOnly() {
         given(
                 aMapMaid()
-                        .withManuallyAddedType(ADeserializationOnlyComplexType.class, deserializationOnly())
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .mapping(ADeserializationOnlyComplexType.class, deserialization())
+                        .withAdvancedSettings(advancedBuilder ->
+                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -99,8 +103,9 @@ public final class HalfDefinitionsSpecs {
     @Test
     public void mapMaidCanValidateThatSerializationWorks() {
         given(() -> aMapMaid()
-                .withManuallyAddedType(AnUnresolvableSerializationOnlyComplexType.class, serializationOnly())
-                .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                .mapping(AnUnresolvableSerializationOnlyComplexType.class, serialization())
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidIsInstantiated()
@@ -118,8 +123,9 @@ public final class HalfDefinitionsSpecs {
     @Test
     public void mapMaidCanValidateThatDeserializationWorks() {
         given(() -> aMapMaid()
-                .withManuallyAddedType(AnUnresolvableDeserializationOnlyComplexType.class, deserializationOnly())
-                .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                .mapping(AnUnresolvableDeserializationOnlyComplexType.class, deserialization())
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidIsInstantiated()
@@ -138,7 +144,8 @@ public final class HalfDefinitionsSpecs {
     public void classScannerRecipeRegistersReturnTypesAsSerializationOnly() {
         given(aMapMaid()
                 .usingRecipe(addAllReferencedClassesIn(RepositoryWithSerializationOnlyType.class))
-                .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(json())
@@ -154,7 +161,8 @@ public final class HalfDefinitionsSpecs {
         given(
                 aMapMaid()
                         .usingRecipe(addAllReferencedClassesIn(RepositoryWithDeserializationOnlyType.class))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .withAdvancedSettings(advancedBuilder ->
+                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +

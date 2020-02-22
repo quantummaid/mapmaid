@@ -32,7 +32,7 @@ import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingDeserializer.resolvingDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableDeserializer.undetectableDeserializer;
 
@@ -53,7 +53,7 @@ public final class UndetectedDeserializer extends StatefulDeserializer {
                                      final Disambiguators disambiguators) {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(), scanInformationBuilder, deserializationOnly(), disambiguators);
+                this.context.type(), scanInformationBuilder, deserialization(), disambiguators);
         if (result.isFailure()) {
             return undetectableDeserializer(this.context);
         }

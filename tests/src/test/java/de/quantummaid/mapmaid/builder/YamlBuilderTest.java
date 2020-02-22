@@ -52,7 +52,7 @@ public final class YamlBuilderTest {
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
         return MapMaid.aMapMaid(Email.class.getPackageName())
-                .usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

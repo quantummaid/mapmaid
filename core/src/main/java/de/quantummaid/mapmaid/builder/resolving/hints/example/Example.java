@@ -30,7 +30,7 @@ public final class Example {
 
     public static void main(String[] args) {
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .withManuallyAddedType(MyType.class)
+                .mapping(MyType.class)
                 .build();
 
         final Map<String, Object> stringObjectMap = mapMaid.serializer().serializeToMap(MyType.myTypeFactory1("value1", "value2"));

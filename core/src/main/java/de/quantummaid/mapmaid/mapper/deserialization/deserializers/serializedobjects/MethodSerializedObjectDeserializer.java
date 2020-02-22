@@ -110,6 +110,10 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         return createDescription(this.factoryMethod.describe());
     }
 
+    public ResolvedMethod method() {
+        return this.factoryMethod;
+    }
+
     private static void validateDeserializerModifiers(final ClassType type, final ResolvedMethod deserializationMethod) {
         final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
 

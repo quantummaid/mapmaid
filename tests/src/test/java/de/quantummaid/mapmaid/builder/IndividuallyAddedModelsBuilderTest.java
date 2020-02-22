@@ -86,7 +86,7 @@ public final class IndividuallyAddedModelsBuilderTest {
                                 de.quantummaid.mapmaid.builder.models.conventional.Subject.class,
                                 de.quantummaid.mapmaid.builder.models.conventional.Body.class)
                 )
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }
@@ -117,7 +117,7 @@ public final class IndividuallyAddedModelsBuilderTest {
                         .withCustomPrimitive(Subject.class, Subject::serialize, Subject::deserialize)
                         .withCustomPrimitive(customConventionBody, Body::serialize, Body::deserialize)
                 )
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

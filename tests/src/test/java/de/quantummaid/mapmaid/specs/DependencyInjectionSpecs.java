@@ -34,6 +34,8 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.recipes.di.DiRecipe.toUseDependencyInjectionWith;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class DependencyInjectionSpecs {
 
@@ -42,7 +44,7 @@ public final class DependencyInjectionSpecs {
     public void aClassCanBeDeserializedUsingDependencyInjection() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexType.class)
+                        .mapping(AComplexType.class)
                         .usingRecipe(toUseDependencyInjectionWith(new GeneralDependencyInjector() {
                             @SuppressWarnings("unchecked")
                             @Override
@@ -50,7 +52,7 @@ public final class DependencyInjectionSpecs {
                                 return (T) ANumber.fromInt(42);
                             }
                         }, ANumber.class))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -76,7 +78,7 @@ public final class DependencyInjectionSpecs {
     public void aClassCanBeDeserializedUsingDependencyInjectionEvenIfTheCorrespondingFieldIsNotPresent() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexType.class)
+                        .mapping(AComplexType.class)
                         .usingRecipe(toUseDependencyInjectionWith(new GeneralDependencyInjector() {
                             @SuppressWarnings("unchecked")
                             @Override
@@ -84,7 +86,7 @@ public final class DependencyInjectionSpecs {
                                 return (T) ANumber.fromInt(42);
                             }
                         }, ANumber.class))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +

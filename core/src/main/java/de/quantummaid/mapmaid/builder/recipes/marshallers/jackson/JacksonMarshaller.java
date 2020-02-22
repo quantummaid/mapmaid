@@ -21,11 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.recipes.marshallers.jackson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +49,7 @@ public final class JacksonMarshaller implements Recipe {
         simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
         this.objectMapper.setSerializationInclusion(NON_NULL);
         this.objectMapper.registerModule(simpleModule);
-        mapMaidBuilder.usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue);
+        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
+                .usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue));
     }
 }

@@ -34,12 +34,12 @@ public final class DetectorExample {
 
         //Showcase start detector
         MapMaid.aMapMaid("de.quantummaid.examples")
-                .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)
-                .withDetector(ConventionalDetectors.conventionalDetector(
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
+                //.withDetector(ConventionalDetectors.conventionalDetector(
                         //"myCustomPrimitiveSerializationMethodName", TODO
                         //"myCustomPrimitiveDeserializationMethodName",
                         //"mySerializedObjectDeserializationMethodName"
-                        /*, ".*Dto" TODO */))
+                  //      /*, ".*Dto" TODO */))
                 .build();
         //Showcase end detector
     }

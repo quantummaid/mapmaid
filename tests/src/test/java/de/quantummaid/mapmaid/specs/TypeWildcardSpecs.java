@@ -26,7 +26,7 @@ import de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithWildc
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class TypeWildcardSpecs {
@@ -35,7 +35,7 @@ public final class TypeWildcardSpecs {
     public void collectionsWithTypeWildcardsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithWildcardedCollection.class, deserializationOnly())
+                        .mapping(AComplexTypeWithWildcardedCollection.class, deserialization())
                         .build())
                 .when().mapMaidIsInstantiated()
                 .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex: no duplex detected:\n" +
@@ -59,7 +59,7 @@ public final class TypeWildcardSpecs {
     public void classesWithWildcardGenericsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithTypeWildcards.class)
+                        .mapping(AComplexTypeWithTypeWildcards.class)
                         .build()
         )
                 .when().mapMaidIsInstantiated()

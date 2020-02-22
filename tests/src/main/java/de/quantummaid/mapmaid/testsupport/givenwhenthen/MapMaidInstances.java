@@ -31,10 +31,10 @@ public final class MapMaidInstances {
     }
 
     public static MapMaid theExampleMapMaidWithAllMarshallers() {
-        final MapMaid mapMaid = MapMaid.aMapMaid(AString.class.getPackageName())
-                .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
-                .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
-                .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller())
+        final MapMaid mapMaid = MapMaid.aMapMaid(AString.class.getPackageName()) // TODO no scan
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
+                        .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller()))
                 .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .withExceptionIndicatingValidationError(AnException.class)
                 .build();

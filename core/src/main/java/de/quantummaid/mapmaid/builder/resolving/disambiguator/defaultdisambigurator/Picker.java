@@ -24,14 +24,12 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigur
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveAsEnumDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -40,6 +38,7 @@ import java.util.function.Function;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -64,37 +63,55 @@ public final class Picker {
         return failure("No serializers to choose from");
     }
 
-    public static DetectionResult<TypeDeserializer> pickDeserializer(final SerializersAndDeserializers serializersAndDeserializers) {
+    public static DetectionResult<TypeDeserializer> pickDeserializer(final SerializersAndDeserializers serializersAndDeserializers,
+                                                                     final Preferences<TypeDeserializer> customPrimitivePreferences,
+                                                                     final Preferences<TypeDeserializer> serializedObjectPreferences) {
         final List<TypeDeserializer> deserializers = (List<TypeDeserializer>) serializersAndDeserializers.deserializers();
 
-        // TODO
-        final List<TypeDeserializer> enums = subTypesOf(CustomPrimitiveAsEnumDeserializer.class, deserializers);
-        final Optional<DetectionResult<TypeDeserializer>> theEnum = oneOrNone(enums, TypeDeserializer::description);
-        if (theEnum.isPresent()) {
-            return theEnum.get();
+        final List<TypeDeserializer> customPrimitives = subTypesOf(CustomPrimitiveDeserializer.class, deserializers);
+
+        final List<TypeDeserializer> preferredCustomPrimitives = customPrimitivePreferences.prefered(customPrimitives);
+        final Optional<DetectionResult<TypeDeserializer>> preferredCustomPrimitive = oneOrNone(preferredCustomPrimitives, TypeDeserializer::description);
+        if (preferredCustomPrimitive.isPresent()) {
+            return preferredCustomPrimitive.get();
         }
 
-        final List<TypeDeserializer> customPrimitives = subTypesOf(CustomPrimitiveDeserializer.class, deserializers);
         final Optional<DetectionResult<TypeDeserializer>> customPrimitive = oneOrNone(customPrimitives, TypeDeserializer::description);
         if (customPrimitive.isPresent()) {
             return customPrimitive.get();
         }
 
         final List<TypeDeserializer> serializedObjects = subTypesOf(SerializedObjectDeserializer.class, deserializers);
-        final OptionalInt max = serializedObjects.stream()
-                .mapToInt(deserializer -> ((SerializedObjectDeserializer) deserializer).fields().fields().size())
-                .max();
-        if (max.isPresent()) {
-            final List<TypeDeserializer> maxDeserializers = serializedObjects.stream()
-                    .filter(deserializer -> ((SerializedObjectDeserializer) deserializer).fields().fields().size() == max.getAsInt())
-                    .collect(toList());
-            final Optional<DetectionResult<TypeDeserializer>> serializedObject = oneOrNone(maxDeserializers, TypeDeserializer::description);
-            if (serializedObject.isPresent()) {
-                return serializedObject.get();
-            }
+
+        final List<TypeDeserializer> preferedSerializedObjects = serializedObjectPreferences.prefered(serializedObjects);
+        final List<TypeDeserializer> maxPreferred = maxDeserializers(preferedSerializedObjects);
+        final Optional<DetectionResult<TypeDeserializer>> preferredSerializedObject = oneOrNone(maxPreferred, TypeDeserializer::description);
+        if (preferredSerializedObject.isPresent()) {
+            return preferredSerializedObject.get();
+        }
+
+
+        final List<TypeDeserializer> maxDeserializers = maxDeserializers(serializedObjects);
+        final Optional<DetectionResult<TypeDeserializer>> serializedObject = oneOrNone(maxDeserializers, TypeDeserializer::description);
+        if (serializedObject.isPresent()) {
+            return serializedObject.get();
         }
 
         return failure("No deserializers to choose from");
+    }
+
+    private static List<TypeDeserializer> maxDeserializers(final List<TypeDeserializer> serializedObjectDeserializers) {
+        final OptionalInt max = serializedObjectDeserializers.stream()
+                .mapToInt(deserializer -> ((SerializedObjectDeserializer) deserializer).fields().fields().size())
+                .max();
+        if (max.isPresent()) {
+            final List<TypeDeserializer> maxDeserializers = serializedObjectDeserializers.stream()
+                    .filter(deserializer -> ((SerializedObjectDeserializer) deserializer).fields().fields().size() == max.getAsInt())
+                    .collect(toList());
+            return maxDeserializers;
+        } else {
+            return emptyList();
+        }
     }
 
     private static <T> List<T> subTypesOf(final Class<? extends T> type,

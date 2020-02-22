@@ -41,6 +41,4 @@ public final class Name {
     public String internalValueForMapping() {
         return this.value;
     }
-
-    // TODO dreimal deser/ser/beides
 }

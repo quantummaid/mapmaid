@@ -33,8 +33,8 @@ public final class VoidExample {
                 .withDeserializedForm(GroupName.groupName("foo"))
                 .withSerializedForm("\"foo\"")
                 .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.void_serializer_method.GroupName: unable to detect")
-                .withSerializationOnlyFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.void_serializer_method.GroupName: unable to detect")
-                .withDeserializationOnlySuccessful()
+                .withSerializationFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.void_serializer_method.GroupName: unable to detect")
+                .withDeserializationSuccessful()
                 .run();
     }
 }

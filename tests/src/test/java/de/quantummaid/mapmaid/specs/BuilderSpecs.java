@@ -46,7 +46,7 @@ public final class BuilderSpecs {
     @Test
     public void givenValidCustomPrimitive_whenBuildingWithCustomPrimitive_thenReturnsCorrectDeserializer() {
         Given.given(
-                aMapMaid().withManuallyAddedType(AString.class).build()
+                aMapMaid().mapping(AString.class).build()
         )
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheCustomPrimitives(AString.class)
@@ -57,7 +57,7 @@ public final class BuilderSpecs {
     public void allKnownCollectionsAreSupported() {
         Given.given(
                 aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithDifferentCollections.class)
+                        .mapping(AComplexTypeWithDifferentCollections.class)
                         .build()
         )
                 .when().theDefinitionsAreQueried()

@@ -140,7 +140,7 @@ public final class ManualRegistry implements Recipe {
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
         this.definitions.forEach(mapMaidBuilder::withManuallyAddedDefinition);
-        this.manuallyAddedCustomPrimitiveTypes.forEach(mapMaidBuilder::withManuallyAddedType);
-        this.manuallyAddedSerializedObjectTypes.forEach(mapMaidBuilder::withManuallyAddedType);
+        this.manuallyAddedCustomPrimitiveTypes.forEach(mapMaidBuilder::mapping);
+        this.manuallyAddedSerializedObjectTypes.forEach(mapMaidBuilder::mapping);
     }
 }

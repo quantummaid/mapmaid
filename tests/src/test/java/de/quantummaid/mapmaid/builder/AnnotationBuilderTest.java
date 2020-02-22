@@ -54,7 +54,7 @@ public final class AnnotationBuilderTest {
 
         return MapMaid.aMapMaid(Email.class.getPackageName())
                 //.withDetector(ConventionalDetectors.conventionalDetectorWithAnnotations()) TODO
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

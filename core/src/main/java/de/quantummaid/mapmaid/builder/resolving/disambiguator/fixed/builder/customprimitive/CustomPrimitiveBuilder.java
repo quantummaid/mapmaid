@@ -36,6 +36,7 @@ public final class CustomPrimitiveBuilder {
     private CustomPrimitiveBuilder() {
     }
 
+    // TODO lambdas -> interfaces
     public static <T> Definition customPrimitive(final Class<T> type,
                                                  final Function<T, String> serializationMethod,
                                                  final Function<String, T> deserializationMethod) {
@@ -45,12 +46,32 @@ public final class CustomPrimitiveBuilder {
                 (Function<String, Object>) deserializationMethod);
     }
 
+    public static <T, U> Definition customPrimitive(final Class<T> type,
+                                                 final Class<U> baseType,
+                                                 final Function<T, U> serializationMethod,
+                                                 final Function<U, T> deserializationMethod) {
+        final ResolvedType resolvedType = fromClassWithoutGenerics(type);
+        return customPrimitive(resolvedType, baseType,
+                (Function<Object, U>) serializationMethod,
+                (Function<U, Object>) deserializationMethod);
+    }
+
+
 
     public static <T> Definition customPrimitive(final ResolvedType type,
                                                  final Function<Object, String> serializationMethod,
                                                  final Function<String, Object> deserializationMethod) {
-        final CustomPrimitiveSerializer serializer = createSerializer(type.assignableType(), serializationMethod);
-        final CustomPrimitiveDeserializer deserializer = createDeserializer(deserializationMethod);
+        final CustomPrimitiveSerializer serializer = createSerializer(type.assignableType(), serializationMethod, String.class);
+        final CustomPrimitiveDeserializer deserializer = createDeserializer(String.class, (Function<Object, ?>) (Object) deserializationMethod);
+        return generalDefinition(type, serializer, deserializer);
+    }
+
+    public static <T> Definition customPrimitive(final ResolvedType type,
+                                                 final Class<T> baseType,
+                                                 final Function<Object, T> serializationMethod,
+                                                 final Function<T, Object> deserializationMethod) {
+        final CustomPrimitiveSerializer serializer = createSerializer(type.assignableType(), serializationMethod, baseType);
+        final CustomPrimitiveDeserializer deserializer = createDeserializer(baseType, (Function<Object, ?>) deserializationMethod);
         return generalDefinition(type, serializer, deserializer);
     }
 
@@ -62,7 +83,7 @@ public final class CustomPrimitiveBuilder {
 
     public static <T> Definition serializationOnlyCustomPrimitive(final ResolvedType type,
                                                                   final Function<Object, String> serializationMethod) {
-        final CustomPrimitiveSerializer serializer = createSerializer(type.assignableType(), serializationMethod);
+        final CustomPrimitiveSerializer serializer = createSerializer(type.assignableType(), serializationMethod, String.class);
         return generalDefinition(type, serializer, null);
     }
 
@@ -74,12 +95,13 @@ public final class CustomPrimitiveBuilder {
 
     public static <T> Definition deserializationOnlyCustomPrimitive(final ResolvedType type,
                                                                     final Function<String, T> deserializationMethod) {
-        final CustomPrimitiveDeserializer deserializer = createDeserializer(deserializationMethod);
+        final CustomPrimitiveDeserializer deserializer = createDeserializer(String.class, (Function<Object, ?>) (Object) deserializationMethod);
         return generalDefinition(type, null, deserializer);
     }
 
     private static CustomPrimitiveSerializer createSerializer(final Class<?> type,
-                                                              final Function<Object, ?> serializationMethod) {
+                                                              final Function<Object, ?> serializationMethod,
+                                                              final Class<?> baseType) {
         final CustomPrimitiveSerializer serializer = new CustomPrimitiveSerializer() {
             @Override
             public Object serialize(final Object object) {
@@ -90,20 +112,31 @@ public final class CustomPrimitiveBuilder {
             public String description() {
                 return serializationMethod.toString();
             }
+
+            @Override
+            public Class<?> baseType() {
+                return baseType;
+            }
         };
         return serializer;
     }
 
-    private static CustomPrimitiveDeserializer createDeserializer(final Function<String, ?> deserializationMethod) {
+    private static CustomPrimitiveDeserializer createDeserializer(final Class<?> baseType,
+                                                                  final Function<Object, ?> deserializationMethod) {
         final CustomPrimitiveDeserializer deserializer = new CustomPrimitiveDeserializer() {
             @Override
             public Object deserialize(final Object value) {
-                return deserializationMethod.apply((String) value);
+                return deserializationMethod.apply(value);
             }
 
             @Override
             public String description() {
                 return deserializationMethod.toString();
+            }
+
+            @Override
+            public Class<?> baseType() {
+                return baseType;
             }
         };
         return deserializer;

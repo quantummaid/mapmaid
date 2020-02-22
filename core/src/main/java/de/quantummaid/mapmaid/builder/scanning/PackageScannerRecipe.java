@@ -45,6 +45,6 @@ public final class PackageScannerRecipe implements Recipe {
 
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-        this.packageScanner.scan().forEach(type -> mapMaidBuilder.withManuallyAddedType(fromClassWithoutGenerics(type)));
+        this.packageScanner.scan().forEach(type -> mapMaidBuilder.mapping(fromClassWithoutGenerics(type)));
     }
 }

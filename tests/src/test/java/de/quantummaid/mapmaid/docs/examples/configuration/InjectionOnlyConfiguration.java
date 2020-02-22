@@ -34,7 +34,7 @@ public final class InjectionOnlyConfiguration {
     public MapMaid mapMaid() {
         //Showcase start injectionOnly
         return aMapMaid()
-                .withManuallyAddedType(Reservation.class)
+                .mapping(Reservation.class)
                 .usingRecipe(injectionOnly(ReservationDao.class))
                 .build();
         //Showcase end injectionOnly
