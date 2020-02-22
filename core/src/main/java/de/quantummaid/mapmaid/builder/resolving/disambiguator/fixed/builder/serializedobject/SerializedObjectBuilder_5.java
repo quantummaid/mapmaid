@@ -27,27 +27,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.Field.field;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder_5.serializedObjectBuilder_5;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder_6.serializedObjectBuilder_6;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializedObjectBuilder_4<X, A, B, C, D> {
+public final class SerializedObjectBuilder_5<X, A, B, C, D, E> {
     private final Builder builder;
 
-    public static <X, A, B, C, D> SerializedObjectBuilder_4<X, A, B, C, D> serializedObjectBuilder_4(final Builder builder) {
-        return new SerializedObjectBuilder_4<>(builder);
+    public static <X, A, B, C, D, E> SerializedObjectBuilder_5<X, A, B, C, D, E> serializedObjectBuilder_5(final Builder builder) {
+        return new SerializedObjectBuilder_5<>(builder);
     }
 
     @SuppressWarnings("unchecked")
-    public <E> SerializedObjectBuilder_5<X, A, B, C, D, E> withField(final String name,
-                                                                     final Class<E> type,
-                                                                     final Query<X, E> query) {
+    public <F> SerializedObjectBuilder_6<X, A, B, C, D, E, F> withField(final String name,
+                                                                        final Class<F> type,
+                                                                        final Query<X, F> query) {
         this.builder.addField(field(type, name, (Query<Object, Object>) query));
-        return serializedObjectBuilder_5(this.builder);
+        return serializedObjectBuilder_6(this.builder);
     }
 
-    public Builder deserializedUsing(final Deserializer_4<X, A, B, C, D> deserializer) {
+    public Builder deserializedUsing(final Deserializer_5<X, A, B, C, D, E> deserializer) {
         this.builder.setDeserializer(deserializer);
         return this.builder; // TODO
     }
