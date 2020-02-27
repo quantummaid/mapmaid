@@ -108,6 +108,26 @@ public final class ScanInformationBuilder {
         this.deserializers.values().forEach(reasons -> reasons.add(reason));
     }
 
+    public void ignoreDeserializer(final TypeDeserializer deserializer,
+                                   final String reason) {
+        this.deserializers.get(deserializer).add(reason);
+    }
+
+    public void ignoreDeserializer(final TypeDeserializer deserializer,
+                                   final List<String> reasons) {
+        reasons.forEach(reason -> ignoreDeserializer(deserializer, reason));
+    }
+
+    public void ignoreSerializer(final TypeSerializer serializer,
+                                 final String reason) {
+        this.serializers.get(serializer).add(reason);
+    }
+
+    public void ignoreSerializer(final TypeSerializer serializer,
+                                 final List<String> reasons) {
+        reasons.forEach(reason -> ignoreSerializer(serializer, reason));
+    }
+
     public void ignoreAllOtherDeserializers(final TypeDeserializer deserializer,
                                             final String reason) {
         this.deserializers.forEach((current, reasons) -> {

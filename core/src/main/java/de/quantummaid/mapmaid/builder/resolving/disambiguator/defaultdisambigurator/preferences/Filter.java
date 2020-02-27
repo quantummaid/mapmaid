@@ -22,5 +22,5 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
 
 public interface Filter<T> {
-    boolean filter(T t);
+    FilterResult filter(T t);
 }

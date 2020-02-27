@@ -60,11 +60,6 @@ public final class SerializedObjectDefinitionFactory implements SerializerFactor
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        if (Collection.class.isAssignableFrom(type.assignableType())) {
-            // TODO
-            return emptyList();
-        }
-
         return this.detectors.stream()
                 .map(detector -> detector.detect(type))
                 .flatMap(List::stream)

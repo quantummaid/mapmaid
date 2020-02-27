@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguator.defaultDisambiguator;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.allowed;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.denied;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -150,11 +153,15 @@ public final class DefaultDisambiguatorBuilder {
     private static Filter<TypeSerializer> nameOfSerializerMethodIsNot(final String name) {
         return serializer -> {
             if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
-                return true;
+                return allowed();
             }
             final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
             final boolean matchesName = method.getName().equals(name);
-            return !matchesName;
+            if (!matchesName) {
+                return allowed();
+            } else {
+                return denied(format("method '%s' is not considered", name));
+            }
         };
     }
 }

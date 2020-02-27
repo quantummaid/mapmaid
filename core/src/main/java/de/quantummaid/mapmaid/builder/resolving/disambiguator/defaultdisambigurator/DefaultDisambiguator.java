@@ -102,14 +102,20 @@ public final class DefaultDisambiguator implements Disambiguator {
     private DetectionResult<DisambiguationResult> serializationOnly(final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
                                                                     final SerializedObjectOptions serializedObjectOptions,
                                                                     final ScanInformationBuilder scanInformationBuilder) {
-        final DetectionResult<TypeSerializer> serializer = pickSerializer(customPrimitiveSerializersAndDeserializers, customPrimitiveSerializerPreferences);
+        final DetectionResult<TypeSerializer> serializer = pickSerializer(
+                customPrimitiveSerializersAndDeserializers,
+                this.customPrimitiveSerializerPreferences,
+                scanInformationBuilder);
 
         if (!serializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
                     format("less priority than %s", serializer.result().description()));
         }
         return serializer
-                .or(() -> pickSerializer(serializedObjectOptions.toSerializersAndDeserializers(), customPrimitiveSerializerPreferences))
+                .or(() -> pickSerializer(
+                        serializedObjectOptions.toSerializersAndDeserializers(),
+                        this.customPrimitiveSerializerPreferences,
+                        scanInformationBuilder))
                 .map(DisambiguationResult::serializationOnlyResult);
     }
 
@@ -119,7 +125,8 @@ public final class DefaultDisambiguator implements Disambiguator {
         final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(
                 customPrimitiveSerializersAndDeserializers,
                 this.customPrimitiveDeserializerPreferences,
-                this.serializedObjectPreferences);
+                this.serializedObjectPreferences,
+                scanInformationBuilder);
         if (!deserializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
                     format("less priority than %s", deserializer.result().description()));
@@ -128,14 +135,18 @@ public final class DefaultDisambiguator implements Disambiguator {
                 .or(() -> pickDeserializer(
                         serializedObjectOptions.toSerializersAndDeserializers(),
                         this.customPrimitiveDeserializerPreferences,
-                        this.serializedObjectPreferences)
+                        this.serializedObjectPreferences,
+                        scanInformationBuilder)
                 )
                 .map(DisambiguationResult::deserializationOnlyResult);
     }
 
     private DetectionResult<DisambiguationResult> symmetricCustomPrimitive(final SerializersAndDeserializers serializersAndDeserializers,
                                                                            final ScanInformationBuilder scanInformationBuilder) {
-        final DetectionResult<TypeSerializer> serializer = pickSerializer(serializersAndDeserializers, this.customPrimitiveSerializerPreferences);
+        final DetectionResult<TypeSerializer> serializer = pickSerializer(
+                serializersAndDeserializers,
+                this.customPrimitiveSerializerPreferences,
+                scanInformationBuilder);
         if (!serializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
                     format("less priority than %s", serializer.result().description()));
@@ -143,7 +154,8 @@ public final class DefaultDisambiguator implements Disambiguator {
         final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(
                 serializersAndDeserializers,
                 this.customPrimitiveDeserializerPreferences,
-                this.serializedObjectPreferences
+                this.serializedObjectPreferences,
+                scanInformationBuilder
         );
         if (!deserializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
@@ -169,13 +181,19 @@ public final class DefaultDisambiguator implements Disambiguator {
 
         final SerializersAndDeserializers symmetricResult = symmetric.result();
 
-        final DetectionResult<TypeSerializer> serializer = pickSerializer(symmetricResult, this.customPrimitiveSerializerPreferences);
+        final DetectionResult<TypeSerializer> serializer = pickSerializer(
+                symmetricResult,
+                this.customPrimitiveSerializerPreferences,
+                scanInformationBuilder);
         if (!serializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(), format("most symmetry in %s", serializer.result().description()));
         }
 
         final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(
-                symmetricResult, this.customPrimitiveDeserializerPreferences, this.serializedObjectPreferences);
+                symmetricResult,
+                this.customPrimitiveDeserializerPreferences,
+                this.serializedObjectPreferences,
+                scanInformationBuilder);
         if (!deserializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(), format("most symmetry in %s", deserializer.result().description()));
         }

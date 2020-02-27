@@ -21,30 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.combined;
-import static java.util.stream.Collectors.toList;
-
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Filters<T> {
-    private final List<Filter<T>> filters;
-
-    public static <T> Filters<T> filters(final List<Filter<T>> filters) {
-        return new Filters<>(filters);
-    }
-
-    public FilterResult isAllowed(final T t) {
-        final List<FilterResult> filterResults = this.filters.stream()
-                .map(filter -> filter.filter(t))
-                .collect(toList());
-        return combined(filterResults);
-    }
+public interface Striker<T> {
+    void strike(T t, List<String> reasons);
 }
