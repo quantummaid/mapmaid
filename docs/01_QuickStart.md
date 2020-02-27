@@ -42,7 +42,7 @@ If you are following the [default conventions](UserGuide.md#default-conventions-
 <!---[CodeSnippet](instance)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
         .build();
 ```
 

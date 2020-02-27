@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,29 +19,42 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.hints.example;
+package de.quantummaid.mapmaid.docs.examples.customprimitives.success.preferred_serializer.custom_name;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyType {
-    public final String value1;
-    public final String value2;
+public final class PreferredSerializerCustomPrimitive {
+    private final String value;
 
-    public static MyType myTypeFactory1(final String value1,
-                                        final String value2) {
-        System.out.println("factory1");
-        return new MyType(value1, value2);
+    public static PreferredSerializerCustomPrimitive deserialize(final String value) {
+        return new PreferredSerializerCustomPrimitive(value);
     }
 
-    public static MyType myTypeFactory2(final String value1,
-                                        final String value2) {
-        System.out.println("factory2");
-        return new MyType(value1, value2);
+    public String method1() {
+        throw wrongMethodCalledException();
+    }
+
+    public String method2() {
+        throw wrongMethodCalledException();
+    }
+
+    public String myCustomName() {
+        return this.value;
+    }
+
+    public String method3() {
+        throw wrongMethodCalledException();
+    }
+
+    public String method4() {
+        throw wrongMethodCalledException();
     }
 }

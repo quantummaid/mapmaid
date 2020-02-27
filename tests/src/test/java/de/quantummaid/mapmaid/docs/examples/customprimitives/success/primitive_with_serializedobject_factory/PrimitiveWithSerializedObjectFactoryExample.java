@@ -30,10 +30,15 @@ public final class PrimitiveWithSerializedObjectFactoryExample {
     @Test
     public void primitiveWithSerializedObjectFactoryExample() {
         scenarioBuilderFor(Name.class)
-                .withSerializedForm("\"qwer\"")
+                .withSerializedForm("" +
+                        "{\n" +
+                        "   \"name1\": \"qw\",\n" +
+                        "   \"name2\": \"er\"\n" +
+                        "}")
                 .withDeserializedForm(Name.EXAMPLE)
-                .withSerializationOnly()
-                //.withAllScenariosSuccessful()
+                .withSerializationOnlySuccessful("\"qwer\"")
+                .withDeserializationSuccessful()
+                .withDuplexFailing()
                 .run();
     }
 }

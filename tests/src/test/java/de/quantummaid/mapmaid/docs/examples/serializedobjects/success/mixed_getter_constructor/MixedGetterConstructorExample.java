@@ -21,10 +21,6 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.mixed_getter_constructor;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example2.StreetName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.multiple_static_factories.example1.RegionName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -34,13 +30,14 @@ public final class MixedGetterConstructorExample {
     @Test
     public void mixedGetterConstructorExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withSerializedForm("")
-                .withDeserializedForm(new AddALotRequest(
-                        StreetName.fromStringValue("a"),
-                        TownName.townName("b"),
-                        RegionName.someMethod("c"),
-                        CountryName.fromStringValue("d")
-                ))
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"streetName\": \"a\",\n" +
+                        "  \"townName\": \"b\",\n" +
+                        "  \"countryName\": \"d\",\n" +
+                        "  \"regionName\": \"c\"\n" +
+                        "}")
+                .withDeserializedForm(new AddALotRequest("a", "b", "c", "d"))
                 .withAllScenariosSuccessful()
                 .run();
     }

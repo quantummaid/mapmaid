@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -32,7 +32,7 @@ import static de.quantummaid.mapmaid.builder.resolving.Reason.becauseOf;
 import static de.quantummaid.mapmaid.builder.resolving.fixed.resolved.FixedResolvedDeserializer.fixedResolvedDeserializer;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class FixedResolvingDeserializer extends FixedDeserializerDefinition {
 
     private FixedResolvingDeserializer(final Context context) {

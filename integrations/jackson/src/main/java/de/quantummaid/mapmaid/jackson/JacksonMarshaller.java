@@ -50,9 +50,12 @@ public final class JacksonMarshaller implements Recipe {
                                                          final ObjectMapper objectMapper) {
         validateNotNull(objectMapper, "objectMapper");
         final SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier()); // TODO
-        objectMapper.setSerializationInclusion(NON_NULL); // TODO
-        objectMapper.registerModule(simpleModule); // TODO
+        // TODO
+        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
+        // TODO
+        objectMapper.setSerializationInclusion(NON_NULL);
+        // TODO
+        objectMapper.registerModule(simpleModule);
         return new JacksonMarshaller(marshallingType, objectMapper);
     }
 

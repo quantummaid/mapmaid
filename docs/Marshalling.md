@@ -127,7 +127,7 @@ Assuming you have a configured instance of `Gson` class, adding it as a JSON Mar
 ```java
 final Gson gson = new Gson(); // can be further configured depending on your needs.
 final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingJsonMarshaller(gson::toJson, gson::fromJson)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
         .build();
 ```
 
@@ -136,7 +136,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
 ```java
 final ObjectMapper objectMapper = new ObjectMapper();
 final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
         .build();
 ```
 
@@ -150,13 +150,14 @@ final XStream xStream = new XStream(new DomDriver());
 xStream.alias("root", Map.class);
 
 final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
             @SuppressWarnings("unchecked")
             @Override
             public <T> T unmarshal(final String input, final Class<T> type) {
                 return (T) xStream.fromXML(input, type);
             }
-        })
+        }))
+
         .build();
 ```
 
@@ -180,7 +181,7 @@ Note: If you wish to marshall in/from XML, don't forget to add the appropriate d
 final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
 final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
         .build();
 ```
 

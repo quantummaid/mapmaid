@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,34 +21,33 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject;
 
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.Field.field;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder_2.serializedObjectBuilder_2;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder3.serializedObjectBuilder3;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializedObjectBuilder_1<X, A> {
+public final class SerializedObjectBuilder2<X, A, B> {
     private final Builder builder;
 
-    public static <A, X> SerializedObjectBuilder_1<X, A> serializedObjectBuilder_1(final Builder builder) {
-        return new SerializedObjectBuilder_1<>(builder);
+    public static <X, A, B> SerializedObjectBuilder2<X, A, B> serializedObjectBuilder2(final Builder builder) {
+        return new SerializedObjectBuilder2<>(builder);
     }
 
     @SuppressWarnings("unchecked")
-    public <B> SerializedObjectBuilder_2<X, A, B> withField(final String name,
-                                                            final Class<B> type,
-                                                            final Query<X, B> query) {
+    public <C> SerializedObjectBuilder3<X, A, B, C> withField(final String name,
+                                                              final Class<C> type,
+                                                              final Query<X, C> query) {
         this.builder.addField(field(type, name, (Query<Object, Object>) query));
-        return serializedObjectBuilder_2(this.builder);
+        return serializedObjectBuilder3(this.builder);
     }
 
-    public Recipe deserializedUsing(final Deserializer_1<X, A> deserializer) {
+    public Builder deserializedUsing(final Deserializer2<X, A, B> deserializer) {
         this.builder.setDeserializer(deserializer);
         return this.builder;
     }

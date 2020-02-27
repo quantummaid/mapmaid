@@ -95,7 +95,8 @@ final class InternalDeserializer implements DeserializerCallback {
         final Definition definition = this.definitions.getDefinitionForType(targetType);
         try {
             final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
-                return new UnsupportedOperationException(format("No deserializer configured for '%s'", definition.type().description())); // TODO
+                // TODO
+                return new UnsupportedOperationException(format("No deserializer configured for '%s'", definition.type().description()));
             });
             return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
         } catch (final WrongInputStructureException e) {

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.tracker;
 
+import de.quantummaid.mapmaid.Collection;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -39,7 +40,7 @@ public final class SerializationTracker {
     private final List<TrackedObject> visitedObjects;
 
     public static SerializationTracker serializationTracker() {
-        return new SerializationTracker(new ArrayList<>(5));
+        return new SerializationTracker(Collection.smallList());
     }
 
     public SerializationTracker trackToProhibitCyclicReferences(final Object object) {

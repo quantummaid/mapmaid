@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -118,35 +118,33 @@ public final class ActualScanInformation implements ScanInformation {
 
     private String renderIgnoredSerializers() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (final TypeSerializer serializer : this.serializers.keySet()) {
+        this.serializers.forEach((serializer, reasons) -> {
             if (serializer.equals(this.serializer)) {
-                continue;
+                return;
             }
             final String description = serializer.description();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
             stringBuilder.append("\n\t  Ignored because:\n");
-            final List<String> reasons = this.serializers.get(serializer);
             stringBuilder.append(renderIgnoreReasons(reasons));
             stringBuilder.append("\n");
-        }
+        });
         return stringBuilder.toString();
     }
 
     private String renderIgnoredDeserializers() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (final TypeDeserializer deserializer : this.deserializers.keySet()) {
+        this.deserializers.forEach((deserializer, reasons) -> {
             if (deserializer.equals(this.deserializer)) {
-                continue;
+                return;
             }
             final String description = deserializer.description();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
             stringBuilder.append("\n\t  Ignored because:\n");
-            final List<String> reasons = this.deserializers.get(deserializer);
             stringBuilder.append(renderIgnoreReasons(reasons));
             stringBuilder.append("\n");
-        }
+        });
         return stringBuilder.toString();
     }
 

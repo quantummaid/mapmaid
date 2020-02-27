@@ -35,7 +35,6 @@ public final class MultipleFactoriesExample {
                 .withSerializedForm("\"foo\"")
                 .withAllScenariosFailing("de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.multiple_factories.Name: unable to detect",
                         (mapMaidBuilder, capabilities) -> {
-                            System.out.println("capabilities = " + capabilities);
                             mapMaidBuilder.withManuallyAddedDefinition(
                                     customPrimitive(Name.class, name -> name.value, Name::anotherName), capabilities);
                         })

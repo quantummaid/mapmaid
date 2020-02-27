@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -35,10 +35,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.UserProvidedDeserializer.userProvidedDeserializer;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField.serializationField;
@@ -57,7 +57,7 @@ public final class Builder implements Recipe {
 
     public static Builder emptyBuilder(final Class<?> type) {
         final ResolvedType resolvedType = fromClassWithoutGenerics(type);
-        return new Builder(resolvedType, new ArrayList<>(3));
+        return new Builder(resolvedType, smallList());
     }
 
     public void addField(final Field field) {

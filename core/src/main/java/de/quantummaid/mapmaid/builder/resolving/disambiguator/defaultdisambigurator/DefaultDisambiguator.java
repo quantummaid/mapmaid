@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -55,12 +55,14 @@ import static java.lang.String.format;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DefaultDisambiguator implements Disambiguator {
-    private final Preferences<TypeDeserializer> customPrimitivePreferences;
+    private final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences;
+    private final Preferences<TypeSerializer> customPrimitiveSerializerPreferences;
     private final Preferences<TypeDeserializer> serializedObjectPreferences;
 
-    public static DefaultDisambiguator defaultDisambiguator(final Preferences<TypeDeserializer> customPrimitivePreferences,
+    public static DefaultDisambiguator defaultDisambiguator(final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences,
+                                                            final Preferences<TypeSerializer> customPrimitiveSerializerPreferences,
                                                             final Preferences<TypeDeserializer> serializedObjectPreferences) {
-        return new DefaultDisambiguator(customPrimitivePreferences, serializedObjectPreferences);
+        return new DefaultDisambiguator(customPrimitiveDeserializerPreferences, customPrimitiveSerializerPreferences, serializedObjectPreferences);
     }
 
     @Override
@@ -69,30 +71,18 @@ public final class DefaultDisambiguator implements Disambiguator {
                                                               final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
                                                               final ScanInformationBuilder scanInformationBuilder) {
         if (type.assignableType().getPackageName().startsWith("java.util")) {
-            return failure("Native java classes cannot be detected"); // TODO
+            // TODO
+            return failure("Native java classes cannot be detected");
         }
 
+        // TODO
         if (customPrimitiveSerializersAndDeserializers.serializationOnly()) {
-            final DetectionResult<TypeSerializer> serializer = pickSerializer(customPrimitiveSerializersAndDeserializers);
-
-            if (!serializer.isFailure()) {
-                scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
-                        format("less priority than %s", serializer.result().description()));
-            }
-            return serializer
-                    .or(() -> pickSerializer(serializedObjectOptions.toSerializersAndDeserializers()))
-                    .map(DisambiguationResult::serializationOnlyResult);
+            return serializationOnly(customPrimitiveSerializersAndDeserializers, serializedObjectOptions, scanInformationBuilder);
         }
 
+        // TODO
         if (customPrimitiveSerializersAndDeserializers.deserializationOnly()) {
-            final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(customPrimitiveSerializersAndDeserializers, customPrimitivePreferences, serializedObjectPreferences);
-            if (!deserializer.isFailure()) {
-                scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
-                        format("less priority than %s", deserializer.result().description()));
-            }
-            return deserializer
-                    .or(() -> pickDeserializer(serializedObjectOptions.toSerializersAndDeserializers(), customPrimitivePreferences, serializedObjectPreferences))
-                    .map(DisambiguationResult::deserializationOnlyResult);
+            return deserializationOnly(customPrimitiveSerializersAndDeserializers, serializedObjectOptions, scanInformationBuilder);
         }
 
         final CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder = customPrimitiveSymmetryBuilder();
@@ -101,22 +91,69 @@ public final class DefaultDisambiguator implements Disambiguator {
         customPrimitiveSerializersAndDeserializers.deserializers()
                 .forEach(deserializer -> customPrimitiveSymmetryBuilder.addDeserializer((CustomPrimitiveDeserializer) deserializer));
         final Optional<SerializersAndDeserializers> customPrimitiveResult = customPrimitiveSymmetryBuilder.determineGreatestCommonFields();
+
         if (customPrimitiveResult.isPresent()) {
-            final SerializersAndDeserializers serializersAndDeserializers = customPrimitiveResult.get();
-            final DetectionResult<TypeSerializer> serializer = pickSerializer(serializersAndDeserializers);
-            if (!serializer.isFailure()) {
-                scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
-                        format("less priority than %s", serializer.result().description()));
-            }
-            final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(serializersAndDeserializers, this.customPrimitivePreferences, serializedObjectPreferences);
-            if (!deserializer.isFailure()) {
-                scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
-                        format("less priority than %s", deserializer.result().description()));
-            }
-            return combine(serializer, deserializer, DisambiguationResult::duplexResult);
+            return symmetricCustomPrimitive(customPrimitiveResult.get(), scanInformationBuilder);
         }
+        return symmetricSerializedObject(type, serializedObjectOptions, scanInformationBuilder);
+    }
 
+    private DetectionResult<DisambiguationResult> serializationOnly(final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
+                                                                    final SerializedObjectOptions serializedObjectOptions,
+                                                                    final ScanInformationBuilder scanInformationBuilder) {
+        final DetectionResult<TypeSerializer> serializer = pickSerializer(customPrimitiveSerializersAndDeserializers, customPrimitiveSerializerPreferences);
 
+        if (!serializer.isFailure()) {
+            scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
+                    format("less priority than %s", serializer.result().description()));
+        }
+        return serializer
+                .or(() -> pickSerializer(serializedObjectOptions.toSerializersAndDeserializers(), customPrimitiveSerializerPreferences))
+                .map(DisambiguationResult::serializationOnlyResult);
+    }
+
+    private DetectionResult<DisambiguationResult> deserializationOnly(final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
+                                                                      final SerializedObjectOptions serializedObjectOptions,
+                                                                      final ScanInformationBuilder scanInformationBuilder) {
+        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(
+                customPrimitiveSerializersAndDeserializers,
+                this.customPrimitiveDeserializerPreferences,
+                this.serializedObjectPreferences);
+        if (!deserializer.isFailure()) {
+            scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
+                    format("less priority than %s", deserializer.result().description()));
+        }
+        return deserializer
+                .or(() -> pickDeserializer(
+                        serializedObjectOptions.toSerializersAndDeserializers(),
+                        this.customPrimitiveDeserializerPreferences,
+                        this.serializedObjectPreferences)
+                )
+                .map(DisambiguationResult::deserializationOnlyResult);
+    }
+
+    private DetectionResult<DisambiguationResult> symmetricCustomPrimitive(final SerializersAndDeserializers serializersAndDeserializers,
+                                                                           final ScanInformationBuilder scanInformationBuilder) {
+        final DetectionResult<TypeSerializer> serializer = pickSerializer(serializersAndDeserializers, this.customPrimitiveSerializerPreferences);
+        if (!serializer.isFailure()) {
+            scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(),
+                    format("less priority than %s", serializer.result().description()));
+        }
+        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(
+                serializersAndDeserializers,
+                this.customPrimitiveDeserializerPreferences,
+                this.serializedObjectPreferences
+        );
+        if (!deserializer.isFailure()) {
+            scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
+                    format("less priority than %s", deserializer.result().description()));
+        }
+        return combine(serializer, deserializer, DisambiguationResult::duplexResult);
+    }
+
+    private DetectionResult<DisambiguationResult> symmetricSerializedObject(final ResolvedType type,
+                                                                            final SerializedObjectOptions serializedObjectOptions,
+                                                                            final ScanInformationBuilder scanInformationBuilder) {
         final SymmetryBuilder symmetryBuilder = symmetryBuilder();
         final List<SerializedObjectDeserializer> deserializers = serializedObjectOptions.deserializers();
         deserializers.forEach(symmetryBuilder::addDeserializer);
@@ -131,12 +168,13 @@ public final class DefaultDisambiguator implements Disambiguator {
 
         final SerializersAndDeserializers symmetricResult = symmetric.result();
 
-        final DetectionResult<TypeSerializer> serializer = pickSerializer(symmetricResult);
+        final DetectionResult<TypeSerializer> serializer = pickSerializer(symmetricResult, this.customPrimitiveSerializerPreferences);
         if (!serializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(), format("most symmetry in %s", serializer.result().description()));
         }
 
-        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(symmetricResult, this.customPrimitivePreferences, serializedObjectPreferences);
+        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(
+                symmetricResult, this.customPrimitiveDeserializerPreferences, this.serializedObjectPreferences);
         if (!deserializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(), format("most symmetry in %s", deserializer.result().description()));
         }

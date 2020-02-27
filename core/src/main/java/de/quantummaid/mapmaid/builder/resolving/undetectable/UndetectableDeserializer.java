@@ -33,7 +33,7 @@ import lombok.ToString;
 import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class UndetectableDeserializer extends StatefulDeserializer {
 
     private UndetectableDeserializer(final Context context) {

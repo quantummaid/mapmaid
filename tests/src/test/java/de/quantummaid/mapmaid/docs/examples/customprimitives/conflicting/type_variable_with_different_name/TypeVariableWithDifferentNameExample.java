@@ -35,16 +35,20 @@ import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableN
 
 public final class TypeVariableWithDifferentNameExample {
 
+    @SuppressWarnings("unchecked")
     @Test
     public void typeVariableWithDifferentNameExample() {
         final ClassType resolvedType = fromClassWithGenerics(Street.class, Map.of(typeVariableName("T"), resolvedType(Object.class)));
         scenarioBuilderFor(resolvedType)
                 .withDeserializedForm(street("foo"))
                 .withSerializedForm("\"foo\"")
-                .withAllScenariosFailing("ede.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name.Street<java.lang.Object>: unable to detect", (mapMaidBuilder, capabilities) -> mapMaidBuilder
+                .withSerializationOnlySuccessful()
+                .withDeserializationFailing()
+                .withDuplexFailing()
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder
                         .withManuallyAddedDefinition(customPrimitive(resolvedType,
                                 object -> ((Street<Object>) object).stringValue(),
-                                Street::street), capabilities)) // TODO usage
+                                Street::street), capabilities))
                 .run();
     }
 }

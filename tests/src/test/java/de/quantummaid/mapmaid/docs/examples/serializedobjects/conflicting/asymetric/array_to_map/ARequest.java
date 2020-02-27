@@ -29,15 +29,18 @@ import lombok.ToString;
 
 import java.util.Map;
 
-import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ARequest {
-    public final Map<Name, Name> names; // TODO map nicht unterstützt oder asymetrisch
+    public final Map<Name, Name> names;
 
     public static ARequest aRequest(final Name[] names) {
-        throw wrongMethodCalledException();
+        final Map<Name, Name> map = stream(names)
+                .collect(toMap(x -> x, x -> x));
+        return new ARequest(map);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,15 +23,31 @@ package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asyme
 
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.different_name.AddALotRequest.addALotRequest;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-// TODO with serialized object/cp/collection/...
 public final class DifferentNameExample {
 
     @Test
     public void differentNameExample() {
         scenarioBuilderFor(AddALotRequest.class)
-                .withAllScenariosFailing("TODO", null) // TODO
+                .withDeserializedForm(addALotRequest("a", "b", "c", "d"))
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"street\": \"a\",\n" +
+                        "  \"townName\": \"b\",\n" +
+                        "  \"countryName\": \"d\",\n" +
+                        "  \"regionName\": \"c\"\n" +
+                        "}")
+                .withSerializationOnlySuccessful("" +
+                        "{\n" +
+                        "  \"streetName\": \"a\",\n" +
+                        "  \"townName\": \"b\",\n" +
+                        "  \"countryName\": \"d\",\n" +
+                        "  \"regionName\": \"c\"\n" +
+                        "}")
+                .withDeserializationSuccessful()
+                .withDuplexFailing()
                 .run();
     }
 }

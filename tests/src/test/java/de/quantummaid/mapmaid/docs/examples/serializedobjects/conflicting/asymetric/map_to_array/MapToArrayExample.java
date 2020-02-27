@@ -38,8 +38,11 @@ public final class MapToArrayExample {
                         "  ]\n" +
                         "}")
                 .withSerializationOnlySuccessful()
-                .withDeserializationFailing("java.util.Map<de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name, de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name>: unable to detect deserializer")
-                .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.map_to_array.ARequest: unable to detect duplex: no duplex detected:")
+                .withDeserializationFailing(
+                        "java.util.Map<de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name, " +
+                                "de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name>: unable to detect deserializer")
+                .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.map_to_array.ARequest: unable to detect duplex:\n" +
+                        "no duplex detected:")
                 .run();
     }
 }

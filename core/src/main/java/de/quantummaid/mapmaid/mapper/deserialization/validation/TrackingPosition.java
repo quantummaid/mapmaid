@@ -28,6 +28,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static java.lang.String.join;
 
 @ToString
@@ -37,7 +38,7 @@ final class TrackingPosition {
     private final List<String> positions;
 
     static TrackingPosition empty() {
-        return new TrackingPosition(new ArrayList<>(5));
+        return new TrackingPosition(smallList());
     }
 
     TrackingPosition next(final String name) {

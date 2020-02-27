@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,8 +31,12 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -45,7 +49,7 @@ public final class CustomPrimitiveSymmetryBuilder {
     private final Map<Class<?>, List<TypeDeserializer>> deserializers;
 
     public static CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder() {
-        return new CustomPrimitiveSymmetryBuilder(new HashMap<>(10), new HashMap<>(10));
+        return new CustomPrimitiveSymmetryBuilder(smallMap(), smallMap());
     }
 
     public void addDeserializer(final CustomPrimitiveDeserializer deserializer) {
@@ -73,13 +77,14 @@ public final class CustomPrimitiveSymmetryBuilder {
 
     private static <T> void ensureKeyIsPresent(final Class<?> type, final Map<Class<?>, List<T>> map) {
         if (!map.containsKey(type)) {
-            map.put(type, new ArrayList<>(3));
+            map.put(type, smallList());
         }
     }
 
     private Optional<SerializersAndDeserializers> customPrimitivesClass(final Class<?>... typesInOrder) {
         for (final Class<?> baseType : typesInOrder) {
-            if (this.serializers.containsKey(baseType) && this.deserializers.containsKey(baseType)) { // TODO
+            // TODO
+            if (this.serializers.containsKey(baseType) && this.deserializers.containsKey(baseType)) {
                 final SerializersAndDeserializers serializersAndDeserializers = serializersAndDeserializers(
                         this.serializers.get(baseType),
                         this.deserializers.get(baseType)

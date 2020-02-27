@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -31,7 +30,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,6 +56,6 @@ public final class EquivalenceSignature implements Comparable<EquivalenceSignatu
     public int compareTo(final EquivalenceSignature other) {
         final Integer mySize = this.fields.size();
         final Integer otherSize = other.fields.size();
-        return mySize.compareTo(otherSize)*-1;
+        return mySize.compareTo(otherSize) * -1;
     }
 }

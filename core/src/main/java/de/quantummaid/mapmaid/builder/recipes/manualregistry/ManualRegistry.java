@@ -34,10 +34,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.ModifierFieldDetector.modifierBased;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
@@ -52,9 +52,9 @@ import static java.util.Arrays.stream;
 public final class ManualRegistry implements Recipe {
     private static final FieldDetector FIELD_DETECTOR = modifierBased();
 
-    private final List<Definition> definitions = new ArrayList<>(10);
-    private final List<Class<?>> manuallyAddedCustomPrimitiveTypes = new ArrayList<>(10);
-    private final List<Class<?>> manuallyAddedSerializedObjectTypes = new ArrayList<>(10);
+    private final List<Definition> definitions = smallList();
+    private final List<Class<?>> manuallyAddedCustomPrimitiveTypes = smallList();
+    private final List<Class<?>> manuallyAddedSerializedObjectTypes = smallList();
 
     public static ManualRegistry manuallyRegisteredTypes() {
         return new ManualRegistry();
@@ -118,7 +118,8 @@ public final class ManualRegistry implements Recipe {
     public ManualRegistry withSerializedObject(final Class<?> type,
                                                final Field[] serializedFields,
                                                final String deserializationMethodName) {
-        throw new UnsupportedOperationException(); // TODO
+        // TODO
+        throw new UnsupportedOperationException();
         /*
         final ClassType fullType = fromClassWithoutGenerics(type);
         final List<ResolvedField> resolvedFields = resolvedPublicFields(fullType);

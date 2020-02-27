@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -30,10 +30,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceClass.equivalenceClass;
@@ -47,7 +47,7 @@ public final class SymmetryBuilder {
     private final Map<EquivalenceSignature, EquivalenceClass> equivalenceClasses;
 
     public static SymmetryBuilder symmetryBuilder() {
-        return new SymmetryBuilder(new HashMap<>(10));
+        return new SymmetryBuilder(smallMap());
     }
 
     public void addDeserializer(final SerializedObjectDeserializer deserializer) {
@@ -73,11 +73,13 @@ public final class SymmetryBuilder {
         return sorted.stream()
                 .map(this.equivalenceClasses::get)
                 .filter(EquivalenceClass::fullySupported)
-                .findFirst() // TODO
+                // TODO
+                .findFirst()
                 .map(equivalenceClass -> {
                     return serializersAndDeserializers(equivalenceClass.serializers(), equivalenceClass.deserializers());
                 })
                 .map(DetectionResult::success)
-                .orElseGet(() -> failure("No symmetric result")); // TODO
+                // TODO
+                .orElseGet(() -> failure("No symmetric result"));
     }
 }

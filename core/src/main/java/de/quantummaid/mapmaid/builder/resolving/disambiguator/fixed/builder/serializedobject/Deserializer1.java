@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,14 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+public interface Deserializer1<X, A> extends InvocableDeserializer<X> {
+    X deserialize(A field1);
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MyCustomPrimitive {
-    public static final MyCustomPrimitive FOO = new MyCustomPrimitive("foo");
-
-    private final String value;
-
-    public static MyCustomPrimitive fromStringValue(final String value) {
-        return new MyCustomPrimitive(value);
-    }
-
-    public String getValue() {
-        return this.value;
+    @SuppressWarnings("unchecked")
+    @Override
+    default X invoke(final Object[] arguments) {
+        return deserialize((A) arguments[0]);
     }
 }

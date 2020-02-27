@@ -34,12 +34,11 @@ import java.util.Locale;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DateFormatted {
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
-
     private final String value;
 
     public static DateFormatted fromDate(final Date date) {
-        final String formatted = SIMPLE_DATE_FORMAT.format(date);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+        final String formatted = simpleDateFormat.format(date);
         return new DateFormatted(formatted);
     }
 

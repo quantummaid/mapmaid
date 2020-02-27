@@ -21,10 +21,7 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.mixed_getter_factory;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example2.StreetName;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.multiple_static_factories.example1.RegionName;
 import lombok.*;
 
 @ToString
@@ -32,18 +29,18 @@ import lombok.*;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AddALotRequest {
     @Getter
-    private final StreetName streetName;
+    private final String streetName;
     @Getter
     private final TownName townName;
     @Getter
-    private final RegionName regionName;
+    private final String regionName;
     @Getter
-    private final CountryName countryName;
+    private final String countryName;
 
-    public static AddALotRequest addALotRequest(final StreetName streetName,
+    public static AddALotRequest addALotRequest(final String streetName,
                                                 final TownName townName,
-                                                final RegionName regionName,
-                                                final CountryName countryName) {
+                                                final String regionName,
+                                                final String countryName) {
         return new AddALotRequest(streetName, townName, regionName, countryName);
     }
 }

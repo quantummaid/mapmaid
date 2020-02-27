@@ -38,7 +38,7 @@ import static de.quantummaid.mapmaid.builder.resolving.undetectable.Undetectable
 import static java.lang.String.format;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class UndetectedDuplex extends StatefulDuplex {
 
     private UndetectedDuplex(final Context context) {

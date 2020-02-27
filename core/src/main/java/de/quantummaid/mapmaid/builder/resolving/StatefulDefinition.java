@@ -25,8 +25,6 @@ import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
-import static de.quantummaid.mapmaid.mapper.definitions.validation.statemachine.proxy.StateProxy.createStateProxyIfNotAlready;
-
 public abstract class StatefulDefinition {
     public final Context context;
 
@@ -45,10 +43,6 @@ public abstract class StatefulDefinition {
     public abstract StatefulDefinition addDeserialization(Reason reason);
 
     public abstract StatefulDefinition removeDeserialization(Reason reason);
-
-    static StatefulDefinition statefulDefinition(final StatefulDefinition statefulDefinition) {
-        return createStateProxyIfNotAlready(StatefulDefinition.class, statefulDefinition, StatefulDefinition::onEnter);
-    }
 
     public ResolvedType type() {
         return this.context.type();

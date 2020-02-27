@@ -64,6 +64,7 @@
     </modules>
 
     <build>
+        <!-- TODO
         <plugins>
             <plugin>
                 <groupId>de.quantummaid</groupId>
@@ -82,6 +83,7 @@
                 </executions>
             </plugin>
         </plugins>
+        -->
     </build>
 
     <properties>

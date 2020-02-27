@@ -29,13 +29,13 @@ import lombok.RequiredArgsConstructor;
 public class Example {
     public final String a;
     public final String b;
-    public final String c = "ppp";
+    public final String c;
 
     public static Example deserialize(final String a, final String b) {
-        return new Example(a, b);
+        return new Example(a, b, "ppp");
     }
 
     public static Example foo(final String a) {
-        return new Example(a, "qwer");
+        return new Example(a, "qwer", "ppp");
     }
 }

@@ -93,22 +93,9 @@ public final class SimpleDetector {
         final List<TypeSerializer> customPrimitiveSerializers;
         final List<SerializationFieldOptions> serializationFieldOptionsList;
         if (capabilities.hasSerialization()) {
-            customPrimitiveSerializers = this.customPrimitiveSerializationDetectors.stream()
-                    .map(detector -> detector.detect(type))
-                    .flatMap(Collection::stream)
-                    .collect(toList());
+            customPrimitiveSerializers = detectCustomPrimitiveSerializers(type);
             customPrimitiveSerializers.forEach(scanInformationBuilder::addSerializer);
-
-            final SerializationFieldOptions serializationFieldOptions = serializationFieldOptions();
-            this.fieldDetectors.stream()
-                    .map(fieldDetector -> fieldDetector.detect(type))
-                    .flatMap(Collection::stream)
-                    .forEach(serializationFieldOptions::add);
-            if(serializationFieldOptions.isEmpty()) {
-                serializationFieldOptionsList = emptyList();
-            } else {
-                serializationFieldOptionsList = singletonList(serializationFieldOptions);
-            }
+            serializationFieldOptionsList = detectSerializationFieldOptionsList(type);
             // TODO add to scan information
         } else {
             customPrimitiveSerializers = null;
@@ -118,15 +105,9 @@ public final class SimpleDetector {
         final List<SerializedObjectDeserializer> serializedObjectDeserializers;
         final List<TypeDeserializer> customPrimitiveDeserializers;
         if (capabilities.hasDeserialization()) {
-            serializedObjectDeserializers = this.serializedObjectDeserializationDetectors.stream()
-                    .map(detector -> detector.detect(type))
-                    .flatMap(Collection::stream)
-                    .collect(toList());
+            serializedObjectDeserializers = detectSerializedObjectDeserializers(type);
             serializedObjectDeserializers.forEach(scanInformationBuilder::addDeserializer);
-            customPrimitiveDeserializers = this.customPrimitiveDeserializationDetectors.stream()
-                    .map(detector -> detector.detect(type))
-                    .flatMap(Collection::stream)
-                    .collect(toList());
+            customPrimitiveDeserializers = detectCustomPrimitiveDeserializers(type);
             customPrimitiveDeserializers.forEach(scanInformationBuilder::addDeserializer);
         } else {
             serializedObjectDeserializers = null;
@@ -145,5 +126,39 @@ public final class SimpleDetector {
         }
         return resolvedType.typeParameters().stream()
                 .allMatch(SimpleDetector::isSupported);
+    }
+
+    private List<TypeSerializer> detectCustomPrimitiveSerializers(final ResolvedType type) {
+        return this.customPrimitiveSerializationDetectors.stream()
+                .map(detector -> detector.detect(type))
+                .flatMap(Collection::stream)
+                .collect(toList());
+    }
+
+    private List<SerializationFieldOptions> detectSerializationFieldOptionsList(final ResolvedType type) {
+        final SerializationFieldOptions serializationFieldOptions = serializationFieldOptions();
+        this.fieldDetectors.stream()
+                .map(fieldDetector -> fieldDetector.detect(type))
+                .flatMap(Collection::stream)
+                .forEach(serializationFieldOptions::add);
+        if (serializationFieldOptions.isEmpty()) {
+            return emptyList();
+        } else {
+            return singletonList(serializationFieldOptions);
+        }
+    }
+
+    private List<SerializedObjectDeserializer> detectSerializedObjectDeserializers(final ResolvedType type) {
+        return this.serializedObjectDeserializationDetectors.stream()
+                .map(detector -> detector.detect(type))
+                .flatMap(Collection::stream)
+                .collect(toList());
+    }
+
+    private List<TypeDeserializer> detectCustomPrimitiveDeserializers(final ResolvedType type) {
+        return this.customPrimitiveDeserializationDetectors.stream()
+                .map(detector -> detector.detect(type))
+                .flatMap(Collection::stream)
+                .collect(toList());
     }
 }

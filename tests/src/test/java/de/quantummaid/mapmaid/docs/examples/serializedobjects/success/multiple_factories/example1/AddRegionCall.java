@@ -41,10 +41,10 @@ public final class AddRegionCall {
     }
 
     public static AddRegionCall addRegionCall(final RegionName regionNameA) {
-        throw wrongMethodCalledException();
+        return new AddRegionCall(regionNameA, null);
     }
 
     public static AddRegionCall giveMeTheRegion(final RegionName regionNameA, final RegionName regionNameB) {
-        return new AddRegionCall(regionNameA, regionNameB);
+        return new AddRegionCall(regionNameA, null);
     }
 }

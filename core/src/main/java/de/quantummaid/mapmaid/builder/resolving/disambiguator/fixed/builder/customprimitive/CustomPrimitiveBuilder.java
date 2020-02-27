@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -37,6 +37,7 @@ public final class CustomPrimitiveBuilder {
     }
 
     // TODO lambdas -> interfaces
+    @SuppressWarnings("unchecked")
     public static <T> Definition customPrimitive(final Class<T> type,
                                                  final Function<T, String> serializationMethod,
                                                  final Function<String, T> deserializationMethod) {
@@ -46,18 +47,18 @@ public final class CustomPrimitiveBuilder {
                 (Function<String, Object>) deserializationMethod);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T, U> Definition customPrimitive(final Class<T> type,
-                                                 final Class<U> baseType,
-                                                 final Function<T, U> serializationMethod,
-                                                 final Function<U, T> deserializationMethod) {
+                                                    final Class<U> baseType,
+                                                    final Function<T, U> serializationMethod,
+                                                    final Function<U, T> deserializationMethod) {
         final ResolvedType resolvedType = fromClassWithoutGenerics(type);
         return customPrimitive(resolvedType, baseType,
                 (Function<Object, U>) serializationMethod,
                 (Function<U, Object>) deserializationMethod);
     }
 
-
-
+    @SuppressWarnings("unchecked")
     public static <T> Definition customPrimitive(final ResolvedType type,
                                                  final Function<Object, String> serializationMethod,
                                                  final Function<String, Object> deserializationMethod) {
@@ -66,6 +67,7 @@ public final class CustomPrimitiveBuilder {
         return generalDefinition(type, serializer, deserializer);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Definition customPrimitive(final ResolvedType type,
                                                  final Class<T> baseType,
                                                  final Function<Object, T> serializationMethod,
@@ -75,6 +77,7 @@ public final class CustomPrimitiveBuilder {
         return generalDefinition(type, serializer, deserializer);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Definition serializationOnlyCustomPrimitive(final Class<T> type,
                                                                   final Function<T, String> serializationMethod) {
         final ResolvedType resolvedType = fromClassWithoutGenerics(type);
@@ -93,6 +96,7 @@ public final class CustomPrimitiveBuilder {
         return deserializationOnlyCustomPrimitive(resolvedType, deserializationMethod);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Definition deserializationOnlyCustomPrimitive(final ResolvedType type,
                                                                     final Function<String, T> deserializationMethod) {
         final CustomPrimitiveDeserializer deserializer = createDeserializer(String.class, (Function<Object, ?>) (Object) deserializationMethod);

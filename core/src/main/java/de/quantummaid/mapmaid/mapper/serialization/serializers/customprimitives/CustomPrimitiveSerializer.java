@@ -65,7 +65,7 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
     }
 
     default Class<?> baseType() {
-        return String.class; // TODO
+        return String.class;
     }
 
     @Override

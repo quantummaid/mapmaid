@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -55,6 +55,7 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
         final ResolvedType genericType = ((ArrayType) type).componentType();
         context.setDeserializer(arrayDeserializer(genericType));
         context.setSerializer(arraySerializer(genericType));
-        return Optional.of(fixedResolvingDuplex(context)); // TODO unreasoned?
+        // TODO unreasoned?
+        return Optional.of(fixedResolvingDuplex(context));
     }
 }

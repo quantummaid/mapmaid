@@ -28,10 +28,11 @@ import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 
+// TODO make MapMaidException
 public final class WrongInputStructureException extends RuntimeException {
 
     private WrongInputStructureException(final String message) {
-        super(message); // TODO
+        super(message);
     }
 
     public static MapMaidException wrongInputStructureException(final Class<? extends Universal> expected,

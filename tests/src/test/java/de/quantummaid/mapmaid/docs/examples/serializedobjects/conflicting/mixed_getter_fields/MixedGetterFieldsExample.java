@@ -35,6 +35,7 @@ public final class MixedGetterFieldsExample {
         addALotRequest.setName(Name.fromStringValue("qwer"));
         addALotRequest.setTownNameA(TownName.townName("a"));
         addALotRequest.setTownNameB(TownName.townName("b"));
+        addALotRequest.setTownNameC(TownName.townName("c"));
 
         scenarioBuilderFor(AddALotRequest.class)
                 .withDeserializedForm(addALotRequest)
@@ -42,11 +43,11 @@ public final class MixedGetterFieldsExample {
                         "{\n" +
                         "  \"name\": \"qwer\",\n" +
                         "  \"townNameA\": \"a\",\n" +
-                        "  \"townNameB\": \"b\"\n" +
-                        "}")
-                .withAllScenariosFailing("TODO", (mapMaidBuilder, capabilities) -> {
-                    //enforceFieldsFor(AddALotRequest.class, "streetName", "townNameA", "townNameB");
-                }) // TODO
+                        "  \"townNameB\": \"b\",\n" +
+                        "  \"townNameC\": \"c\"\n" +
+                        "}"
+                )
+                .withAllScenariosSuccessful()
                 .run();
     }
 }

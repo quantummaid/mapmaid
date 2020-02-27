@@ -66,5 +66,5 @@ public interface Signal {
         return Optional.empty();
     }
 
-    StatefulDefinition handleState(final StatefulDefinition definition);
+    StatefulDefinition handleState(StatefulDefinition definition);
 }

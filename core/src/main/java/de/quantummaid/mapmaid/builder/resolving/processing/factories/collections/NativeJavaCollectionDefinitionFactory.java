@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -58,6 +58,7 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
         final CollectionInformation collectionInformation = this.collectionInformations.get(type.assignableType());
         context.setSerializer(listSerializer(genericType));
         context.setDeserializer(listDeserializer(genericType, collectionInformation.mapper));
-        return Optional.of(fixedResolvingDuplex(context)); // TODO unreasoned?
+        // TODO unreasoned?
+        return Optional.of(fixedResolvingDuplex(context));
     }
 }

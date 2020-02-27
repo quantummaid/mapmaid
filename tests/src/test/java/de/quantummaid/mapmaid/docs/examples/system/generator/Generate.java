@@ -25,8 +25,10 @@ import static de.quantummaid.mapmaid.docs.examples.system.generator.concepts.Cus
 
 public final class Generate {
 
+    private Generate() {
+    }
+
     public static void main(final String[] args) {
-        final String rendered = customPrimitive("StreetName", "String").render();
-        System.out.println(rendered);
+        customPrimitive("StreetName", "String").render();
     }
 }

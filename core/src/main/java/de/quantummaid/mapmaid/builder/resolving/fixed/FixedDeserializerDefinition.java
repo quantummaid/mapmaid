@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -24,7 +24,6 @@ package de.quantummaid.mapmaid.builder.resolving.fixed;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.fixed.resolving.FixedResolvingDuplex;
 
 import static de.quantummaid.mapmaid.builder.resolving.fixed.resolving.FixedResolvingDuplex.fixedResolvingDuplex;
 import static de.quantummaid.mapmaid.builder.resolving.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;

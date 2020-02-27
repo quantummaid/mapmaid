@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,7 +29,6 @@ import lombok.ToString;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 @ToString
@@ -38,8 +37,8 @@ import static java.util.Collections.emptyList;
 public final class Preferences<T> {
     private final List<Preference<T>> preferences;
 
-    public static <T> Preferences<T> preferences(final Preference<T>... preferences) {
-        return new Preferences<>(asList(preferences));
+    public static <T> Preferences<T> preferences(final List<Preference<T>> preferences) {
+        return new Preferences<>(preferences);
     }
 
     public List<T> prefered(final List<T> options) {

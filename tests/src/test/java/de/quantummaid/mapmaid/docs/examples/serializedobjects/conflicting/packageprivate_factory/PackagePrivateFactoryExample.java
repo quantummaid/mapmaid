@@ -24,28 +24,32 @@ package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.packa
 import de.quantummaid.mapmaid.builder.models.constructor.Name;
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder;
-import de.quantummaid.mapmaid.docs.examples.system.mode.NormalExampleMode;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation.initializationFailed;
-import static de.quantummaid.mapmaid.docs.examples.system.expectation.SerializationSuccessfulExpectation.serializationWas;
-import static de.quantummaid.mapmaid.docs.examples.system.mode.NormalExampleMode.serializationOnly;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
 
 public final class PackagePrivateFactoryExample {
-
-    private static final String ERROR_MESSAGE = "Unable to register type 'de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.packageprivate_factory.AddALotRequest'";
 
     @Test
     public void packagePrivateFactoryExample() {
         ScenarioBuilder.scenarioBuilderFor(AddALotRequest.class)
                 .withDeserializedForm(AddALotRequest.addALotRequest(new Name("foo"), TownName.townName("bar")))
-                .withScenario(NormalExampleMode.withAllCapabilities(), initializationFailed(ERROR_MESSAGE))
-                .withScenario(NormalExampleMode.deserializationOnly(), initializationFailed(ERROR_MESSAGE))
-                .withScenario(serializationOnly(), serializationWas("" +
+                .withSerializedForm("" +
                         "{\n" +
                         "  \"name\": \"foo\",\n" +
                         "  \"townName\": \"bar\"\n" +
-                        "}"))
+                        "}")
+
+                .withSerializationOnlySuccessful()
+                .withDeserializationFailing()
+                .withDuplexFailing()
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> {
+                    mapMaidBuilder.withManuallyAddedDefinition(serializedObjectOfType(AddALotRequest.class)
+                            .withField("name", Name.class, object -> object.name)
+                            .withField("townName", TownName.class, object -> object.townName)
+                            .deserializedUsing(AddALotRequest::addALotRequest)
+                            .create(), capabilities);
+                })
                 .run();
     }
 }

@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.symetric.array_to_set;
 
-
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

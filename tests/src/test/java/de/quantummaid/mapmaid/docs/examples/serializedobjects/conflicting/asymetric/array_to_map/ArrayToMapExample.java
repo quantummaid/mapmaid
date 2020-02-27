@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.array_to_map;
 
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -30,7 +31,15 @@ public final class ArrayToMapExample {
     @Test
     public void arrayToMapExample() {
         scenarioBuilderFor(ARequest.class)
-                .withAllScenariosFailing("TODO", null) // TODO
+                .withSerializedForm("" +
+                        "{\n" +
+                        "   \"names\": [ \"foo\" ]\n" +
+                        "}")
+                .withDeserializedForm(ARequest.aRequest(new Name[]{Name.fromStringValue("foo")}))
+                .withSerializationFailing("java.util.Map<de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name," +
+                        " de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name>: unable to detect serializer")
+                .withDeserializationSuccessful()
+                .withDuplexFailing()
                 .run();
     }
 }

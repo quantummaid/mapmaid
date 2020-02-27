@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,6 +26,9 @@ public final class Lingo {
     public static final String DESERIALIZATION_ONLY = "deserialization-only";
     public static final String DUPLEX = "duplex";
     public static final String DISAMBIGUATOR = "disambiguator";
+
+    private Lingo() {
+    }
 
     public static String mode(final boolean serializer, final boolean deserializer) {
         if (deserializer && !serializer) {

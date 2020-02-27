@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,14 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject;
+package de.quantummaid.mapmaid;
 
-public interface Deserializer_1<X, A> extends InvocableDeserializer<X> {
-    X deserialize(A field1);
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    default X invoke(final Object[] arguments) {
-        return deserialize((A) arguments[0]);
+public final class Collection {
+    private static final int SMALL_SIZE = 10;
+
+    private Collection() {
+    }
+
+    public static <T> List<T> smallList() {
+        return new ArrayList<>(SMALL_SIZE);
+    }
+
+    public static <K, V> Map<K, V> smallMap() {
+        return new HashMap<>(SMALL_SIZE);
     }
 }

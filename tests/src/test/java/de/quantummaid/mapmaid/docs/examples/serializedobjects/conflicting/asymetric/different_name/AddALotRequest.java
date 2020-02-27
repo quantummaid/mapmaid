@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,10 +21,6 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.asymetric.different_name;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example2.StreetName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.multiple_static_factories.example1.RegionName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,15 +30,15 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AddALotRequest {
-    public final StreetName streetName;
-    public final TownName townName;
-    public final RegionName regionName;
-    public final CountryName countryName;
+    public final String streetName;
+    public final String townName;
+    public final String regionName;
+    public final String countryName;
 
-    public static AddALotRequest addALotRequest(final StreetName street,
-                                                final TownName townName,
-                                                final RegionName regionName,
-                                                final CountryName countryName) {
+    public static AddALotRequest addALotRequest(final String street,
+                                                final String townName,
+                                                final String regionName,
+                                                final String countryName) {
         return new AddALotRequest(street, townName, regionName, countryName);
     }
 }

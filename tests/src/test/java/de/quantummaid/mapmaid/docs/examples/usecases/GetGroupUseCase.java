@@ -21,8 +21,6 @@
 
 package de.quantummaid.mapmaid.docs.examples.usecases;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example1.GroupName;
-
 import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
 
 public final class GetGroupUseCase {
@@ -30,7 +28,7 @@ public final class GetGroupUseCase {
     private GetGroupUseCase() {
     }
 
-    public GroupName getGroup() {
+    public String getGroup() {
         throw wrongMethodCalledException();
     }
 }

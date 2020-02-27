@@ -19,21 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.entities;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.preferred_factory.class_name;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionRecipe.injectionOnly;
+import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-public final class ExampleTests {
+public final class PreferredFactoryExample {
 
     @Test
-    public void test() {
-        aMapMaid()
-                .mapping(Pojo.class)
-                .mapping(Reservation.class)
-                .usingRecipe(injectionOnly(ReservationDao.class))
-                .build();
+    public void preferredFactoryExample() {
+        scenarioBuilderFor(PreferredFactorySerializedObject.class)
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"value2\": \"b\",\n" +
+                        "  \"value1\": \"a\",\n" +
+                        "  \"value4\": \"d\",\n" +
+                        "  \"value3\": \"c\"\n" +
+                        "}")
+                .withDeserializedForm(PreferredFactorySerializedObject.preferredFactorySerializedObject("a", "b", "c", "d"))
+                .withAllScenariosSuccessful()
+                .run();
     }
 }

@@ -26,10 +26,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static java.util.Arrays.asList;
 
 @ToString
@@ -41,7 +41,7 @@ public final class FieldModel {
     private final List<String> modifiers;
 
     public static FieldModel field(final String name, final String type) {
-        return new FieldModel(name, type, new ArrayList<>(5));
+        return new FieldModel(name, type, smallList());
     }
 
     public FieldModel withModifier(final String modifier) {

@@ -32,7 +32,7 @@ import static de.quantummaid.mapmaid.builder.resolving.Reason.becauseOf;
 import static de.quantummaid.mapmaid.builder.resolving.resolved.ResolvedDuplex.resolvedDuplex;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class ResolvingDuplex extends StatefulDeserializer {
 
     private ResolvingDuplex(final Context context) {

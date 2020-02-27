@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,13 +25,17 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveAsEnumDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.EnumCustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguator.defaultDisambiguator;
 
@@ -40,6 +44,7 @@ import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisa
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DefaultDisambiguatorBuilder {
     private String preferredCustomPrimitiveFactoryName = "fromStringValue";
+    private String preferredCustomPrimitiveSerializationMethodName = "stringValue";
     private String preferredSerializedObjectFactoryName = "deserialize";
 
     public static DefaultDisambiguatorBuilder defaultDisambiguatorBuilder() {
@@ -50,33 +55,87 @@ public final class DefaultDisambiguatorBuilder {
         this.preferredCustomPrimitiveFactoryName = preferredCustomPrimitiveFactoryName;
     }
 
+    public void setPreferredCustomPrimitiveSerializationMethodName(final String preferredCustomPrimitiveSerializationMethodName) {
+        this.preferredCustomPrimitiveSerializationMethodName = preferredCustomPrimitiveSerializationMethodName;
+    }
+
     public void setPreferredSerializedObjectFactoryName(final String preferredSerializedObjectFactoryName) {
         this.preferredSerializedObjectFactoryName = preferredSerializedObjectFactoryName;
     }
 
     public DefaultDisambiguator build() {
-        final Preferences<TypeDeserializer> customPrimitivePreferences = Preferences.preferences(
+        final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences = Preferences.preferences(List.of(
                 deserializer -> deserializer instanceof CustomPrimitiveAsEnumDeserializer,
-                deserializer -> {
-                    if (!(deserializer instanceof CustomPrimitiveByMethodDeserializer)) {
-                        return false;
-                    }
-                    final Method method = ((CustomPrimitiveByMethodDeserializer) deserializer).method();
-                    return method.getName().equals(this.preferredCustomPrimitiveFactoryName);
-                }
-        );
+                customPrimitiveFactoryNamed(this.preferredCustomPrimitiveFactoryName),
+                customPrimitiveFactoryWithSameNameAsClass()
+        ));
 
-        final Preferences<TypeDeserializer> serializedObjectPreferences = Preferences.preferences(
-                deserializer -> {
-                    if (!(deserializer instanceof MethodSerializedObjectDeserializer)) {
-                        return false;
-                    }
-                    final Method method = ((MethodSerializedObjectDeserializer) deserializer).method().method();
-                    return method.getName().equals(this.preferredSerializedObjectFactoryName);
-                },
+        final Preferences<TypeSerializer> customPrimitiveSerializerPreferences = Preferences.preferences(List.of(
+                serializer -> serializer instanceof EnumCustomPrimitiveSerializer,
+                customPrimitiveSerializerNamed(this.preferredCustomPrimitiveSerializationMethodName)
+        ));
+
+        final Preferences<TypeDeserializer> serializedObjectPreferences = Preferences.preferences(List.of(
+                serializedObjectFactoryNamed(this.preferredSerializedObjectFactoryName),
+                serializedObjectFactoryWithSameNameAsClass(),
                 deserializer -> deserializer instanceof MethodSerializedObjectDeserializer
-        );
+        ));
 
-        return defaultDisambiguator(customPrimitivePreferences, serializedObjectPreferences);
+        return defaultDisambiguator(
+                customPrimitiveDeserializerPreferences,
+                customPrimitiveSerializerPreferences,
+                serializedObjectPreferences
+        );
+    }
+
+    private static Preference<TypeDeserializer> serializedObjectFactoryNamed(final String name) {
+        return serializedObjectFactoryThat(method -> method.getName().equals(name));
+    }
+
+    private static Preference<TypeDeserializer> serializedObjectFactoryWithSameNameAsClass() {
+        return serializedObjectFactoryThat(DefaultDisambiguatorBuilder::methodHasSameNameAsDeclaringClass);
+    }
+
+    private static Preference<TypeDeserializer> serializedObjectFactoryThat(final Predicate<Method> filter) {
+        return deserializer -> {
+            if (!(deserializer instanceof MethodSerializedObjectDeserializer)) {
+                return false;
+            }
+            final Method method = ((MethodSerializedObjectDeserializer) deserializer).method().method();
+            return filter.test(method);
+        };
+    }
+
+    private static Preference<TypeSerializer> customPrimitiveSerializerNamed(final String name) {
+        return serializer -> {
+            if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
+                return false;
+            }
+            final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
+            return method.getName().equals(name);
+        };
+    }
+
+    private static Preference<TypeDeserializer> customPrimitiveFactoryNamed(final String name) {
+        return customPrimitiveFactoryThat(method -> method.getName().equals(name));
+    }
+
+    private static Preference<TypeDeserializer> customPrimitiveFactoryWithSameNameAsClass() {
+        return customPrimitiveFactoryThat(DefaultDisambiguatorBuilder::methodHasSameNameAsDeclaringClass);
+    }
+
+    private static Preference<TypeDeserializer> customPrimitiveFactoryThat(final Predicate<Method> filter) {
+        return deserializer -> {
+            if (!(deserializer instanceof CustomPrimitiveByMethodDeserializer)) {
+                return false;
+            }
+            final Method method = ((CustomPrimitiveByMethodDeserializer) deserializer).method();
+            return filter.test(method);
+        };
+    }
+
+    private static boolean methodHasSameNameAsDeclaringClass(final Method method) {
+        final String className = method.getDeclaringClass().getSimpleName().toLowerCase();
+        return method.getName().toLowerCase().equals(className);
     }
 }

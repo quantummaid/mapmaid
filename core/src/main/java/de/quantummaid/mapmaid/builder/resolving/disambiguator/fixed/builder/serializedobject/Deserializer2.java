@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,19 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject;
 
-public interface Deserializer_6<X, A, B, C, D, E, F> extends InvocableDeserializer<X> {
-    X deserialize(A field1, B field2, C field3, D field4, E field5, F field6);
+public interface Deserializer2<X, A, B> extends InvocableDeserializer<X> {
+    X deserialize(A field1, B field2);
 
     @SuppressWarnings("unchecked")
     @Override
     default X invoke(final Object[] arguments) {
-        return deserialize(
-                (A) arguments[0],
-                (B) arguments[1],
-                (C) arguments[2],
-                (D) arguments[3],
-                (E) arguments[4],
-                (F) arguments[5]
-        );
+        return deserialize((A) arguments[0], (B) arguments[1]);
     }
 }

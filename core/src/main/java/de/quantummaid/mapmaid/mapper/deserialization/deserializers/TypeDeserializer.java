@@ -52,7 +52,8 @@ public interface TypeDeserializer {
 
     String classification();
 
-    boolean mirrors(final TypeSerializer serializer);
+    /* TODO */
+    boolean mirrors(TypeSerializer serializer);
 
     static <T extends Universal> T castSafely(final Universal universalType,
                                               final Class<T> type,

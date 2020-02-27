@@ -32,7 +32,7 @@ import static de.quantummaid.mapmaid.builder.resolving.Reason.becauseOf;
 import static de.quantummaid.mapmaid.builder.resolving.resolved.ResolvedSerializer.resolvedSerializer;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class ResolvingSerializer extends StatefulSerializer {
 
     private ResolvingSerializer(final Context context) {

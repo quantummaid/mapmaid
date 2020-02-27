@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,7 +28,6 @@ import de.quantummaid.mapmaid.builder.resolving.fixed.FixedDeserializerDefinitio
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -37,7 +36,7 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResu
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class FixedResolvedDeserializer extends FixedDeserializerDefinition {
 
     private FixedResolvedDeserializer(final Context context) {

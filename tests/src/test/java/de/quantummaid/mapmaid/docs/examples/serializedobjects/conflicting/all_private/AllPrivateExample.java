@@ -50,7 +50,7 @@ public final class AllPrivateExample {
                                         .withField("townNameB", TownName.class, object -> TownName.townName("c"))
                                         .withField("townNameC", TownName.class, object -> TownName.townName("d"))
                                         .deserializedUsing((field1, field2, field3, field4) -> AddALotRequest.addALotRequest())
-                                        .create(), capabilities) // TODO
+                                        .create(), capabilities)
                 )
                 .run();
     }

@@ -34,8 +34,8 @@ public final class Name {
 
     private final String value;
 
-    public static Name concat(final Name name1, final Name name2) {
-        return new Name(name1.value + name2.value);
+    public static Name concat(final String name1, final String name2) {
+        return new Name(name1 + name2);
     }
 
     public String internalValueForMapping() {

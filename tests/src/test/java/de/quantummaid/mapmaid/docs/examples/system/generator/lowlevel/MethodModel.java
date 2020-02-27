@@ -26,10 +26,10 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
@@ -47,9 +47,10 @@ public final class MethodModel {
     public static MethodModel method(final String name) {
         return new MethodModel(name,
                 "void",
-                new ArrayList<>(5),
-                new ArrayList<>(5),
-                new ArrayList<>(5));
+                smallList(),
+                smallList(),
+                smallList()
+        );
     }
 
     public MethodModel withReturnType(final String returnType) {
@@ -83,13 +84,12 @@ public final class MethodModel {
     }
 
     public String render() {
-        final String parametersString = this.parameters.stream()
-                .map(ParameterModel::render)
-                .collect(joining(", ", "(", ")"));
-
         final StringJoiner headJoiner = new StringJoiner(" ", "\t", "");
         this.modifiers.forEach(headJoiner::add);
         headJoiner.add(this.returnType);
+        final String parametersString = this.parameters.stream()
+                .map(ParameterModel::render)
+                .collect(joining(", ", "(", ")"));
         headJoiner.add(this.name + parametersString);
         headJoiner.add("{");
         final String head = headJoiner.toString();

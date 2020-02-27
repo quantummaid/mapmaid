@@ -98,12 +98,6 @@ public final class MarshallerSpecs {
 
     @Test
     public void testUrlEncodedMarshallingWithMapsIsPossible() {
-        /*
-        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
-        final ScanInformation scanInformation = mapMaid.debugInformation().scanInformationFor(AComplexNestedType.class);
-        System.out.println("scanInformation = " + scanInformation); // TODO
-         */
-
         Given.givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidSerializes(Instances.theFullyInitializedNestedExampleDto()).withMarshallingType(urlEncoded())
                 .theSerializationResultWas("" +
@@ -121,8 +115,10 @@ public final class MarshallerSpecs {
     public void testUnknownMarshallerThrowsAnException() {
         Given.givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(marshallingType("unknown"))
-                .anExceptionIsThrownWithAMessageContaining(
-                        "Unsupported marshalling type 'unknown'," +
-                                " known marshalling types are: ['urlencoded', 'json', 'yaml', 'xml']");
+                .anExceptionIsThrownWithAMessageContaining("Unsupported marshalling type 'unknown', known marshalling types are:")
+                .anExceptionIsThrownWithAMessageContaining("'urlencoded'")
+                .anExceptionIsThrownWithAMessageContaining("'json'")
+                .anExceptionIsThrownWithAMessageContaining("'yaml'")
+                .anExceptionIsThrownWithAMessageContaining("'xml'");
     }
 }

@@ -30,6 +30,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.KeyElement.keyElement;
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
@@ -41,7 +42,7 @@ final class Key {
     private final List<KeyElement> parts;
 
     static Key emptyKey() {
-        return new Key(new ArrayList<>(5));
+        return new Key(smallList());
     }
 
     static Key parseKey(final String string) {

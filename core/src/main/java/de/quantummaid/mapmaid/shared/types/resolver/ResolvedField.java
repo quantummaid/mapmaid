@@ -51,8 +51,10 @@ public final class ResolvedField {
         final Class<?> type = fullType.assignableType();
         return stream(type.getFields())
                 .filter(field -> isPublic(field.getModifiers()))
-                .filter(field -> !isStatic(field.getModifiers())) // TODO no?
-                .filter(field -> !Modifier.isTransient(field.getModifiers())) // TODO no
+                // TODO no?
+                .filter(field -> !isStatic(field.getModifiers()))
+                // TODO no
+                .filter(field -> !Modifier.isTransient(field.getModifiers()))
                 .map(field -> {
                     final ResolvedType resolved = resolveType(field.getGenericType(), fullType);
                     return resolvedField(field.getName(), resolved, field);

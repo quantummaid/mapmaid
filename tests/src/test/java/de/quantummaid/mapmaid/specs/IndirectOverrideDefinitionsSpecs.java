@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
@@ -74,7 +75,7 @@ public final class IndirectOverrideDefinitionsSpecs {
                         .mapping(AComplexNestedType.class)
                         .withManuallyAddedDefinition(generalDefinition(
                                 fromClassWithoutGenerics(AComplexType.class),
-                                de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
+                                SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
                                         List.of(SerializationField.serializationField(fromClassWithoutGenerics(AString.class), "foo", object -> AString.fromStringValue("bar")))
                                 )),
                                 new SerializedObjectDeserializer() {
@@ -90,7 +91,8 @@ public final class IndirectOverrideDefinitionsSpecs {
 
                                     @Override
                                     public String description() {
-                                        throw new UnsupportedOperationException(); // TODO
+                                        // TODO
+                                        throw new UnsupportedOperationException();
                                     }
                                 }
                         ))

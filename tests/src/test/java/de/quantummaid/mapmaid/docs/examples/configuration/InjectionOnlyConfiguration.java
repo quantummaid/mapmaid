@@ -24,7 +24,6 @@ package de.quantummaid.mapmaid.docs.examples.configuration;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.docs.examples.entities.Reservation;
 import de.quantummaid.mapmaid.docs.examples.entities.ReservationDao;
-import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionRecipe.injectionOnly;
@@ -38,10 +37,5 @@ public final class InjectionOnlyConfiguration {
                 .usingRecipe(injectionOnly(ReservationDao.class))
                 .build();
         //Showcase end injectionOnly
-    }
-
-    @Test
-    public void test() {
-        mapMaid();
     }
 }

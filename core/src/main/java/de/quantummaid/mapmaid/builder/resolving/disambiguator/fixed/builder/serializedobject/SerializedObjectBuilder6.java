@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,18 +26,30 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.Field.field;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder7.serializedObjectBuilder7;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializedObjectBuilder_7<X, A, B, C, D, E, F, G> {
+public final class SerializedObjectBuilder6<X, A, B, C, D, E, F> {
     private final Builder builder;
 
-    public static <X, A, B, C, D, E, F, G> SerializedObjectBuilder_7<X, A, B, C, D, E, F, G> serializedObjectBuilder_7(final Builder builder) {
-        return new SerializedObjectBuilder_7<>(builder);
+    public static <X, A, B, C, D, E, F> SerializedObjectBuilder6<X, A, B, C, D, E, F> serializedObjectBuilder6(final Builder builder) {
+        return new SerializedObjectBuilder6<>(builder);
     }
 
-    public Builder deserializedUsing(final Deserializer_7<X, A, B, C, D, E, F, G> deserializer) {
+    @SuppressWarnings("unchecked")
+    public <G> SerializedObjectBuilder7<X, A, B, C, D, E, F, G> withField(final String name,
+                                                                          final Class<G> type,
+                                                                          final Query<X, G> query) {
+        this.builder.addField(field(type, name, (Query<Object, Object>) query));
+        return serializedObjectBuilder7(this.builder);
+    }
+
+    public Builder deserializedUsing(final Deserializer6<X, A, B, C, D, E, F> deserializer) {
         this.builder.setDeserializer(deserializer);
-        return this.builder; // TODO
+        // TODO
+        return this.builder;
     }
 }

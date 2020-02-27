@@ -125,24 +125,19 @@ public final class IndividuallyAddedModelsBuilderTest {
     public static MapMaid theIndividuallyAddedTypesMapMaid1() {
         final Gson gson = new Gson();
 
-        throw new UnsupportedOperationException();
-        /*
-        TODO
         return MapMaid.aMapMaid()
-                .withDetector(conventionalDetector(
-                        "serialize", "" +
-                                "deserialize",
-                        "restore",
-                        ".*")
-                )
+                .withAdvancedSettings(advancedBuilder -> {
+                    advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
+                    advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");
+                    advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
+                    advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
+                })
                 .usingRecipe(manuallyRegisteredTypes()
                         .withSerializedObjects(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
                         .withCustomPrimitives(EmailAddress.class, Subject.class, Body.class)
                 )
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
-         */
     }
 
     @Test

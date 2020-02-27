@@ -63,26 +63,24 @@ public final class Deserializer {
     private final ValidationMappings validationMappings;
     private final Unmarshallers unmarshallers;
     private final InternalDeserializer internalDeserializer;
-    private final InjectorFactory injectorFactory;
     private final DebugInformation debugInformation;
+    private final InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory();
 
     public static Deserializer theDeserializer(final MarshallerRegistry<Unmarshaller> unmarshallerRegistry,
                                                final Definitions definitions,
                                                final CustomPrimitiveMappings customPrimitiveMappings,
                                                final ValidationMappings exceptionMapping,
                                                final ValidationErrorsMapping onValidationErrors,
-                                               final InjectorFactory injectorFactory,
                                                final DebugInformation debugInformation) {
         validateNotNull(unmarshallerRegistry, "unmarshallerRegistry");
         validateNotNull(definitions, "definitions");
         validateNotNull(customPrimitiveMappings, "customPrimitiveMappings");
         validateNotNull(exceptionMapping, "validationMappings");
         validateNotNull(onValidationErrors, "onValidationErrors");
-        validateNotNull(injectorFactory, "injectorFactory");
         validateNotNull(debugInformation, "debugInformation");
         final Unmarshallers unmarshallers = unmarshallers(unmarshallerRegistry);
         final InternalDeserializer internalDeserializer = internalDeserializer(definitions, customPrimitiveMappings, onValidationErrors);
-        return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, injectorFactory, debugInformation);
+        return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, debugInformation);
     }
 
     public <T> T deserializeFromMap(final Map<String, Object> input,

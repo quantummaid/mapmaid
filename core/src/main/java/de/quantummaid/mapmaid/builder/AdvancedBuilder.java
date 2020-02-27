@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -38,6 +38,7 @@ import lombok.ToString;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguatorBuilder.defaultDisambiguatorBuilder;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry.marshallerRegistry;
@@ -47,8 +48,8 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AdvancedBuilder {
-    private Map<MarshallingType, Marshaller> marshallerMap = new HashMap<>(1);
-    private Map<MarshallingType, Unmarshaller> unmarshallerMap = new HashMap<>(1);
+    private Map<MarshallingType, Marshaller> marshallerMap = smallMap();
+    private Map<MarshallingType, Unmarshaller> unmarshallerMap = smallMap();
     private final DefaultDisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
 
     public static AdvancedBuilder advancedBuilder() {
@@ -57,6 +58,11 @@ public final class AdvancedBuilder {
 
     public AdvancedBuilder withPreferredCustomPrimitiveFactoryName(final String name) {
         this.defaultDisambiguatorBuilder.setPreferredCustomPrimitiveFactoryName(name);
+        return this;
+    }
+
+    public AdvancedBuilder withPreferredCustomPrimitiveSerializationMethodName(final String name) {
+        this.defaultDisambiguatorBuilder.setPreferredCustomPrimitiveSerializationMethodName(name);
         return this;
     }
 
@@ -104,7 +110,8 @@ public final class AdvancedBuilder {
 
     Disambiguators buildDisambiguators() {
         final DefaultDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
-        final Map<ResolvedType, Disambiguator> specialDisambiguators = new HashMap<>(10); // TODO
+        // TODO
+        final Map<ResolvedType, Disambiguator> specialDisambiguators = new HashMap<>(10);
         final Disambiguators disambiguators = disambiguators(defaultDisambiguator, specialDisambiguators);
         return disambiguators;
     }

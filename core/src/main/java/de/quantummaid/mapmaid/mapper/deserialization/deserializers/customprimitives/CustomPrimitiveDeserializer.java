@@ -108,6 +108,7 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
         if (!(serializer instanceof CustomPrimitiveSerializer)) {
             return false;
         }
-        return true; // TODO
+        // TODO
+        return true;
     }
 }

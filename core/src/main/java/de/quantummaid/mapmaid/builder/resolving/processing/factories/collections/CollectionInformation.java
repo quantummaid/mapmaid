@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
- * "License"), you may not use this file except in compliance
+ * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -38,8 +38,9 @@ import static java.util.stream.Collectors.toMap;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CollectionInformation {
-    private final Class<?> type;
+    // TODO
     final Function<List<Object>, Collection<Object>> mapper;
+    private final Class<?> type;
 
     public static Map<Class<?>, CollectionInformation> collectionInformations() {
         return Stream.of(
@@ -71,6 +72,6 @@ public final class CollectionInformation {
 
     public static CollectionInformation collectionInformation(final Class<?> type,
                                                               final Function<List<Object>, Collection<Object>> mapper) {
-        return new CollectionInformation(type, mapper);
+        return new CollectionInformation(mapper, type);
     }
 }

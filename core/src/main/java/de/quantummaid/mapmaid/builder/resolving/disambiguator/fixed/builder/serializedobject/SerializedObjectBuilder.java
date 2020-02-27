@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,7 +28,7 @@ import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.Field.field;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.Builder.emptyBuilder;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder_1.serializedObjectBuilder_1;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder1.serializedObjectBuilder1;
 
 @ToString
 @EqualsAndHashCode
@@ -41,10 +41,10 @@ public final class SerializedObjectBuilder<X> {
     }
 
     @SuppressWarnings("unchecked")
-    public <A> SerializedObjectBuilder_1<X, A> withField(final String name,
-                                                         final Class<A> type,
-                                                         final Query<X, A> query) {
+    public <A> SerializedObjectBuilder1<X, A> withField(final String name,
+                                                        final Class<A> type,
+                                                        final Query<X, A> query) {
         this.fieldsBuilder.addField(field(type, name, (Query<Object, Object>) query));
-        return serializedObjectBuilder_1(this.fieldsBuilder);
+        return serializedObjectBuilder1(this.fieldsBuilder);
     }
 }

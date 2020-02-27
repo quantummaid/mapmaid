@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -39,11 +39,16 @@ public final class HashCodeCustomPrimitive {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof HashCodeCustomPrimitive))
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof HashCodeCustomPrimitive)) {
             return false;
+        }
         final HashCodeCustomPrimitive other = (HashCodeCustomPrimitive) o;
-        if (this.value != other.value) return false;
+        if (this.value != other.value) {
+            return false;
+        }
         return true;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,15 +26,12 @@ import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.shared.types.ArrayType.fromArrayClass;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithGenerics;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
 
+// TODO move
 public final class Mirror {
 
     private Mirror() {
@@ -45,11 +42,12 @@ public final class Mirror {
         if (fieldsA.size() != fieldsB.size()) {
             return false;
         }
-        for (final String name : fieldsA.keySet()) {
+        for (final Map.Entry<String, ResolvedType> entry : fieldsA.entrySet()) {
+            final String name = entry.getKey();
             if (!fieldsB.containsKey(name)) {
                 return false;
             }
-            if (!mirrors(fieldsA.get(name), fieldsB.get(name))) {
+            if (!mirrors(entry.getValue(), fieldsB.get(name))) {
                 return false;
             }
         }
@@ -76,11 +74,5 @@ public final class Mirror {
             return Optional.of(classType.typeParameter(typeVariableName("E")));
         }
         return Optional.empty();
-    }
-
-    public static void main(String[] args) {
-        final boolean mirrors = mirrors(fromArrayClass(String[].class),
-                fromClassWithGenerics(List.class, Map.of(typeVariableName("E"), fromClassWithoutGenerics(String.class))));
-        System.out.println("mirrors = " + mirrors);
     }
 }

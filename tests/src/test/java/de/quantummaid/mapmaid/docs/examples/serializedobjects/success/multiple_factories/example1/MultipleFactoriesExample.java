@@ -33,10 +33,9 @@ public final class MultipleFactoriesExample {
         scenarioBuilderFor(AddRegionCall.class)
                 .withSerializedForm("" +
                         "{\n" +
-                        "  \"regionNameA\": \"qwer\",\n" +
-                        "  \"regionNameB\": \"foo\"\n" +
+                        "  \"regionNameA\": \"qwer\"\n" +
                         "}")
-                .withDeserializedForm(AddRegionCall.giveMeTheRegion(RegionName.someMethod("qwer"), RegionName.someMethod("foo")))
+                .withDeserializedForm(AddRegionCall.addRegionCall(RegionName.someMethod("qwer")))
                 .withAllScenariosSuccessful()
                 .run();
     }

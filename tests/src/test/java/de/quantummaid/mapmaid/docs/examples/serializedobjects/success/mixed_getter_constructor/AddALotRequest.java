@@ -21,22 +21,21 @@
 
 package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.mixed_getter_constructor;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_only.example2.StreetName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.factory_by_classname.example1.CountryName;
-import de.quantummaid.mapmaid.docs.examples.customprimitives.success.multiple_static_factories.example1.RegionName;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public final class AddALotRequest {
     @Getter
-    private final StreetName streetName;
+    private final String streetName;
     @Getter
-    private final TownName townName;
+    private final String townName;
     @Getter
-    private final RegionName regionName;
+    private final String regionName;
     @Getter
-    private final CountryName countryName;
+    private final String countryName;
 }

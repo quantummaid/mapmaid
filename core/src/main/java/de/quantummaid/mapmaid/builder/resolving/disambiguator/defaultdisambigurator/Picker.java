@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,12 +44,22 @@ import static java.util.stream.Collectors.toList;
 
 public final class Picker {
 
+    private Picker() {
+    }
 
-    public static DetectionResult<TypeSerializer> pickSerializer(final SerializersAndDeserializers serializersAndDeserializers) {
+    public static DetectionResult<TypeSerializer> pickSerializer(final SerializersAndDeserializers serializersAndDeserializers,
+                                                                 final Preferences<TypeSerializer> customPrimitivePreferences) {
         final List<TypeSerializer> serializers = serializersAndDeserializers.serializers();
         final List<TypeSerializer> customPrimitives = subTypesOf(CustomPrimitiveSerializer.class, serializers);
+
+        final List<TypeSerializer> preferredCustomPrimitives = customPrimitivePreferences.prefered(customPrimitives);
+        final Optional<DetectionResult<TypeSerializer>> preferredCustomPrimitive = oneOrNone(preferredCustomPrimitives, TypeSerializer::description);
+        if (preferredCustomPrimitive.isPresent()) {
+            return preferredCustomPrimitive.get();
+        }
+
         final Optional<DetectionResult<TypeSerializer>> customPrimitive = oneOrNone(customPrimitives, TypeSerializer::description);
-        if (customPrimitive.isPresent()) {
+        if (customPrimitive.isPresent() && !customPrimitive.get().isFailure()) {
             return customPrimitive.get();
         }
 
@@ -63,6 +73,7 @@ public final class Picker {
         return failure("No serializers to choose from");
     }
 
+    @SuppressWarnings("unchecked")
     public static DetectionResult<TypeDeserializer> pickDeserializer(final SerializersAndDeserializers serializersAndDeserializers,
                                                                      final Preferences<TypeDeserializer> customPrimitivePreferences,
                                                                      final Preferences<TypeDeserializer> serializedObjectPreferences) {
@@ -89,7 +100,6 @@ public final class Picker {
         if (preferredSerializedObject.isPresent()) {
             return preferredSerializedObject.get();
         }
-
 
         final List<TypeDeserializer> maxDeserializers = maxDeserializers(serializedObjects);
         final Optional<DetectionResult<TypeDeserializer>> serializedObject = oneOrNone(maxDeserializers, TypeDeserializer::description);

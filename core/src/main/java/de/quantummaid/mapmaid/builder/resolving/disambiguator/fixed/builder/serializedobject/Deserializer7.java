@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,22 +19,22 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+public interface Deserializer7<X, A, B, C, D, E, F, G> extends InvocableDeserializer<X> {
+    X deserialize(A field1, B field2, C field3, D field4, E field5, F field6, G field7);
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MySerializedObject {
-    public final String valueA;
-    public final String valueB;
-    public final MyCustomPrimitive valueC;
-
-    public static MySerializedObject mySerializedObject(final String valueA, final String valueB, final MyCustomPrimitive valueC) {
-        return new MySerializedObject(valueA, valueB, valueC);
+    @SuppressWarnings("unchecked")
+    @Override
+    default X invoke(final Object[] arguments) {
+        return deserialize(
+                (A) arguments[0],
+                (B) arguments[1],
+                (C) arguments[2],
+                (D) arguments[3],
+                (E) arguments[4],
+                (F) arguments[5],
+                (G) arguments[6]
+        );
     }
 }

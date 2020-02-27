@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.builder.models.customconvention.Body;
 import de.quantummaid.mapmaid.builder.models.customconvention.Email;
 import de.quantummaid.mapmaid.builder.models.customconvention.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.customconvention.Subject;
+import de.quantummaid.mapmaid.shared.validators.CustomTypeValidationException;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -50,18 +51,15 @@ public final class CustomConventionalBuilderTest {
     public static MapMaid theCustomConventionalMapMaidInstance() {
         final Gson gson = new Gson();
 
-        throw new UnsupportedOperationException();
-        /*
-        TODO
         return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.customconvention")
-                .withDetector(conventionalDetector("serialize",
-                        "deserialize",
-                        "restore"
-                ))
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> {
+                    advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
+                    advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");
+                    advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
+                    advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
+                })
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
-         */
     }
 
     @Test

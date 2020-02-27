@@ -38,21 +38,9 @@ public final class TypeWildcardSpecs {
                         .mapping(AComplexTypeWithWildcardedCollection.class, deserialization())
                         .build())
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex: no duplex detected:\n" +
-                        "type '?' is not supported because it contains wildcard generics (\"?\")\n" +
-                        "\n" +
-                        "?:\n" +
-                        "Mode: duplex\n" +
-                        "How it is serialized:\n" +
-                        "\tNo serializer available\n" +
-                        "Why it needs to be serializable:\n" +
-                        "\t- because of java.util.List<?>\n" +
-                        "Ignored features for serialization:\n" +
-                        "How it is deserialized:\n" +
-                        "\tNo deserializer available\n" +
-                        "Why it needs to be deserializable:\n" +
-                        "\t- because of java.util.List<?>\n" +
-                        "Ignored features for deserialization:");
+                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex:\n" +
+                        "no duplex detected:\n" +
+                        "type '?' is not supported because it contains wildcard generics (\"?\")");
     }
 
     @Test
@@ -63,20 +51,8 @@ public final class TypeWildcardSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex: no duplex detected:\n" +
-                        "type '?' is not supported because it contains wildcard generics (\"?\")\n" +
-                        "\n" +
-                        "?:\n" +
-                        "Mode: duplex\n" +
-                        "How it is serialized:\n" +
-                        "\tNo serializer available\n" +
-                        "Why it needs to be serializable:\n" +
-                        "\t- because of java.util.List<?>\n" +
-                        "Ignored features for serialization:\n" +
-                        "How it is deserialized:\n" +
-                        "\tNo deserializer available\n" +
-                        "Why it needs to be deserializable:\n" +
-                        "\t- because of java.util.List<?>\n" +
-                        "Ignored features for deserialization:");
+                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex:\n" +
+                        "no duplex detected:\n" +
+                        "type '?' is not supported because it contains wildcard generics (\"?\")");
     }
 }

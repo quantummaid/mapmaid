@@ -19,40 +19,42 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.definitions.validation.statemachine;
+package de.quantummaid.mapmaid.docs.examples.customprimitives.success.preferred_serializer.default_name;
 
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.mapper.definitions.validation.statemachine.DeserializationOnly.deserializationOnly;
-import static de.quantummaid.mapmaid.mapper.definitions.validation.statemachine.SerializationOnly.serializationOnly;
-import static java.lang.String.format;
+import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class NoRequirements implements DefinitionRequirements {
+public final class PreferredSerializerCustomPrimitive {
+    private final String value;
 
-    public static NoRequirements noRequirements() {
-        return new NoRequirements();
+    public static PreferredSerializerCustomPrimitive deserialize(final String value) {
+        return new PreferredSerializerCustomPrimitive(value);
     }
 
-    @Override
-    public DefinitionRequirements addDeserialization() {
-        return deserializationOnly();
+    public String method1() {
+        throw wrongMethodCalledException();
     }
 
-    @Override
-    public DefinitionRequirements addSerialization() {
-        return serializationOnly();
+    public String method2() {
+        throw wrongMethodCalledException();
     }
 
-    @Override
-    public void validate(final Definition definition) {
-        throw new UnsupportedOperationException(format("This should never happen. Type %s should not be registered",
-                definition.type().description()));
+    public String stringValue() {
+        return this.value;
+    }
+
+    public String method3() {
+        throw wrongMethodCalledException();
+    }
+
+    public String method4() {
+        throw wrongMethodCalledException();
     }
 }

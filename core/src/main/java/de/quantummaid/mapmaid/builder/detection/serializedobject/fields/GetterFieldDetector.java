@@ -32,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldQuery.getterFieldQuery;

@@ -33,7 +33,7 @@ import lombok.ToString;
 import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class UndetectableDuplex extends StatefulDuplex {
     private final String reason;
 
@@ -52,6 +52,6 @@ public final class UndetectableDuplex extends StatefulDuplex {
     public Report getDefinition() {
         final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
         final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
-        return failure(collectionResult,"unable to detect duplex:\n" + this.reason);
+        return failure(collectionResult, "unable to detect duplex:\n" + this.reason);
     }
 }

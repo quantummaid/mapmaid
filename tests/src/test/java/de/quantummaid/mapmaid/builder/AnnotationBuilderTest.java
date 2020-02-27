@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.builder;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import de.quantummaid.mapmaid.builder.models.annotated.Body;
 import de.quantummaid.mapmaid.builder.models.annotated.Email;
 import de.quantummaid.mapmaid.builder.models.annotated.EmailAddress;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -75,7 +75,8 @@ public final class SerializationFieldOptions {
         final List<SerializationField> fields = new ArrayList<>(this.options.size());
         this.options.forEach((name, serializationFields) -> {
             if (serializationFields.size() > 1) {
-                throw new UnsupportedOperationException(); // TODO
+                // TODO
+                throw new UnsupportedOperationException();
             }
             fields.add(serializationFields.get(0));
         });
@@ -84,7 +85,8 @@ public final class SerializationFieldOptions {
 
     public Optional<TypeSerializer> instantiate(final Map<String, ResolvedType> fields) {
         if (fields.isEmpty()) {
-            return empty(); // TODO
+            // TODO
+            return empty();
         }
         final List<SerializationField> serializationFields = new ArrayList<>(fields.size());
         for (final Map.Entry<String, ResolvedType> entry : fields.entrySet()) {
@@ -103,7 +105,6 @@ public final class SerializationFieldOptions {
 
         return of(serializedObjectSerializer(serializationFields(serializationFields)));
     }
-
 
     private Optional<SerializationField> select(final ResolvedType type,
                                                 final List<SerializationField> options) {

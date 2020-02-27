@@ -61,8 +61,10 @@ public final class MethodNameBasedCustomPrimitiveSerializationDetector implement
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> this.mappings.isPrimitiveType(method.returnType().get().assignableType()))
                 .filter(method -> method.parameters().size() == 0)
-                .filter(method -> !method.method().getName().equals("toString")) // TODO
-                .filter(method -> !method.method().getName().equals("hashCode")) // TODO
+                // TODO
+                .filter(method -> !method.method().getName().equals("toString"))
+                /// TODO
+                .filter(method -> !method.method().getName().equals("hashCode"))
                 .map(method -> createSerializer(type, method))
                 .collect(toList());
         return serializers;

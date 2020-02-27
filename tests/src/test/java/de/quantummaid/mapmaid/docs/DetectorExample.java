@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.docs;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import org.junit.jupiter.api.Test;
 
 public final class DetectorExample {
@@ -36,11 +35,12 @@ public final class DetectorExample {
         MapMaid.aMapMaid("de.quantummaid.examples")
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
                 //.withDetector(ConventionalDetectors.conventionalDetector(
-                        //"myCustomPrimitiveSerializationMethodName", TODO
-                        //"myCustomPrimitiveDeserializationMethodName",
-                        //"mySerializedObjectDeserializationMethodName"
-                  //      /*, ".*Dto" TODO */))
+                // TODO
+                //"myCustomPrimitiveSerializationMethodName",
+                //"myCustomPrimitiveDeserializationMethodName",
+                //"mySerializedObjectDeserializationMethodName"
+                //      /*, ".*Dto" TODO */))
                 .build();
-        //Showcase end detector
+                //Showcase end detector
     }
 }

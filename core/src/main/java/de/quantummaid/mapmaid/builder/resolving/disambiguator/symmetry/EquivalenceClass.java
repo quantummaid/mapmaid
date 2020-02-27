@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,18 +21,16 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
-import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
@@ -43,7 +41,7 @@ public final class EquivalenceClass {
     private final List<TypeDeserializer> deserializers;
 
     public static EquivalenceClass equivalenceClass() {
-        return new EquivalenceClass(new ArrayList<>(5), new ArrayList<>(5));
+        return new EquivalenceClass(smallList(), smallList());
     }
 
     public void addSerializer(final TypeSerializer serializer) {

@@ -40,7 +40,6 @@ import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.*;
-import de.quantummaid.mapmaid.mapper.injector.InjectorFactory;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
@@ -93,7 +92,6 @@ public final class MapMaidBuilder {
     private final ValidationErrorsMapping validationErrorsMapping = validationErrors -> {
         throw AggregatedValidationException.fromList(validationErrors);
     };
-
 
     public static MapMaidBuilder mapMaidBuilder(final String... packageNames) {
         if (packageNames != null) {
@@ -199,7 +197,8 @@ public final class MapMaidBuilder {
         return withManuallyAddedDefinition(definition, fromDefinition(definition));
     }
 
-    public MapMaidBuilder withManuallyAddedDefinition(final Definition definition, // TODO
+    // TODO "definition"
+    public MapMaidBuilder withManuallyAddedDefinition(final Definition definition,
                                                       final RequiredCapabilities capabilities) {
         validateNotNull(definition, "definition");
         validateNotNull(capabilities, "capabilities");
@@ -282,7 +281,6 @@ public final class MapMaidBuilder {
                 CUSTOM_PRIMITIVE_MAPPINGS,
                 this.validationMappings,
                 this.validationErrorsMapping,
-                InjectorFactory.emptyInjectorFactory(), // TODO
                 debugInformation
         );
         return mapMaid(serializer, deserializer, debugInformation);

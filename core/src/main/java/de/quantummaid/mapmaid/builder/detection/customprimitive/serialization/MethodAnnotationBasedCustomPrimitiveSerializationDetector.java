@@ -33,12 +33,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.detection.customprimitive.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 

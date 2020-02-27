@@ -32,7 +32,6 @@ import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserial
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldDetector.getterFieldDetector;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.ModifierFieldDetector.modifierBased;
 
-
 @ToString
 @EqualsAndHashCode
 public final class ConventionalDetectors {

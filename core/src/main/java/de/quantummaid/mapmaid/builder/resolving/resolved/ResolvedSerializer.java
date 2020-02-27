@@ -36,7 +36,7 @@ import static de.quantummaid.mapmaid.builder.resolving.Report.success;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class ResolvedSerializer extends StatefulSerializer {
 
     private ResolvedSerializer(final Context context) {

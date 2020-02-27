@@ -79,6 +79,7 @@ public final class DetectionResult<T> {
         return this.result;
     }
 
+    @SuppressWarnings("unchecked")
     public <X> DetectionResult<X> map(final Function<T, X> mapper) {
         if (isFailure()) {
             return (DetectionResult<X>) this;

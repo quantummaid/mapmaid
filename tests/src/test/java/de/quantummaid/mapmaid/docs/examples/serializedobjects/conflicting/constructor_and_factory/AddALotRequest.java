@@ -26,8 +26,6 @@ import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.exam
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
-
 @ToString
 @EqualsAndHashCode
 public final class AddALotRequest {

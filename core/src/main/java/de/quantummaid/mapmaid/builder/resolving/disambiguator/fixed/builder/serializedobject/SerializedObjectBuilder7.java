@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,29 +26,19 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.Field.field;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder_6.serializedObjectBuilder_6;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializedObjectBuilder_5<X, A, B, C, D, E> {
+public final class SerializedObjectBuilder7<X, A, B, C, D, E, F, G> {
     private final Builder builder;
 
-    public static <X, A, B, C, D, E> SerializedObjectBuilder_5<X, A, B, C, D, E> serializedObjectBuilder_5(final Builder builder) {
-        return new SerializedObjectBuilder_5<>(builder);
+    public static <X, A, B, C, D, E, F, G> SerializedObjectBuilder7<X, A, B, C, D, E, F, G> serializedObjectBuilder7(final Builder builder) {
+        return new SerializedObjectBuilder7<>(builder);
     }
 
-    @SuppressWarnings("unchecked")
-    public <F> SerializedObjectBuilder_6<X, A, B, C, D, E, F> withField(final String name,
-                                                                        final Class<F> type,
-                                                                        final Query<X, F> query) {
-        this.builder.addField(field(type, name, (Query<Object, Object>) query));
-        return serializedObjectBuilder_6(this.builder);
-    }
-
-    public Builder deserializedUsing(final Deserializer_5<X, A, B, C, D, E> deserializer) {
+    public Builder deserializedUsing(final Deserializer7<X, A, B, C, D, E, F, G> deserializer) {
         this.builder.setDeserializer(deserializer);
-        return this.builder; // TODO
+        // TODO
+        return this.builder;
     }
 }

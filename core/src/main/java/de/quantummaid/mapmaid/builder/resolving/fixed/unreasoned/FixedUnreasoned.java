@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -24,19 +24,14 @@ package de.quantummaid.mapmaid.builder.resolving.fixed.unreasoned;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.fixed.resolved.FixedResolvedSerializer;
-import de.quantummaid.mapmaid.builder.resolving.fixed.resolving.FixedResolvingDeserializer;
-import de.quantummaid.mapmaid.builder.resolving.fixed.resolving.FixedResolvingSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.fixed.resolving.FixedResolvingDeserializer.fixedResolvingDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.fixed.resolving.FixedResolvingSerializer.fixedResolvingSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingDeserializer.resolvingDeserializer;
-import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingSerializer.resolvingSerializer;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class FixedUnreasoned extends StatefulDefinition {
 
     private FixedUnreasoned(final Context context) {

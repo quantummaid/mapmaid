@@ -30,7 +30,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MarshallingType { // TODO
+public final class MarshallingType {
     private final String type;
 
     public static MarshallingType marshallingType(final String type) {

@@ -61,7 +61,8 @@ public final class SerializedObjectDefinitionFactory implements SerializerFactor
             return emptyList();
         }
         if (Collection.class.isAssignableFrom(type.assignableType())) {
-            return emptyList(); // TODO
+            // TODO
+            return emptyList();
         }
 
         return this.detectors.stream()

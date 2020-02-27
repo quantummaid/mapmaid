@@ -40,7 +40,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSerializer {
     private final ResolvedType baseType;
-    private final Method serializationMethod;
+    private final ResolvedMethod serializationMethod;
 
     public static CustomPrimitiveSerializer createSerializer(final ResolvedType type,
                                                              final ResolvedMethod serializationMethod) {
@@ -75,13 +75,13 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
             );
         }
         final ResolvedType baseType = serializationMethod.returnType().get();
-        return new MethodCustomPrimitiveSerializer(baseType, serializationMethod.method());
+        return new MethodCustomPrimitiveSerializer(baseType, serializationMethod);
     }
 
     @Override
     public Object serialize(final Object object) {
         try {
-            return this.serializationMethod.invoke(object);
+            return this.serializationMethod.method().invoke(object);
         } catch (final IllegalAccessException e) {
             throw CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException(format(
                     "This should never happen. Called serialization method %s for custom type %s on instance %s",
@@ -98,8 +98,12 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
         return this.baseType.assignableType();
     }
 
+    public Method method() {
+        return this.serializationMethod.method();
+    }
+
     @Override
     public String description() {
-        return this.serializationMethod.toGenericString();
+        return format("as custom primitive using %s", this.serializationMethod.describe());
     }
 }

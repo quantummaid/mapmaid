@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -32,10 +32,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.debug.scaninformation.ActualScanInformation.actualScanInformation;
 
 @ToString
@@ -50,7 +51,7 @@ public final class ScanInformationBuilder {
 
     public static ScanInformationBuilder scanInformationBuilder(final ResolvedType type) {
         return new ScanInformationBuilder(
-                type, new ArrayList<>(3), new ArrayList<>(3), new HashMap<>(), new HashMap<>());
+                type, smallList(), smallList(), smallMap(), smallMap());
     }
 
     public void addSerializer(final TypeSerializer serializer) {

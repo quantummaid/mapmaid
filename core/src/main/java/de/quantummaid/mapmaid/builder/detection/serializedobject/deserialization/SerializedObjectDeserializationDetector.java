@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 

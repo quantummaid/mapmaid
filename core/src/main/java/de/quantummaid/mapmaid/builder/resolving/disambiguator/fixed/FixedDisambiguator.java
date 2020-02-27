@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -83,16 +83,17 @@ public final class FixedDisambiguator implements Disambiguator {
             final TypeSerializer serializer = this.serializerDisambiguator.disambiguate(serializersAndDeserializers.serializers());
             final SerializersAndDeserializers fixedSerializersAndDeserializers = serializersAndDeserializers(
                     singletonList(serializer), serializersAndDeserializers.deserializers());
-            return this.defaultDisambiguator.disambiguate(type, null, fixedSerializersAndDeserializers, scanInformationBuilder); // TODO
+            // TODO
+            return this.defaultDisambiguator.disambiguate(type, null, fixedSerializersAndDeserializers, scanInformationBuilder);
         }
 
         if (nonNull(this.deserializerDisambiguator)) {
             final TypeDeserializer deserializer = this.deserializerDisambiguator.disambiguate(serializersAndDeserializers.deserializers());
             final SerializersAndDeserializers fixedSerializersAndDeserializers = serializersAndDeserializers(
                     serializersAndDeserializers.serializers(), singletonList(deserializer));
-            return this.defaultDisambiguator.disambiguate(type, null, fixedSerializersAndDeserializers, scanInformationBuilder); // TODO
+            // TODO
+            return this.defaultDisambiguator.disambiguate(type, null, fixedSerializersAndDeserializers, scanInformationBuilder);
         }
-
 
         throw new UnsupportedOperationException("This should never happen");
     }

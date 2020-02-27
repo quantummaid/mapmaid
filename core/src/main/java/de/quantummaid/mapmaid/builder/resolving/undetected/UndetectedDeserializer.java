@@ -37,7 +37,7 @@ import static de.quantummaid.mapmaid.builder.resolving.resolving.ResolvingDeseri
 import static de.quantummaid.mapmaid.builder.resolving.undetectable.UndetectableDeserializer.undetectableDeserializer;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public final class UndetectedDeserializer extends StatefulDeserializer {
 
     private UndetectedDeserializer(final Context context) {
