@@ -31,27 +31,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.singletonList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SerializedObjectOptions {
-    private final List<SerializationFieldOptions> serializationFieldOptions;
+    private final SerializationFieldOptions serializationFieldOptions;
     private final List<SerializedObjectDeserializer> deserializers;
 
-    public static SerializedObjectOptions serializedObjectOptions(final List<SerializationFieldOptions> serializationFieldOptions,
+    public static SerializedObjectOptions serializedObjectOptions(final SerializationFieldOptions serializationFieldOptions,
                                                                   final List<SerializedObjectDeserializer> deserializers) {
         return new SerializedObjectOptions(serializationFieldOptions, deserializers);
     }
 
     public List<SerializedObjectDeserializer> deserializers() {
-        return unmodifiableList(this.deserializers);
+        return this.deserializers;
     }
 
-    public List<SerializationFieldOptions> serializationFieldOptions() {
+    public SerializationFieldOptions serializationFieldOptions() {
         return this.serializationFieldOptions;
     }
 
@@ -59,9 +58,7 @@ public final class SerializedObjectOptions {
     public SerializersAndDeserializers toSerializersAndDeserializers() {
         final List<TypeSerializer> serializers;
         if (this.serializationFieldOptions != null) {
-            serializers = this.serializationFieldOptions.stream()
-                    .map(SerializationFieldOptions::instantiateAll)
-                    .collect(Collectors.toList());
+            serializers = singletonList(this.serializationFieldOptions.instantiateAll());
         } else {
             serializers = null;
         }

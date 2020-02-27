@@ -30,12 +30,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.*;
+import java.util.function.Predicate;
 
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -44,7 +47,26 @@ public final class SerializationFieldOptions {
     private final Map<String, List<SerializationField>> options;
 
     public static SerializationFieldOptions serializationFieldOptions() {
-        return new SerializationFieldOptions(new HashMap<>());
+        return new SerializationFieldOptions(smallMap());
+    }
+
+    public List<SerializationField> allFields() {
+        return this.options.values().stream()
+                .flatMap(Collection::stream)
+                .collect(toList());
+    }
+
+    public SerializationFieldOptions filter(final Predicate<SerializationField> filter) {
+        final Map<String, List<SerializationField>> filtered = new HashMap<>(this.options.size());
+        this.options.forEach((name, serializationFields) -> {
+            final List<SerializationField> filteredFields = serializationFields.stream()
+                    .filter(filter)
+                    .collect(toList());
+            if (!filteredFields.isEmpty()) {
+                filtered.put(name, filteredFields);
+            }
+        });
+        return new SerializationFieldOptions(filtered);
     }
 
     public boolean isEmpty() {

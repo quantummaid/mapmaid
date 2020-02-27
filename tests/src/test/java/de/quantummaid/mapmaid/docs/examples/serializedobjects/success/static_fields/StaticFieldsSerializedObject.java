@@ -19,10 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.models.annotated;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.static_fields;
 
-import de.quantummaid.mapmaid.builder.conventional.annotations.MapMaidPrimitive;
-import de.quantummaid.mapmaid.builder.validation.LengthValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +29,16 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@MapMaidPrimitive(deserializationMethodName = "subject", serializationMethodName = "value")
-public final class Subject {
-    private final String value;
+public final class StaticFieldsSerializedObject {
+    public static final String fieldA = "a";
+    public static final String fieldB = "b";
+    public final String fieldC;
+    public final String fieldD;
 
-    public static Subject subject(final String value) {
-        final String validated = LengthValidator.ensureLength(value, 1, 256, "subject");
-        return new Subject(validated);
-    }
-
-    public String value() {
-        return this.value;
+    public static StaticFieldsSerializedObject staticFieldsSerializedObject(final String fieldA,
+                                                                            final String fieldB,
+                                                                            final String fieldC,
+                                                                            final String fieldD) {
+        return new StaticFieldsSerializedObject(fieldC, fieldD);
     }
 }

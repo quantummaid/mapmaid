@@ -22,11 +22,7 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
@@ -35,9 +31,6 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.constantDeserializer;
@@ -67,35 +60,21 @@ public final class IndirectOverrideDefinitionsSpecs {
                 .theDeserializedObjectIs(ANumber.fromInt(23));
     }
 
-    // TODO refactor
     @Test
     public void customDeserializationForSerializedObjectOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
                         .mapping(AComplexNestedType.class)
-                        .withManuallyAddedDefinition(generalDefinition(
-                                fromClassWithoutGenerics(AComplexType.class),
-                                SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
-                                        List.of(SerializationField.serializationField(fromClassWithoutGenerics(AString.class), "foo", object -> AString.fromStringValue("bar")))
-                                )),
-                                new SerializedObjectDeserializer() {
-                                    @Override
-                                    public Object deserialize(final Map<String, Object> elements) throws Exception {
-                                        return AComplexType.deserialize(AString.fromStringValue("custom1"), AString.fromStringValue("custom2"), ANumber.fromInt(100), ANumber.fromInt(200));
-                                    }
-
-                                    @Override
-                                    public DeserializationFields fields() {
-                                        return DeserializationFields.deserializationFields(Map.of("foo", fromClassWithoutGenerics(AString.class)));
-                                    }
-
-                                    @Override
-                                    public String description() {
-                                        // TODO
-                                        throw new UnsupportedOperationException();
-                                    }
-                                }
-                        ))
+                        .withManuallyAddedDefinition(
+                                SerializedObjectBuilder.serializedObjectOfType(AComplexType.class)
+                                .withField("foo", AString.class, object -> AString.fromStringValue("bar"))
+                                .deserializedUsing(foo -> AComplexType.deserialize(
+                                        AString.fromStringValue("custom1"),
+                                        AString.fromStringValue("custom2"),
+                                        ANumber.fromInt(100),
+                                        ANumber.fromInt(200)
+                                )).create()
+                        )
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )

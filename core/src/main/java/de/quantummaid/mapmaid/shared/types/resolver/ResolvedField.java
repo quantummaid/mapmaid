@@ -31,11 +31,11 @@ import lombok.ToString;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.StringJoiner;
 
 import static de.quantummaid.mapmaid.shared.types.TypeResolver.resolveType;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.reflect.Modifier.isPublic;
-import static java.lang.reflect.Modifier.isStatic;
+import static java.lang.reflect.Modifier.*;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -52,7 +52,7 @@ public final class ResolvedField {
         return stream(type.getFields())
                 .filter(field -> isPublic(field.getModifiers()))
                 // TODO no?
-                .filter(field -> !isStatic(field.getModifiers()))
+                //.filter(field -> !isStatic(field.getModifiers()))
                 // TODO no
                 .filter(field -> !Modifier.isTransient(field.getModifiers()))
                 .map(field -> {
@@ -83,8 +83,37 @@ public final class ResolvedField {
         return this.field;
     }
 
-    public boolean isTransient() {
+    public boolean isStatic() {
         final int modifiers = this.field.getModifiers();
-        return Modifier.isTransient(modifiers);
+        return Modifier.isStatic(modifiers);
+    }
+
+    public String describe() {
+        final StringJoiner joiner = new StringJoiner(" ");
+        final int modifiers = this.field.getModifiers();
+        if (isPublic(modifiers)) {
+            joiner.add("public");
+        }
+        if (isProtected(modifiers)) {
+            joiner.add("protected");
+        }
+        if (isPrivate(modifiers)) {
+            joiner.add("private");
+        }
+        if (isStatic()) {
+            joiner.add("static");
+        }
+        if (isTransient(modifiers)) {
+            joiner.add("transient");
+        }
+        if (isFinal(modifiers)) {
+            joiner.add("final");
+        }
+
+        final String type = this.type.simpleDescription();
+        joiner.add(type);
+
+        joiner.add(this.name);
+        return joiner.toString();
     }
 }

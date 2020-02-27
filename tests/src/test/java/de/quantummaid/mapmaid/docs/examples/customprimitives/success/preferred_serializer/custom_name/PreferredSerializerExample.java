@@ -32,8 +32,8 @@ public final class PreferredSerializerExample {
         scenarioBuilderFor(PreferredSerializerCustomPrimitive.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(PreferredSerializerCustomPrimitive.deserialize("foo"))
-                .withDuplexFailing()
                 .withSerializationFailing()
+                .withDuplexFailing()
                 .withDeserializationSuccessful()
                 .withFixedScenarios((mapMaidBuilder, capabilities) -> {
                     mapMaidBuilder.mapping(PreferredSerializerCustomPrimitive.class, capabilities);

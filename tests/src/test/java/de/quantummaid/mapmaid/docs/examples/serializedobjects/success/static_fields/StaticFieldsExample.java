@@ -19,30 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.models.annotated;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.static_fields;
 
-import de.quantummaid.mapmaid.builder.conventional.annotations.MapMaidPrimitiveDeserializer;
-import de.quantummaid.mapmaid.builder.conventional.annotations.MapMaidPrimitiveSerializer;
-import de.quantummaid.mapmaid.builder.validation.LengthValidator;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import org.junit.jupiter.api.Test;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Body {
-    private final String value;
+import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-    @MapMaidPrimitiveDeserializer
-    public static Body body(final String value) {
-        final String emailAddress = LengthValidator.ensureLength(value, 1, 1000, "body");
-        return new Body(emailAddress);
-    }
+public final class StaticFieldsExample {
 
-    @MapMaidPrimitiveSerializer
-    public String value() {
-        return this.value;
+    @Test
+    public void staticFieldsExample() {
+        scenarioBuilderFor(StaticFieldsSerializedObject.class)
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"fieldC\": \"c!\",\n" +
+                        "  \"fieldD\": \"d!\"\n" +
+                        "}")
+                .withDeserializedForm(StaticFieldsSerializedObject.staticFieldsSerializedObject("a!", "b!", "c!", "d!"))
+                .withSerializationOnlySuccessful()
+                .withDeserializationSuccessful()
+                .withDuplexFailing()
+                .run();
     }
 }

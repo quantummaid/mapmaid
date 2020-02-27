@@ -74,7 +74,6 @@ public final class CustomPrimitiveMappings {
         return new CustomPrimitiveMappings(map);
     }
 
-    // TODO work on resolved type?
     public boolean isPrimitiveType(final Class<?> type) {
         validateNotNull(type, "type");
         return this.mappings.containsKey(type);

@@ -36,9 +36,11 @@ public final class SerializationOnlyExample {
                         "  \"townNameA\": \"b\"\n" +
                         "}")
                 .withDeserializedForm(AddALotRequest.EXAMPLE)
-                .withSerializationOnlySuccessful()
                 .withDeserializationSuccessful()
+                /*
+                .withSerializationOnlySuccessful()
                 .withDuplexFailing()
+                 */
                 .run();
     }
 }

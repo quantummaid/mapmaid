@@ -41,10 +41,16 @@ public final class Filters<T> {
         return new Filters<>(filters);
     }
 
-    public FilterResult isAllowed(final T t) {
+    public boolean isAllowed(final T t, final Striker<T> striker) {
         final List<FilterResult> filterResults = this.filters.stream()
                 .map(filter -> filter.filter(t))
                 .collect(toList());
-        return combined(filterResults);
+        final FilterResult combinedResult = combined(filterResults);
+        if (combinedResult.isAllowed()) {
+            return true;
+        } else {
+            striker.strike(t, combinedResult.reasonsForDenial());
+            return false;
+        }
     }
 }

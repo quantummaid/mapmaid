@@ -48,9 +48,6 @@ public final class SerializedObjectSerializer implements TypeSerializer {
 
     public static SerializedObjectSerializer serializedObjectSerializer(final SerializationFields fields) {
         validateNotNull(fields, "fields");
-        if (fields.isEmpty()) {
-            throw new IllegalArgumentException("fields must not be empty");
-        }
         return new SerializedObjectSerializer(fields);
     }
 

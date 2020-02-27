@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filter;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filters;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preference;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -31,6 +32,9 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobj
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.EnumCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -92,10 +96,15 @@ public final class DefaultDisambiguatorBuilder {
                 deserializer -> deserializer instanceof MethodSerializedObjectDeserializer
         ));
 
+        final Filters<SerializationField> serializationFieldFilters = Filters.filters(List.of(
+                ignoreStaticFields()
+        ));
+
         return defaultDisambiguator(
                 customPrimitiveDeserializerPreferences,
                 customPrimitiveSerializerPreferences,
-                serializedObjectPreferences
+                serializedObjectPreferences,
+                serializationFieldFilters
         );
     }
 
@@ -161,6 +170,21 @@ public final class DefaultDisambiguatorBuilder {
                 return allowed();
             } else {
                 return denied(format("method '%s' is not considered", name));
+            }
+        };
+    }
+
+    private static Filter<SerializationField> ignoreStaticFields() {
+        return field -> {
+            if (!(field.getQuery() instanceof PublicFieldQuery)) {
+                return allowed();
+            }
+            final PublicFieldQuery query = (PublicFieldQuery) field.getQuery();
+            final ResolvedField resolvedField = query.field();
+            if (resolvedField.isStatic()) {
+                return denied("static fields are not serialized");
+            } else {
+                return allowed();
             }
         };
     }

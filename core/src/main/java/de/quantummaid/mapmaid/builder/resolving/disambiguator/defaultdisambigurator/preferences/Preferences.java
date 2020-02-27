@@ -21,14 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
 
-import de.quantummaid.mapmaid.Collection;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -49,16 +47,10 @@ public final class Preferences<T> {
         return preferences(emptyList(), preferences);
     }
 
-    public List<T> prefered(final List<T> options, final BiConsumer<T, List<String>> striker) {
-        final List<T> filtered = Collection.smallList();
-        for(final T t : options) {
-            final FilterResult filterResult = this.filters.isAllowed(t);
-            if(filterResult.isAllowed()) {
-                filtered.add(t);
-            } else {
-                striker.accept(t, filterResult.reasonsForDenial());
-            }
-        }
+    public List<T> preferred(final List<T> options, final Striker<T> striker) {
+        final List<T> filtered = options.stream()
+                .filter(t -> this.filters.isAllowed(t, striker))
+                .collect(toList());
         for (final Preference<T> preference : this.preferences) {
             final List<T> preferred = filtered.stream()
                     .filter(preference::prefer)

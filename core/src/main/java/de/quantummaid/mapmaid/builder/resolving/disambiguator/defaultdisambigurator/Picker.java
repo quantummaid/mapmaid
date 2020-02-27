@@ -29,8 +29,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,27 +47,14 @@ public final class Picker {
     private Picker() {
     }
 
-    public static DetectionResult<TypeSerializer> pickSerializer(final SerializersAndDeserializers serializersAndDeserializers,
-                                                                 final Preferences<TypeSerializer> customPrimitivePreferences,
+    public static DetectionResult<TypeSerializer> pickSerializer(final SerializersAndDeserializers options,
+                                                                 final Preferences<TypeSerializer> preferences,
                                                                  final ScanInformationBuilder scanInformationBuilder) {
-        final List<TypeSerializer> serializers = serializersAndDeserializers.serializers();
-        final List<TypeSerializer> customPrimitives = subTypesOf(CustomPrimitiveSerializer.class, serializers);
-
-        final List<TypeSerializer> preferredCustomPrimitives = customPrimitivePreferences.prefered(
-                customPrimitives, scanInformationBuilder::ignoreSerializer);
+        final List<TypeSerializer> customPrimitives = options.serializers();
+        final List<TypeSerializer> preferredCustomPrimitives = preferences.preferred(customPrimitives, scanInformationBuilder::ignoreSerializer);
         final Optional<DetectionResult<TypeSerializer>> preferredCustomPrimitive = oneOrNone(preferredCustomPrimitives, TypeSerializer::description);
-        if (preferredCustomPrimitive.isPresent() && !preferredCustomPrimitive.get().isFailure()) {
-            return preferredCustomPrimitive.get();
-        }
-
-        // TODO
-        final List<TypeSerializer> serializedObjects = subTypesOf(SerializedObjectSerializer.class, serializers);
-        final Optional<DetectionResult<TypeSerializer>> serializedObject = oneOrNone(serializedObjects, TypeSerializer::description);
-        if (serializedObject.isPresent()) {
-            return serializedObject.get();
-        }
-
-        return failure("No serializers to choose from");
+        return preferredCustomPrimitive
+                .orElseGet(() -> failure("No serializers to choose from"));
     }
 
     @SuppressWarnings("unchecked")
@@ -81,7 +66,7 @@ public final class Picker {
 
         final List<TypeDeserializer> customPrimitives = subTypesOf(CustomPrimitiveDeserializer.class, deserializers);
 
-        final List<TypeDeserializer> preferredCustomPrimitives = customPrimitivePreferences.prefered(
+        final List<TypeDeserializer> preferredCustomPrimitives = customPrimitivePreferences.preferred(
                 customPrimitives, scanInformationBuilder::ignoreDeserializer);
         final Optional<DetectionResult<TypeDeserializer>> preferredCustomPrimitive = oneOrNone(preferredCustomPrimitives, TypeDeserializer::description);
         if (preferredCustomPrimitive.isPresent()) {
@@ -90,7 +75,7 @@ public final class Picker {
 
         final List<TypeDeserializer> serializedObjects = subTypesOf(SerializedObjectDeserializer.class, deserializers);
 
-        final List<TypeDeserializer> preferedSerializedObjects = serializedObjectPreferences.prefered(
+        final List<TypeDeserializer> preferedSerializedObjects = serializedObjectPreferences.preferred(
                 serializedObjects, scanInformationBuilder::ignoreDeserializer);
         final List<TypeDeserializer> maxPreferred = maxDeserializers(preferedSerializedObjects);
         final Optional<DetectionResult<TypeDeserializer>> preferredSerializedObject = oneOrNone(maxPreferred, TypeDeserializer::description);
@@ -122,7 +107,8 @@ public final class Picker {
                 .collect(toList());
     }
 
-    private static <T> Optional<DetectionResult<T>> oneOrNone(final List<T> list, final Function<T, String> describer) {
+    // TODO
+    public static <T> Optional<DetectionResult<T>> oneOrNone(final List<T> list, final Function<T, String> describer) {
         if (list.size() == 1) {
             return Optional.of(success(list.get(0)));
         }

@@ -51,8 +51,6 @@ import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Serializers
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions.serializedObjectOptions;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -91,15 +89,15 @@ public final class SimpleDetector {
         scanInformationBuilder.resetScan();
 
         final List<TypeSerializer> customPrimitiveSerializers;
-        final List<SerializationFieldOptions> serializationFieldOptionsList;
+        final SerializationFieldOptions serializationFieldOptions;
         if (capabilities.hasSerialization()) {
             customPrimitiveSerializers = detectCustomPrimitiveSerializers(type);
             customPrimitiveSerializers.forEach(scanInformationBuilder::addSerializer);
-            serializationFieldOptionsList = detectSerializationFieldOptionsList(type);
-            // TODO add to scan information
+            serializationFieldOptions = detectSerializationFieldOptionsList(type);
+            serializationFieldOptions.allFields().forEach(scanInformationBuilder::addSerializationField);
         } else {
             customPrimitiveSerializers = null;
-            serializationFieldOptionsList = null;
+            serializationFieldOptions = null;
         }
 
         final List<SerializedObjectDeserializer> serializedObjectDeserializers;
@@ -115,7 +113,7 @@ public final class SimpleDetector {
         }
 
         final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
-        final SerializedObjectOptions serializedObjectOptions = serializedObjectOptions(serializationFieldOptionsList, serializedObjectDeserializers);
+        final SerializedObjectOptions serializedObjectOptions = serializedObjectOptions(serializationFieldOptions, serializedObjectDeserializers);
         final SerializersAndDeserializers customPrimitiveOptions = serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
         return disambiguator.disambiguate(type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder);
     }
@@ -135,17 +133,13 @@ public final class SimpleDetector {
                 .collect(toList());
     }
 
-    private List<SerializationFieldOptions> detectSerializationFieldOptionsList(final ResolvedType type) {
+    private SerializationFieldOptions detectSerializationFieldOptionsList(final ResolvedType type) {
         final SerializationFieldOptions serializationFieldOptions = serializationFieldOptions();
         this.fieldDetectors.stream()
                 .map(fieldDetector -> fieldDetector.detect(type))
                 .flatMap(Collection::stream)
                 .forEach(serializationFieldOptions::add);
-        if (serializationFieldOptions.isEmpty()) {
-            return emptyList();
-        } else {
-            return singletonList(serializationFieldOptions);
-        }
+        return serializationFieldOptions;
     }
 
     private List<SerializedObjectDeserializer> detectSerializedObjectDeserializers(final ResolvedType type) {

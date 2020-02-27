@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -47,6 +48,7 @@ public final class ActualScanInformation implements ScanInformation {
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
     private final Map<TypeSerializer, List<String>> serializers;
+    private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> deserializers;
 
     public static ScanInformation actualScanInformation(final ResolvedType type,
@@ -55,6 +57,7 @@ public final class ActualScanInformation implements ScanInformation {
                                                         final TypeSerializer serializer,
                                                         final TypeDeserializer deserializer,
                                                         final Map<TypeSerializer, List<String>> serializers,
+                                                        final Map<SerializationField, List<String>> serializationFields,
                                                         final Map<TypeDeserializer, List<String>> deserializers) {
         return new ActualScanInformation(
                 type,
@@ -63,6 +66,7 @@ public final class ActualScanInformation implements ScanInformation {
                 serializer,
                 deserializer,
                 serializers,
+                serializationFields,
                 deserializers);
     }
 
@@ -123,6 +127,14 @@ public final class ActualScanInformation implements ScanInformation {
                 return;
             }
             final String description = serializer.description();
+            stringBuilder.append("\t- ");
+            stringBuilder.append(description);
+            stringBuilder.append("\n\t  Ignored because:\n");
+            stringBuilder.append(renderIgnoreReasons(reasons));
+            stringBuilder.append("\n");
+        });
+        this.serializationFields.forEach((field, reasons) -> {
+            final String description = field.describe();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
             stringBuilder.append("\n\t  Ignored because:\n");

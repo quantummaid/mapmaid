@@ -25,13 +25,13 @@ import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,19 +47,24 @@ public final class ScanInformationBuilder {
     private final List<Reason> deserializationReasons;
     private final List<Reason> serializationReasons;
     private final Map<TypeSerializer, List<String>> serializers;
+    private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> deserializers;
 
     public static ScanInformationBuilder scanInformationBuilder(final ResolvedType type) {
         return new ScanInformationBuilder(
-                type, smallList(), smallList(), smallMap(), smallMap());
+                type, smallList(), smallList(), smallMap(), smallMap(), smallMap());
     }
 
     public void addSerializer(final TypeSerializer serializer) {
-        this.serializers.put(serializer, new ArrayList<>(1));
+        this.serializers.put(serializer, smallList());
+    }
+
+    public void addSerializationField(final SerializationField field) {
+        this.serializationFields.put(field, smallList());
     }
 
     public void addDeserializer(final TypeDeserializer deserializer) {
-        this.deserializers.put(deserializer, new ArrayList<>(1));
+        this.deserializers.put(deserializer, smallList());
     }
 
     public void resetScan() {
@@ -128,6 +133,11 @@ public final class ScanInformationBuilder {
         reasons.forEach(reason -> ignoreSerializer(serializer, reason));
     }
 
+    public void ignoreSerializationField(final SerializationField field,
+                                         final List<String> reasons) {
+        this.serializationFields.get(field).addAll(reasons);
+    }
+
     public void ignoreAllOtherDeserializers(final TypeDeserializer deserializer,
                                             final String reason) {
         this.deserializers.forEach((current, reasons) -> {
@@ -145,6 +155,7 @@ public final class ScanInformationBuilder {
                 serializer,
                 deserializer,
                 this.serializers,
+                this.serializationFields,
                 this.deserializers
         );
     }
