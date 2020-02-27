@@ -32,7 +32,7 @@ public final class DetectorExample {
         // TODO
 
         //Showcase start detector
-        MapMaid.aMapMaid("de.quantummaid.examples")
+        MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
                 //.withDetector(ConventionalDetectors.conventionalDetector(
                 // TODO

@@ -27,12 +27,9 @@ import de.quantummaid.mapmaid.builder.models.excluded.Body;
 import de.quantummaid.mapmaid.builder.models.excluded.Email;
 import de.quantummaid.mapmaid.builder.models.excluded.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.excluded.Subject;
-import de.quantummaid.mapmaid.builder.scanning.DefaultPackageScanner;
 import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
 import de.quantummaid.mapmaid.mapper.definitions.DefinitionNotFoundException;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -55,15 +52,7 @@ public final class ConventionalBuilderExclusionTest {
     public static MapMaid theConventionalMapMaidInstance() {
         final Gson gson = new Gson();
 
-        return MapMaid.aMapMaid(DefaultPackageScanner.defaultPackageScanner(
-                List.of("de.quantummaid.mapmaid.builder.models"),
-                List.of(),
-                List.of("de.quantummaid.mapmaid.builder.models.excluded",
-                        "de.quantummaid.mapmaid.builder.models.annotated",
-                        "de.quantummaid.mapmaid.builder.models.constructor",
-                        "de.quantummaid.mapmaid.builder.models.customconvention"),
-                List.of())
-        )
+        return MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();

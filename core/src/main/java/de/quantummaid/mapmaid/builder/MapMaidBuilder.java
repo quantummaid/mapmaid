@@ -31,9 +31,6 @@ import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
-import de.quantummaid.mapmaid.builder.scanning.DefaultPackageScanner;
-import de.quantummaid.mapmaid.builder.scanning.PackageScanner;
-import de.quantummaid.mapmaid.builder.scanning.PackageScannerRecipe;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
@@ -50,7 +47,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.MapMaid.mapMaid;
@@ -64,8 +64,8 @@ import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
 import static de.quantummaid.mapmaid.builder.resolving.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
-import static de.quantummaid.mapmaid.builder.resolving.signals.Signal.addDeserialization;
-import static de.quantummaid.mapmaid.builder.resolving.signals.Signal.addSerialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
@@ -93,25 +93,8 @@ public final class MapMaidBuilder {
         throw AggregatedValidationException.fromList(validationErrors);
     };
 
-    public static MapMaidBuilder mapMaidBuilder(final String... packageNames) {
-        if (packageNames != null) {
-            stream(packageNames).forEach(packageName -> validateNotNull(packageName, "packageName"));
-        }
-        final List<String> packageNameList = Optional.ofNullable(packageNames)
-                .map(Arrays::asList)
-                .orElse(new ArrayList<>(10));
-
-        if (packageNameList.isEmpty()) {
-            return mapMaidBuilder(List::of);
-        } else {
-            final PackageScanner packageScanner = DefaultPackageScanner.defaultPackageScanner(packageNameList);
-            return mapMaidBuilder(packageScanner);
-        }
-    }
-
-    public static MapMaidBuilder mapMaidBuilder(final PackageScanner packageScanner) {
-        validateNotNull(packageScanner, "packageScanner");
-        return new MapMaidBuilder().usingRecipe(PackageScannerRecipe.packageScannerRecipe(packageScanner));
+    public static MapMaidBuilder mapMaidBuilder() {
+        return new MapMaidBuilder();
     }
 
     public MapMaidBuilder serializingType(final Class<?> type) {

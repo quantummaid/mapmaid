@@ -32,10 +32,6 @@ public abstract class StatefulDefinition {
         this.context = context;
     }
 
-    // TODO
-    public void onEnter() {
-    }
-
     public abstract StatefulDefinition addSerialization(Reason reason);
 
     public abstract StatefulDefinition removeSerialization(Reason reason);

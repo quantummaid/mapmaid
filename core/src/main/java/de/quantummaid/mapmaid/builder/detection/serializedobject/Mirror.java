@@ -19,39 +19,20 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.hints;
+package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
 import de.quantummaid.mapmaid.shared.types.ArrayType;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
 
-// TODO move
 public final class Mirror {
 
     private Mirror() {
-    }
-
-    public static boolean mirrorsFields(final Map<String, ResolvedType> fieldsA,
-                                        final Map<String, ResolvedType> fieldsB) {
-        if (fieldsA.size() != fieldsB.size()) {
-            return false;
-        }
-        for (final Map.Entry<String, ResolvedType> entry : fieldsA.entrySet()) {
-            final String name = entry.getKey();
-            if (!fieldsB.containsKey(name)) {
-                return false;
-            }
-            if (!mirrors(entry.getValue(), fieldsB.get(name))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public static boolean mirrors(final ResolvedType typeA, final ResolvedType typeB) {

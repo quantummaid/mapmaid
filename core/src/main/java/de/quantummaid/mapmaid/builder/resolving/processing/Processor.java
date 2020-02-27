@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.signals.Signal;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -36,8 +35,8 @@ import lombok.ToString;
 import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
-import static de.quantummaid.mapmaid.builder.resolving.signals.Signal.detect;
-import static de.quantummaid.mapmaid.builder.resolving.signals.Signal.resolve;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.resolve;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 

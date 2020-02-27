@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;

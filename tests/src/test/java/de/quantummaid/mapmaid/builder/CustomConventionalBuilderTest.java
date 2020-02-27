@@ -51,7 +51,8 @@ public final class CustomConventionalBuilderTest {
     public static MapMaid theCustomConventionalMapMaidInstance() {
         final Gson gson = new Gson();
 
-        return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.customconvention")
+        return MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder -> {
                     advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
                     advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");

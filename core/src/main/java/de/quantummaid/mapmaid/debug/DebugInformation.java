@@ -28,7 +28,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
 import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
@@ -43,8 +46,6 @@ public final class DebugInformation {
         return new DebugInformation(scanInformations);
     }
 
-    // TODO komplette liste
-
     public ScanInformation scanInformationFor(final Class<?> type) {
         return scanInformationFor(resolvedType(type));
     }
@@ -54,5 +55,15 @@ public final class DebugInformation {
             return neverScanned(type);
         }
         return this.scanInformations.get(type);
+    }
+
+    public List<ScanInformation> allScanInformations() {
+        return new ArrayList<>(this.scanInformations.values());
+    }
+
+    public String dumpAll() {
+        return allScanInformations().stream()
+                .map(ScanInformation::render)
+                .collect(Collectors.joining("\n\n\n"));
     }
 }

@@ -21,14 +21,11 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
-import de.quantummaid.mapmaid.builder.resolving.hints.Mirror;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.collections.CollectionSerializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
@@ -80,15 +77,5 @@ public interface CollectionDeserializer extends TypeDeserializer {
             index = index + 1;
         }
         return (T) deserialize(deserializedList);
-    }
-
-    @Override
-    default boolean mirrors(final TypeSerializer serializer) {
-        if (!(serializer instanceof CollectionSerializer)) {
-            return false;
-        }
-        final ResolvedType otherContentType = ((CollectionSerializer) serializer).contentType();
-        final ResolvedType myContentType = contentType();
-        return Mirror.mirrors(myContentType, otherContentType);
     }
 }

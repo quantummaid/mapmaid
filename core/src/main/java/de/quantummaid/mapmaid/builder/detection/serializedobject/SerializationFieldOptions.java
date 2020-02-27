@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.resolving.hints.Mirror;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -110,6 +109,7 @@ public final class SerializationFieldOptions {
                                                 final List<SerializationField> options) {
         return options.stream()
                 .filter(field -> Mirror.mirrors(field.type(), type))
+                // TODO
                 .findFirst();
     }
 }

@@ -77,9 +77,11 @@ public final class ConventionalBuilderTest {
 
     public static MapMaid theConventionalMapMaidInstance() {
         final Gson gson = new Gson();
-        return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.conventional",
-                "de.quantummaid.mapmaid.builder.models.conventionalwithclassnamefactories",
-                "de.quantummaid.mapmaid.builder.models.constructor")
+        return MapMaid.aMapMaid()
+                .mapping(Email.class)
+                .mapping(EmailDto.class)
+                .mapping(Name.class)
+                .mapping(GroupTicketRequest.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();

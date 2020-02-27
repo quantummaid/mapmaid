@@ -26,8 +26,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
@@ -101,14 +99,5 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
             exceptionTracker.track(e, message);
             return null;
         }
-    }
-
-    @Override
-    default boolean mirrors(final TypeSerializer serializer) {
-        if (!(serializer instanceof CustomPrimitiveSerializer)) {
-            return false;
-        }
-        // TODO
-        return true;
     }
 }

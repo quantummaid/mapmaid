@@ -26,7 +26,6 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -51,9 +50,6 @@ public interface TypeDeserializer {
     String description();
 
     String classification();
-
-    /* TODO */
-    boolean mirrors(TypeSerializer serializer);
 
     static <T extends Universal> T castSafely(final Universal universalType,
                                               final Class<T> type,

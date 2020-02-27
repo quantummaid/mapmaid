@@ -51,7 +51,8 @@ public final class YamlBuilderTest {
     public static MapMaid theYamlMapMaidInstance() {
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
-        return MapMaid.aMapMaid(Email.class.getPackageName())
+        return MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();

@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.testsupport.domain.exceptions.AnException;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.testsupport.domain.valid.*;
 
 public final class MapMaidInstances {
     private MapMaidInstances() {
@@ -32,10 +32,19 @@ public final class MapMaidInstances {
 
     public static MapMaid theExampleMapMaidWithAllMarshallers() {
         // TODO no scan
-        final MapMaid mapMaid = MapMaid.aMapMaid(AString.class.getPackageName())
+        final MapMaid mapMaid = MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
                         .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
                         .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller()))
+                .mapping(AComplexType.class)
+                .mapping(AComplexTypeWithValidations.class)
+                .mapping(AComplexTypeWithArray.class)
+                .mapping(AComplexTypeWithListButArrayConstructor.class)
+                .mapping(AComplexNestedValidatedType.class)
+                .mapping(AComplexTypeWithNestedCollections.class)
+                .mapping(AComplexTypeWithCollections.class)
+                .mapping(AComplexNestedType.class)
+                .mapping(ACyclicType.class)
                 .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .withExceptionIndicatingValidationError(AnException.class)
                 .build();

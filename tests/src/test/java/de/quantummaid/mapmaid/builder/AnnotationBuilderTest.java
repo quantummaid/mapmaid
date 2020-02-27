@@ -51,7 +51,8 @@ public final class AnnotationBuilderTest {
     public static MapMaid theAnnotationBasedMapMaidInstance() {
         final Gson gson = new Gson();
 
-        return MapMaid.aMapMaid(Email.class.getPackageName())
+        return MapMaid.aMapMaid()
+                .mapping(Email.class)
                 //.withDetector(ConventionalDetectors.conventionalDetectorWithAnnotations()) TODO
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)

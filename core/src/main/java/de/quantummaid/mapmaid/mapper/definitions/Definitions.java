@@ -44,17 +44,18 @@ import static java.util.Optional.of;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Definitions {
     private final Map<ResolvedType, Definition> definitions;
+    private final DebugInformation debugInformation;
 
     public static Definitions definitions(final Map<ResolvedType, Definition> definitions,
                                           final DebugInformation debugInformation) {
-        final Definitions definitionsObject = new Definitions(definitions);
+        final Definitions definitionsObject = new Definitions(definitions, debugInformation);
         definitionsObject.validateNoUnsupportedOutgoingReferences(debugInformation);
         return definitionsObject;
     }
 
     public Definition getDefinitionForType(final ResolvedType targetType) {
         return getOptionalDefinitionForType(targetType)
-                .orElseThrow(() -> definitionNotFound(targetType, dump()));
+                .orElseThrow(() -> definitionNotFound(targetType, this.debugInformation.dumpAll()));
     }
 
     public Optional<Definition> getOptionalDefinitionForType(final ResolvedType targetType) {
@@ -136,36 +137,5 @@ public final class Definitions {
         return (int) this.definitions.values().stream()
                 .filter(definition -> definition.classification().equals("Serialized Object"))
                 .count();
-    }
-
-    // TODO löschen
-    public String dump() {
-        final StringBuilder stringBuilder = new StringBuilder(10);
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("Serialized Objects:\n");
-        this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Serialized Object"))
-                .map(Definition::type)
-                .map(ResolvedType::description)
-                .sorted()
-                .forEach(type -> stringBuilder.append(type).append("\n"));
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("Custom Primitives:\n");
-        this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Custom Primitive"))
-                .map(Definition::type)
-                .map(ResolvedType::description)
-                .sorted()
-                .forEach(type -> stringBuilder.append(type).append("\n"));
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("Collections:\n");
-        this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Collection"))
-                .map(Definition::type)
-                .map(ResolvedType::description)
-                .sorted()
-                .forEach(type -> stringBuilder.append(type).append("\n"));
-        stringBuilder.append("------------------------------\n");
-        return stringBuilder.toString();
     }
 }

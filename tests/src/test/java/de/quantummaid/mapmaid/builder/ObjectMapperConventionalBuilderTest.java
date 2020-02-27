@@ -51,7 +51,8 @@ public final class ObjectMapperConventionalBuilderTest {
     public static MapMaid theConventionalMapMaidInstanceWithObjectMapper() {
         final ObjectMapper objectMapper = new ObjectMapper();
 
-        return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.conventional")
+        return MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
                         .usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)

@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.resolving;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.StatefulSerializer;
-import de.quantummaid.mapmaid.builder.resolving.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

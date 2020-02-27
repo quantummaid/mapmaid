@@ -38,7 +38,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 public class UsageExamples {
-    private static final String YOUR_PACKAGE_TO_SCAN = Email.class.getPackageName();
 
     private static final Email EMAIL = Email.deserialize(
             EmailAddress.fromStringValue("sender@example.com"),
@@ -51,7 +50,8 @@ public class UsageExamples {
     public void usageWithJson() {
         //Showcase start jsonInstance
         final Gson gson = new Gson();
-        final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .build();
         //Showcase end jsonInstance
@@ -72,7 +72,8 @@ public class UsageExamples {
     public void usageWithYaml() {
         //Showcase start yamlInstance
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-        final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder ->
                         advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .build();
@@ -99,7 +100,8 @@ public class UsageExamples {
         //Showcase start xmlInstance
         final XStream xStream = new XStream(new DomDriver());
         xStream.alias("root", Map.class);
-        final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
                         .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
                             @SuppressWarnings("unchecked")
@@ -145,7 +147,8 @@ public class UsageExamples {
     public void usageWithCustomFormat() {
         //Showcase start example1
         final Gson gson = new Gson();
-        final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .mapping(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
                         .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
                 .build();

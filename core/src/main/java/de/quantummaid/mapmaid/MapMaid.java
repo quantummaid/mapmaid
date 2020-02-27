@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid;
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.scanning.PackageScanner;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
@@ -41,12 +40,8 @@ public final class MapMaid {
     private final Deserializer deserializer;
     private final DebugInformation debugInformation;
 
-    public static MapMaidBuilder aMapMaid(final String... packageNames) {
-        return MapMaidBuilder.mapMaidBuilder(packageNames);
-    }
-
-    public static MapMaidBuilder aMapMaid(final PackageScanner packageScanner) {
-        return MapMaidBuilder.mapMaidBuilder(packageScanner);
+    public static MapMaidBuilder aMapMaid() {
+        return MapMaidBuilder.mapMaidBuilder();
     }
 
     public static MapMaid mapMaid(final Serializer serializer,
