@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -27,29 +27,39 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Preferences<T> {
+    private final Filters<T> filters;
     private final List<Preference<T>> preferences;
 
+    public static <T> Preferences<T> preferences(final List<Filter<T>> filters,
+                                                 final List<Preference<T>> preferences) {
+        return new Preferences<>(Filters.filters(filters), preferences);
+    }
+
     public static <T> Preferences<T> preferences(final List<Preference<T>> preferences) {
-        return new Preferences<>(preferences);
+        return preferences(emptyList(), preferences);
     }
 
     public List<T> prefered(final List<T> options) {
+        final List<T> filtered = options.stream()
+                .filter(this.filters::isAllowed)
+                .collect(toList());
+        // TODO add reasons for filtered
         for (final Preference<T> preference : this.preferences) {
-            final List<T> preferred = options.stream()
+            final List<T> preferred = filtered.stream()
                     .filter(preference::prefer)
-                    .collect(Collectors.toList());
+                    .collect(toList());
             if (!preferred.isEmpty()) {
                 return preferred;
             }
         }
-        return emptyList();
+        return filtered;
     }
 }

@@ -21,6 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
 
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filter;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preference;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveAsEnumDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
@@ -70,10 +73,15 @@ public final class DefaultDisambiguatorBuilder {
                 customPrimitiveFactoryWithSameNameAsClass()
         ));
 
-        final Preferences<TypeSerializer> customPrimitiveSerializerPreferences = Preferences.preferences(List.of(
-                serializer -> serializer instanceof EnumCustomPrimitiveSerializer,
-                customPrimitiveSerializerNamed(this.preferredCustomPrimitiveSerializationMethodName)
-        ));
+        final Preferences<TypeSerializer> customPrimitiveSerializerPreferences = Preferences.preferences(
+                List.of(
+                        nameOfSerializerMethodIsNot("toString"),
+                        nameOfSerializerMethodIsNot("hashCode")
+                ),
+                List.of(
+                        serializer -> serializer instanceof EnumCustomPrimitiveSerializer,
+                        customPrimitiveSerializerNamed(this.preferredCustomPrimitiveSerializationMethodName)
+                ));
 
         final Preferences<TypeDeserializer> serializedObjectPreferences = Preferences.preferences(List.of(
                 serializedObjectFactoryNamed(this.preferredSerializedObjectFactoryName),
@@ -137,5 +145,16 @@ public final class DefaultDisambiguatorBuilder {
     private static boolean methodHasSameNameAsDeclaringClass(final Method method) {
         final String className = method.getDeclaringClass().getSimpleName().toLowerCase();
         return method.getName().toLowerCase().equals(className);
+    }
+
+    private static Filter<TypeSerializer> nameOfSerializerMethodIsNot(final String name) {
+        return serializer -> {
+            if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
+                return true;
+            }
+            final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
+            final boolean matchesName = method.getName().equals(name);
+            return !matchesName;
+        };
     }
 }
