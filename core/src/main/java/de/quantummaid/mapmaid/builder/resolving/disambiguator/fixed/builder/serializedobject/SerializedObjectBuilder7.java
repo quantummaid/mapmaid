@@ -38,7 +38,6 @@ public final class SerializedObjectBuilder7<X, A, B, C, D, E, F, G> {
 
     public Builder deserializedUsing(final Deserializer7<X, A, B, C, D, E, F, G> deserializer) {
         this.builder.setDeserializer(deserializer);
-        // TODO
         return this.builder;
     }
 }
