@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @SuppressWarnings({"unchecked", "InstanceofConcreteClass"})
@@ -95,8 +97,9 @@ final class InternalDeserializer implements DeserializerCallback {
         final Definition definition = this.definitions.getDefinitionForType(targetType);
         try {
             final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
-                // TODO
-                return new UnsupportedOperationException(format("No deserializer configured for '%s'", definition.type().description()));
+                final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
+                return mapMaidException(format("No deserializer configured for '%s'",
+                        definition.type().description()), scanInformation);
             });
             return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
         } catch (final WrongInputStructureException e) {

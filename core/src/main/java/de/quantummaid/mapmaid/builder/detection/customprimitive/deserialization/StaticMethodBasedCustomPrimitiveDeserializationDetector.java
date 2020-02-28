@@ -35,7 +35,6 @@ import lombok.ToString;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -64,7 +63,6 @@ public final class StaticMethodBasedCustomPrimitiveDeserializationDetector imple
     private List<ResolvedMethod> findDeserializerMethod(final ClassType type) {
         return type.publicMethods().stream()
                 .filter(method -> isStatic(method.method().getModifiers()))
-                .filter(method -> isPublic(method.method().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> method.returnType().get().equals(type))
                 .filter(method -> method.parameters().size() == 1)

@@ -19,22 +19,22 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.docs.examples.customprimitives.success.private_factory;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.allowed;
+import org.junit.jupiter.api.Test;
 
-public interface Filter<T> {
+import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-    @SuppressWarnings("unchecked")
-    static <T, V extends T> Filter<T> filterOfType(final Class<V> type, final Filter<V> filter) {
-        return t -> {
-            if(!type.isInstance(t)) {
-                return allowed();
-            } else {
-                return filter.filter((V) t);
-            }
-        };
+public final class PrivateFactoryExample {
+
+    @Test
+    public void privateFactoryExample() {
+        scenarioBuilderFor(PrivateFactoryCustomPrimitive.class)
+                .withSerializedForm("\"foo\"")
+                .withDeserializedForm(PrivateFactoryCustomPrimitive.EXAMPLE)
+                .withSerializationOnlySuccessful()
+                .withDeserializationFailing()
+                .withDuplexFailing()
+                .run();
     }
-
-    FilterResult filter(T t);
 }

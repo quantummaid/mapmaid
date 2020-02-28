@@ -148,6 +148,9 @@ public final class ScanInformationBuilder {
     }
 
     public ScanInformation build(final TypeSerializer serializer, final TypeDeserializer deserializer) {
+        // TODO
+        //this.serializers.remove(serializer);
+        this.deserializers.remove(deserializer);
         return actualScanInformation(
                 this.type,
                 this.deserializationReasons,

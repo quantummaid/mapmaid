@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,6 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.shared.types.TypeResolver.resolveType;
 import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter.resolveParameters;
 import static java.lang.String.format;
-import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.*;
@@ -53,11 +53,10 @@ public final class ResolvedMethod {
     private final Method method;
 
     @SuppressWarnings("unchecked")
-    public static List<ResolvedMethod> resolvePublicMethodsWithResolvableTypeVariables(final ClassType fullType) {
+    public static List<ResolvedMethod> resolveMethodsWithResolvableTypeVariables(final ClassType fullType) {
         final Class<?> type = fullType.assignableType();
         final Method[] declaredMethods = type.getDeclaredMethods();
         return stream(declaredMethods)
-                .filter(method -> isPublic(method.getModifiers()))
                 .map(method -> {
                     try {
                         return of(resolveMethod(method, fullType));
@@ -105,6 +104,11 @@ public final class ResolvedMethod {
 
     public Method method() {
         return this.method;
+    }
+
+    public boolean isPublic() {
+        final int modifiers = this.method.getModifiers();
+        return Modifier.isPublic(modifiers);
     }
 
     public String describe() {

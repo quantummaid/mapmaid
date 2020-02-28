@@ -19,22 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.docs.examples.customprimitives.success.private_factory;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.allowed;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public interface Filter<T> {
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class PrivateFactoryCustomPrimitive {
+    public static final PrivateFactoryCustomPrimitive EXAMPLE = new PrivateFactoryCustomPrimitive("foo");
 
-    @SuppressWarnings("unchecked")
-    static <T, V extends T> Filter<T> filterOfType(final Class<V> type, final Filter<V> filter) {
-        return t -> {
-            if(!type.isInstance(t)) {
-                return allowed();
-            } else {
-                return filter.filter((V) t);
-            }
-        };
+    private final String value;
+
+    private static PrivateFactoryCustomPrimitive privateFactoryCustomPrimitive(final String value) {
+        return new PrivateFactoryCustomPrimitive(value);
     }
 
-    FilterResult filter(T t);
+    public String stringValue() {
+        return this.value;
+    }
 }

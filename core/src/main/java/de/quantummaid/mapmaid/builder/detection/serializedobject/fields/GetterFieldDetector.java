@@ -56,7 +56,7 @@ public final class GetterFieldDetector implements FieldDetector {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        return ResolvedMethod.resolvePublicMethodsWithResolvableTypeVariables((ClassType) type).stream()
+        return ResolvedMethod.resolveMethodsWithResolvableTypeVariables((ClassType) type).stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("get"))
                 .filter(resolvedMethod -> !isStatic(resolvedMethod.method().getModifiers()))
                 .filter(resolvedMethod -> resolvedMethod.method().getReturnType() != TYPE)

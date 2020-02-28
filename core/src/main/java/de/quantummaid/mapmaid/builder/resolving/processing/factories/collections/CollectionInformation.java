@@ -38,7 +38,6 @@ import static java.util.stream.Collectors.toMap;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CollectionInformation {
-    // TODO
     final Function<List<Object>, Collection<Object>> mapper;
     private final Class<?> type;
 

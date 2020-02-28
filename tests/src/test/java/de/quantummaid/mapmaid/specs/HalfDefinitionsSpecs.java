@@ -136,8 +136,7 @@ public final class HalfDefinitionsSpecs {
                         "How it is deserialized:\n" +
                         "\tNo deserializer available\n" +
                         "Why it needs to be deserializable:\n" +
-                        "\t- because of de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableDeserializationOnlyComplexType\n" +
-                        "Ignored features for deserialization:");
+                        "\t- because of de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableDeserializationOnlyComplexType\n");
     }
 
     @Test

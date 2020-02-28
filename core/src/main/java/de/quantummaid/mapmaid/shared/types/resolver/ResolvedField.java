@@ -47,12 +47,9 @@ public final class ResolvedField {
     private final ResolvedType type;
     private final Field field;
 
-    public static List<ResolvedField> resolvedPublicFields(final ClassType fullType) {
+    public static List<ResolvedField> resolvedFields(final ClassType fullType) {
         final Class<?> type = fullType.assignableType();
-        return stream(type.getFields())
-                .filter(field -> isPublic(field.getModifiers()))
-                // TODO no
-                .filter(field -> !Modifier.isTransient(field.getModifiers()))
+        return stream(type.getDeclaredFields())
                 .map(field -> {
                     final ResolvedType resolved = resolveType(field.getGenericType(), fullType);
                     return resolvedField(field.getName(), resolved, field);
@@ -81,15 +78,25 @@ public final class ResolvedField {
         return this.field;
     }
 
+    public boolean isPublic() {
+        final int modifiers = this.field.getModifiers();
+        return Modifier.isPublic(modifiers);
+    }
+
     public boolean isStatic() {
         final int modifiers = this.field.getModifiers();
         return Modifier.isStatic(modifiers);
     }
 
+    public boolean isTransient() {
+        final int modifiers = this.field.getModifiers();
+        return Modifier.isTransient(modifiers);
+    }
+
     public String describe() {
         final StringJoiner joiner = new StringJoiner(" ");
         final int modifiers = this.field.getModifiers();
-        if (isPublic(modifiers)) {
+        if (isPublic()) {
             joiner.add("public");
         }
         if (isProtected(modifiers)) {
@@ -101,7 +108,7 @@ public final class ResolvedField {
         if (isStatic()) {
             joiner.add("static");
         }
-        if (isTransient(modifiers)) {
+        if (isTransient()) {
             joiner.add("transient");
         }
         if (isFinal(modifiers)) {

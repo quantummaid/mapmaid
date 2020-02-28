@@ -30,13 +30,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Field;
-
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
-import static java.lang.reflect.Modifier.isPublic;
-import static java.lang.reflect.Modifier.isTransient;
 
 @ToString
 @EqualsAndHashCode
@@ -55,11 +50,10 @@ public final class SerializationField {
         return new SerializationField(type, name, query);
     }
 
-    public static SerializationField fromPublicField(final ResolvedType declaringType,
-                                                     final ResolvedField field) {
+    public static SerializationField fromField(final ResolvedType declaringType,
+                                               final ResolvedField field) {
         validateNotNull(declaringType, "declaringType");
         validateNotNull(field, "field");
-        validateFieldModifiers(declaringType, field.field());
         final ResolvedType fullType = field.type();
         final String name = field.name();
         final SerializationFieldQuery query = PublicFieldQuery.publicFieldQuery(field);
@@ -85,20 +79,5 @@ public final class SerializationField {
 
     public String describe() {
         return format("%s [%s] via %s", this.name, this.type.description(), this.query.describe());
-    }
-
-    private static void validateFieldModifiers(final ResolvedType type, final Field field) {
-        final int fieldModifiers = field.getModifiers();
-
-        if (!isPublic(fieldModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The field %s for the SerializedObject of type %s must be public",
-                    field, type.description());
-        }
-        if (isTransient(fieldModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The field %s for the SerializedObject of type %s must not be transient",
-                    field, type.description());
-        }
     }
 }

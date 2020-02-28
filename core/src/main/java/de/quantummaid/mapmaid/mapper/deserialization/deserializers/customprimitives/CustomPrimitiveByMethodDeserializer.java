@@ -31,7 +31,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
@@ -47,15 +46,9 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
     private final ResolvedType baseType;
     private final ResolvedMethod deserializationMethod;
 
-    // TODO remove checks
     public static TypeDeserializer createDeserializer(final ResolvedType type,
                                                       final ResolvedMethod deserializationMethod) {
         final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
-        if (!Modifier.isPublic(deserializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization method %s configured for the custom primitive of type %s must be public",
-                    deserializationMethod.describe(), type.description());
-        }
         if (!Modifier.isStatic(deserializationMethodModifiers)) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization method %s configured for the custom primitive of type %s must be static",
@@ -104,8 +97,8 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         }
     }
 
-    public Method method() {
-        return this.deserializationMethod.method();
+    public ResolvedMethod method() {
+        return this.deserializationMethod;
     }
 
     @Override

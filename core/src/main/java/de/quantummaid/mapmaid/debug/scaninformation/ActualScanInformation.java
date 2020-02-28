@@ -47,27 +47,27 @@ public final class ActualScanInformation implements ScanInformation {
     private final List<Reason> serializationReasons;
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
-    private final Map<TypeSerializer, List<String>> serializers;
+    private final Map<TypeSerializer, List<String>> ignoredSerializers;
     private final Map<SerializationField, List<String>> serializationFields;
-    private final Map<TypeDeserializer, List<String>> deserializers;
+    private final Map<TypeDeserializer, List<String>> ignoredDeserializers;
 
     public static ScanInformation actualScanInformation(final ResolvedType type,
                                                         final List<Reason> deserializationReasons,
                                                         final List<Reason> serializationReasons,
                                                         final TypeSerializer serializer,
                                                         final TypeDeserializer deserializer,
-                                                        final Map<TypeSerializer, List<String>> serializers,
+                                                        final Map<TypeSerializer, List<String>> ignoredSerializers,
                                                         final Map<SerializationField, List<String>> serializationFields,
-                                                        final Map<TypeDeserializer, List<String>> deserializers) {
+                                                        final Map<TypeDeserializer, List<String>> ignoredDeserializers) {
         return new ActualScanInformation(
                 type,
                 deserializationReasons,
                 serializationReasons,
                 serializer,
                 deserializer,
-                serializers,
+                ignoredSerializers,
                 serializationFields,
-                deserializers);
+                ignoredDeserializers);
     }
 
     @Override
@@ -86,8 +86,10 @@ public final class ActualScanInformation implements ScanInformation {
             stringBuilder.append("\nWhy it needs to be serializable:\n");
             this.serializationReasons.forEach(reason -> stringBuilder.append(format("\t- %s%n", reason.render())));
 
-            stringBuilder.append("Ignored features for serialization:\n");
+            // TODO
+            //if(!this.ignoredSerializers.isEmpty()) {
             stringBuilder.append(renderIgnoredSerializers());
+            //}
         }
 
         if (isDeserializable()) {
@@ -97,8 +99,9 @@ public final class ActualScanInformation implements ScanInformation {
             stringBuilder.append("\nWhy it needs to be deserializable:\n");
             this.deserializationReasons.forEach(reason -> stringBuilder.append(format("\t- %s%n", reason.render())));
 
-            stringBuilder.append("Ignored features for deserialization:\n");
-            stringBuilder.append(renderIgnoredDeserializers());
+            if (!this.ignoredDeserializers.isEmpty()) {
+                stringBuilder.append(renderIgnoredDeserializers());
+            }
         }
 
         return stringBuilder.toString();
@@ -122,10 +125,8 @@ public final class ActualScanInformation implements ScanInformation {
 
     private String renderIgnoredSerializers() {
         final StringBuilder stringBuilder = new StringBuilder();
-        this.serializers.forEach((serializer, reasons) -> {
-            if (serializer.equals(this.serializer)) {
-                return;
-            }
+        stringBuilder.append("Ignored features for serialization:\n");
+        this.ignoredSerializers.forEach((serializer, reasons) -> {
             final String description = serializer.description();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
@@ -146,10 +147,8 @@ public final class ActualScanInformation implements ScanInformation {
 
     private String renderIgnoredDeserializers() {
         final StringBuilder stringBuilder = new StringBuilder();
-        this.deserializers.forEach((deserializer, reasons) -> {
-            if (deserializer.equals(this.deserializer)) {
-                return;
-            }
+        stringBuilder.append("Ignored features for deserialization:\n");
+        this.ignoredDeserializers.forEach((deserializer, reasons) -> {
             final String description = deserializer.description();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
