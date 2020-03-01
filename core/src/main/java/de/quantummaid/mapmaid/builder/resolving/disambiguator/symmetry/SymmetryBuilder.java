@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import lombok.AccessLevel;
@@ -37,9 +36,9 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceClass.equivalenceClass;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceSignature.ofDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryResult.symmetryResult;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -74,7 +73,7 @@ public final class SymmetryBuilder {
     }
 
     // TODO different classes with same size?
-    public DetectionResult<SerializersAndDeserializers> determineGreatestCommonFields() {
+    public DetectionResult<SymmetryResult> determineGreatestCommonFields() {
         final List<EquivalenceSignature> sorted = this.equivalenceClasses.keySet().stream()
                 .sorted()
                 .collect(toList());
@@ -100,7 +99,8 @@ public final class SymmetryBuilder {
             throw new UnsupportedOperationException("Ambiguous symmetry");
         }
         final EquivalenceClass winner = maxClasses.get(0);
-        final SerializersAndDeserializers result = serializersAndDeserializers(winner.serializers(), winner.deserializers());
+
+        final SymmetryResult result = symmetryResult(winner.serializers(), winner.deserializers());
         return success(result);
     }
 }

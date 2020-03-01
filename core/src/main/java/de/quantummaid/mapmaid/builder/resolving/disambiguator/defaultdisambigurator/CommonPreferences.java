@@ -27,6 +27,9 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimiti
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
@@ -34,6 +37,13 @@ import java.util.function.Predicate;
 final class CommonPreferences {
 
     private CommonPreferences() {
+    }
+
+    static Preference<SerializationField> publicFields() {
+        return field -> {
+            final SerializationFieldQuery query = field.getQuery();
+            return query instanceof PublicFieldQuery;
+        };
     }
 
     static Preference<TypeDeserializer> serializedObjectFactoryNamed(final String name) {

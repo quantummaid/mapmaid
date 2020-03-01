@@ -38,9 +38,7 @@ public final class TypeWildcardSpecs {
                         .mapping(AComplexTypeWithWildcardedCollection.class, deserialization())
                         .build())
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex:\n" +
-                        "no duplex detected:\n" +
-                        "type '?' is not supported because it contains wildcard generics (\"?\")");
+                .anExceptionIsThrownWithAMessageContaining("type '?' is not supported because it contains wildcard generics (\"?\")");
     }
 
     @Test
@@ -51,8 +49,6 @@ public final class TypeWildcardSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("?: unable to detect duplex:\n" +
-                        "no duplex detected:\n" +
-                        "type '?' is not supported because it contains wildcard generics (\"?\")");
+                .anExceptionIsThrownWithAMessageContaining("type '?' is not supported because it contains wildcard generics (\"?\")");
     }
 }

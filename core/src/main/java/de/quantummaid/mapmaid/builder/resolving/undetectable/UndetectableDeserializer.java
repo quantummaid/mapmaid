@@ -35,19 +35,23 @@ import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public final class UndetectableDeserializer extends StatefulDeserializer {
+    private final String reason;
 
-    private UndetectableDeserializer(final Context context) {
+    private UndetectableDeserializer(final Context context,
+                                     final String reason) {
         super(context);
+        this.reason = reason;
     }
 
-    public static StatefulDefinition undetectableDeserializer(final Context context) {
-        return new UndetectableDeserializer(context);
+    public static StatefulDefinition undetectableDeserializer(final Context context,
+                                                              final String reason) {
+        return new UndetectableDeserializer(context, reason);
     }
 
     @Override
     public Report getDefinition() {
         final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
         final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
-        return failure(collectionResult, "unable to detect deserializer");
+        return failure(collectionResult, "unable to detect deserializer:\n" + this.reason);
     }
 }

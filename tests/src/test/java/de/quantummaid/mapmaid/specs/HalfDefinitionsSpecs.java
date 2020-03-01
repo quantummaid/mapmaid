@@ -109,15 +109,7 @@ public final class HalfDefinitionsSpecs {
                 .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString: unable to detect serializer\n" +
-                        "\n" +
-                        "de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString:\n" +
-                        "Mode: serialization-only\n" +
-                        "How it is serialized:\n" +
-                        "\tNo serializer available\n" +
-                        "Why it needs to be serializable:\n" +
-                        "\t- because of de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableSerializationOnlyComplexType\n" +
-                        "Ignored features for serialization:");
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString: unable to detect serializer");
     }
 
     @Test
@@ -129,14 +121,7 @@ public final class HalfDefinitionsSpecs {
                 .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString: unable to detect deserializer\n" +
-                        "\n" +
-                        "de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString:\n" +
-                        "Mode: deserialization-only\n" +
-                        "How it is deserialized:\n" +
-                        "\tNo deserializer available\n" +
-                        "Why it needs to be deserializable:\n" +
-                        "\t- because of de.quantummaid.mapmaid.testsupport.domain.half.AnUnresolvableDeserializationOnlyComplexType\n");
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString: unable to detect deserializer");
     }
 
     @Test

@@ -53,9 +53,7 @@ public final class Picker {
     }
 
     @SuppressWarnings("unchecked")
-    public static DetectionResult<TypeDeserializer> pickDeserializer(final SerializersAndDeserializers serializersAndDeserializers) {
-        final List<TypeDeserializer> deserializers = serializersAndDeserializers.deserializers();
-
+    public static DetectionResult<TypeDeserializer> pickDeserializer(final List<TypeDeserializer> deserializers) {
         final List<TypeDeserializer> customPrimitives = subTypesOf(CustomPrimitiveDeserializer.class, deserializers);
         final Optional<DetectionResult<TypeDeserializer>> customPrimitive = oneOrNone(customPrimitives, TypeDeserializer::description);
         if (customPrimitive.isPresent()) {

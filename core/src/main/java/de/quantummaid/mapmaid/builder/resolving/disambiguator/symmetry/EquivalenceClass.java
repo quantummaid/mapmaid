@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +38,14 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EquivalenceClass {
     private final int size;
-    private final List<TypeSerializer> serializers;
+    private final List<SerializationFieldInstantiation> serializers;
     private final List<TypeDeserializer> deserializers;
 
     public static EquivalenceClass equivalenceClass(final int size) {
         return new EquivalenceClass(size, smallList(), smallList());
     }
 
-    public void addSerializer(final TypeSerializer serializer) {
+    public void addSerializer(final SerializationFieldInstantiation serializer) {
         validateNotNull(serializer, "serializer");
         this.serializers.add(serializer);
     }
@@ -63,7 +63,7 @@ public final class EquivalenceClass {
         return this.size;
     }
 
-    public List<TypeSerializer> serializers() {
+    public List<SerializationFieldInstantiation> serializers() {
         return this.serializers;
     }
 

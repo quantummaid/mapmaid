@@ -21,9 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,8 @@ import lombok.ToString;
 
 import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Optional.empty;
 
 @ToString
 @EqualsAndHashCode
@@ -44,8 +47,12 @@ public final class EquivalenceSignature implements Comparable<EquivalenceSignatu
         return new EquivalenceSignature(fields);
     }
 
-    public Optional<TypeSerializer> match(final SerializationFieldOptions serializer) {
-        return serializer.instantiate(this.fields);
+    public Optional<SerializationFieldInstantiation> match(final SerializationFieldOptions serializer) {
+        final DetectionResult<SerializationFieldInstantiation> instance = serializer.instantiate(this.fields);
+        if (instance.isFailure()) {
+            return empty();
+        }
+        return Optional.of(instance.result());
     }
 
     public int size() {

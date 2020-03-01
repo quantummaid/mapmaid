@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -29,15 +29,19 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.Collection.smallMap;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation.serializationFieldInstantiation;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -77,7 +81,7 @@ public final class SerializationFieldOptions {
         validateNotNull(field, "field");
         final String name = field.name();
         if (!this.options.containsKey(name)) {
-            this.options.put(name, new ArrayList<>(2));
+            this.options.put(name, smallList());
         }
         this.options.get(name).add(field);
     }
@@ -91,54 +95,42 @@ public final class SerializationFieldOptions {
                 .anyMatch(type::equals);
     }
 
-    // TODO
-    public TypeSerializer instantiateAll() {
-        final List<SerializationField> fields = new ArrayList<>(this.options.size());
-        this.options.forEach((name, serializationFields) -> {
-            if (serializationFields.size() > 1) {
-                // TODO
-                throw new UnsupportedOperationException();
-            }
-            fields.add(serializationFields.get(0));
-        });
-        return serializedObjectSerializer(serializationFields(fields));
+    public DetectionResult<SerializationFieldInstantiation> instantiateAll() {
+        return success(serializationFieldInstantiation(this.options));
     }
 
-    public Optional<TypeSerializer> instantiate(final Map<String, ResolvedType> fields) {
-        if (fields.isEmpty()) {
-            // TODO
-            return empty();
-        }
-        final List<SerializationField> serializationFields = new ArrayList<>(fields.size());
+    public DetectionResult<SerializationFieldInstantiation> instantiate(final Map<String, ResolvedType> fields) {
+        final Map<String, List<SerializationField>> instantiableFields = new HashMap<>(fields.size());
+        final List<String> problems = smallList();
         for (final Map.Entry<String, ResolvedType> entry : fields.entrySet()) {
             final String name = entry.getKey();
             if (!this.options.containsKey(name)) {
-                return empty();
+                problems.add(format("No field under the name '%s'", name));
+                continue;
             }
             final List<SerializationField> options = this.options.get(name);
             final ResolvedType type = entry.getValue();
-            final Optional<SerializationField> selection = select(type, options);
-            if (selection.isEmpty()) {
-                return empty();
+            final List<SerializationField> mirroredFields = mirroredFields(type, options);
+            if (mirroredFields.isEmpty()) {
+                problems.add(format("No field under name '%s' of a type similar to '%s'", name, type.description()));
             }
-            serializationFields.add(selection.get());
+            instantiableFields.put(name, mirroredFields);
         }
 
-        return of(serializedObjectSerializer(serializationFields(serializationFields)));
+        if (!problems.isEmpty()) {
+            return failure(problems);
+        }
+
+        final SerializationFieldInstantiation instantiation = serializationFieldInstantiation(instantiableFields);
+        return success(instantiation);
     }
 
-    private Optional<SerializationField> select(final ResolvedType type,
-                                                final List<SerializationField> options) {
-        final List<SerializationField> list = options.stream()
+    private List<SerializationField> mirroredFields(final ResolvedType type,
+                                                    final List<SerializationField> options) {
+        validateNotNull(type, "type");
+        validateNotNull(options, "options");
+        return options.stream()
                 .filter(field -> Mirror.mirrors(field.type(), type))
                 .collect(toList());
-        if (list.isEmpty()) {
-            return empty();
-        }
-        if (list.size() == 1) {
-            return of(list.get(0));
-        }
-        // TODO
-        throw new UnsupportedOperationException("It is not clear which field to use");
     }
 }

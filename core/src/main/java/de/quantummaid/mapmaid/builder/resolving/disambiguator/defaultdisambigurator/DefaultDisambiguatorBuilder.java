@@ -72,11 +72,16 @@ public final class DefaultDisambiguatorBuilder {
         final Preferences<TypeDeserializer> serializedObjectPreferences = buildSerializedObjectPreferences();
         final Filters<SerializationField> serializationFieldFilters = buildSerializationFieldFilters();
 
+        final Preferences<SerializationField> postSymmetrySerializationFieldPreferences = preferences(List.of(
+                publicFields()
+        ));
+
         return defaultDisambiguator(
                 customPrimitiveDeserializerPreferences,
                 customPrimitiveSerializerPreferences,
                 serializedObjectPreferences,
-                serializationFieldFilters
+                serializationFieldFilters,
+                postSymmetrySerializationFieldPreferences
         );
     }
 

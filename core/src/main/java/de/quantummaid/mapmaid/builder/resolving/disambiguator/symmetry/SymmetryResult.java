@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -34,33 +34,43 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializedObjectOptions {
-    private final SerializationFieldOptions serializationFieldOptions;
+public final class SymmetryResult {
+    private final List<SerializationFieldInstantiation> serializers;
     private final List<TypeDeserializer> deserializers;
 
-    public static SerializedObjectOptions serializedObjectOptions(final SerializationFieldOptions serializationFieldOptions,
-                                                                  final List<TypeDeserializer> deserializers) {
-        return new SerializedObjectOptions(serializationFieldOptions, deserializers);
+    public static SymmetryResult symmetryResult(final List<SerializationFieldInstantiation> serializers,
+                                                final List<TypeDeserializer> deserializers) {
+        if (serializers.isEmpty()) {
+            throw new IllegalArgumentException("serializers must not be empty");
+        }
+        if (deserializers.isEmpty()) {
+            throw new IllegalArgumentException("deserializers must not be empty");
+        }
+        return new SymmetryResult(serializers, deserializers);
     }
 
     public List<TypeDeserializer> deserializers() {
         return this.deserializers;
     }
 
-    public SerializationFieldOptions serializationFieldOptions() {
-        return this.serializationFieldOptions;
-    }
-
     public DetectionResult<TypeSerializer> determineSerializer(final Preferences<SerializationField> preferences,
                                                                final ScanInformationBuilder scanInformationBuilder) {
-        if (this.serializationFieldOptions == null) {
-            throw new UnsupportedOperationException("This should never happen");
+        if (this.serializers.size() != 1) {
+            final String options = this.serializers.stream()
+                    .map(SerializationFieldInstantiation::describe)
+                    .collect(Collectors.joining("----\n", "----", "----"));
+            return failure(format("cannot decide between '%s'", options));
         }
-        return this.serializationFieldOptions.instantiateAll()
-                .flatMap(instantiation -> instantiation.instantiate(preferences, scanInformationBuilder));
+
+        final SerializationFieldInstantiation instantiation = this.serializers.get(0);
+        return instantiation.instantiate(preferences, scanInformationBuilder);
     }
 }
