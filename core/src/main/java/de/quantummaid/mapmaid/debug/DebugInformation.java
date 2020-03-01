@@ -31,10 +31,13 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
 import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 @ToString
 @EqualsAndHashCode
@@ -51,10 +54,19 @@ public final class DebugInformation {
     }
 
     public ScanInformation scanInformationFor(final ResolvedType type) {
+        return optionalScanInformationFor(type)
+                .orElseGet(() -> neverScanned(type));
+    }
+
+    public Optional<ScanInformation> optionalScanInformationFor(final Class<?> type) {
+        return optionalScanInformationFor(resolvedType(type));
+    }
+
+    public Optional<ScanInformation> optionalScanInformationFor(final ResolvedType type) {
         if (!this.scanInformations.containsKey(type)) {
-            return neverScanned(type);
+            return empty();
         }
-        return this.scanInformations.get(type);
+        return of(this.scanInformations.get(type));
     }
 
     public List<ScanInformation> allScanInformations() {

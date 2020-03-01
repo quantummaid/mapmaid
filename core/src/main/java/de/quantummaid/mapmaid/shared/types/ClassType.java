@@ -97,8 +97,7 @@ public final class ClassType implements ResolvedType {
         return ResolvedMethod.resolveMethodsWithResolvableTypeVariables(this);
     }
 
-    // TODO all constructors
-    public List<ResolvedConstructor> publicConstructors() {
+    public List<ResolvedConstructor> constructors() {
         return ResolvedConstructor.resolveConstructors(this);
     }
 

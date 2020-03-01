@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.mapper.definitions.Definitions;
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public final class ThenData {
     private Object deserializationResult;
     private String serializationResult;
     private Exception exception;
-    private Definitions definitions;
+    private DebugInformation debugInformation;
 
     public static ThenData thenData() {
         return new ThenData();
@@ -67,12 +67,12 @@ public final class ThenData {
         return this.exception;
     }
 
-    public ThenData withDefinitions(final Definitions definitions) {
-        this.definitions = definitions;
+    public ThenData withDebugInformation(final DebugInformation debugInformation) {
+        this.debugInformation = debugInformation;
         return this;
     }
 
-    public Definitions getDefinitions() {
-        return this.definitions;
+    public DebugInformation getDebugInformation() {
+        return this.debugInformation;
     }
 }

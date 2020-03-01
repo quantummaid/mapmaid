@@ -61,7 +61,7 @@ public final class ConstructorBasedCustomPrimitiveDeserializationDetector implem
     }
 
     private List<ResolvedConstructor> fittingConstructors(final ClassType type) {
-        return type.publicConstructors().stream()
+        return type.constructors().stream()
                 .filter(constructor -> constructor.parameters().size() == 1)
                 .filter(constructor -> {
                     final ResolvedParameter parameterType = constructor.parameters().get(0);

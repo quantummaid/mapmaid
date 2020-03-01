@@ -85,8 +85,7 @@ public final class DefaultDisambiguator implements Disambiguator {
                                                               final SerializedObjectOptions serializedObjectOptions,
                                                               final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
                                                               final ScanInformationBuilder scanInformationBuilder) {
-        if (type.assignableType().getPackageName().startsWith("java.util")) {
-            // TODO
+        if (type.assignableType().getPackageName().startsWith("java.")) {
             return failure("Native java classes cannot be detected");
         }
 
@@ -96,12 +95,10 @@ public final class DefaultDisambiguator implements Disambiguator {
         final SerializersAndDeserializers preferredCustomPrimitiveSerializersAndDeserializers = filterCustomPrimitiveOptions(
                 customPrimitiveSerializersAndDeserializers, scanInformationBuilder);
 
-        // TODO
         if (preferredCustomPrimitiveSerializersAndDeserializers.serializationOnly()) {
             return serializationOnly(preferredCustomPrimitiveSerializersAndDeserializers, filteredSerializedObjectOptions, scanInformationBuilder);
         }
 
-        // TODO
         if (preferredCustomPrimitiveSerializersAndDeserializers.deserializationOnly()) {
             return deserializationOnly(preferredCustomPrimitiveSerializersAndDeserializers, filteredSerializedObjectOptions, scanInformationBuilder);
         }

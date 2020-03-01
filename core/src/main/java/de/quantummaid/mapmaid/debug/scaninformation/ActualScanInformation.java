@@ -24,8 +24,12 @@ package de.quantummaid.mapmaid.debug.scaninformation;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -36,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static de.quantummaid.mapmaid.debug.scaninformation.Classification.OTHER;
 import static java.lang.String.format;
 
 @ToString
@@ -175,5 +180,28 @@ public final class ActualScanInformation implements ScanInformation {
         } else {
             return this.deserializer.description();
         }
+    }
+
+    @Override
+    public Classification classification() {
+        if (this.deserializer != null) {
+            if (this.deserializer instanceof SerializedObjectDeserializer) {
+                return Classification.SERIALIZED_OBJECT;
+            } else if (this.deserializer instanceof CustomPrimitiveDeserializer) {
+                return Classification.CUSTOM_PRIMITIVE;
+            } else {
+                return OTHER;
+            }
+        }
+        if (this.serializer != null) {
+            if (this.serializer instanceof SerializedObjectSerializer) {
+                return Classification.SERIALIZED_OBJECT;
+            } else if (this.serializer instanceof CustomPrimitiveSerializer) {
+                return Classification.SERIALIZED_OBJECT;
+            } else {
+                return OTHER;
+            }
+        }
+        throw new UnsupportedOperationException("Unable to do classification");
     }
 }

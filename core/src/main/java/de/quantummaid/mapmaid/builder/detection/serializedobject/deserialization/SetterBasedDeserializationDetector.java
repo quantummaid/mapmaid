@@ -58,7 +58,7 @@ public final class SetterBasedDeserializationDetector implements SerializedObjec
             return emptyList();
         }
         final ClassType classType = (ClassType) type;
-        final Optional<ResolvedConstructor> zeroArgumentsConstructor = classType.publicConstructors().stream()
+        final Optional<ResolvedConstructor> zeroArgumentsConstructor = classType.constructors().stream()
                 .filter(resolvedConstructor -> resolvedConstructor.parameters().isEmpty())
                 .findAny();
         if (zeroArgumentsConstructor.isEmpty()) {

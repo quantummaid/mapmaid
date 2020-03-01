@@ -21,10 +21,18 @@
 
 package de.quantummaid.mapmaid.debug.scaninformation;
 
-public interface ScanInformation {
-    String render();
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-    default Classification classification() {
-        throw new UnsupportedOperationException();
-    }
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Classification {
+    public static final Classification CUSTOM_PRIMITIVE = new Classification("Custom Primitive");
+    public static final Classification SERIALIZED_OBJECT = new Classification("Serialized Object");
+    public static final Classification OTHER = new Classification("Other");
+
+    private final String value;
 }

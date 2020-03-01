@@ -84,7 +84,6 @@ public final class DetectionResult<T> {
     }
 
     public String reasonForFailure() {
-        // TODO
         return this.reasonsForFailure.stream()
                 .collect(joining("\n", "[", "]"));
     }

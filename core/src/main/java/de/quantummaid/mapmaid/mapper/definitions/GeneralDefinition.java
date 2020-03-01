@@ -41,7 +41,6 @@ public final class GeneralDefinition implements Definition {
     private final ResolvedType type;
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
-    private final String classification;
 
     public static Definition generalDefinition(final ResolvedType type,
                                                final TypeSerializer serializer,
@@ -53,13 +52,7 @@ public final class GeneralDefinition implements Definition {
         if (deserializer == null) {
             validateNotNull(serializer, "serializer");
         }
-        final String classification;
-        if (serializer != null) {
-            classification = serializer.classification();
-        } else {
-            classification = deserializer.classification();
-        }
-        return new GeneralDefinition(type, serializer, deserializer, classification);
+        return new GeneralDefinition(type, serializer, deserializer);
     }
 
     @Override
@@ -75,11 +68,5 @@ public final class GeneralDefinition implements Definition {
     @Override
     public ResolvedType type() {
         return this.type;
-    }
-
-    // TODO
-    @Override
-    public String classification() {
-        return this.classification;
     }
 }

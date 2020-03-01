@@ -124,18 +124,4 @@ public final class Definitions {
             definition.serializer().get().requiredTypes().forEach(type -> validateSerialization(type, reason, alreadyVisited));
         }
     }
-
-    // TODO to debug information
-    public int countCustomPrimitives() {
-        return (int) this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Custom Primitive"))
-                .count();
-    }
-
-    // TODO to debug information
-    public int countSerializedObjects() {
-        return (int) this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Serialized Object"))
-                .count();
-    }
 }

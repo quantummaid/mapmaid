@@ -21,10 +21,10 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.definitions.Definitions;
-import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import com.google.gson.Gson;
+import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -103,8 +103,8 @@ public final class When {
     }
 
     public Then theDefinitionsAreQueried() {
-        final Definitions definitions = this.mapMaid.deserializer().getDefinitions();
-        return then(this.thenData.withDefinitions(definitions));
+        final DebugInformation debugInformation = this.mapMaid.debugInformation();
+        return then(this.thenData.withDebugInformation(debugInformation));
     }
 
     public Then mapMaidIsInstantiated() {
