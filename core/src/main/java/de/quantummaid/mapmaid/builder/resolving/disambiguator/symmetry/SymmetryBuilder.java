@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceClass.equivalenceClass;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceSignature.ofDeserializer;
@@ -50,10 +52,16 @@ public final class SymmetryBuilder {
         return new SymmetryBuilder(smallMap());
     }
 
-    public void addDeserializer(final SerializedObjectDeserializer deserializer) {
-        final EquivalenceSignature equivalenceSignature = ofDeserializer(deserializer);
+    public void addDeserializer(final TypeDeserializer deserializer) {
+        if (!(deserializer instanceof SerializedObjectDeserializer)) {
+            throw new UnsupportedOperationException("This should never happen." +
+                    "Only serialized object deserializers can be checked for symmetry, but got: " + deserializer);
+        }
+        final SerializedObjectDeserializer serializedObjectDeserializer = (SerializedObjectDeserializer) deserializer;
+        final EquivalenceSignature equivalenceSignature = ofDeserializer(serializedObjectDeserializer);
         if (!this.equivalenceClasses.containsKey(equivalenceSignature)) {
-            this.equivalenceClasses.put(equivalenceSignature, equivalenceClass());
+            final int size = serializedObjectDeserializer.fields().size();
+            this.equivalenceClasses.put(equivalenceSignature, equivalenceClass(size));
         }
         this.equivalenceClasses.get(equivalenceSignature).addDeserializer(deserializer);
     }
@@ -70,16 +78,29 @@ public final class SymmetryBuilder {
         final List<EquivalenceSignature> sorted = this.equivalenceClasses.keySet().stream()
                 .sorted()
                 .collect(toList());
-        return sorted.stream()
+        final List<EquivalenceClass> supportedClasses = sorted.stream()
                 .map(this.equivalenceClasses::get)
                 .filter(EquivalenceClass::fullySupported)
-                // TODO
-                .findFirst()
-                .map(equivalenceClass -> {
-                    return serializersAndDeserializers(equivalenceClass.serializers(), equivalenceClass.deserializers());
-                })
-                .map(DetectionResult::success)
-                // TODO
-                .orElseGet(() -> failure("No symmetric result"));
+                .collect(toList());
+        if (supportedClasses.isEmpty()) {
+            return failure("No symmetric result");
+        }
+
+        final int maxSize = supportedClasses.stream()
+                .mapToInt(EquivalenceClass::size)
+                .max()
+                .orElseThrow(() -> new UnsupportedOperationException("This should never happen"));
+
+        final List<EquivalenceClass> maxClasses = supportedClasses.stream()
+                .filter(equivalenceClass -> equivalenceClass.size() == maxSize)
+                .collect(toList());
+
+        if (maxClasses.size() != 1) {
+            // TODO
+            throw new UnsupportedOperationException("Ambiguous symmetry");
+        }
+        final EquivalenceClass winner = maxClasses.get(0);
+        final SerializersAndDeserializers result = serializersAndDeserializers(winner.serializers(), winner.deserializers());
+        return success(result);
     }
 }

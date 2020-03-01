@@ -37,11 +37,12 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EquivalenceClass {
+    private final int size;
     private final List<TypeSerializer> serializers;
     private final List<TypeDeserializer> deserializers;
 
-    public static EquivalenceClass equivalenceClass() {
-        return new EquivalenceClass(smallList(), smallList());
+    public static EquivalenceClass equivalenceClass(final int size) {
+        return new EquivalenceClass(size, smallList(), smallList());
     }
 
     public void addSerializer(final TypeSerializer serializer) {
@@ -56,6 +57,10 @@ public final class EquivalenceClass {
 
     public boolean fullySupported() {
         return !this.serializers.isEmpty() && !this.deserializers.isEmpty();
+    }
+
+    public int size() {
+        return this.size;
     }
 
     public List<TypeSerializer> serializers() {

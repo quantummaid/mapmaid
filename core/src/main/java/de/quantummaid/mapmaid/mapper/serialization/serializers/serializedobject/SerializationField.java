@@ -78,6 +78,6 @@ public final class SerializationField {
     }
 
     public String describe() {
-        return format("%s [%s] via %s", this.name, this.type.description(), this.query.describe());
+        return format("%s [%s] via %s", this.name, this.type.simpleDescription(), this.query.describe());
     }
 }

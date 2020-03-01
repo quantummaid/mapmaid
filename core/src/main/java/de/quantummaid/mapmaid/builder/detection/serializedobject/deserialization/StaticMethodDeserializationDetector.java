@@ -59,7 +59,7 @@ public final class StaticMethodDeserializationDetector implements SerializedObje
             return emptyList();
         }
         final ClassType classType = (ClassType) type;
-        return classType.publicMethods().stream()
+        return classType.methods().stream()
                 .filter(resolvedMethod -> isStatic(resolvedMethod.method().getModifiers()))
                 .filter(resolvedMethod -> {
                     final Optional<ResolvedType> resolvedType = resolvedMethod.returnType();

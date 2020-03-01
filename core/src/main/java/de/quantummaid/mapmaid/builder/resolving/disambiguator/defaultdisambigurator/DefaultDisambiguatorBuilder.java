@@ -21,35 +21,25 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filter;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filters;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preference;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveAsEnumDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.EnumCustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.function.Predicate;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.CommonFilters.*;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.CommonPreferences.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguator.defaultDisambiguator;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filter.filterOfType;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.allowed;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.denied;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences.preferences;
-import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -80,12 +70,7 @@ public final class DefaultDisambiguatorBuilder {
         final Preferences<TypeSerializer> customPrimitiveSerializerPreferences = buildCustomPrimitiveSerializerPreferences();
 
         final Preferences<TypeDeserializer> serializedObjectPreferences = buildSerializedObjectPreferences();
-
-        final Filters<SerializationField> serializationFieldFilters = Filters.filters(List.of(
-                ignoreStaticFields(),
-                ignoreTransientFields(),
-                ignoreNonPublicFields()
-        ));
+        final Filters<SerializationField> serializationFieldFilters = buildSerializationFieldFilters();
 
         return defaultDisambiguator(
                 customPrimitiveDeserializerPreferences,
@@ -98,7 +83,8 @@ public final class DefaultDisambiguatorBuilder {
     private Preferences<TypeDeserializer> buildCustomPrimitiveDeserializerPreferences() {
         return preferences(
                 List.of(
-                        ignoreNonPublicMethodsForCustomPrimitveDeserialization()
+                        ignoreNonPublicMethodsForCustomPrimitiveDeserialization(),
+                        ignoreNonPublicConstructorsForCustomPrimitiveDeserialization()
                 ),
                 List.of(
                         deserializer -> deserializer instanceof CustomPrimitiveAsEnumDeserializer,
@@ -122,7 +108,8 @@ public final class DefaultDisambiguatorBuilder {
     private Preferences<TypeDeserializer> buildSerializedObjectPreferences() {
         return preferences(
                 List.of(
-                        ignoreNonPublicMethodsForSerializedObjectDeserialization()
+                        ignoreNonPublicMethodsForSerializedObjectDeserialization(),
+                        ignoreNonPublicConstructorsForSerializedObjectDeserialization()
                 ),
                 List.of(
                         serializedObjectFactoryNamed(this.preferredSerializedObjectFactoryName),
@@ -131,117 +118,11 @@ public final class DefaultDisambiguatorBuilder {
                 ));
     }
 
-    private static Preference<TypeDeserializer> serializedObjectFactoryNamed(final String name) {
-        return serializedObjectFactoryThat(method -> method.getName().equals(name));
-    }
-
-    private static Preference<TypeDeserializer> serializedObjectFactoryWithSameNameAsClass() {
-        return serializedObjectFactoryThat(DefaultDisambiguatorBuilder::methodHasSameNameAsDeclaringClass);
-    }
-
-    private static Preference<TypeDeserializer> serializedObjectFactoryThat(final Predicate<Method> filter) {
-        return deserializer -> {
-            if (!(deserializer instanceof MethodSerializedObjectDeserializer)) {
-                return false;
-            }
-            final Method method = ((MethodSerializedObjectDeserializer) deserializer).method().method();
-            return filter.test(method);
-        };
-    }
-
-    private static Preference<TypeSerializer> customPrimitiveSerializerNamed(final String name) {
-        return serializer -> {
-            if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
-                return false;
-            }
-            final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
-            return method.getName().equals(name);
-        };
-    }
-
-    private static Preference<TypeDeserializer> customPrimitiveFactoryNamed(final String name) {
-        return customPrimitiveFactoryThat(method -> method.getName().equals(name));
-    }
-
-    private static Preference<TypeDeserializer> customPrimitiveFactoryWithSameNameAsClass() {
-        return customPrimitiveFactoryThat(DefaultDisambiguatorBuilder::methodHasSameNameAsDeclaringClass);
-    }
-
-    private static Preference<TypeDeserializer> customPrimitiveFactoryThat(final Predicate<Method> filter) {
-        return deserializer -> {
-            if (!(deserializer instanceof CustomPrimitiveByMethodDeserializer)) {
-                return false;
-            }
-            final Method method = ((CustomPrimitiveByMethodDeserializer) deserializer).method().method();
-            return filter.test(method);
-        };
-    }
-
-    private static boolean methodHasSameNameAsDeclaringClass(final Method method) {
-        final String className = method.getDeclaringClass().getSimpleName().toLowerCase();
-        return method.getName().toLowerCase().equals(className);
-    }
-
-    private static Filter<TypeSerializer> nameOfSerializerMethodIsNot(final String name) {
-        return serializer -> {
-            if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
-                return allowed();
-            }
-            final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
-            final boolean matchesName = method.getName().equals(name);
-            if (!matchesName) {
-                return allowed();
-            } else {
-                return denied(format("method '%s' is not considered", name));
-            }
-        };
-    }
-
-    private static Filter<SerializationField> ignoreStaticFields() {
-        return ignoreFieldsThat(ResolvedField::isStatic, "static fields are not serialized");
-    }
-
-    private static Filter<SerializationField> ignoreTransientFields() {
-        return ignoreFieldsThat(ResolvedField::isTransient, "transient fields are not serialized");
-    }
-
-    private static Filter<SerializationField> ignoreNonPublicFields() {
-        return ignoreFieldsThat(resolvedField -> !resolvedField.isPublic(), "only public fields are serialized");
-    }
-
-    private static Filter<SerializationField> ignoreFieldsThat(final Predicate<ResolvedField> fieldPredicate,
-                                                               final String message) {
-        return field -> {
-            if (!(field.getQuery() instanceof PublicFieldQuery)) {
-                return allowed();
-            }
-            final PublicFieldQuery query = (PublicFieldQuery) field.getQuery();
-            final ResolvedField resolvedField = query.field();
-            if (fieldPredicate.test(resolvedField)) {
-                return denied(message);
-            } else {
-                return allowed();
-            }
-        };
-    }
-
-    private static Filter<TypeDeserializer> ignoreNonPublicMethodsForCustomPrimitveDeserialization() {
-        return filterOfType(CustomPrimitiveByMethodDeserializer.class, deserializer -> {
-            if (deserializer.method().isPublic()) {
-                return allowed();
-            } else {
-                return denied("only public static methods are considered for deserialization");
-            }
-        });
-    }
-
-    private static Filter<TypeDeserializer> ignoreNonPublicMethodsForSerializedObjectDeserialization() {
-        return filterOfType(MethodSerializedObjectDeserializer.class, deserializer -> {
-            if (deserializer.method().isPublic()) {
-                return allowed();
-            } else {
-                return denied("only public static methods are considered for deserialization");
-            }
-        });
+    private Filters<SerializationField> buildSerializationFieldFilters() {
+        return Filters.filters(List.of(
+                ignoreStaticFields(),
+                ignoreTransientFields(),
+                ignoreNonPublicFields()
+        ));
     }
 }

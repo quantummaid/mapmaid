@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -39,14 +39,14 @@ import static java.util.Collections.singletonList;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SerializedObjectOptions {
     private final SerializationFieldOptions serializationFieldOptions;
-    private final List<SerializedObjectDeserializer> deserializers;
+    private final List<TypeDeserializer> deserializers;
 
     public static SerializedObjectOptions serializedObjectOptions(final SerializationFieldOptions serializationFieldOptions,
-                                                                  final List<SerializedObjectDeserializer> deserializers) {
+                                                                  final List<TypeDeserializer> deserializers) {
         return new SerializedObjectOptions(serializationFieldOptions, deserializers);
     }
 
-    public List<SerializedObjectDeserializer> deserializers() {
+    public List<TypeDeserializer> deserializers() {
         return this.deserializers;
     }
 

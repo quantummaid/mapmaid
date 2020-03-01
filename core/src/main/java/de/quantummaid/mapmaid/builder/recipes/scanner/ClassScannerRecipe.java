@@ -67,7 +67,7 @@ public final class ClassScannerRecipe implements Recipe {
     private static void addReferencesIn(final Class<?> clazz,
                                         final MapMaidBuilder builder) {
         final ClassType fullType = fromClassWithoutGenerics(clazz);
-        final List<ResolvedMethod> methods = fullType.publicMethods();
+        final List<ResolvedMethod> methods = fullType.methods();
         for (final ResolvedMethod method : methods) {
             if (!method.isPublic()) {
                 continue;

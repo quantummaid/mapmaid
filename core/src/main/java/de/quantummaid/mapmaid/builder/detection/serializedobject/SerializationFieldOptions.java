@@ -129,9 +129,16 @@ public final class SerializationFieldOptions {
 
     private Optional<SerializationField> select(final ResolvedType type,
                                                 final List<SerializationField> options) {
-        return options.stream()
+        final List<SerializationField> list = options.stream()
                 .filter(field -> Mirror.mirrors(field.type(), type))
-                // TODO
-                .findFirst();
+                .collect(toList());
+        if (list.isEmpty()) {
+            return empty();
+        }
+        if (list.size() == 1) {
+            return of(list.get(0));
+        }
+        // TODO
+        throw new UnsupportedOperationException("It is not clear which field to use");
     }
 }

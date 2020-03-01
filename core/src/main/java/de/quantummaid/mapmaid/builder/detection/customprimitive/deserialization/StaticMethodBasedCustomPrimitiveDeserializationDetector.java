@@ -61,7 +61,7 @@ public final class StaticMethodBasedCustomPrimitiveDeserializationDetector imple
     }
 
     private List<ResolvedMethod> findDeserializerMethod(final ClassType type) {
-        return type.publicMethods().stream()
+        return type.methods().stream()
                 .filter(method -> isStatic(method.method().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> method.returnType().get().equals(type))

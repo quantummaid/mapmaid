@@ -39,7 +39,6 @@ import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationField
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static java.lang.reflect.Modifier.isAbstract;
-import static java.lang.reflect.Modifier.isPublic;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -88,12 +87,6 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
 
     private static void validateDeserializerModifiers(final ClassType type, final ResolvedConstructor deserializationConstructor) {
         final int deserializationMethodModifiers = deserializationConstructor.constructor().getModifiers();
-
-        if (!isPublic(deserializationMethodModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The deserialization constructor %s configured for the SerializedObject of type %s must be public",
-                    deserializationConstructor, type);
-        }
         if (isAbstract(deserializationMethodModifiers)) {
             throw incompatibleSerializedObjectException(
                     "The deserialization constructor %s configured for the SerializedObject of type %s must not be abstract",
@@ -109,5 +102,9 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
     @Override
     public String description() {
         return createDescription(this.factoryConstructor.describe());
+    }
+
+    public ResolvedConstructor constructor() {
+        return this.factoryConstructor;
     }
 }

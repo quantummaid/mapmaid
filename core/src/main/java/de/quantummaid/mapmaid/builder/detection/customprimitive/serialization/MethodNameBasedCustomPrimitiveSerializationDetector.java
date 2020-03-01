@@ -54,7 +54,7 @@ public final class MethodNameBasedCustomPrimitiveSerializationDetector implement
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        final List<TypeSerializer> serializers = ((ClassType) type).publicMethods().stream()
+        final List<TypeSerializer> serializers = ((ClassType) type).methods().stream()
                 .filter(method -> !isStatic(method.method().getModifiers()))
                 .filter(method -> !isAbstract(method.method().getModifiers()))
                 .filter(method -> isPublic(method.method().getModifiers()))

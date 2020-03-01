@@ -30,7 +30,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -39,23 +38,17 @@ import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.custom
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
-import static java.lang.reflect.Modifier.isPublic;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveByConstructorDeserializer implements CustomPrimitiveDeserializer {
     private final ResolvedType baseType;
-    private final Constructor<?> constructor;
+    private final ResolvedConstructor constructor;
 
     public static TypeDeserializer createDeserializer(final ResolvedType type,
                                                       final ResolvedConstructor constructor) {
         final int modifiers = constructor.constructor().getModifiers();
-        if (!isPublic(modifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization constructor %s configured for the custom primitive of type %s must be public",
-                    constructor, type.description());
-        }
         if (isAbstract(modifiers)) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization constructor %s configured for the custom primitive of type %s must not be abstract",
@@ -75,7 +68,7 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
         }
 
         final ResolvedType baseType = parameterTypes.get(0).type();
-        return new CustomPrimitiveByConstructorDeserializer(baseType, constructor.constructor());
+        return new CustomPrimitiveByConstructorDeserializer(baseType, constructor);
     }
 
     @Override
@@ -86,7 +79,7 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
     @Override
     public Object deserialize(final Object value) throws Exception {
         try {
-            return this.constructor.newInstance(value);
+            return this.constructor.constructor().newInstance(value);
         } catch (final IllegalAccessException | IllegalArgumentException e) {
             throw customPrimitiveSerializationMethodCallException(
                     format("Unexpected error invoking deserialization constructor %s for serialized custom primitive %s",
@@ -109,11 +102,15 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
 
     @Override
     public String description() {
-        return createDescription(this, this.constructor.toGenericString());
+        return createDescription(this, this.constructor.describe());
     }
 
     @Override
     public String classification() {
         return "Custom Primitive";
+    }
+
+    public ResolvedConstructor constructor() {
+        return this.constructor;
     }
 }

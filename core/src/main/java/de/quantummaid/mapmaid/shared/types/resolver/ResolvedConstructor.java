@@ -28,10 +28,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter.resolveParameters;
-import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
@@ -43,15 +43,14 @@ public final class ResolvedConstructor {
     private final List<ResolvedParameter> parameters;
     private final Constructor<?> constructor;
 
-    public static List<ResolvedConstructor> resolvePublicConstructors(final ClassType fullType) {
-        return stream(fullType.assignableType().getConstructors())
-                .filter(constructor -> isPublic(constructor.getModifiers()))
+    public static List<ResolvedConstructor> resolveConstructors(final ClassType fullType) {
+        return stream(fullType.assignableType().getDeclaredConstructors())
                 .map(constructor -> resolveConstructor(constructor, fullType))
                 .collect(toList());
     }
 
     public static ResolvedConstructor resolveConstructor(final Constructor<?> constructor,
-                                                                   final ClassType fullType) {
+                                                         final ClassType fullType) {
         final List<ResolvedParameter> parameters = resolveParameters(constructor, fullType);
         return new ResolvedConstructor(parameters, constructor);
     }
@@ -62,6 +61,11 @@ public final class ResolvedConstructor {
 
     public Constructor<?> constructor() {
         return this.constructor;
+    }
+
+    public boolean isPublic() {
+        final int modifiers = this.constructor.getModifiers();
+        return Modifier.isPublic(modifiers);
     }
 
     public String describe() {

@@ -38,7 +38,7 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SerializersAndDeserializers {
     private final List<TypeSerializer> serializers;
-    private final List<? extends TypeDeserializer> deserializers;
+    private final List<TypeDeserializer> deserializers;
 
     public static SerializersAndDeserializers serializersOnly(final List<TypeSerializer> serializers) {
         validateNotNull(serializers, "serializers");
@@ -51,7 +51,7 @@ public final class SerializersAndDeserializers {
     }
 
     public static SerializersAndDeserializers serializersAndDeserializers(final List<TypeSerializer> serializers,
-                                                                          final List<? extends TypeDeserializer> deserializers) {
+                                                                          final List<TypeDeserializer> deserializers) {
         return new SerializersAndDeserializers(serializers, deserializers);
     }
 
@@ -67,7 +67,7 @@ public final class SerializersAndDeserializers {
         return this.serializers;
     }
 
-    public List<? extends TypeDeserializer> deserializers() {
+    public List<TypeDeserializer> deserializers() {
         return this.deserializers;
     }
 }

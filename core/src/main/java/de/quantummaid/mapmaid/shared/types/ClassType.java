@@ -93,13 +93,13 @@ public final class ClassType implements ResolvedType {
         return this.typeParameters.get(name);
     }
 
-    public List<ResolvedMethod> publicMethods() {
+    public List<ResolvedMethod> methods() {
         return ResolvedMethod.resolveMethodsWithResolvableTypeVariables(this);
     }
 
     // TODO all constructors
     public List<ResolvedConstructor> publicConstructors() {
-        return ResolvedConstructor.resolvePublicConstructors(this);
+        return ResolvedConstructor.resolveConstructors(this);
     }
 
     @Override
@@ -121,7 +121,7 @@ public final class ClassType implements ResolvedType {
         final String parametersString = this.typeParameters().stream()
                 .map(ResolvedType::simpleDescription)
                 .collect(joining(", ", "<", ">"));
-        return this.clazz.getName() + parametersString;
+        return this.clazz.getSimpleName() + parametersString;
     }
 
     @Override

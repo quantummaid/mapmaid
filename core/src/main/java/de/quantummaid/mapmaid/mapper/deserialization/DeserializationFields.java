@@ -47,6 +47,10 @@ public final class DeserializationFields {
         return unmodifiableMap(this.elements);
     }
 
+    public int size() {
+        return this.elements.size();
+    }
+
     public List<ResolvedType> referencedTypes() {
         return this.elements.values()
                 .stream()

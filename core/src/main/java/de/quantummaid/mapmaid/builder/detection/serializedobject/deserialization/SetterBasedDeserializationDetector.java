@@ -65,7 +65,7 @@ public final class SetterBasedDeserializationDetector implements SerializedObjec
             return emptyList();
         }
 
-        final List<ResolvedMethod> setterMethods = classType.publicMethods().stream()
+        final List<ResolvedMethod> setterMethods = classType.methods().stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("set"))
                 .filter(resolvedMethod -> resolvedMethod.returnType().isEmpty())
                 .filter(resolvedMethod -> resolvedMethod.parameters().size() == 1)

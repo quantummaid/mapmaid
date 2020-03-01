@@ -34,7 +34,6 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDese
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -100,7 +99,7 @@ public final class SimpleDetector {
             serializationFieldOptions = null;
         }
 
-        final List<SerializedObjectDeserializer> serializedObjectDeserializers;
+        final List<TypeDeserializer> serializedObjectDeserializers;
         final List<TypeDeserializer> customPrimitiveDeserializers;
         if (capabilities.hasDeserialization()) {
             serializedObjectDeserializers = detectSerializedObjectDeserializers(type);
@@ -142,7 +141,7 @@ public final class SimpleDetector {
         return serializationFieldOptions;
     }
 
-    private List<SerializedObjectDeserializer> detectSerializedObjectDeserializers(final ResolvedType type) {
+    private List<TypeDeserializer> detectSerializedObjectDeserializers(final ResolvedType type) {
         return this.serializedObjectDeserializationDetectors.stream()
                 .map(detector -> detector.detect(type))
                 .flatMap(Collection::stream)

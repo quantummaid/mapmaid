@@ -32,7 +32,7 @@ import lombok.ToString;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.ConstructorSerializedObjectDeserializer.createDeserializer;
-import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor.resolvePublicConstructors;
+import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor.resolveConstructors;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -51,7 +51,7 @@ public final class ConstructorBasedDeserializationDetector implements Serialized
             return emptyList();
         }
         final ClassType classType = (ClassType) type;
-        return resolvePublicConstructors(classType).stream()
+        return resolveConstructors(classType).stream()
                 .map(constructor -> createDeserializer(classType, constructor))
                 .collect(toList());
     }
