@@ -17,7 +17,7 @@ return aMapMaid()
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/Age.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -66,7 +66,7 @@ public final class Age {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/GroupName.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -109,7 +109,7 @@ public final class GroupName {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/LoggedIn.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -156,7 +156,7 @@ public final class LoggedIn {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/Name.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -203,7 +203,7 @@ public final class Name {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/Quantity.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -250,7 +250,7 @@ public final class Quantity {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/StreetName.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -293,7 +293,7 @@ public final class StreetName {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/TownName.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -323,7 +323,7 @@ public final class TownName {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/customprimitives/ZipCode.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -357,7 +357,7 @@ public class ZipCode {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/entities/Pojo.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -428,7 +428,7 @@ public final class Pojo {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/entities/Reservation.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -471,7 +471,7 @@ public final class Reservation {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/entities/ReservationDao.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -504,7 +504,7 @@ public final class ReservationDao {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/serializedobjects/AddGroupDto.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -549,7 +549,7 @@ public final class AddGroupDto {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/serializedobjects/AddPersonDto.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -592,7 +592,7 @@ public final class AddPersonDto {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/usecases/ReservationUseCase.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -629,7 +629,7 @@ public final class ReservationUseCase {
 <!---[CodeSnippet](file=../tests/src/test/java/de/quantummaid/mapmaid/docs/examples/usecases/AddGroupUseCase.java)-->
 ```java
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
