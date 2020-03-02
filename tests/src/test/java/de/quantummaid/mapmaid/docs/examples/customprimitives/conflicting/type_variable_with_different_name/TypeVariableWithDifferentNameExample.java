@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
+import static de.quantummaid.mapmaid.builder.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name.Street.street;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithGenerics;

@@ -35,7 +35,6 @@ public final class AddALotRequest {
     public final transient Name name;
     public final TownName townName;
 
-    // TODO mit injection sollte es nicht failen
     public static AddALotRequest addALotRequest(final Name name,
                                                 final TownName townName) {
         return new AddALotRequest(name, townName);

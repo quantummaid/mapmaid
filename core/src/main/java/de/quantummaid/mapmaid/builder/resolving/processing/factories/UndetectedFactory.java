@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -31,7 +31,7 @@ import lombok.ToString;
 
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.unreasoned.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.unreasoned.Unreasoned.unreasoned;
 import static java.util.Optional.of;
 
 @ToString

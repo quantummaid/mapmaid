@@ -21,36 +21,43 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.validation;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 import java.util.*;
 
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValidationMappings {
-
     private final Map<Class<? extends Throwable>, ExceptionMappingList<Throwable>> validationMappings;
 
-    private ValidationMappings() {
-        this.validationMappings = new HashMap<>(0);
-    }
-
     public static ValidationMappings empty() {
-        return new ValidationMappings();
+        return new ValidationMappings(smallMap());
     }
 
-    public void putOneToOne(final Class<? extends Throwable> exception, final ExceptionMappingWithPropertyPath<Throwable> m) {
-        this.putAll(exception, (t, p) -> List.of(m.map(t, p)));
+    public void putOneToOne(final Class<? extends Throwable> exceptionType,
+                            final ExceptionMappingWithPropertyPath<Throwable> mapping) {
+        this.putAll(exceptionType, (throwable, propertyPath) -> List.of(mapping.map(throwable, propertyPath)));
     }
 
-    public void putOneToMany(final Class<? extends Throwable> exception, final ExceptionMappingList<Throwable> m) {
-        this.putAll(exception, m);
+    public void putOneToMany(final Class<? extends Throwable> exception,
+                             final ExceptionMappingList<Throwable> mapping) {
+        this.putAll(exception, mapping);
     }
 
-    private void putAll(final Class<? extends Throwable> exception, final ExceptionMappingList<Throwable> m) {
-        this.validationMappings.merge(exception, m, (a, b) -> (t, propertyPath) -> {
-            final List<ValidationError> map1 = a.map(t, propertyPath);
-            final List<ValidationError> map2 = b.map(t, propertyPath);
+    private void putAll(final Class<? extends Throwable> exception,
+                        final ExceptionMappingList<Throwable> mapping) {
+        this.validationMappings.merge(exception, mapping, (a, b) -> (throwable, propertyPath) -> {
+            final List<ValidationError> map1 = a.map(throwable, propertyPath);
+            final List<ValidationError> map2 = b.map(throwable, propertyPath);
             final List<ValidationError> map = new ArrayList<>(map1.size() + map2.size());
             map.addAll(map1);
             map.addAll(map2);

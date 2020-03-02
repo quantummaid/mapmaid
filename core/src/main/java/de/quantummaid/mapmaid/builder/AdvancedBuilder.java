@@ -23,8 +23,8 @@ package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.NormalDisambiguator;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.DisambiguatorBuilder;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.NormalDisambiguator;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
@@ -40,7 +40,7 @@ import java.util.Map;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.DisambiguatorBuilder.defaultDisambiguatorBuilder;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry.marshallerRegistry;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
@@ -71,7 +71,6 @@ public final class AdvancedBuilder {
         return this;
     }
 
-    // TODO autoloading aus
     public AdvancedBuilder usingMarshaller(final MarshallingType marshallingType,
                                            final Marshaller marshaller,
                                            final Unmarshaller unmarshaller) {

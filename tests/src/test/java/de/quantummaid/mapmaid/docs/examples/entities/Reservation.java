@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Reservation {
-    // TODO repository? messagebus?
     private final transient ReservationDao reservationDao;
     private final Name name;
 

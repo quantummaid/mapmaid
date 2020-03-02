@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.multip
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
+import static de.quantummaid.mapmaid.builder.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {

@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.fixed.resolved.FixedResolvedDuplex;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.states.fixed.resolved.FixedResolvedDuplex;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;

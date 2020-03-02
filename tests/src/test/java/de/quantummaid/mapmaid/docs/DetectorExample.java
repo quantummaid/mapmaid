@@ -29,17 +29,9 @@ public final class DetectorExample {
 
     @Test
     public void test() {
-        // TODO
-
         //Showcase start detector
         MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
-                //.withDetector(ConventionalDetectors.conventionalDetector(
-                // TODO
-                //"myCustomPrimitiveSerializationMethodName",
-                //"myCustomPrimitiveDeserializationMethodName",
-                //"mySerializedObjectDeserializationMethodName"
-                //      /*, ".*Dto" TODO */))
                 .build();
                 //Showcase end detector
     }

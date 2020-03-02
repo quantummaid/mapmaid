@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.exam
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
+import static de.quantummaid.mapmaid.builder.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class AllPrivateExample {

@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;

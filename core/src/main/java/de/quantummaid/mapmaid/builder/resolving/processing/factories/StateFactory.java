@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.Optional;

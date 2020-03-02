@@ -88,7 +88,6 @@ public final class Deserializer {
         return deserializeFromMap(input, targetType, noop());
     }
 
-    // TODO resolvedtype -> generic foo
     public <T> T deserializeFromMap(final Map<String, Object> input,
                                     final ResolvedType targetType) {
         return deserializeFromMap(input, targetType, noop());
