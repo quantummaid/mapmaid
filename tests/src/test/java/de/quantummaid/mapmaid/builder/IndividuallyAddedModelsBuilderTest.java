@@ -92,7 +92,6 @@ public final class IndividuallyAddedModelsBuilderTest {
         return MapMaid.aMapMaid()
                 .withManuallyAddedDefinition(
                         serializedObjectOfType(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
-                                // TODO
                                 .withField("sender", EmailAddress.class, object -> object.sender)
                                 .withField("receiver", EmailAddress.class, object -> object.receiver)
                                 .withField("subject", Subject.class, object -> object.subject)

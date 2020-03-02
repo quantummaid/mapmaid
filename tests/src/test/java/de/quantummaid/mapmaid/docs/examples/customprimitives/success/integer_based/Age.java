@@ -34,12 +34,10 @@ import java.math.BigDecimal;
 public final class Age {
     private final int value;
 
-    // TODO
     public static Age fromStringValue(final int value) {
         return new Age(value);
     }
 
-    // TODO
     public int stringValue() {
         return this.value;
     }

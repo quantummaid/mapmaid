@@ -101,7 +101,7 @@ public final class MapMaidBuilder {
         return serializingType(genericType(type));
     }
 
-    public MapMaidBuilder serializingType(final GenericType genericType) {
+    public MapMaidBuilder serializingType(final GenericType<?> genericType) {
         final ResolvedType resolvedType = genericType.toResolvedType();
         return mapping(resolvedType, serialization());
     }
@@ -110,7 +110,7 @@ public final class MapMaidBuilder {
         return deserializingType(genericType(type));
     }
 
-    public MapMaidBuilder deserializingType(final GenericType genericType) {
+    public MapMaidBuilder deserializingType(final GenericType<?> genericType) {
         final ResolvedType resolvedType = genericType.toResolvedType();
         return mapping(resolvedType, deserialization());
     }
@@ -119,7 +119,7 @@ public final class MapMaidBuilder {
         return serializingAndDeserializingType(genericType(type));
     }
 
-    public MapMaidBuilder serializingAndDeserializingType(final GenericType genericType) {
+    public MapMaidBuilder serializingAndDeserializingType(final GenericType<?> genericType) {
         final ResolvedType resolvedType = genericType.toResolvedType();
         return mapping(resolvedType, duplex());
     }
@@ -168,7 +168,6 @@ public final class MapMaidBuilder {
         return mapping(type, duplex());
     }
 
-    // TODO umbenennen nach mapping
     public MapMaidBuilder withManuallyAddedTypes(final Class<?>... type) {
         validateNotNull(type, "type");
         stream(type).forEach(this::mapping);
@@ -180,7 +179,6 @@ public final class MapMaidBuilder {
         return withManuallyAddedDefinition(definition, fromDefinition(definition));
     }
 
-    // TODO "definition"
     public MapMaidBuilder withManuallyAddedDefinition(final Definition definition,
                                                       final RequiredCapabilities capabilities) {
         validateNotNull(definition, "definition");

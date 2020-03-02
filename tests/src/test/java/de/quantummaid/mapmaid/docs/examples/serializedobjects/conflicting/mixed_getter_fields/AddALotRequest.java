@@ -41,7 +41,6 @@ public final class AddALotRequest {
     @Getter
     private TownName townNameB;
 
-    // TODO public felder setzen nicht impl in doku
     @Setter
     public TownName townNameC;
 }

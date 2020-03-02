@@ -56,7 +56,6 @@ public final class SimpleExample {
                         "  \"townNameC\": \"d\"\n" +
                         "}")
                 .withDuplexFailing()
-                // TODO add fix
                 .run();
     }
 }

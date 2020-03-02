@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-// TODO test member is not present
 public final class MultipleStaticFactoriesExample {
 
     @Test

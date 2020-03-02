@@ -79,7 +79,6 @@ public final class ScenarioBuilder {
         return this;
     }
 
-    // TODO fix -> MapMateBuilder, multiple fixes
     public ScenarioBuilder withAllScenariosFailing(final String message, final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
         withAllScenariosFailing(message);
         withFixedScenarios(fix);
@@ -153,17 +152,13 @@ public final class ScenarioBuilder {
         return this;
     }
 
-    // TODO replace methods
     public ScenarioBuilder withDeserializationOnly() {
         withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
-        //withScenario(serializationOnly(), initializationFailed(format("%s: unable to detect serializer", this.type.description())));
         withSerializationFailing();
         withDuplexFailing();
-        //withScenario(withAllCapabilities(), initializationFailed(format("%s: unable to detect duplex: no duplex detected", this.type.description())));
         return this;
     }
 
-    // TODO replace methods
     public ScenarioBuilder withSerializationOnly() {
         withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
         withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserializer", this.type.description())));

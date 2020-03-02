@@ -97,10 +97,6 @@ public final class ScanInformationBuilder {
         return this.deserializationReasons.isEmpty();
     }
 
-    public void ignoreAllSerializers(final String reason) {
-        this.serializers.values().forEach(reasons -> reasons.add(reason));
-    }
-
     public void ignoreAllOtherSerializers(final TypeSerializer serializer,
                                           final String reason) {
         this.serializers.forEach((current, reasons) -> {
@@ -108,10 +104,6 @@ public final class ScanInformationBuilder {
                 reasons.add(reason);
             }
         });
-    }
-
-    public void ignoreAllDeserializers(final String reason) {
-        this.deserializers.values().forEach(reasons -> reasons.add(reason));
     }
 
     public void ignoreDeserializer(final TypeDeserializer deserializer,

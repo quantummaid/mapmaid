@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.docs.examples.customprimitives.success.real_enum;
 
-// TODO enum with parameters / private / etc.
 public enum DoorStatus {
     OPEN, CLOSED
 }

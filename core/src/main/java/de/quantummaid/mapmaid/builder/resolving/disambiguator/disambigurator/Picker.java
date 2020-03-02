@@ -91,7 +91,6 @@ public final class Picker {
                 .collect(toList());
     }
 
-    // TODO
     public static <T> Optional<DetectionResult<T>> oneOrNone(final List<T> list, final Function<T, String> describer) {
         if (list.size() == 1) {
             return Optional.of(success(list.get(0)));

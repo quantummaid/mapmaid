@@ -34,8 +34,6 @@ import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledExcep
 public final class Name {
     final String value;
 
-    // TODO auch noch für dto
-
     public static Name anotherName(final String value) {
         return new Name(value);
     }

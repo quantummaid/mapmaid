@@ -84,8 +84,7 @@ final class Unmarshallers {
         } else if (UniversalPrimitive.class.isAssignableFrom(universalType)) {
             return universalPrimitive(PATTERN.matcher(trimmedInput).replaceAll(""));
         } else {
-            // TODO
-            throw new UnsupportedOperationException(universalType.getName());
+            throw new UnsupportedOperationException("This should never happen. Unsupported universal type: " + universalType.getName());
         }
     }
 

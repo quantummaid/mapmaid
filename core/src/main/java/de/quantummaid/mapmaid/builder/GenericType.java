@@ -22,23 +22,40 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
+import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
+import static de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType.unresolvedType;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GenericType {
-    private final Class<?> type;
+public final class GenericType<T> {
+    private final ResolvedType type;
 
-    public static GenericType genericType(final Class<?> type, final Class<?>... typeParameters) {
-        return new GenericType(type);
+    public static <T> GenericType<T> genericType(final Class<T> type) {
+        final ResolvedType resolvedType = resolvedType(type);
+        return new GenericType<>(resolvedType);
+    }
+
+    public static <T> GenericType<T> genericType(final Class<T> type, final GenericType<?>... genericParameters) {
+        final UnresolvedType unresolvedType = unresolvedType(type);
+        final List<ResolvedType> resolvedParameters = stream(genericParameters)
+                .map(GenericType::toResolvedType)
+                .collect(toList());
+        final ResolvedType resolvedType = unresolvedType.resolve(resolvedParameters);
+        return new GenericType<>(resolvedType);
     }
 
     public ResolvedType toResolvedType() {
-        // TODO
-        return ResolvedType.resolvedType(this.type);
+        return this.type;
     }
 }

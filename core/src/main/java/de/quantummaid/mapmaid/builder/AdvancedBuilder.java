@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder;
 
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.NormalDisambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.DisambiguatorBuilder;
@@ -72,8 +73,8 @@ public final class AdvancedBuilder {
 
     // TODO autoloading aus
     public AdvancedBuilder usingMarshaller(final MarshallingType marshallingType,
-                                          final Marshaller marshaller,
-                                          final Unmarshaller unmarshaller) {
+                                           final Marshaller marshaller,
+                                           final Unmarshaller unmarshaller) {
         validateNotNull(marshaller, "marshaller");
         validateNotNull(unmarshaller, "unmarshaller");
         validateNotNull(marshallingType, "marshallingType");
@@ -83,7 +84,7 @@ public final class AdvancedBuilder {
     }
 
     public AdvancedBuilder usingMarshaller(final Map<MarshallingType, Marshaller> marshallerMap,
-                                          final Map<MarshallingType, Unmarshaller> unmarshallerMap) {
+                                           final Map<MarshallingType, Unmarshaller> unmarshallerMap) {
         this.marshallerMap = new HashMap<>(marshallerMap);
         this.unmarshallerMap = new HashMap<>(unmarshallerMap);
         return this;
@@ -109,8 +110,7 @@ public final class AdvancedBuilder {
 
     Disambiguators buildDisambiguators() {
         final NormalDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
-        // TODO
-        final Map<ResolvedType, de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator> specialDisambiguators = new HashMap<>(10);
+        final Map<ResolvedType, Disambiguator> specialDisambiguators = smallMap();
         final Disambiguators disambiguators = disambiguators(defaultDisambiguator, specialDisambiguators);
         return disambiguators;
     }

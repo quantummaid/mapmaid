@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.exam
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-// TODO
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Reservation {
     // TODO repository? messagebus?

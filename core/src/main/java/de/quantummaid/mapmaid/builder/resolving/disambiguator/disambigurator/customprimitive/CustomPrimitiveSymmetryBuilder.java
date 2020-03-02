@@ -45,11 +45,19 @@ import static java.util.Optional.of;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveSymmetryBuilder {
+    private static final List<Class<?>> DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES = List.of(
+            String.class,
+            int.class, Integer.class,
+            long.class, Long.class,
+            double.class, Double.class,
+            boolean.class, Boolean.class
+    );
+    private final List<Class<?>> customPrimitiveBaseTypes;
     private final Map<Class<?>, List<TypeSerializer>> serializers;
     private final Map<Class<?>, List<TypeDeserializer>> deserializers;
 
     public static CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder() {
-        return new CustomPrimitiveSymmetryBuilder(smallMap(), smallMap());
+        return new CustomPrimitiveSymmetryBuilder(DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES, smallMap(), smallMap());
     }
 
     public void addDeserializer(final CustomPrimitiveDeserializer deserializer) {
@@ -65,25 +73,7 @@ public final class CustomPrimitiveSymmetryBuilder {
     }
 
     public Optional<SerializersAndDeserializers> determineGreatestCommonFields() {
-        // TODO from mappings
-        return customPrimitivesClass(
-                String.class,
-                int.class, Integer.class,
-                long.class, Long.class,
-                double.class, Double.class,
-                boolean.class, Boolean.class
-        );
-    }
-
-    private static <T> void ensureKeyIsPresent(final Class<?> type, final Map<Class<?>, List<T>> map) {
-        if (!map.containsKey(type)) {
-            map.put(type, smallList());
-        }
-    }
-
-    private Optional<SerializersAndDeserializers> customPrimitivesClass(final Class<?>... typesInOrder) {
-        for (final Class<?> baseType : typesInOrder) {
-            // TODO
+        for (final Class<?> baseType : this.customPrimitiveBaseTypes) {
             if (this.serializers.containsKey(baseType) && this.deserializers.containsKey(baseType)) {
                 final SerializersAndDeserializers serializersAndDeserializers = serializersAndDeserializers(
                         this.serializers.get(baseType),
@@ -93,5 +83,11 @@ public final class CustomPrimitiveSymmetryBuilder {
             }
         }
         return empty();
+    }
+
+    private static <T> void ensureKeyIsPresent(final Class<?> type, final Map<Class<?>, List<T>> map) {
+        if (!map.containsKey(type)) {
+            map.put(type, smallList());
+        }
     }
 }

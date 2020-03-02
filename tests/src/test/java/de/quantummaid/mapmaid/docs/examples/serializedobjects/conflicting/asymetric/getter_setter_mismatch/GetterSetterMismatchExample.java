@@ -28,7 +28,6 @@ import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenar
 
 public final class GetterSetterMismatchExample {
 
-    // TODO not conflicting?
     @Test
     public void getterSetterMismatchExample() {
         final AddALotRequest addALotRequest = new AddALotRequest();

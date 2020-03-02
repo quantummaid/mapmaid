@@ -58,7 +58,6 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
         final CollectionInformation collectionInformation = this.collectionInformations.get(type.assignableType());
         context.setSerializer(listSerializer(genericType));
         context.setDeserializer(listDeserializer(genericType, collectionInformation.mapper));
-        // TODO unreasoned?
         return Optional.of(fixedResolvingDuplex(context));
     }
 }

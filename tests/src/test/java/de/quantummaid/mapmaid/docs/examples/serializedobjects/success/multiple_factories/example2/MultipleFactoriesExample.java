@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.fixed.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-// TODO move to custom primitive
 public final class MultipleFactoriesExample {
 
     @Test

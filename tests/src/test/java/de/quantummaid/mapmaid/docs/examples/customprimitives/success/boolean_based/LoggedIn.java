@@ -32,7 +32,6 @@ import lombok.ToString;
 public final class LoggedIn {
     private final boolean value;
 
-    // TODO
     public static LoggedIn fromStringValue(final boolean value) {
         return new LoggedIn(value);
     }
