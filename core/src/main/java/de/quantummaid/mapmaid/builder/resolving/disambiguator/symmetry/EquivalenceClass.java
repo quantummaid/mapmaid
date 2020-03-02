@@ -32,22 +32,26 @@ import java.util.List;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Objects.nonNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EquivalenceClass {
     private final int size;
-    private final List<SerializationFieldInstantiation> serializers;
+    private SerializationFieldInstantiation serializationFields;
     private final List<TypeDeserializer> deserializers;
 
     public static EquivalenceClass equivalenceClass(final int size) {
-        return new EquivalenceClass(size, smallList(), smallList());
+        return new EquivalenceClass(size, smallList());
     }
 
-    public void addSerializer(final SerializationFieldInstantiation serializer) {
-        validateNotNull(serializer, "serializer");
-        this.serializers.add(serializer);
+    public void setSerializationFields(final SerializationFieldInstantiation serializationFields) {
+        validateNotNull(serializationFields, "serializer");
+        if (this.serializationFields != null) {
+            throw new UnsupportedOperationException("serialized fields can only be set once");
+        }
+        this.serializationFields = serializationFields;
     }
 
     public void addDeserializer(final TypeDeserializer deserializer) {
@@ -56,18 +60,32 @@ public final class EquivalenceClass {
     }
 
     public boolean fullySupported() {
-        return !this.serializers.isEmpty() && !this.deserializers.isEmpty();
+        return nonNull(this.serializationFields) && !this.deserializers.isEmpty();
     }
 
     public int size() {
         return this.size;
     }
 
-    public List<SerializationFieldInstantiation> serializers() {
-        return this.serializers;
+    public SerializationFieldInstantiation serializationFields() {
+        return this.serializationFields;
     }
 
     public List<TypeDeserializer> deserializers() {
         return this.deserializers;
+    }
+
+    public String describe() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("fields:\n");
+        stringBuilder.append(this.serializationFields.describe());
+        stringBuilder.append("\n");
+
+        stringBuilder.append("deserializers:\n");
+        this.deserializers.forEach(deserializer -> {
+            stringBuilder.append(deserializer.description());
+            stringBuilder.append("\n");
+        });
+        return stringBuilder.toString();
     }
 }

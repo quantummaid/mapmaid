@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
@@ -30,9 +31,9 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.cus
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Filters;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Preferences;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker.TieBreaker;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceClass;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryBuilder;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryResult;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
@@ -175,16 +176,16 @@ public final class NormalDisambiguator implements Disambiguator {
         deserializers.forEach(symmetryBuilder::addDeserializer);
         symmetryBuilder.addSerializer(serializedObjectOptions.serializationFieldOptions());
 
-        final DetectionResult<SymmetryResult> symmetric = symmetryBuilder.determineGreatestCommonFields();
+        final DetectionResult<EquivalenceClass> symmetric = symmetryBuilder.determineGreatestCommonFields();
         if (symmetric.isFailure()) {
-            scanInformationBuilder.ignoreAllSerializers("no symmetric match");
-            scanInformationBuilder.ignoreAllDeserializers("no symmetric match");
-            return failure(format("Failed to detect %s: %s", type.description(), symmetric.reasonForFailure()));
+            return failure(format("Failed to detect %s:%n%s", type.description(), symmetric.reasonForFailure()));
         }
 
-        final SymmetryResult symmetricResult = symmetric.result();
+        final EquivalenceClass symmetricResult = symmetric.result();
 
-        final DetectionResult<TypeSerializer> serializer = symmetricResult.determineSerializer(this.postSymmetrySerializationFieldPreferences, scanInformationBuilder);
+        final SerializationFieldInstantiation serializationFields = symmetricResult.serializationFields();
+        final DetectionResult<TypeSerializer> serializer = serializationFields.instantiate(
+                this.postSymmetrySerializationFieldPreferences, scanInformationBuilder);
         if (!serializer.isFailure()) {
             scanInformationBuilder.ignoreAllOtherSerializers(serializer.result(), "insufficient symmetry");
         }

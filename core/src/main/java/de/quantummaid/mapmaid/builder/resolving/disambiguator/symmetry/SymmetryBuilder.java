@@ -32,13 +32,14 @@ import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceClass.equivalenceClass;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.EquivalenceSignature.ofDeserializer;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryResult.symmetryResult;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -68,12 +69,11 @@ public final class SymmetryBuilder {
     public void addSerializer(final SerializationFieldOptions serializer) {
         for (final EquivalenceSignature signature : this.equivalenceClasses.keySet()) {
             signature.match(serializer).ifPresent(specializedSerializer ->
-                    this.equivalenceClasses.get(signature).addSerializer(specializedSerializer));
+                    this.equivalenceClasses.get(signature).setSerializationFields(specializedSerializer));
         }
     }
 
-    // TODO different classes with same size?
-    public DetectionResult<SymmetryResult> determineGreatestCommonFields() {
+    public DetectionResult<EquivalenceClass> determineGreatestCommonFields() {
         final List<EquivalenceSignature> sorted = this.equivalenceClasses.keySet().stream()
                 .sorted()
                 .collect(toList());
@@ -82,7 +82,7 @@ public final class SymmetryBuilder {
                 .filter(EquivalenceClass::fullySupported)
                 .collect(toList());
         if (supportedClasses.isEmpty()) {
-            return failure("No symmetric result");
+            return failure("no symmetric result");
         }
 
         final int maxSize = supportedClasses.stream()
@@ -95,12 +95,15 @@ public final class SymmetryBuilder {
                 .collect(toList());
 
         if (maxClasses.size() != 1) {
-            // TODO
-            throw new UnsupportedOperationException("Ambiguous symmetry");
+            final StringJoiner joiner = new StringJoiner("\n-------------\n", "\n-------------\n", "\n-------------\n");
+            maxClasses.stream()
+                    .map(EquivalenceClass::describe)
+                    .forEach(joiner::add);
+            final String message = format("ambiguous options as serialized object:%n%s", joiner.toString());
+            return failure(message);
         }
-        final EquivalenceClass winner = maxClasses.get(0);
 
-        final SymmetryResult result = symmetryResult(winner.serializers(), winner.deserializers());
-        return success(result);
+        final EquivalenceClass winner = maxClasses.get(0);
+        return success(winner);
     }
 }
