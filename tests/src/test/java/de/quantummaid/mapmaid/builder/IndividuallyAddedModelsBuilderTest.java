@@ -27,11 +27,11 @@ import de.quantummaid.mapmaid.builder.models.conventional.Email;
 import de.quantummaid.mapmaid.builder.models.customconvention.Body;
 import de.quantummaid.mapmaid.builder.models.customconvention.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.customconvention.Subject;
-import de.quantummaid.mapmaid.builder.builder.customprimitive.CustomPrimitiveBuilder;
 import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.builder.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -99,9 +99,9 @@ public final class IndividuallyAddedModelsBuilderTest {
                                 .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore)
                                 .create()
                 )
-                .withManuallyAddedDefinition(CustomPrimitiveBuilder.customPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize))
-                .withManuallyAddedDefinition(CustomPrimitiveBuilder.customPrimitive(Subject.class, Subject::serialize, Subject::deserialize))
-                .withManuallyAddedDefinition(CustomPrimitiveBuilder.customPrimitive(customConventionBody, Body::serialize, Body::deserialize))
+                .serializingAndDeserializing(EmailAddress.class, customPrimitive(EmailAddress::serialize, EmailAddress::deserialize))
+                .serializingAndDeserializing(Subject.class, customPrimitive(Subject::serialize, Subject::deserialize))
+                .serializingAndDeserializing(customConventionBody, customPrimitive(Body::serialize, Body::deserialize))
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();

@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.docs.examples.customprimitives.success.tostring;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
+import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class ToStringExample {
@@ -34,8 +34,8 @@ public final class ToStringExample {
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(MyCustomPrimitive.myCustomPrimitive("foo"))
                 .withDeserializationOnly()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withManuallyAddedDefinition(
-                        customPrimitive(MyCustomPrimitive.class, MyCustomPrimitive::toString, MyCustomPrimitive::myCustomPrimitive), capabilities))
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(MyCustomPrimitive.class, capabilities,
+                        customPrimitive(MyCustomPrimitive::toString, MyCustomPrimitive::myCustomPrimitive)))
                 .run();
     }
 }

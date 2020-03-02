@@ -33,6 +33,6 @@ public final class DetectorExample {
         MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
                 .build();
-                //Showcase end detector
+        //Showcase end detector
     }
 }

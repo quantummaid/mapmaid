@@ -177,12 +177,6 @@ public final class MapMaidBuilder {
         return mapping(type, capabilities, Reason.reason(reason));
     }
 
-    public MapMaidBuilder mapping(final Class<?> type,
-                                  final RequiredCapabilities capabilities,
-                                  final Reason reason) {
-        return mapping(fromClassWithoutGenerics(type), capabilities, reason);
-    }
-
     public MapMaidBuilder mapping(final ResolvedType type,
                                   final RequiredCapabilities capabilities,
                                   final Reason reason) {
@@ -205,6 +199,12 @@ public final class MapMaidBuilder {
         validateNotNull(type, "type");
         stream(type).forEach(this::mapping);
         return this;
+    }
+
+    public <T> MapMaidBuilder withCustomType(final Class<T> type,
+                                             final RequiredCapabilities capabilities,
+                                             final CustomType<T> customType) {
+        return withCustomType(genericType(type), capabilities, customType);
     }
 
     public <T> MapMaidBuilder withCustomType(final GenericType<T> type,

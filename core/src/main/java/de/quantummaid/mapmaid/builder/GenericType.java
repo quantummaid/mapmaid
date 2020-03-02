@@ -46,6 +46,13 @@ public final class GenericType<T> {
         return new GenericType<>(resolvedType);
     }
 
+    public static <T> GenericType<T> genericType(final Class<T> type, final Class<?>... genericParameters) {
+        final GenericType<?>[] genericParameterTypes = stream(genericParameters)
+                .map(GenericType::genericType)
+                .toArray(GenericType<?>[]::new);
+        return genericType(type, genericParameterTypes);
+    }
+
     public static <T> GenericType<T> genericType(final Class<T> type, final GenericType<?>... genericParameters) {
         final UnresolvedType unresolvedType = unresolvedType(type);
         final List<ResolvedType> resolvedParameters = stream(genericParameters)

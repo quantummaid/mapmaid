@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.multiple_
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
+import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {
@@ -34,8 +34,8 @@ public final class MultipleFactoriesExample {
                 .withSerializedForm("\"qwer\"")
                 .withDeserializedForm(HashCode.fromString("qwer"))
                 .withSerializationOnly()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder
-                        .withManuallyAddedDefinition(customPrimitive(HashCode.class, HashCode::internalValueForMapping, HashCode::fromString), capabilities))
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(HashCode.class, capabilities,
+                        customPrimitive(HashCode::internalValueForMapping, HashCode::fromString)))
                 .run();
     }
 }

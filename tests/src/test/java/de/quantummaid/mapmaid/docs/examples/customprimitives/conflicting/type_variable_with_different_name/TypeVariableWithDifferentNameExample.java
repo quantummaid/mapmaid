@@ -21,34 +21,27 @@
 
 package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name;
 
-import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.builder.GenericType;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static de.quantummaid.mapmaid.builder.builder.customprimitive.CustomPrimitiveBuilder.customPrimitive;
+import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name.Street.street;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithGenerics;
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
-import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
 
 public final class TypeVariableWithDifferentNameExample {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Test
     public void typeVariableWithDifferentNameExample() {
-        final ClassType resolvedType = fromClassWithGenerics(Street.class, Map.of(typeVariableName("T"), resolvedType(Object.class)));
-        scenarioBuilderFor(resolvedType)
+        final GenericType<Street> genericType = GenericType.genericType(Street.class, Object.class);
+        scenarioBuilderFor(genericType.toResolvedType())
                 .withDeserializedForm(street("foo"))
                 .withSerializedForm("\"foo\"")
                 .withSerializationOnlySuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder
-                        .withManuallyAddedDefinition(customPrimitive(resolvedType,
-                                object -> ((Street<Object>) object).stringValue(),
-                                Street::street), capabilities))
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(genericType, capabilities,
+                        customPrimitive(Street::stringValue, Street::street)))
                 .run();
     }
 }
