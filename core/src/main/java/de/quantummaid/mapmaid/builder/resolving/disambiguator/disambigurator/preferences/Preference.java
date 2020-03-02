@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences;
 
 public interface Preference<T> {
     boolean prefer(T t);

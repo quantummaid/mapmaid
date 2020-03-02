@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -138,6 +139,11 @@ public final class ScanInformationBuilder {
         this.serializationFields.get(field).addAll(reasons);
     }
 
+    public void ignoreSerializationField(final SerializationField field,
+                                         final String reason) {
+        this.serializationFields.get(field).add(reason);
+    }
+
     public void ignoreAllOtherDeserializers(final TypeDeserializer deserializer,
                                             final String reason) {
         this.deserializers.forEach((current, reasons) -> {
@@ -147,9 +153,29 @@ public final class ScanInformationBuilder {
         });
     }
 
+    public void ignore(final Object object,
+                       final String reason) {
+        if (object instanceof SerializedObjectSerializer) {
+            final List<SerializationField> fields = ((SerializedObjectSerializer) object).fields().fields();
+            fields.forEach(field -> ignoreSerializationField(field, reason));
+        } else if (object instanceof TypeSerializer) {
+            ignoreSerializer((TypeSerializer) object, reason);
+        } else if (object instanceof TypeDeserializer) {
+            ignoreDeserializer((TypeDeserializer) object, reason);
+        } else if (object instanceof SerializationField) {
+            ignoreSerializationField((SerializationField) object, reason);
+        } else {
+            throw new UnsupportedOperationException("This should never happen. Unknown object: " + object);
+        }
+    }
+
     public ScanInformation build(final TypeSerializer serializer, final TypeDeserializer deserializer) {
-        // TODO
-        //this.serializers.remove(serializer);
+        if (serializer instanceof SerializedObjectSerializer) {
+            final SerializedObjectSerializer serializedObjectSerializer = (SerializedObjectSerializer) serializer;
+            serializedObjectSerializer.fields().fields().forEach(this.serializationFields::remove);
+        } else {
+            this.serializers.remove(serializer);
+        }
         this.deserializers.remove(deserializer);
         return actualScanInformation(
                 this.type,

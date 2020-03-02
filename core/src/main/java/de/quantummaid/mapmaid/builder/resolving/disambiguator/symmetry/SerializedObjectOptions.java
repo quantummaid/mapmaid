@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Preferences;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -34,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 
 @ToString
 @EqualsAndHashCode
@@ -59,6 +61,9 @@ public final class SerializedObjectOptions {
                                                                final ScanInformationBuilder scanInformationBuilder) {
         if (this.serializationFieldOptions == null) {
             throw new UnsupportedOperationException("This should never happen");
+        }
+        if (this.serializationFieldOptions.isEmpty()) {
+            return failure("No serialization fields");
         }
         return this.serializationFieldOptions.instantiateAll()
                 .flatMap(instantiation -> instantiation.instantiate(preferences, scanInformationBuilder));

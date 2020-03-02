@@ -19,16 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.customprimitive.CustomPrimitiveSymmetryBuilder;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filters;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.customprimitive.CustomPrimitiveSymmetryBuilder;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Filters;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker.TieBreaker;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryResult;
@@ -50,8 +51,8 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.combine;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.Picker.*;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.customprimitive.CustomPrimitiveSymmetryBuilder.customPrimitiveSymmetryBuilder;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.Picker.*;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.customprimitive.CustomPrimitiveSymmetryBuilder.customPrimitiveSymmetryBuilder;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SerializedObjectOptions.serializedObjectOptions;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.symmetry.SymmetryBuilder.symmetryBuilder;
 import static java.lang.String.format;
@@ -59,7 +60,7 @@ import static java.lang.String.format;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DefaultDisambiguator implements Disambiguator {
+public final class NormalDisambiguator implements Disambiguator {
     private final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences;
     private final Preferences<TypeSerializer> customPrimitiveSerializerPreferences;
     private final Preferences<TypeDeserializer> serializedObjectDeserializerPreferences;
@@ -67,17 +68,22 @@ public final class DefaultDisambiguator implements Disambiguator {
     private final Filters<SerializationField> serializationFieldFilters;
     private final Preferences<SerializationField> postSymmetrySerializationFieldPreferences;
 
-    public static DefaultDisambiguator defaultDisambiguator(final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences,
-                                                            final Preferences<TypeSerializer> customPrimitiveSerializerPreferences,
-                                                            final Preferences<TypeDeserializer> serializedObjectPreferences,
-                                                            final Filters<SerializationField> serializationFieldFilters,
-                                                            final Preferences<SerializationField> postSymmetrySerializationFieldPreferences) {
-        return new DefaultDisambiguator(
+    private final TieBreaker tieBreaker;
+
+    public static NormalDisambiguator normalDisambiguator(final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences,
+                                                          final Preferences<TypeSerializer> customPrimitiveSerializerPreferences,
+                                                          final Preferences<TypeDeserializer> serializedObjectPreferences,
+                                                          final Filters<SerializationField> serializationFieldFilters,
+                                                          final Preferences<SerializationField> postSymmetrySerializationFieldPreferences,
+                                                          final TieBreaker tieBreaker) {
+        return new NormalDisambiguator(
                 customPrimitiveDeserializerPreferences,
                 customPrimitiveSerializerPreferences,
                 serializedObjectPreferences,
                 serializationFieldFilters,
-                postSymmetrySerializationFieldPreferences);
+                postSymmetrySerializationFieldPreferences,
+                tieBreaker
+        );
     }
 
     @Override
@@ -113,32 +119,19 @@ public final class DefaultDisambiguator implements Disambiguator {
         final DetectionResult<TypeSerializer> customPrimitiveSerializer = oneOrNone(customPrimitiveSerializers, TypeSerializer::description)
                 .orElseGet(() -> failure("No serializers to choose from"));
 
-        if (!customPrimitiveSerializer.isFailure()) {
-            scanInformationBuilder.ignoreAllOtherSerializers(customPrimitiveSerializer.result(),
-                    format("less priority than %s", customPrimitiveSerializer.result().description()));
-            return customPrimitiveSerializer.map(DisambiguationResult::serializationOnlyResult);
-        }
-
-        final SerializationFieldOptions serializationFieldOptions = serializedObjectOptions.serializationFieldOptions();
-        if (serializationFieldOptions.isEmpty()) {
-            return failure("No serialization fields");
-        }
-
         final DetectionResult<TypeSerializer> serializedObjectSerializer = serializedObjectOptions.determineSerializer(
                 this.postSymmetrySerializationFieldPreferences, scanInformationBuilder);
-        return serializedObjectSerializer.map(DisambiguationResult::serializationOnlyResult);
+
+        return this.tieBreaker.breakTieForSerializationOnly(customPrimitiveSerializer, serializedObjectSerializer, scanInformationBuilder)
+                .map(DisambiguationResult::serializationOnlyResult);
     }
 
     private DetectionResult<DisambiguationResult> deserializationOnly(final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
                                                                       final SerializedObjectOptions serializedObjectOptions,
                                                                       final ScanInformationBuilder scanInformationBuilder) {
-        final DetectionResult<TypeDeserializer> deserializer = pickDeserializer(customPrimitiveSerializersAndDeserializers.deserializers());
-        if (!deserializer.isFailure()) {
-            scanInformationBuilder.ignoreAllOtherDeserializers(deserializer.result(),
-                    format("less priority than %s", deserializer.result().description()));
-        }
-        return deserializer
-                .or(() -> pickDeserializer(serializedObjectOptions.deserializers()))
+        final DetectionResult<TypeDeserializer> customPrimitiveDeserializer = pickDeserializer(customPrimitiveSerializersAndDeserializers.deserializers());
+        final DetectionResult<TypeDeserializer> serializedObjectDeserializer = pickDeserializer(serializedObjectOptions.deserializers());
+        return this.tieBreaker.breakTieForDeserializationOnly(customPrimitiveDeserializer, serializedObjectDeserializer, scanInformationBuilder)
                 .map(DisambiguationResult::deserializationOnlyResult);
     }
 

@@ -34,7 +34,7 @@ import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledExcep
 public final class PreferredSerializerCustomPrimitive {
     private final String value;
 
-    public static PreferredSerializerCustomPrimitive deserialize(final String value) {
+    public static PreferredSerializerCustomPrimitive fromStringValue(final String value) {
         return new PreferredSerializerCustomPrimitive(value);
     }
 

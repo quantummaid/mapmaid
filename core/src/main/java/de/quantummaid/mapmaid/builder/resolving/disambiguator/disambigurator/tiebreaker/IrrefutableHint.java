@@ -19,22 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.customprimitives.success.preferred_serializer.default_name;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker;
 
-import org.junit.jupiter.api.Test;
-
-import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
-
-public final class PreferredSerializerExample {
-
-    @Test
-    public void preferredSerializerExample() {
-        scenarioBuilderFor(PreferredSerializerCustomPrimitive.class)
-                .withSerializedForm("\"foo\"")
-                .withDeserializedForm(PreferredSerializerCustomPrimitive.fromStringValue("foo"))
-                .withSerializationOnlySuccessful()
-                .withDeserializationSuccessful()
-                .withDuplexSuccessful()
-                .run();
-    }
+public interface IrrefutableHint<T> {
+    TieBreakingReason isTieBreaking(T element);
 }

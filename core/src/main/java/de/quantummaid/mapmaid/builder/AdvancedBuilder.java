@@ -21,10 +21,9 @@
 
 package de.quantummaid.mapmaid.builder;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguator;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguatorBuilder;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.NormalDisambiguator;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.DisambiguatorBuilder;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
@@ -40,7 +39,7 @@ import java.util.Map;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguatorBuilder.defaultDisambiguatorBuilder;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.DisambiguatorBuilder.defaultDisambiguatorBuilder;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry.marshallerRegistry;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
@@ -50,7 +49,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 public final class AdvancedBuilder {
     private Map<MarshallingType, Marshaller> marshallerMap = smallMap();
     private Map<MarshallingType, Unmarshaller> unmarshallerMap = smallMap();
-    private final DefaultDisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
+    private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
 
     public static AdvancedBuilder advancedBuilder() {
         return new AdvancedBuilder();
@@ -109,9 +108,9 @@ public final class AdvancedBuilder {
     }
 
     Disambiguators buildDisambiguators() {
-        final DefaultDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
+        final NormalDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
         // TODO
-        final Map<ResolvedType, Disambiguator> specialDisambiguators = new HashMap<>(10);
+        final Map<ResolvedType, de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator> specialDisambiguators = new HashMap<>(10);
         final Disambiguators disambiguators = disambiguators(defaultDisambiguator, specialDisambiguators);
         return disambiguators;
     }

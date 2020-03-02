@@ -28,6 +28,7 @@ import lombok.ToString;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -72,15 +73,29 @@ public final class DetectionResult<T> {
         return new DetectionResult<>(null, reasonsForFailure);
     }
 
-    public static <T> DetectionResult<T> followUpFailure(final DetectionResult<?> detectionResult) {
-        if (!detectionResult.isFailure()) {
-            throw new IllegalArgumentException("Can only follow up on failures");
+    public static <T> DetectionResult<T> followUpFailure(final DetectionResult<?>... detectionResults) {
+        final List<String> combinedReasons = smallList();
+        for (final DetectionResult<?> result : detectionResults) {
+            if (!result.isFailure()) {
+                throw new IllegalArgumentException("Can only follow up on failures");
+            }
+            combinedReasons.addAll(result.reasonsForFailure);
         }
-        return failure(detectionResult.reasonsForFailure());
+        return failure(combinedReasons);
+    }
+
+    public void ifSuccess(final Consumer<T> consumer) {
+        if (isSuccess()) {
+            consumer.accept(this.result);
+        }
     }
 
     public boolean isFailure() {
         return !this.reasonsForFailure.isEmpty();
+    }
+
+    public boolean isSuccess() {
+        return !isFailure();
     }
 
     public String reasonForFailure() {
@@ -116,6 +131,13 @@ public final class DetectionResult<T> {
     public DetectionResult<T> or(final Supplier<DetectionResult<T>> alternative) {
         if (isFailure()) {
             return alternative.get();
+        }
+        return this;
+    }
+
+    public DetectionResult<T> or(final DetectionResult<T> alternative) {
+        if (isFailure()) {
+            return alternative;
         }
         return this;
     }

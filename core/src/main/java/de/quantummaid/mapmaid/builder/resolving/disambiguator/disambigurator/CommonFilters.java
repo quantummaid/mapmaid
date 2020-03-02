@@ -19,9 +19,9 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filter;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Filter;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByConstructorDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
@@ -36,9 +36,9 @@ import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filter.filterOfType;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.allowed;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.denied;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Filter.filterOfType;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.FilterResult.allowed;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.FilterResult.denied;
 import static java.lang.String.format;
 
 final class CommonFilters {

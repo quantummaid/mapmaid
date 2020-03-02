@@ -19,42 +19,38 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.customprimitives.success.preferred_serializer.default_name;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
+import java.util.List;
+
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.FilterResult.combined;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PreferredSerializerCustomPrimitive {
-    private final String value;
+public final class Filters<T> {
+    private final List<Filter<T>> filters;
 
-    public static PreferredSerializerCustomPrimitive fromStringValue(final String value) {
-        return new PreferredSerializerCustomPrimitive(value);
+    public static <T> Filters<T> filters(final List<Filter<T>> filters) {
+        return new Filters<>(filters);
     }
 
-    public String method1() {
-        throw wrongMethodCalledException();
-    }
-
-    public String method2() {
-        throw wrongMethodCalledException();
-    }
-
-    public String stringValue() {
-        return this.value;
-    }
-
-    public String method3() {
-        throw wrongMethodCalledException();
-    }
-
-    public String method4() {
-        throw wrongMethodCalledException();
+    public boolean isAllowed(final T t, final Striker<T> striker) {
+        final List<FilterResult> filterResults = this.filters.stream()
+                .map(filter -> filter.filter(t))
+                .collect(toList());
+        final FilterResult combinedResult = combined(filterResults);
+        if (combinedResult.isAllowed()) {
+            return true;
+        } else {
+            striker.strike(t, combinedResult.reasonsForDenial());
+            return false;
+        }
     }
 }

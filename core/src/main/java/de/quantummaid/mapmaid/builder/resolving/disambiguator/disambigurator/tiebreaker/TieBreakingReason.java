@@ -19,49 +19,36 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collection;
-import java.util.List;
-
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
-import static java.util.stream.Collectors.toList;
+import static java.util.Objects.nonNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class FilterResult {
-    private final List<String> reasonsForDenial;
+public final class TieBreakingReason {
+    private final String reason;
 
-    public static FilterResult combined(final List<FilterResult> results) {
-        final List<String> combinedReasons = results.stream()
-                .map(FilterResult::reasonsForDenial)
-                .flatMap(Collection::stream)
-                .collect(toList());
-        return new FilterResult(combinedReasons);
+    public static TieBreakingReason aTieBreakingReason(final String reason) {
+        validateNotNull(reason, "reason");
+        return new TieBreakingReason(reason);
     }
 
-    public static FilterResult allowed() {
-        return new FilterResult(emptyList());
+    public static TieBreakingReason notATieBreakingReason() {
+        return new TieBreakingReason(null);
     }
 
-    public static FilterResult denied(final String reasonForDenial) {
-        validateNotNull(reasonForDenial, "reasonForDenial");
-        return new FilterResult(List.of(reasonForDenial));
+    public boolean isTieBreaking() {
+        return nonNull(this.reason);
     }
 
-    public boolean isAllowed() {
-        return this.reasonsForDenial.isEmpty();
-    }
-
-    public List<String> reasonsForDenial() {
-        return unmodifiableList(this.reasonsForDenial);
+    public String getReason() {
+        return reason;
     }
 }

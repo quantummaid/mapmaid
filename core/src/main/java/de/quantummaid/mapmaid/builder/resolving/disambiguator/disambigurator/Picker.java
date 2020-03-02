@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;

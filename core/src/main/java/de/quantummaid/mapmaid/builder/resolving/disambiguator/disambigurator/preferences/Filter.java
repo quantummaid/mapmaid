@@ -19,9 +19,9 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.allowed;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.FilterResult.allowed;
 
 public interface Filter<T> {
 

@@ -19,23 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-// TODO
+import java.util.List;
+
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Example {
-    public final String a;
-    public final String b;
-    public final String c;
+public final class IrrefutableHints<T> {
+    private final List<IrrefutableHint<T>> hints;
 
-    public static Example deserialize(final String a, final String b) {
-        return new Example(a, b, "ppp");
+    public static <T> IrrefutableHints<T> irrefutableHints(final List<IrrefutableHint<T>> hints) {
+        return new IrrefutableHints<>(hints);
     }
 
-    public static Example foo(final String a) {
-        return new Example(a, "qwer", "ppp");
+    public TieBreakingReason isTieBreaking(final T element) {
+        return this.hints.stream()
+                .map(hint -> hint.isTieBreaking(element))
+                .filter(TieBreakingReason::isTieBreaking)
+                .findFirst()
+                .orElseGet(TieBreakingReason::notATieBreakingReason);
     }
 }

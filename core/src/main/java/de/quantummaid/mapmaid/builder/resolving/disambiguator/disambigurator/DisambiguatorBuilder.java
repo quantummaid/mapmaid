@@ -19,10 +19,11 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Filters;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Filters;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker.TieBreaker;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveAsEnumDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
@@ -36,21 +37,23 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.CommonFilters.*;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.CommonPreferences.*;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.DefaultDisambiguator.defaultDisambiguator;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.Preferences.preferences;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.CommonFilters.*;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.CommonPreferences.*;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.NormalDisambiguator.normalDisambiguator;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Filters.filters;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences.Preferences.preferences;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.tiebreaker.TieBreaker.tieBreaker;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DefaultDisambiguatorBuilder {
+public final class DisambiguatorBuilder {
     private String preferredCustomPrimitiveFactoryName = "fromStringValue";
     private String preferredCustomPrimitiveSerializationMethodName = "stringValue";
     private String preferredSerializedObjectFactoryName = "deserialize";
 
-    public static DefaultDisambiguatorBuilder defaultDisambiguatorBuilder() {
-        return new DefaultDisambiguatorBuilder();
+    public static DisambiguatorBuilder defaultDisambiguatorBuilder() {
+        return new DisambiguatorBuilder();
     }
 
     public void setPreferredCustomPrimitiveFactoryName(final String preferredCustomPrimitiveFactoryName) {
@@ -65,7 +68,7 @@ public final class DefaultDisambiguatorBuilder {
         this.preferredSerializedObjectFactoryName = preferredSerializedObjectFactoryName;
     }
 
-    public DefaultDisambiguator build() {
+    public NormalDisambiguator build() {
         final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences = buildCustomPrimitiveDeserializerPreferences();
         final Preferences<TypeSerializer> customPrimitiveSerializerPreferences = buildCustomPrimitiveSerializerPreferences();
 
@@ -76,12 +79,15 @@ public final class DefaultDisambiguatorBuilder {
                 publicFields()
         ));
 
-        return defaultDisambiguator(
+        final TieBreaker tieBreaker = buildTieBreaker();
+
+        return normalDisambiguator(
                 customPrimitiveDeserializerPreferences,
                 customPrimitiveSerializerPreferences,
                 serializedObjectPreferences,
                 serializationFieldFilters,
-                postSymmetrySerializationFieldPreferences
+                postSymmetrySerializationFieldPreferences,
+                tieBreaker
         );
     }
 
@@ -124,10 +130,21 @@ public final class DefaultDisambiguatorBuilder {
     }
 
     private Filters<SerializationField> buildSerializationFieldFilters() {
-        return Filters.filters(List.of(
+        return filters(List.of(
                 ignoreStaticFields(),
                 ignoreTransientFields(),
                 ignoreNonPublicFields()
         ));
+    }
+
+    private TieBreaker buildTieBreaker() {
+        return tieBreaker(
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(
+                        CommonTieBreakers.serializedObjectFactoryNamed(this.preferredSerializedObjectFactoryName)
+                )
+        );
     }
 }

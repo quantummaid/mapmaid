@@ -19,22 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.customprimitives.success.preferred_serializer.default_name;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.symmetry_ignores_fields;
 
-import org.junit.jupiter.api.Test;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class SymmetryIgnoresFieldsSerializedObject {
+    public final String a;
+    public final String b;
+    public final String c;
 
-public final class PreferredSerializerExample {
+    public static SymmetryIgnoresFieldsSerializedObject deserialize(final String a, final String b) {
+        return new SymmetryIgnoresFieldsSerializedObject(a, b, "ppp");
+    }
 
-    @Test
-    public void preferredSerializerExample() {
-        scenarioBuilderFor(PreferredSerializerCustomPrimitive.class)
-                .withSerializedForm("\"foo\"")
-                .withDeserializedForm(PreferredSerializerCustomPrimitive.fromStringValue("foo"))
-                .withSerializationOnlySuccessful()
-                .withDeserializationSuccessful()
-                .withDuplexSuccessful()
-                .run();
+    public static SymmetryIgnoresFieldsSerializedObject foo(final String a) {
+        return new SymmetryIgnoresFieldsSerializedObject(a, "qwer", "ppp");
     }
 }

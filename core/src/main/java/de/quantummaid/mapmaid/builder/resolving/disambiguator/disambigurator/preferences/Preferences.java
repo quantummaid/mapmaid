@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -28,29 +28,37 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences.FilterResult.combined;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Filters<T> {
-    private final List<Filter<T>> filters;
+public final class Preferences<T> {
+    private final Filters<T> filters;
+    private final List<Preference<T>> preferences;
 
-    public static <T> Filters<T> filters(final List<Filter<T>> filters) {
-        return new Filters<>(filters);
+    public static <T> Preferences<T> preferences(final List<Filter<T>> filters,
+                                                 final List<Preference<T>> preferences) {
+        return new Preferences<>(Filters.filters(filters), preferences);
     }
 
-    public boolean isAllowed(final T t, final Striker<T> striker) {
-        final List<FilterResult> filterResults = this.filters.stream()
-                .map(filter -> filter.filter(t))
+    public static <T> Preferences<T> preferences(final List<Preference<T>> preferences) {
+        return preferences(emptyList(), preferences);
+    }
+
+    public List<T> preferred(final List<T> options, final Striker<T> striker) {
+        final List<T> filtered = options.stream()
+                .filter(t -> this.filters.isAllowed(t, striker))
                 .collect(toList());
-        final FilterResult combinedResult = combined(filterResults);
-        if (combinedResult.isAllowed()) {
-            return true;
-        } else {
-            striker.strike(t, combinedResult.reasonsForDenial());
-            return false;
+        for (final Preference<T> preference : this.preferences) {
+            final List<T> preferred = filtered.stream()
+                    .filter(preference::prefer)
+                    .collect(toList());
+            if (!preferred.isEmpty()) {
+                return preferred;
+            }
         }
+        return filtered;
     }
 }

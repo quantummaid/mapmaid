@@ -91,10 +91,9 @@ public final class ActualScanInformation implements ScanInformation {
             stringBuilder.append("\nWhy it needs to be serializable:\n");
             this.serializationReasons.forEach(reason -> stringBuilder.append(format("\t- %s%n", reason.render())));
 
-            // TODO
-            //if(!this.ignoredSerializers.isEmpty()) {
-            stringBuilder.append(renderIgnoredSerializers());
-            //}
+            if (!this.ignoredSerializers.isEmpty()) {
+                stringBuilder.append(renderIgnoredSerializers());
+            }
         }
 
         if (isDeserializable()) {

@@ -55,7 +55,6 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
         final ResolvedType genericType = ((ArrayType) type).componentType();
         context.setDeserializer(arrayDeserializer(genericType));
         context.setSerializer(arraySerializer(genericType));
-        // TODO unreasoned?
         return Optional.of(fixedResolvingDuplex(context));
     }
 }

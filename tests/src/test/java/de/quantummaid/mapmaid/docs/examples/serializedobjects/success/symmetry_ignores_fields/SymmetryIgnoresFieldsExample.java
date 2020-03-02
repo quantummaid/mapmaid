@@ -19,20 +19,29 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.customprimitives.success.preferred_serializer.default_name;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.symmetry_ignores_fields;
 
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-public final class PreferredSerializerExample {
+public final class SymmetryIgnoresFieldsExample {
 
     @Test
-    public void preferredSerializerExample() {
-        scenarioBuilderFor(PreferredSerializerCustomPrimitive.class)
-                .withSerializedForm("\"foo\"")
-                .withDeserializedForm(PreferredSerializerCustomPrimitive.fromStringValue("foo"))
-                .withSerializationOnlySuccessful()
+    public void symmetryIgnoresFieldsExample() {
+        scenarioBuilderFor(SymmetryIgnoresFieldsSerializedObject.class)
+                .withSerializedForm("" +
+                        "{\n" +
+                        "  \"a\": \"a\",\n" +
+                        "  \"b\": \"b\"\n" +
+                        "}")
+                .withDeserializedForm(SymmetryIgnoresFieldsSerializedObject.deserialize("a", "b"))
+                .withSerializationOnlySuccessful("" +
+                        "{\n" +
+                        "  \"a\": \"a\",\n" +
+                        "  \"b\": \"b\",\n" +
+                        "  \"c\": \"ppp\"\n" +
+                        "}")
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

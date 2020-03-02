@@ -19,46 +19,49 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.defaultdisambigurator.preferences;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.disambigurator.preferences;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Collection;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Preferences<T> {
-    private final Filters<T> filters;
-    private final List<Preference<T>> preferences;
+public final class FilterResult {
+    private final List<String> reasonsForDenial;
 
-    public static <T> Preferences<T> preferences(final List<Filter<T>> filters,
-                                                 final List<Preference<T>> preferences) {
-        return new Preferences<>(Filters.filters(filters), preferences);
-    }
-
-    public static <T> Preferences<T> preferences(final List<Preference<T>> preferences) {
-        return preferences(emptyList(), preferences);
-    }
-
-    public List<T> preferred(final List<T> options, final Striker<T> striker) {
-        final List<T> filtered = options.stream()
-                .filter(t -> this.filters.isAllowed(t, striker))
+    public static FilterResult combined(final List<FilterResult> results) {
+        final List<String> combinedReasons = results.stream()
+                .map(FilterResult::reasonsForDenial)
+                .flatMap(Collection::stream)
                 .collect(toList());
-        for (final Preference<T> preference : this.preferences) {
-            final List<T> preferred = filtered.stream()
-                    .filter(preference::prefer)
-                    .collect(toList());
-            if (!preferred.isEmpty()) {
-                return preferred;
-            }
-        }
-        return filtered;
+        return new FilterResult(combinedReasons);
+    }
+
+    public static FilterResult allowed() {
+        return new FilterResult(emptyList());
+    }
+
+    public static FilterResult denied(final String reasonForDenial) {
+        validateNotNull(reasonForDenial, "reasonForDenial");
+        return new FilterResult(List.of(reasonForDenial));
+    }
+
+    public boolean isAllowed() {
+        return this.reasonsForDenial.isEmpty();
+    }
+
+    public List<String> reasonsForDenial() {
+        return unmodifiableList(this.reasonsForDenial);
     }
 }
