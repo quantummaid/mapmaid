@@ -31,6 +31,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MarshallingType {
+    public static final MarshallingType JSON = json();
+    public static final MarshallingType XML = xml();
+    public static final MarshallingType YAML = yaml();
+
     private final String type;
 
     public static MarshallingType marshallingType(final String type) {

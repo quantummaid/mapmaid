@@ -13,7 +13,8 @@ that is thrown in the factory methods, in case the input is not valid, the MapMa
 
 <!---[CodeSnippet](aggregateException)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .mapping(Email.class)
         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
         .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
         .build();
@@ -70,7 +71,8 @@ instance of a
 
 <!---[CodeSnippet](mappedException)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .mapping(Email.class)
         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
         .withExceptionIndicatingValidationError(CustomTypeValidationException.class,
                 (exception, propertyPath) -> new ValidationError("This is a custom message we are reporting about " + exception.getMessage(), propertyPath))

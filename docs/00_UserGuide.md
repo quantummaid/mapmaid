@@ -21,7 +21,8 @@ If you are following the [default conventions](UserGuide.md#default-conventions-
 <!---[CodeSnippet](example1)-->
 ```java
 final Gson gson = new Gson();
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .mapping(Email.class)
         .withAdvancedSettings(advancedBuilder -> advancedBuilder
                 .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
         .build();
