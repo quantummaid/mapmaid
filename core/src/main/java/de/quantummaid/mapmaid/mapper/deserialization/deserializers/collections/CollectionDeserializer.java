@@ -28,6 +28,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
@@ -52,11 +53,6 @@ public interface CollectionDeserializer extends TypeDeserializer {
         return UniversalCollection.class;
     }
 
-    @Override
-    default String classification() {
-        return "Collection";
-    }
-
     Object deserialize(List<Object> deserializedElements);
 
     @Override
@@ -67,6 +63,9 @@ public interface CollectionDeserializer extends TypeDeserializer {
                               final CustomPrimitiveMappings customPrimitiveMappings,
                               final ResolvedType resolvedType,
                               final DebugInformation debugInformation) {
+        if (input instanceof UniversalNull) {
+            return null;
+        }
         final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker, resolvedType, debugInformation);
         final List deserializedList = new ArrayList(10);
         final ResolvedType contentType = contentType();

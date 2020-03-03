@@ -178,7 +178,7 @@ public final class Deserializer {
         final ExceptionTracker exceptionTracker = ExceptionTracker.emptyTracker(input, this.validationMappings);
         final Injector injector = this.injectorFactory.create();
         injectorProducer.setupInjector(injector);
-        return this.internalDeserializer.deserialize(input, targetType, exceptionTracker, injector, debugInformation);
+        return this.internalDeserializer.deserialize(input, targetType, exceptionTracker, injector, this.debugInformation);
     }
 
     public Set<MarshallingType> supportedMarshallingTypes() {

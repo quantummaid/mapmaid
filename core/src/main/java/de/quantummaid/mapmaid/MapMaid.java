@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
@@ -72,6 +73,11 @@ public final class MapMaid {
 
     public String serializeTo(final Object object, final MarshallingType marshallingType) {
         return this.serializer.serialize(object, marshallingType);
+    }
+
+    public String serializeTo(final Object object, final MarshallingType marshallingType, final GenericType<?> type) {
+        final ResolvedType resolvedType = type.toResolvedType();
+        return this.serializer.serialize(object, resolvedType, marshallingType, input -> input);
     }
 
     public <T> T deserializeJson(final String json, final Class<T> targetType) {

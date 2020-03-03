@@ -38,6 +38,4 @@ public interface TypeSerializer {
                         CustomPrimitiveMappings customPrimitiveMappings);
 
     String description();
-
-    String classification();
 }

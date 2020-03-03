@@ -28,6 +28,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -58,11 +59,6 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
         return UniversalObject.class;
     }
 
-    @Override
-    default String classification() {
-        return "Serialized Object";
-    }
-
     Object deserialize(Map<String, Object> elements) throws Exception;
 
     @SuppressWarnings("unchecked")
@@ -74,6 +70,9 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
                               final CustomPrimitiveMappings customPrimitiveMappings,
                               final ResolvedType resolvedType,
                               final DebugInformation debugInformation) {
+        if (input instanceof UniversalNull) {
+            return null;
+        }
         final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker, resolvedType, debugInformation);
         final DeserializationFields deserializationFields = fields();
         final Map<String, Object> elements = new HashMap<>(0);

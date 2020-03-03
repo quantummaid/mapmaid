@@ -19,44 +19,29 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.serialization.serializers.collections;
+package de.quantummaid.mapmaid.builder.customtypes;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static java.lang.String.format;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ListCollectionSerializer implements CollectionSerializer {
-    private final ResolvedType type;
+public final class SimpleSerializationOnlyType<T> implements SerializationOnlyType<T> {
+    private final TypeSerializer serializer;
 
-    public static CollectionSerializer listSerializer(final ResolvedType type) {
-        return new ListCollectionSerializer(type);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Object> serialize(final Object collection) {
-        final Collection<Object> realCollection = (Collection<Object>) collection;
-        return new ArrayList<>(realCollection);
+    static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final TypeSerializer serializer) {
+        validateNotNull(serializer, "serializer");
+        return new SimpleSerializationOnlyType<>(serializer);
     }
 
     @Override
-    public ResolvedType contentType() {
-        return this.type;
-    }
-
-    @Override
-    public String description() {
-        return format("serializing a collection with content type '%s'", this.type.description());
+    public TypeSerializer createSerializer() {
+        return this.serializer;
     }
 }

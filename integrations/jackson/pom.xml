@@ -47,6 +47,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>de.quantummaid.mapmaid</groupId>
+            <artifactId>tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.10.2</version>

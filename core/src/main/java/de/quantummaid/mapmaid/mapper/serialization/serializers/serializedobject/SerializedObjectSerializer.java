@@ -84,9 +84,4 @@ public final class SerializedObjectSerializer implements TypeSerializer {
         stringBuilder.append(this.fields.describe());
         return stringBuilder.toString();
     }
-
-    @Override
-    public String classification() {
-        return "Serialized Object";
-    }
 }

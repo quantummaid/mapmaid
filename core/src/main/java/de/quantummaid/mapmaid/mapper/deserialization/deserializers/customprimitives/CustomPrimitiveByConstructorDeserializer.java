@@ -105,11 +105,6 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
         return createDescription(this, this.constructor.describe());
     }
 
-    @Override
-    public String classification() {
-        return "Custom Primitive";
-    }
-
     public ResolvedConstructor constructor() {
         return this.constructor;
     }

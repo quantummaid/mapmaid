@@ -24,56 +24,51 @@ package de.quantummaid.mapmaid.builder.customtypes;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import java.util.Optional;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializationOnlyType<T> implements CustomType<T> {
-    private final TypeSerializer serializer;
+public interface SerializationOnlyType<T> extends CustomType<T> {
 
-    public static <T> SerializationOnlyType<T> customPrimitive(final CustomCustomPrimitiveSerializer<T, String> serializer) {
+    static <T> SerializationOnlyType<T> customPrimitive(final CustomCustomPrimitiveSerializer<T, String> serializer) {
         return stringBasedCustomPrimitive(serializer);
     }
 
-    public static <T> SerializationOnlyType<T> stringBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, String> serializer) {
+    static <T> SerializationOnlyType<T> stringBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, String> serializer) {
         return createCustomPrimitive(serializer, String.class);
     }
 
-    public static <T> SerializationOnlyType<T> intBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Integer> serializer) {
+    static <T> SerializationOnlyType<T> intBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Integer> serializer) {
         return createCustomPrimitive(serializer, Integer.class);
     }
 
-    public static <T> SerializationOnlyType<T> floatBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Float> serializer) {
+    static <T> SerializationOnlyType<T> floatBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Float> serializer) {
         return createCustomPrimitive(serializer, Float.class);
     }
 
-    public static <T> SerializationOnlyType<T> doubleBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Double> serializer) {
+    static <T> SerializationOnlyType<T> doubleBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Double> serializer) {
         return createCustomPrimitive(serializer, Double.class);
     }
 
-    public static <T> SerializationOnlyType<T> booleanBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Boolean> serializer) {
+    static <T> SerializationOnlyType<T> booleanBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Boolean> serializer) {
         return createCustomPrimitive(serializer, Boolean.class);
     }
 
     private static <T, B> SerializationOnlyType<T> createCustomPrimitive(final CustomCustomPrimitiveSerializer<T, B> serializer,
                                                                          final Class<B> baseType) {
         final TypeSerializer typeSerializer = serializer.toTypeSerializer(baseType);
-        return new SerializationOnlyType<>(typeSerializer);
+        return SimpleSerializationOnlyType.simpleSerializationOnlyType(typeSerializer);
     }
 
+    TypeSerializer createSerializer();
+
     @Override
-    public Optional<TypeDeserializer> deserializer() {
+    default Optional<TypeDeserializer> deserializer() {
         return Optional.empty();
     }
 
     @Override
-    public Optional<TypeSerializer> serializer() {
-        return Optional.of(this.serializer);
+    default Optional<TypeSerializer> serializer() {
+        final TypeSerializer serializer = createSerializer();
+        return Optional.of(serializer);
     }
 }

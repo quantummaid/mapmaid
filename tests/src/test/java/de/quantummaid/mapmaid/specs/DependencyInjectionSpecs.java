@@ -27,7 +27,6 @@ import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.recipes.di.DiRecipe.toUseDependencyInjectionWith;
@@ -71,7 +70,6 @@ public final class DependencyInjectionSpecs {
     }
 
     @SuppressWarnings("AnonymousInnerClassMayBeStatic")
-    @Disabled
     @Test
     public void aClassCanBeDeserializedUsingDependencyInjectionEvenIfTheCorrespondingFieldIsNotPresent() {
         Given.given(
@@ -94,11 +92,13 @@ public final class DependencyInjectionSpecs {
                 "}")
                 .from(json()).toTheType(AComplexType.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(AComplexType.deserialize(
-                        AString.fromStringValue("a"),
-                        AString.fromStringValue("b"),
-                        ANumber.fromInt(42),
-                        ANumber.fromInt(42)
-                ));
+                .theDeserializedObjectIs(
+                        AComplexType.deserialize(
+                                AString.fromStringValue("a"),
+                                AString.fromStringValue("b"),
+                                ANumber.fromInt(42),
+                                ANumber.fromInt(42)
+                        )
+                );
     }
 }

@@ -26,12 +26,12 @@ import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexTypeWithP
 import de.quantummaid.mapmaid.testsupport.domain.repositories.RepositoryWithTypeVariableReference;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.shared.types.ArrayType.fromArrayClass;
@@ -112,9 +112,8 @@ public final class TypeVariableSpecs {
                         "}");
     }
 
-    @Disabled
     @Test
-    public void aSerializedObjectWithTypeVariableFieldCanBeSerializedIfTheValueOfTheTypeVariableIsAnInterfaceWithTypeVariables() {
+    public void aSerializedObjectWithTypeVariableFieldCanBeSerializedIfTheTypeOfTheTypeVariableIsProvidedDuringSerialization() {
         given(
                 aMapMaid()
                         .mapping(
@@ -123,10 +122,15 @@ public final class TypeVariableSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidSerializes(deserialize(List.of(AString.fromStringValue("foo"))))
+                .when().mapMaidSerializes(deserialize(List.of(AString.fromStringValue("foo"))), genericType(AComplexParameterizedType.class, genericType(List.class, AString.class)))
                 .withMarshallingType(json())
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("");
+                .theSerializationResultWas("" +
+                        "{\n" +
+                        "  \"value\": [\n" +
+                        "    \"foo\"\n" +
+                        "  ]\n" +
+                        "}");
     }
 
     @Test

@@ -22,8 +22,10 @@
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only;
 
 import de.quantummaid.mapmaid.builder.GenericType;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
+import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SerializationOnlySerializedObject<T> {
+public final class SerializationOnlySerializedObject<T> implements SerializationOnlyType<T> {
     private final Builder builder;
 
     public <B> SerializationOnlySerializedObject<T> withField(final String name,
@@ -49,5 +51,10 @@ public final class SerializationOnlySerializedObject<T> {
                                                               final Query<T, B> query) {
         this.builder.addSerializationField(type, name, (Query<Object, Object>) query);
         return this;
+    }
+
+    @Override
+    public TypeSerializer createSerializer() {
+        return this.builder.createSerializer();
     }
 }

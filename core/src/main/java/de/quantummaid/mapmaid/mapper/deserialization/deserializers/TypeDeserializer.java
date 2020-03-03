@@ -49,8 +49,6 @@ public interface TypeDeserializer {
 
     String description();
 
-    String classification();
-
     static <T extends Universal> T castSafely(final Universal universalType,
                                               final Class<T> type,
                                               final ExceptionTracker exceptionTracker,

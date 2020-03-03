@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import lombok.AccessLevel;
@@ -83,6 +84,17 @@ public final class When {
         return marshallingType -> {
             try {
                 final String serialized = this.mapMaid.serializeTo(object, marshallingType);
+                return then(this.thenData.withSerializationResult(serialized));
+            } catch (final Exception e) {
+                return then(this.thenData.withException(e));
+            }
+        };
+    }
+
+    public WithMarshallingType mapMaidSerializes(final Object object, final GenericType<?> type) {
+        return marshallingType -> {
+            try {
+                final String serialized = this.mapMaid.serializeTo(object, marshallingType, type);
                 return then(this.thenData.withSerializationResult(serialized));
             } catch (final Exception e) {
                 return then(this.thenData.withException(e));

@@ -31,7 +31,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrors
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationResult;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
@@ -43,7 +42,7 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
-@SuppressWarnings({"unchecked", "InstanceofConcreteClass"})
+@SuppressWarnings("unchecked")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class InternalDeserializer implements DeserializerCallback {
     private final Definitions definitions;
@@ -90,21 +89,12 @@ final class InternalDeserializer implements DeserializerCallback {
 
         final Universal resolved = injector.getUniversalInjectionFor(exceptionTracker.getPosition()).orElse(input);
 
-        if (input instanceof UniversalNull) {
-            return null;
-        }
-
         final Definition definition = this.definitions.getDefinitionForType(targetType);
-        try {
-            final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
-                final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
-                return mapMaidException(format("No deserializer configured for '%s'",
-                        definition.type().description()), scanInformation);
-            });
-            return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
-        } catch (final WrongInputStructureException e) {
-            exceptionTracker.track(e, e.getMessage());
-            return null;
-        }
+        final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
+            final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
+            return mapMaidException(format("No deserializer configured for '%s'",
+                    definition.type().description()), scanInformation);
+        });
+        return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
     }
 }

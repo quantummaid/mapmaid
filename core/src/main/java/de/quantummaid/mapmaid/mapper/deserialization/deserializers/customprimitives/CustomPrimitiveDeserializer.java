@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -73,11 +74,6 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
         return UniversalPrimitive.class;
     }
 
-    @Override
-    default String classification() {
-        return "Custom Primitive";
-    }
-
     Object deserialize(Object value) throws Exception;
 
     @SuppressWarnings("unchecked")
@@ -89,6 +85,9 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
                               final CustomPrimitiveMappings customPrimitiveMappings,
                               final ResolvedType resolvedType,
                               final DebugInformation debugInformation) {
+        if (input instanceof UniversalNull) {
+            return null;
+        }
         final UniversalPrimitive universalPrimitive = castSafely(input, UniversalPrimitive.class, exceptionTracker, resolvedType, debugInformation);
         try {
             final Class<?> baseType = baseType();

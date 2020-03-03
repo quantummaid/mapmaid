@@ -137,6 +137,7 @@ public final class DeserializerSpecs {
         Given.givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidDeserializes("{\"number1\":\"1\",\"stringA\":\"a\"}")
                 .from(json()).toTheType(AComplexType.class)
+                .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexType.deserialize(
                         AString.fromStringValue("a"),
                         null,

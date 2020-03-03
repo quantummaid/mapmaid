@@ -51,11 +51,6 @@ public interface CollectionSerializer extends TypeSerializer {
     }
 
     @Override
-    default String classification() {
-        return "Collection";
-    }
-
-    @Override
     default List<ResolvedType> requiredTypes() {
         return singletonList(this.contentType());
     }

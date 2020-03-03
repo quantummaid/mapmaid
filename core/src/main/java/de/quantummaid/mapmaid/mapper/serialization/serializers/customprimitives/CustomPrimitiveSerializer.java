@@ -67,9 +67,4 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
     default Class<?> baseType() {
         return String.class;
     }
-
-    @Override
-    default String classification() {
-        return "Custom Primitive";
-    }
 }
