@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.exam
 import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class AllPrivateExample {
@@ -43,14 +43,14 @@ public final class AllPrivateExample {
                         "}")
                 .withAllScenariosFailing(
                         "de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.all_private.AddALotRequest: unable to detect",
-                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withManuallyAddedDefinition(
-                                serializedObjectOfType(AddALotRequest.class)
+                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(AddALotRequest.class, capabilities,
+                                serializedObject(AddALotRequest.class)
                                         .withField("name", Name.class, object -> Name.fromStringValue("a"))
                                         .withField("townNameA", TownName.class, object -> TownName.townName("b"))
                                         .withField("townNameB", TownName.class, object -> TownName.townName("c"))
                                         .withField("townNameC", TownName.class, object -> TownName.townName("d"))
                                         .deserializedUsing((field1, field2, field3, field4) -> AddALotRequest.addALotRequest())
-                                        .create(), capabilities)
+                        )
                 )
                 .run();
     }

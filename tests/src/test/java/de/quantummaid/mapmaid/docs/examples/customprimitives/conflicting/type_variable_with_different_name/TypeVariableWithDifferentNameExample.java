@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_v
 import de.quantummaid.mapmaid.builder.GenericType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name.Street.street;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 

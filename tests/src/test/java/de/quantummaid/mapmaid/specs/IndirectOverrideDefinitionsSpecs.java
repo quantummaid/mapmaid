@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.builder.serializedobject.SerializedObjectBuilder;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
@@ -32,6 +31,7 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.constantDeserializer;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
@@ -64,16 +64,15 @@ public final class IndirectOverrideDefinitionsSpecs {
     public void customDeserializationForSerializedObjectOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .mapping(AComplexNestedType.class)
-                        .withManuallyAddedDefinition(
-                                SerializedObjectBuilder.serializedObjectOfType(AComplexType.class)
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .serializingAndDeserializing(AComplexType.class, serializedObject(AComplexType.class)
                                 .withField("foo", AString.class, object -> AString.fromStringValue("bar"))
                                 .deserializedUsing(foo -> AComplexType.deserialize(
                                         AString.fromStringValue("custom1"),
                                         AString.fromStringValue("custom2"),
                                         ANumber.fromInt(100),
                                         ANumber.fromInt(200)
-                                )).create()
+                                ))
                         )
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()

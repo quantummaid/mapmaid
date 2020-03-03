@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,8 +31,8 @@ import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
-import static de.quantummaid.mapmaid.builder.builder.serializedobject.SerializedObjectBuilder.serializedObjectOfType;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -90,14 +90,13 @@ public final class IndividuallyAddedModelsBuilderTest {
         final Class<Body>
                 customConventionBody = Body.class;
         return MapMaid.aMapMaid()
-                .withManuallyAddedDefinition(
-                        serializedObjectOfType(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.customconvention.Email.class,
+                        serializedObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
                                 .withField("sender", EmailAddress.class, object -> object.sender)
                                 .withField("receiver", EmailAddress.class, object -> object.receiver)
                                 .withField("subject", Subject.class, object -> object.subject)
                                 .withField("body", Body.class, object -> object.body)
                                 .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore)
-                                .create()
                 )
                 .serializingAndDeserializing(EmailAddress.class, customPrimitive(EmailAddress::serialize, EmailAddress::deserialize))
                 .serializingAndDeserializing(Subject.class, customPrimitive(Subject::serialize, Subject::deserialize))

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,10 +22,10 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.builder.CustomType;
-import de.quantummaid.mapmaid.builder.builder.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.builder.DuplexType;
-import de.quantummaid.mapmaid.builder.builder.SerializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.CustomType;
+import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
+import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;

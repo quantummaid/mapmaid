@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Richard Hauswald - https://quantummaid.de/.
+ * Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.multip
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.builder.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {
