@@ -19,13 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes;
+package de.quantummaid.mapmaid.builder.autoload;
 
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public interface Recipe {
-    default void init() {
+import java.util.Optional;
+
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ActualAutoloadable<T> implements Autoloadable<T> {
+    private final String fullyQualifiedDomainName;
+
+    public static <T> Autoloadable<T> autoloadIfClassPresent(final String fullyQualifiedDomainName) {
+        validateNotNull(fullyQualifiedDomainName, "fullyQualifiedDomainName");
+        return new ActualAutoloadable<>(fullyQualifiedDomainName);
     }
 
-    void cook(MapMaidBuilder mapMaidBuilder);
+    @Override
+    public Optional<T> autoload() {
+        return Autoloader.autoload(this.fullyQualifiedDomainName);
+    }
 }

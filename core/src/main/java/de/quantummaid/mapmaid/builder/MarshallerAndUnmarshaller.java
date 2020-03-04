@@ -19,16 +19,16 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.entities;
+package de.quantummaid.mapmaid.builder;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 
-public final class EntityRecipe implements Recipe {
+public interface MarshallerAndUnmarshaller {
+    MarshallingType marshallingType();
 
-    @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
+    Marshaller marshaller();
 
-    }
+    Unmarshaller unmarshaller();
 }

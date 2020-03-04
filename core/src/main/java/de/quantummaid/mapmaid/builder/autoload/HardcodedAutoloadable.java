@@ -19,13 +19,31 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes;
+package de.quantummaid.mapmaid.builder.autoload;
 
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public interface Recipe {
-    default void init() {
+import java.util.Optional;
+
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Optional.of;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class HardcodedAutoloadable<T> implements Autoloadable<T> {
+    private final T value;
+
+    public static <T> Autoloadable<T> hardcoded(final T value) {
+        validateNotNull(value, "value");
+        return new HardcodedAutoloadable<>(value);
     }
 
-    void cook(MapMaidBuilder mapMaidBuilder);
+    @Override
+    public Optional<T> autoload() {
+        return of(this.value);
+    }
 }

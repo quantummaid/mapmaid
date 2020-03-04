@@ -19,36 +19,43 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.marshallers.jackson;
+package de.quantummaid.mapmaid.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonMarshaller implements Recipe {
-    private final ObjectMapper objectMapper;
+final class ObjectMappers {
 
-    public static JacksonMarshaller jacksonMarshallerJson(final ObjectMapper objectMapper) {
-        return new JacksonMarshaller(objectMapper);
+    private ObjectMappers() {
     }
 
-    @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
+    static ObjectMapper objectMapperJson() {
+        return objectMapperFor(new ObjectMapper());
+    }
+
+    public static ObjectMapper objectMapperXml() {
+        final XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        return objectMapperFor(xmlMapper);
+    }
+
+    public static ObjectMapper objectMapperYaml() {
+        final YAMLMapper yamlMapper = new YAMLMapper();
+        return objectMapperFor(yamlMapper);
+    }
+
+    private static ObjectMapper objectMapperFor(final ObjectMapper objectMapper) {
+        validateNotNull(objectMapper, "objectMapper");
         final SimpleModule simpleModule = new SimpleModule();
         simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
-        this.objectMapper.setSerializationInclusion(NON_NULL);
-        this.objectMapper.registerModule(simpleModule);
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue));
+        objectMapper.setSerializationInclusion(NON_NULL);
+        objectMapper.registerModule(simpleModule);
+        return objectMapper;
     }
 }

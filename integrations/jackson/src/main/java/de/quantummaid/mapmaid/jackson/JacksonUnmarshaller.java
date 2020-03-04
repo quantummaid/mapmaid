@@ -19,36 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.marshallers.jackson;
+package de.quantummaid.mapmaid.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonMarshaller implements Recipe {
+public final class JacksonUnmarshaller implements Unmarshaller {
     private final ObjectMapper objectMapper;
 
-    public static JacksonMarshaller jacksonMarshallerJson(final ObjectMapper objectMapper) {
-        return new JacksonMarshaller(objectMapper);
+    public static JacksonUnmarshaller jacksonUnmarshaller(final ObjectMapper objectMapper) {
+        validateNotNull(objectMapper, "objectMapper");
+        return new JacksonUnmarshaller(objectMapper);
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
-        final SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
-        this.objectMapper.setSerializationInclusion(NON_NULL);
-        this.objectMapper.registerModule(simpleModule);
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue));
+    public <T> T unmarshal(final String input, final Class<T> type) throws Exception {
+        return this.objectMapper.readValue(input, type);
     }
 }

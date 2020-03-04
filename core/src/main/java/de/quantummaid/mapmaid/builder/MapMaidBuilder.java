@@ -22,11 +22,11 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import de.quantummaid.mapmaid.builder.customtypes.CustomType;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
-import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.builder.resolving.Context;
@@ -58,8 +58,6 @@ import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.MapMaid.mapMaid;
 import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
-import static de.quantummaid.mapmaid.builder.DependencyRegistry.dependency;
-import static de.quantummaid.mapmaid.builder.DependencyRegistry.dependencyRegistry;
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
@@ -83,15 +81,9 @@ import static java.util.Arrays.stream;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MapMaidBuilder {
     private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
-    private final DependencyRegistry dependencyRegistry = dependencyRegistry(
-            dependency(SimpleDetector.class, () -> this.detector)
-    );
-
     private final Processor processor = processor();
     private final AdvancedBuilder advancedBuilder = advancedBuilder();
-
     private final List<Recipe> recipes = new ArrayList<>(10);
-
     private final ValidationMappings validationMappings = ValidationMappings.empty();
     private final ValidationErrorsMapping validationErrorsMapping = validationErrors -> {
         throw AggregatedValidationException.fromList(validationErrors);
@@ -297,8 +289,8 @@ public final class MapMaidBuilder {
     }
 
     public MapMaid build() {
-        this.recipes.forEach(recipe -> recipe.init(this.dependencyRegistry));
-        this.recipes.forEach(recipe -> recipe.cook(this, this.dependencyRegistry));
+        this.recipes.forEach(Recipe::init);
+        this.recipes.forEach(recipe -> recipe.cook(this));
 
         final Disambiguators disambiguators = this.advancedBuilder.buildDisambiguators();
         final Map<ResolvedType, CollectionResult> result = this.processor.collect(this.detector, disambiguators);

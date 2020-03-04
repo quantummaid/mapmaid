@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.recipes.di;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
@@ -54,7 +53,7 @@ public final class DiRecipe implements Recipe {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
         this.types.forEach(type -> {
                     final GenericType<Object> genericType = genericType((Class<Object>) type);
                     final DependencyInjector<?> dependencyInjector = this.injector.specialzedFor(type);

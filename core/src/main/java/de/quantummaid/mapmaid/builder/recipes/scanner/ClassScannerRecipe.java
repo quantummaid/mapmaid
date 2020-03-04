@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.recipes.scanner;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.shared.types.ClassType;
@@ -60,7 +59,7 @@ public final class ClassScannerRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
         this.classes.forEach(clazz -> addReferencesIn(clazz, mapMaidBuilder));
     }
 

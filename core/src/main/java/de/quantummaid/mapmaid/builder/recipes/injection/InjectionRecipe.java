@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.recipes.injection;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition;
@@ -46,7 +45,7 @@ public final class InjectionRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
         mapMaidBuilder.withManuallyAddedDefinition(GeneralDefinition.generalDefinition(
                 this.resolvedType,
                 injectionSerializer(),

@@ -19,30 +19,38 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.jackson;
+package de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import de.quantummaid.mapmaid.builder.MarshallerAndUnmarshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonMarshaller implements Marshaller {
-    private final ObjectMapper objectMapper;
+public final class UrlEncodedMarshallerAndUnmarshaller implements MarshallerAndUnmarshaller {
 
-    public static Marshaller jacksonMarshaller(final ObjectMapper objectMapper) {
-        validateNotNull(objectMapper, "objectMapper");
-        return new JacksonMarshaller(objectMapper);
+    public static MarshallerAndUnmarshaller urlEncoded() {
+        return new UrlEncodedMarshallerAndUnmarshaller();
     }
 
     @Override
-    public String marshal(final Object object) throws Exception {
-        return this.objectMapper.writeValueAsString(object);
+    public MarshallingType marshallingType() {
+        return UrlEncodedMarshallerRecipe.urlEncoded();
+    }
+
+    @Override
+    public Marshaller marshaller() {
+        return UrlEncodedMarshaller.urlEncodedMarshaller();
+    }
+
+    @Override
+    public Unmarshaller unmarshaller() {
+        return UrlEncodedUnmarshaller.urlEncodedUnmarshaller();
     }
 }

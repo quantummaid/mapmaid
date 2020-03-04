@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.jackson.JacksonMarshaller.*;
+import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.*;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -19,36 +19,36 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.marshallers.jackson;
+package de.quantummaid.mapmaid.jackson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import de.quantummaid.mapmaid.builder.MarshallerAndUnmarshaller;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonMarshaller implements Recipe {
-    private final ObjectMapper objectMapper;
+public final class JacksonMarshallers implements Recipe {
+    private final MarshallerAndUnmarshaller marshallerAndUnmarshaller;
 
-    public static JacksonMarshaller jacksonMarshallerJson(final ObjectMapper objectMapper) {
-        return new JacksonMarshaller(objectMapper);
+    public static JacksonMarshallers jacksonMarshallerJson() {
+        return new JacksonMarshallers(new JacksonJsonMarshaller());
+    }
+
+    public static JacksonMarshallers jacksonMarshallerXml() {
+        return new JacksonMarshallers(new JacksonXmlMarshaller());
+    }
+
+    public static JacksonMarshallers jacksonMarshallerYaml() {
+        return new JacksonMarshallers(new JacksonYamlMarshaller());
     }
 
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder) {
-        final SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
-        this.objectMapper.setSerializationInclusion(NON_NULL);
-        this.objectMapper.registerModule(simpleModule);
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue));
+        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(this.marshallerAndUnmarshaller));
     }
 }

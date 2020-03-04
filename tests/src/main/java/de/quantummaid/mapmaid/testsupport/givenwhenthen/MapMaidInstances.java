@@ -32,9 +32,13 @@ public final class MapMaidInstances {
 
     public static MapMaid theExampleMapMaidWithAllMarshallers() {
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
-                        .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
-                        .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller()))
+                .withAdvancedSettings(advancedBuilder -> {
+                    advancedBuilder
+                            .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                            .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
+                            .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller());
+                })
+                .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .mapping(AComplexType.class)
                 .mapping(AComplexTypeWithValidations.class)
                 .mapping(AComplexTypeWithArray.class)
@@ -44,7 +48,6 @@ public final class MapMaidInstances {
                 .mapping(AComplexTypeWithCollections.class)
                 .mapping(AComplexNestedType.class)
                 .mapping(ACyclicType.class)
-                .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .withExceptionIndicatingValidationError(AnException.class)
                 .build();
         return mapMaid;

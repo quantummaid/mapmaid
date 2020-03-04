@@ -19,13 +19,10 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes;
+package de.quantummaid.mapmaid.builder.autoload;
 
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import java.util.Optional;
 
-public interface Recipe {
-    default void init() {
-    }
-
-    void cook(MapMaidBuilder mapMaidBuilder);
+public interface Autoloadable<T> {
+    Optional<T> autoload();
 }
