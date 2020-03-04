@@ -52,4 +52,9 @@ public final class GetterFieldQuery implements SerializationFieldQuery {
             throw new RuntimeException(format("Unable to call '%s' on object '%s'", this.method.getName(), object), e);
         }
     }
+
+    @Override
+    public String describe() {
+        return format("getter method '%s'", this.method.getName());
+    }
 }

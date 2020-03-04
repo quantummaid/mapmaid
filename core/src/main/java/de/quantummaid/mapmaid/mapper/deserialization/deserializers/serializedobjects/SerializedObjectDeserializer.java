@@ -21,12 +21,14 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -41,6 +43,10 @@ import static java.lang.String.format;
 
 public interface SerializedObjectDeserializer extends TypeDeserializer {
 
+    static String createDescription(final String deserializer) {
+        return format("as serialized object using %s", deserializer);
+    }
+
     @Override
     default List<ResolvedType> requiredTypes() {
         return fields().referencedTypes();
@@ -53,11 +59,6 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
         return UniversalObject.class;
     }
 
-    @Override
-    default String classification() {
-        return "Serialized Object";
-    }
-
     Object deserialize(Map<String, Object> elements) throws Exception;
 
     @SuppressWarnings("unchecked")
@@ -66,8 +67,13 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
                               final ExceptionTracker exceptionTracker,
                               final Injector injector,
                               final DeserializerCallback callback,
-                              final CustomPrimitiveMappings customPrimitiveMappings) {
-        final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker);
+                              final CustomPrimitiveMappings customPrimitiveMappings,
+                              final ResolvedType resolvedType,
+                              final DebugInformation debugInformation) {
+        if (input instanceof UniversalNull) {
+            return null;
+        }
+        final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker, resolvedType, debugInformation);
         final DeserializationFields deserializationFields = fields();
         final Map<String, Object> elements = new HashMap<>(0);
         for (final Map.Entry<String, ResolvedType> entry : deserializationFields.fields().entrySet()) {
@@ -79,7 +85,8 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
                     elementInput,
                     elementType,
                     exceptionTracker.stepInto(elementName),
-                    injector);
+                    injector,
+                    debugInformation);
             elements.put(elementName, elementObject);
         }
 

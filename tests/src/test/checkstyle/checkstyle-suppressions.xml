@@ -53,4 +53,8 @@
               files="PackageScannerExample|MarshallingExamples|DocExample1|DetectorExample|ExceptionExamples"/>
 
     <suppress checks="CommentsIndentation" files="UsageExamples" />
+    <suppress checks="IllegalCatchCheck" files="ScenarioBuilder" />
+    <suppress checks="Regex" files="DeserializerSpecs" />
+    <suppress checks="VisibilityModifier|DeclarationOrder|MagicNumber|ConstantName"
+              files="AddALotRequest|AComplexTypeWithSetters|HashCodeExample|MixedPojo|CustomPrimitive|SerializationOnlyExample|StaticFieldsSerializedObject" />
 </suppressions>

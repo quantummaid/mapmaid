@@ -21,10 +21,11 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.definitions.Definitions;
-import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import com.google.gson.Gson;
+import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.GenericType;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -90,6 +91,17 @@ public final class When {
         };
     }
 
+    public WithMarshallingType mapMaidSerializes(final Object object, final GenericType<?> type) {
+        return marshallingType -> {
+            try {
+                final String serialized = this.mapMaid.serializeTo(object, marshallingType, type);
+                return then(this.thenData.withSerializationResult(serialized));
+            } catch (final Exception e) {
+                return then(this.thenData.withException(e));
+            }
+        };
+    }
+
     public WithMarshallingType mapMaidSerializesWithInjector(final Object object,
                                                              final Function<Map<String, Object>, Map<String, Object>> injector) {
         return marshallingType -> {
@@ -103,8 +115,8 @@ public final class When {
     }
 
     public Then theDefinitionsAreQueried() {
-        final Definitions definitions = this.mapMaid.deserializer().getDefinitions();
-        return then(this.thenData.withDefinitions(definitions));
+        final DebugInformation debugInformation = this.mapMaid.debugInformation();
+        return then(this.thenData.withDebugInformation(debugInformation));
     }
 
     public Then mapMaidIsInstantiated() {

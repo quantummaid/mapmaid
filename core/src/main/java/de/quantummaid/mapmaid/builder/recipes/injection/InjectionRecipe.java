@@ -21,35 +21,35 @@
 
 package de.quantummaid.mapmaid.builder.recipes.injection;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.builder.GenericType.genericType;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.duplexType;
 import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionDeserializer.injectionDeserializer;
 import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionSerializer.injectionSerializer;
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class InjectionRecipe implements Recipe {
-    private final ResolvedType resolvedType;
+    private final GenericType<?> resolvedType;
 
     public static Recipe injectionOnly(final Class<?> type) {
-        return new InjectionRecipe(resolvedType(type));
+        return new InjectionRecipe(genericType(type));
+    }
+
+    public static Recipe injectionOnly(final GenericType<?> type) {
+        return new InjectionRecipe(type);
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-        mapMaidBuilder.withManuallyAddedDefinition(GeneralDefinition.generalDefinition(
-                this.resolvedType,
-                injectionSerializer(),
-                injectionDeserializer()));
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
+        mapMaidBuilder.serializingAndDeserializing(duplexType(this.resolvedType, injectionSerializer(), injectionDeserializer()));
     }
 }

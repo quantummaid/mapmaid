@@ -127,6 +127,6 @@ public final class UnmarshallerSpecs {
                 "}").from(marshallingType("unknown")).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining(
                         "Unsupported marshalling type 'unknown'," +
-                                " known marshalling types are: ['urlencoded', 'json', 'yaml', 'xml']");
+                                " known marshalling types are: ['urlencoded', 'json', 'xml', 'yaml']");
     }
 }

@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,7 @@ import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.G
 import static java.lang.String.valueOf;
 import static java.lang.Void.TYPE;
 import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Collections.emptyList;
 import static java.util.Locale.US;
 import static java.util.stream.Collectors.toList;
 
@@ -51,8 +51,11 @@ public final class GetterFieldDetector implements FieldDetector {
     }
 
     @Override
-    public List<SerializationField> detect(final ClassType type) {
-        return ResolvedMethod.resolvePublicMethods(type).stream()
+    public List<SerializationField> detect(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        return ((ClassType) type).methods().stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("get"))
                 .filter(resolvedMethod -> !isStatic(resolvedMethod.method().getModifiers()))
                 .filter(resolvedMethod -> resolvedMethod.method().getReturnType() != TYPE)

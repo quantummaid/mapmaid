@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -41,8 +41,8 @@ public final class ExceptionTracker {
     private final ValidationMappings validationMappings;
     private final Universal originalInput;
 
-    private final List<ValidationError> validationErrors = new LinkedList<>();
-    private final List<ExceptionTracker> children = new LinkedList<>();
+    private final List<ValidationError> validationErrors = new ArrayList<>(3);
+    private final List<ExceptionTracker> children = new ArrayList<>(3);
 
     public static ExceptionTracker emptyTracker(final Universal originalInput, final ValidationMappings validationMappings) {
         return initializedTracker(TrackingPosition.empty(), validationMappings, originalInput);
@@ -87,7 +87,7 @@ public final class ExceptionTracker {
     }
 
     private List<ValidationError> allValidationErrors() {
-        final List<ValidationError> allValidationErrors = new LinkedList<>(this.validationErrors);
+        final List<ValidationError> allValidationErrors = new ArrayList<>(this.validationErrors);
         this.children.forEach(child -> allValidationErrors.addAll(child.allValidationErrors()));
         return allValidationErrors;
     }

@@ -21,12 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.recipes;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 
 public interface Recipe {
-    default void init(final DependencyRegistry dependencyRegistry) {
+    default void init() {
     }
 
-    void cook(MapMaidBuilder mapMaidBuilder, DependencyRegistry dependencyRegistry);
+    void cook(MapMaidBuilder mapMaidBuilder);
 }

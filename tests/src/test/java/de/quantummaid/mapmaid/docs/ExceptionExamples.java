@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import static java.util.Objects.nonNull;
 
 public final class ExceptionExamples {
-    private static final String YOUR_PACKAGE_TO_SCAN = Email.class.getPackageName();
     private static final Gson GSON = new Gson();
 
     private static final String JSON = "" +
@@ -44,8 +43,9 @@ public final class ExceptionExamples {
     @Test
     public void aggregateException() {
         //Showcase start aggregateException
-        final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .serializingAndDeserializing(Email.class)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
         //Showcase end aggregateException
@@ -65,8 +65,9 @@ public final class ExceptionExamples {
     @Test
     public void mappedExample() {
         //Showcase start mappedException
-        final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .serializingAndDeserializing(Email.class)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class,
                         (exception, propertyPath) -> new ValidationError("This is a custom message we are reporting about " + exception.getMessage(), propertyPath))
                 .build();

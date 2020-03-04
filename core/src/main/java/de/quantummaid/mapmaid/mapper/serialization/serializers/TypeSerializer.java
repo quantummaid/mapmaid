@@ -37,5 +37,5 @@ public interface TypeSerializer {
                         SerializationTracker tracker,
                         CustomPrimitiveMappings customPrimitiveMappings);
 
-    String classification();
+    String description();
 }

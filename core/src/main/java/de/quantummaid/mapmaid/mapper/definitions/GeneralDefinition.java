@@ -24,7 +24,6 @@ package de.quantummaid.mapmaid.mapper.definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +31,7 @@ import lombok.ToString;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Optional.ofNullable;
 
 @ToString
@@ -41,25 +41,18 @@ public final class GeneralDefinition implements Definition {
     private final ResolvedType type;
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
-    private final String classification;
 
     public static Definition generalDefinition(final ResolvedType type,
                                                final TypeSerializer serializer,
                                                final TypeDeserializer deserializer) {
-        NotNullValidator.validateNotNull(type, "type");
+        validateNotNull(type, "type");
         if (serializer == null) {
-            NotNullValidator.validateNotNull(deserializer, "deserializer");
+            validateNotNull(deserializer, "deserializer");
         }
         if (deserializer == null) {
-            NotNullValidator.validateNotNull(serializer, "serializer");
+            validateNotNull(serializer, "serializer");
         }
-        final String classification;
-        if (serializer != null) {
-            classification = serializer.classification();
-        } else {
-            classification = deserializer.classification();
-        }
-        return new GeneralDefinition(type, serializer, deserializer, classification);
+        return new GeneralDefinition(type, serializer, deserializer);
     }
 
     @Override
@@ -75,10 +68,5 @@ public final class GeneralDefinition implements Definition {
     @Override
     public ResolvedType type() {
         return this.type;
-    }
-
-    @Override
-    public String classification() {
-        return this.classification;
     }
 }

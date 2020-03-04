@@ -115,8 +115,10 @@ public final class MarshallerSpecs {
     public void testUnknownMarshallerThrowsAnException() {
         Given.givenTheExampleMapMaidWithAllMarshallers()
                 .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(marshallingType("unknown"))
-                .anExceptionIsThrownWithAMessageContaining(
-                        "Unsupported marshalling type 'unknown'," +
-                                " known marshalling types are: ['urlencoded', 'json', 'yaml', 'xml']");
+                .anExceptionIsThrownWithAMessageContaining("Unsupported marshalling type 'unknown', known marshalling types are:")
+                .anExceptionIsThrownWithAMessageContaining("'urlencoded'")
+                .anExceptionIsThrownWithAMessageContaining("'json'")
+                .anExceptionIsThrownWithAMessageContaining("'yaml'")
+                .anExceptionIsThrownWithAMessageContaining("'xml'");
     }
 }

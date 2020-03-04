@@ -28,8 +28,8 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public final class AComplexTypeWithSetters {
-    private AString stringA;
-    private AString stringB;
+    public AString stringA;
+    public AString stringB;
 
     public AComplexTypeWithSetters() {
     }

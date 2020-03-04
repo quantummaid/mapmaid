@@ -51,4 +51,9 @@ public final class ArrayCollectionSerializer implements CollectionSerializer {
     public ResolvedType contentType() {
         return this.componentType;
     }
+
+    @Override
+    public String description() {
+        return "array serialization";
+    }
 }

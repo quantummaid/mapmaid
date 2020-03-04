@@ -22,11 +22,10 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
 import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MultipleMethodsSerializedObjectDeserializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +37,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MultipleMethodsSerializedObjectDeserializer.multipleMethodsSerializedObjectDeserializer;
 import static java.lang.String.valueOf;
+import static java.util.Collections.emptyList;
+import static java.util.List.of;
 import static java.util.Locale.US;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 @ToString
 @EqualsAndHashCode
@@ -53,21 +53,25 @@ public final class SetterBasedDeserializationDetector implements SerializedObjec
     }
 
     @Override
-    public Optional<SerializedObjectDeserializer> detect(final ClassType type, final SerializationFields fields) {
-        final Optional<ResolvedConstructor> zeroArgumentsConstructor = type.publicConstructors().stream()
+    public List<SerializedObjectDeserializer> detect(final ResolvedType type) {
+        if (!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        final ClassType classType = (ClassType) type;
+        final Optional<ResolvedConstructor> zeroArgumentsConstructor = classType.constructors().stream()
                 .filter(resolvedConstructor -> resolvedConstructor.parameters().isEmpty())
                 .findAny();
-        if(zeroArgumentsConstructor.isEmpty()) {
-            return empty();
+        if (zeroArgumentsConstructor.isEmpty()) {
+            return emptyList();
         }
 
-        final List<ResolvedMethod> setterMethods = type.publicMethods().stream()
+        final List<ResolvedMethod> setterMethods = classType.methods().stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("set"))
                 .filter(resolvedMethod -> resolvedMethod.returnType().isEmpty())
                 .filter(resolvedMethod -> resolvedMethod.parameters().size() == 1)
                 .collect(Collectors.toList());
         if (setterMethods.isEmpty()) {
-            return empty();
+            return emptyList();
         }
 
         final Map<String, ResolvedMethod> fieldMap = new HashMap<>();
@@ -76,7 +80,7 @@ public final class SetterBasedDeserializationDetector implements SerializedObjec
             fieldMap.put(name, resolvedMethod);
         });
 
-        return of(MultipleMethodsSerializedObjectDeserializer.multipleMethodsSerializedObjectDeserializer(zeroArgumentsConstructor.get().constructor(), fieldMap));
+        return of(multipleMethodsSerializedObjectDeserializer(zeroArgumentsConstructor.get(), fieldMap));
     }
 
     private static String extractSetterFieldName(final String methodName) {

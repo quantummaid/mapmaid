@@ -21,20 +21,17 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
+import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Field;
-
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
-import static java.lang.reflect.Modifier.*;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -47,20 +44,19 @@ public final class SerializationField {
     public static SerializationField serializationField(final ResolvedType type,
                                                         final String name,
                                                         final SerializationFieldQuery query) {
-        NotNullValidator.validateNotNull(type, "type");
-        NotNullValidator.validateNotNull(name, "name");
-        NotNullValidator.validateNotNull(query, "query");
+        validateNotNull(type, "type");
+        validateNotNull(name, "name");
+        validateNotNull(query, "query");
         return new SerializationField(type, name, query);
     }
 
-    public static SerializationField fromPublicField(final ResolvedType declaringType,
-                                                     final ResolvedField field) {
-        NotNullValidator.validateNotNull(declaringType, "declaringType");
-        NotNullValidator.validateNotNull(field, "field");
-        validateFieldModifiers(declaringType, field.field());
+    public static SerializationField fromField(final ResolvedType declaringType,
+                                               final ResolvedField field) {
+        validateNotNull(declaringType, "declaringType");
+        validateNotNull(field, "field");
         final ResolvedType fullType = field.type();
         final String name = field.name();
-        final SerializationFieldQuery query = PublicFieldQuery.publicFieldQuery(field.field());
+        final SerializationFieldQuery query = PublicFieldQuery.publicFieldQuery(field);
         return serializationField(fullType, name, query);
     }
 
@@ -73,27 +69,15 @@ public final class SerializationField {
     }
 
     public Object query(final Object object) {
-        NotNullValidator.validateNotNull(object, "object");
+        validateNotNull(object, "object");
         return this.query.query(object);
     }
 
-    private static void validateFieldModifiers(final ResolvedType type, final Field field) {
-        final int fieldModifiers = field.getModifiers();
+    public SerializationFieldQuery getQuery() {
+        return this.query;
+    }
 
-        if (!isPublic(fieldModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The field %s for the SerializedObject of type %s must be public",
-                    field, type.description());
-        }
-        if (isStatic(fieldModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The field %s for the SerializedObject of type %s must not be static",
-                    field, type.description());
-        }
-        if (isTransient(fieldModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The field %s for the SerializedObject of type %s must not be transient",
-                    field, type.description());
-        }
+    public String describe() {
+        return format("%s [%s] via %s", this.name, this.type.simpleDescription(), this.query.describe());
     }
 }

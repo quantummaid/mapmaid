@@ -21,8 +21,12 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.debug.MapMaidException;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 
 public final class WrongInputStructureException extends RuntimeException {
 
@@ -30,9 +34,10 @@ public final class WrongInputStructureException extends RuntimeException {
         super(message);
     }
 
-    public static WrongInputStructureException wrongInputStructureException(final Class<? extends Universal> expected,
-                                                                            final Universal actual,
-                                                                            final String location) {
+    public static MapMaidException wrongInputStructureException(final Class<? extends Universal> expected,
+                                                                final Universal actual,
+                                                                final String location,
+                                                                final ScanInformation... scanInformations) {
         NotNullValidator.validateNotNull(expected, "expected");
         NotNullValidator.validateNotNull(actual, "actual");
         NotNullValidator.validateNotNull(location, "location");
@@ -41,6 +46,6 @@ public final class WrongInputStructureException extends RuntimeException {
                 Universal.describe(expected),
                 actual.toNativeJava(),
                 location);
-        return new WrongInputStructureException(message);
+        return mapMaidException(message, scanInformations);
     }
 }

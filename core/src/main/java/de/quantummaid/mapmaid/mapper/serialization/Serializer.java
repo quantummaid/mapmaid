@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
@@ -28,10 +30,10 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -43,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -53,11 +56,13 @@ public final class Serializer implements SerializationCallback {
     private final MarshallerRegistry<Marshaller> marshallers;
     private final Definitions definitions;
     private final CustomPrimitiveMappings customPrimitiveMappings;
+    private final DebugInformation debugInformation;
 
     public static Serializer theSerializer(final MarshallerRegistry<Marshaller> marshallers,
                                            final Definitions definitions,
-                                           final CustomPrimitiveMappings customPrimitiveMappings) {
-        return new Serializer(marshallers, definitions, customPrimitiveMappings);
+                                           final CustomPrimitiveMappings customPrimitiveMappings,
+                                           final DebugInformation debugInformation) {
+        return new Serializer(marshallers, definitions, customPrimitiveMappings, debugInformation);
     }
 
     public Set<MarshallingType> supportedMarshallingTypes() {
@@ -73,12 +78,21 @@ public final class Serializer implements SerializationCallback {
         return serialize(object, marshallingType, input -> input);
     }
 
-    @SuppressWarnings("unchecked")
     public String serialize(final Object object,
                             final MarshallingType marshallingType,
                             final Function<Map<String, Object>, Map<String, Object>> serializedPropertyInjector) {
         NotNullValidator.validateNotNull(object, "object");
-        Object normalized = normalize(object);
+        final ResolvedType type = ClassType.typeOfObject(object);
+        return serialize(object, type, marshallingType, serializedPropertyInjector);
+    }
+
+    @SuppressWarnings("unchecked")
+    public String serialize(final Object object,
+                            final ResolvedType type,
+                            final MarshallingType marshallingType,
+                            final Function<Map<String, Object>, Map<String, Object>> serializedPropertyInjector) {
+        NotNullValidator.validateNotNull(object, "object");
+        Object normalized = normalize(object, type);
         if (normalized instanceof Map) {
             normalized = serializedPropertyInjector.apply((Map<String, Object>) normalized);
         }
@@ -105,19 +119,18 @@ public final class Serializer implements SerializationCallback {
         if (isNull(object)) {
             return new HashMap<>(0);
         }
-        final Object normalized = normalize(object);
+        final ResolvedType type = ClassType.typeOfObject(object);
+        final Object normalized = normalize(object, type);
         if (!(normalized instanceof Map)) {
             throw new UnsupportedOperationException("Only serialized objects can be serialized to map");
         }
         return (Map<String, Object>) normalized;
     }
 
-    private Object normalize(final Object object) {
+    private Object normalize(final Object object, final ResolvedType type) {
         if (isNull(object)) {
             return null;
         }
-
-        final ResolvedType type = ClassType.typeOfObject(object);
         return serializeDefinition(type, object, SerializationTracker.serializationTracker()).toNativeJava();
     }
 
@@ -131,8 +144,11 @@ public final class Serializer implements SerializationCallback {
         final SerializationTracker childTracker = tracker.trackToProhibitCyclicReferences(object);
         final Definition definition = this.definitions.getDefinitionForType(type);
         return definition.serializer()
-                .orElseThrow(() -> new UnsupportedOperationException(
-                        format("No serializer configured for type '%s'", definition.type().description())))
+                .orElseThrow(() -> {
+                    final ScanInformation scanInformation = this.debugInformation.scanInformationFor(type);
+                    return mapMaidException(
+                            format("No serializer configured for type '%s'", definition.type().description()), scanInformation);
+                })
                 .serialize(object, this, childTracker, this.customPrimitiveMappings);
     }
 

@@ -21,24 +21,24 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.validation;
 
-public final class ValidationError {
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+public final class ValidationError {
     public final String message;
     public final String propertyPath;
 
-    public ValidationError(final String message, final String propertyPath) {
-        this.message = message;
-        this.propertyPath = propertyPath;
-    }
-
-    public static ValidationError fromExceptionMessageAndPropertyPath(
-            final Throwable throwable,
-            final String propertyPath) {
+    public static ValidationError fromExceptionMessageAndPropertyPath(final Throwable throwable,
+                                                                      final String propertyPath) {
         return new ValidationError(throwable.getMessage(), propertyPath);
     }
 
     public static ValidationError fromStringMessageAndPropertyPath(final String message, final String propertyPath) {
         return new ValidationError(message, propertyPath);
     }
-
 }

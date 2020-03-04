@@ -21,66 +21,65 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
-import static java.lang.reflect.Modifier.isPublic;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveByConstructorDeserializer implements CustomPrimitiveDeserializer {
-    private final Class<?> baseType;
-    private final Constructor<?> constructor;
+    private final ResolvedType baseType;
+    private final ResolvedConstructor constructor;
 
-    public static CustomPrimitiveDeserializer createDeserializer(final Class<?> type,
-                                                                 final Constructor<?> constructor) {
-        final int modifiers = constructor.getModifiers();
-        if (!isPublic(modifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization constructor %s configured for the custom primitive of type %s must be public",
-                    constructor, type);
-        }
+    public static TypeDeserializer createDeserializer(final ResolvedType type,
+                                                      final ResolvedConstructor constructor) {
+        final int modifiers = constructor.constructor().getModifiers();
         if (isAbstract(modifiers)) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization constructor %s configured for the custom primitive of type %s must not be abstract",
-                    constructor, type);
+                    constructor, type.description());
         }
-        final Class<?>[] parameterTypes = constructor.getParameterTypes();
-        if (parameterTypes.length != 1) {
+        final List<ResolvedParameter> parameterTypes = constructor.parameters();
+        if (parameterTypes.size() != 1) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization constructor %s configured for the custom primitive of type %s must " +
                             "only have one parameter",
-                    constructor, type);
+                    constructor, type.description());
         }
-        if (constructor.getDeclaringClass() != type) {
+        if (constructor.constructor().getDeclaringClass() != type.assignableType()) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization constructor %s configured for the custom primitive of type %s must return " +
-                            "the custom primitive", constructor, type);
+                            "the custom primitive", constructor, type.description());
         }
 
-        final Class<?> baseType = constructor.getParameterTypes()[0];
+        final ResolvedType baseType = parameterTypes.get(0).type();
         return new CustomPrimitiveByConstructorDeserializer(baseType, constructor);
     }
 
     @Override
     public Class<?> baseType() {
-        return this.baseType;
+        return this.baseType.assignableType();
     }
 
     @Override
     public Object deserialize(final Object value) throws Exception {
         try {
-            return this.constructor.newInstance(value);
+            return this.constructor.constructor().newInstance(value);
         } catch (final IllegalAccessException | IllegalArgumentException e) {
             throw customPrimitiveSerializationMethodCallException(
                     format("Unexpected error invoking deserialization constructor %s for serialized custom primitive %s",
@@ -102,7 +101,11 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
     }
 
     @Override
-    public String classification() {
-        return "Custom Primitive";
+    public String description() {
+        return createDescription(this, this.constructor.describe());
+    }
+
+    public ResolvedConstructor constructor() {
+        return this.constructor;
     }
 }

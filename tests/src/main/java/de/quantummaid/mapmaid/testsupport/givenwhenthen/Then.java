@@ -21,19 +21,18 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
-import de.quantummaid.mapmaid.mapper.definitions.Definitions;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.AggregatedValidationException;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.core.StringContains;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
+import static de.quantummaid.mapmaid.debug.scaninformation.Classification.CUSTOM_PRIMITIVE;
+import static de.quantummaid.mapmaid.debug.scaninformation.Classification.SERIALIZED_OBJECT;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -85,37 +84,51 @@ public final class Then {
     }
 
     public Then theDefinitionsContainExactlyTheCustomPrimitives(final Class<?>... types) {
-        final Definitions definitions = this.thenData.getDefinitions();
+        final DebugInformation debugInformation = this.thenData.getDebugInformation();
         final List<Class<?>> actualTypes = stream(types)
-                .map(ClassType::fromClassWithoutGenerics)
-                .map(definitions::getOptionalDefinitionForType)
-                .flatMap(Optional::stream)
-                .filter(definition -> definition.classification().equals("Custom Primitive"))
-                .map(Definition::type)
-                .map(ResolvedType::assignableType)
+                .filter(classType -> debugInformation.optionalScanInformationFor(classType)
+                        .map(Then::isCustomPrimitive)
+                        .orElseThrow())
                 .collect(toList());
         assertThat(actualTypes, containsInAnyOrder(types));
-        assertThat(definitions.countCustomPrimitives(), is(types.length));
+        assertThat(countCustomPrimitives(debugInformation), is(types.length));
         return this;
     }
 
     public Then theDefinitionsContainExactlyTheSerializedObjects(final Class<?>... types) {
-        final Definitions definitions = this.thenData.getDefinitions();
+        final DebugInformation debugInformation = this.thenData.getDebugInformation();
         final List<Class<?>> actualTypes = stream(types)
-                .map(ClassType::fromClassWithoutGenerics)
-                .map(definitions::getOptionalDefinitionForType)
-                .flatMap(Optional::stream)
-                .filter(definition -> definition.classification().equals("Serialized Object"))
-                .map(Definition::type)
-                .map(ResolvedType::assignableType)
+                .filter(classType -> debugInformation.optionalScanInformationFor(classType)
+                        .map(Then::isSerializedObject)
+                        .orElseThrow())
                 .collect(toList());
         assertThat(actualTypes, containsInAnyOrder(types));
-        assertThat(definitions.countSerializedObjects(), is(types.length));
+        assertThat(countSerializedObjects(debugInformation), is(types.length));
         return this;
     }
 
     public Then theSerializationResultWas(final String serialized) {
         assertThat(this.thenData.getSerializationResult(), is(serialized));
         return this;
+    }
+
+    private static int countCustomPrimitives(final DebugInformation debugInformation) {
+        return (int) debugInformation.allScanInformations().stream()
+                .filter(Then::isCustomPrimitive)
+                .count();
+    }
+
+    private static int countSerializedObjects(final DebugInformation debugInformation) {
+        return (int) debugInformation.allScanInformations().stream()
+                .filter(Then::isSerializedObject)
+                .count();
+    }
+
+    private static boolean isCustomPrimitive(final ScanInformation scanInformation) {
+        return scanInformation.classification().equals(CUSTOM_PRIMITIVE);
+    }
+
+    private static boolean isSerializedObject(final ScanInformation scanInformation) {
+        return scanInformation.classification().equals(SERIALIZED_OBJECT);
     }
 }

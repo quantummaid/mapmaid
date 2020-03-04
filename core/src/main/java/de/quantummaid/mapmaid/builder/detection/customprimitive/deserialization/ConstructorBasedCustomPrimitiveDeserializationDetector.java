@@ -21,21 +21,23 @@
 
 package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization;
 
-import de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType;
-import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByConstructorDeserializer;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.mapmaid.shared.types.ClassType;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Constructor;
-import java.util.Optional;
+import java.util.List;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -44,27 +46,27 @@ public final class ConstructorBasedCustomPrimitiveDeserializationDetector implem
     private final CustomPrimitiveMappings mappings;
 
     public static CustomPrimitiveDeserializationDetector constructorBased(final CustomPrimitiveMappings mappings) {
-        NotNullValidator.validateNotNull(mappings, "mappings");
+        validateNotNull(mappings, "mappings");
         return new ConstructorBasedCustomPrimitiveDeserializationDetector(mappings);
     }
 
     @Override
-    public Optional<CustomPrimitiveDeserializer> detect(final CachedReflectionType type) {
-        return fittingConstructor(type.type())
-                .map(constructor -> CustomPrimitiveByConstructorDeserializer.createDeserializer(type.type(), constructor));
+    public List<TypeDeserializer> detect(final ResolvedType type) {
+        if(!(type instanceof ClassType)) {
+            return emptyList();
+        }
+        return fittingConstructors((ClassType) type).stream()
+                .map(constructor -> CustomPrimitiveByConstructorDeserializer.createDeserializer(type, constructor))
+                .collect(toList());
     }
 
-    private Optional<Constructor<?>> fittingConstructor(final Class<?> type) {
-        final Constructor<?>[] constructors = type.getConstructors();
-        for (final Constructor<?> constructor : constructors) {
-            if (constructor.getParameterCount() != 1) {
-                continue;
-            }
-            final Class<?> parameterType = constructor.getParameterTypes()[0];
-            if (this.mappings.isPrimitiveType(parameterType)) {
-                return of(constructor);
-            }
-        }
-        return empty();
+    private List<ResolvedConstructor> fittingConstructors(final ClassType type) {
+        return type.constructors().stream()
+                .filter(constructor -> constructor.parameters().size() == 1)
+                .filter(constructor -> {
+                    final ResolvedParameter parameterType = constructor.parameters().get(0);
+                    return this.mappings.isPrimitiveType(parameterType.type().assignableType());
+                })
+                .collect(toList());
     }
 }

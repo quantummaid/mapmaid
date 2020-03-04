@@ -21,15 +21,13 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
-import de.quantummaid.mapmaid.mapper.universal.*;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +38,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static java.lang.String.format;
+import static de.quantummaid.mapmaid.mapper.deserialization.UnmarshallingException.unmarshallingException;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalCollection.universalCollectionFromNativeList;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObjectFromNativeMap;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive.universalPrimitive;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
@@ -51,7 +54,7 @@ final class Unmarshallers {
     private final MarshallerRegistry<Unmarshaller> unmarshallers;
 
     static Unmarshallers unmarshallers(final MarshallerRegistry<Unmarshaller> unmarshallers) {
-        NotNullValidator.validateNotNull(unmarshallers, "unmarshallers");
+        validateNotNull(unmarshallers, "unmarshallers");
         return new Unmarshallers(unmarshallers);
     }
 
@@ -59,37 +62,37 @@ final class Unmarshallers {
     Universal unmarshalTo(final Class<? extends Universal> universalType,
                           final String input,
                           final MarshallingType marshallingType) {
-        NotNullValidator.validateNotNull(input, "input");
+        validateNotNull(input, "input");
         if (input.isEmpty()) {
-            return UniversalNull.universalNull();
+            return universalNull();
         }
         final Unmarshaller unmarshaller = this.unmarshallers.getForType(marshallingType);
 
         final String trimmedInput = input.trim();
         if (universalType == UniversalCollection.class) {
             try {
-                return UniversalCollection.universalCollectionFromNativeList(unmarshaller.unmarshal(trimmedInput, List.class));
+                return universalCollectionFromNativeList(unmarshaller.unmarshal(trimmedInput, List.class));
             } catch (final Exception e) {
-                throw new UnsupportedOperationException(format("Could not unmarshal list from input %s", input), e);
+                throw unmarshallingException("list", input, e);
             }
         } else if (universalType == UniversalObject.class) {
             try {
-                return UniversalObject.universalObjectFromNativeMap(unmarshaller.unmarshal(trimmedInput, Map.class));
+                return universalObjectFromNativeMap(unmarshaller.unmarshal(trimmedInput, Map.class));
             } catch (final Exception e) {
-                throw new UnsupportedOperationException(format("Could not unmarshal map from input %s", input), e);
+                throw unmarshallingException("map", input, e);
             }
         } else if (UniversalPrimitive.class.isAssignableFrom(universalType)) {
-            return UniversalPrimitive.universalPrimitive(PATTERN.matcher(trimmedInput).replaceAll(""));
+            return universalPrimitive(PATTERN.matcher(trimmedInput).replaceAll(""));
         } else {
-            throw new UnsupportedOperationException(universalType.getName());
+            throw new UnsupportedOperationException("This should never happen. Unsupported universal type: " + universalType.getName());
         }
     }
 
     @SuppressWarnings("unchecked")
     Map<String, Object> unmarshalToMap(final String input,
                                        final MarshallingType marshallingType) {
-        NotNullValidator.validateNotNull(input, "input");
-        NotNullValidator.validateNotNull(marshallingType, "marshallingType");
+        validateNotNull(input, "input");
+        validateNotNull(marshallingType, "marshallingType");
         return (Map<String, Object>) unmarshalTo(UniversalObject.class, input, marshallingType)
                 .toNativeJava();
     }

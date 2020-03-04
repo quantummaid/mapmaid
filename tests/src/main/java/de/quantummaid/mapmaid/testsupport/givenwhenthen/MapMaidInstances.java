@@ -24,18 +24,30 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.testsupport.domain.exceptions.AnException;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.testsupport.domain.valid.*;
 
 public final class MapMaidInstances {
     private MapMaidInstances() {
     }
 
     public static MapMaid theExampleMapMaidWithAllMarshallers() {
-        final MapMaid mapMaid = MapMaid.aMapMaid(AString.class.getPackageName())
-                .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
-                .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
-                .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller())
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .withAdvancedSettings(advancedBuilder -> {
+                    advancedBuilder
+                            .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                            .usingXmlMarshaller(Marshallers.xmlMarshaller(), Unmarshallers.xmlUnmarshaller())
+                            .usingYamlMarshaller(Marshallers.yamlMarshaller(), Unmarshallers.yamlUnmarshaller());
+                })
                 .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                .serializingAndDeserializing(AComplexType.class)
+                .serializingAndDeserializing(AComplexTypeWithValidations.class)
+                .serializingAndDeserializing(AComplexTypeWithArray.class)
+                .serializingAndDeserializing(AComplexTypeWithListButArrayConstructor.class)
+                .serializingAndDeserializing(AComplexNestedValidatedType.class)
+                .serializingAndDeserializing(AComplexTypeWithNestedCollections.class)
+                .serializingAndDeserializing(AComplexTypeWithCollections.class)
+                .serializingAndDeserializing(AComplexNestedType.class)
+                .serializingAndDeserializing(ACyclicType.class)
                 .withExceptionIndicatingValidationError(AnException.class)
                 .build();
         return mapMaid;

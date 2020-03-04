@@ -22,15 +22,16 @@
 package de.quantummaid.mapmaid.json;
 
 import de.quantummaid.mapmaid.MapMaid;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.jackson.JacksonMarshaller.*;
+import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.*;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class JacksonMarshallerExamples {
 
@@ -81,10 +82,9 @@ public final class JacksonMarshallerExamples {
         //Showcase end json
 
         final Map<String, Object> deserialized = mapMaid.deserializer().deserializeToMap(JSON, json());
-        assert MAP.equals(deserialized);
+        assertThat(deserialized, is(MAP));
     }
 
-    @Disabled
     @Test
     public void xmlMarshallerExample() {
         //Showcase start xml

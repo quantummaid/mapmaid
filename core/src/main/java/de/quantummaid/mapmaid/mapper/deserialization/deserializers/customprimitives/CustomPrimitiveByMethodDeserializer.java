@@ -21,15 +21,20 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException;
 import static java.lang.String.format;
@@ -38,54 +43,51 @@ import static java.lang.String.format;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiveDeserializer {
-    private final Class<?> baseType;
-    private final Method deserializationMethod;
+    private final ResolvedType baseType;
+    private final ResolvedMethod deserializationMethod;
 
-    public static CustomPrimitiveDeserializer createDeserializer(final Class<?> type,
-                                                                 final Method deserializationMethod) {
-        final int deserializationMethodModifiers = deserializationMethod.getModifiers();
-        if (!Modifier.isPublic(deserializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization method %s configured for the custom primitive of type %s must be public",
-                    deserializationMethod, type);
-        }
+    public static TypeDeserializer createDeserializer(final ResolvedType type,
+                                                      final ResolvedMethod deserializationMethod) {
+        final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
         if (!Modifier.isStatic(deserializationMethodModifiers)) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization method %s configured for the custom primitive of type %s must be static",
-                    deserializationMethod, type);
+                    deserializationMethod.describe(), type.description());
         }
         if (Modifier.isAbstract(deserializationMethodModifiers)) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization method %s configured for the custom primitive of type %s must not be abstract",
-                    deserializationMethod, type);
+                    deserializationMethod.describe(), type.description());
         }
-        final Class<?>[] deserializationMethodParameterTypes = deserializationMethod.getParameterTypes();
-        if (deserializationMethodParameterTypes.length != 1 ||
-                !deserializationMethodParameterTypes[0].equals(String.class)) {
+        final List<ResolvedParameter> parameters = deserializationMethod.parameters();
+        if (parameters.size() != 1) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization method %s configured for the custom primitive of type %s must " +
-                            "accept only one parameter of type String",
-                    deserializationMethod, type);
+                            "accept only one parameter",
+                    deserializationMethod.describe(), type.description());
         }
-        if (deserializationMethod.getReturnType() != type) {
+        final Boolean correctReturnType = deserializationMethod.returnType()
+                .map(type::equals)
+                .orElse(false);
+        if (!correctReturnType) {
             throw incompatibleCustomPrimitiveException(
                     "The deserialization method %s configured for the custom primitive of type %s must return " +
-                            "the custom primitive", deserializationMethod, type);
+                            "the custom primitive", deserializationMethod.describe(), type.description());
         }
 
-        final Class<?> baseType = deserializationMethod.getParameterTypes()[0];
+        final ResolvedType baseType = parameters.get(0).type();
         return new CustomPrimitiveByMethodDeserializer(baseType, deserializationMethod);
     }
 
     @Override
     public Class<?> baseType() {
-        return this.baseType;
+        return this.baseType.assignableType();
     }
 
     @Override
     public Object deserialize(final Object value) throws Exception {
         try {
-            return this.deserializationMethod.invoke(null, value);
+            return this.deserializationMethod.method().invoke(null, value);
         } catch (final IllegalAccessException e) {
             throw customPrimitiveSerializationMethodCallException(format(
                     "Unexpected error invoking deserialization method %s for serialized custom primitive %s",
@@ -93,6 +95,15 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         } catch (final InvocationTargetException e) {
             throw handleInvocationTargetException(e, value);
         }
+    }
+
+    public ResolvedMethod method() {
+        return this.deserializationMethod;
+    }
+
+    @Override
+    public String description() {
+        return createDescription(this, this.deserializationMethod.describe());
     }
 
     private Exception handleInvocationTargetException(final InvocationTargetException e, final Object value) {

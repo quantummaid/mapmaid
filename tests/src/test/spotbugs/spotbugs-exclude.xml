@@ -58,4 +58,8 @@
         <Class name="de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType"/>
         <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.docs.examples.entities.MixedPojo"/>
+        <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
 </FindBugsFilter>

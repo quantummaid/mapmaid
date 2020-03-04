@@ -21,18 +21,21 @@
 
 package de.quantummaid.mapmaid.mapper.definitions;
 
-import de.quantummaid.mapmaid.mapper.DefinitionScanLog;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.MapMaidException;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.mapper.definitions.DefinitionNotFoundException.definitionNotFound;
 import static java.lang.String.format;
 import static java.util.Optional.of;
 
@@ -40,19 +43,19 @@ import static java.util.Optional.of;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Definitions {
-    private final DefinitionScanLog definitionScanLog;
     private final Map<ResolvedType, Definition> definitions;
+    private final DebugInformation debugInformation;
 
-    public static Definitions definitions(final DefinitionScanLog definitionScanLog,
-                                          final Map<ResolvedType, Definition> definitions) {
-        final Definitions definitionsObject = new Definitions(definitionScanLog, definitions);
-        definitionsObject.validateNoUnsupportedOutgoingReferences();
+    public static Definitions definitions(final Map<ResolvedType, Definition> definitions,
+                                          final DebugInformation debugInformation) {
+        final Definitions definitionsObject = new Definitions(definitions, debugInformation);
+        definitionsObject.validateNoUnsupportedOutgoingReferences(debugInformation);
         return definitionsObject;
     }
 
     public Definition getDefinitionForType(final ResolvedType targetType) {
         return getOptionalDefinitionForType(targetType)
-                .orElseThrow(() -> DefinitionNotFoundException.definitionNotFound(targetType, dump()));
+                .orElseThrow(() -> definitionNotFound(targetType, this.debugInformation.dumpAll()));
     }
 
     public Optional<Definition> getOptionalDefinitionForType(final ResolvedType targetType) {
@@ -62,33 +65,44 @@ public final class Definitions {
         return of(this.definitions.get(targetType));
     }
 
-    private void validateNoUnsupportedOutgoingReferences() {
+    private void validateNoUnsupportedOutgoingReferences(final DebugInformation debugInformation) {
         this.definitions.values().forEach(definition -> {
-            if(definition.deserializer().isPresent()) {
-                validateDeserialization(definition.type(), definition.type(), new LinkedList<>());
+            if (definition.deserializer().isPresent()) {
+                validateDeserialization(
+                        definition.type(),
+                        definition.type(),
+                        new ArrayList<>(this.definitions.size()),
+                        debugInformation);
             }
-            if(definition.serializer().isPresent()) {
-                validateSerialization(definition.type(), definition.type(), new LinkedList<>());
+            if (definition.serializer().isPresent()) {
+                validateSerialization(definition.type(), definition.type(), new ArrayList<>(this.definitions.size()));
             }
         });
     }
 
-    private void validateDeserialization(final ResolvedType candidate, final ResolvedType reason, final List<ResolvedType> alreadyVisited) {
+    private void validateDeserialization(final ResolvedType candidate,
+                                         final ResolvedType reason,
+                                         final List<ResolvedType> alreadyVisited,
+                                         final DebugInformation debugInformation) {
         if (alreadyVisited.contains(candidate)) {
             return;
         }
         alreadyVisited.add(candidate);
-        final Definition definition = getOptionalDefinitionForType(candidate).orElseThrow(() ->
-                new UnsupportedOperationException(
-                        format("Type '%s' is not registered but needs to be in order to support deserialization of '%s'.%s",
-                                candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate))));
+        final Definition definition = getOptionalDefinitionForType(candidate).orElseThrow(() -> {
+            final ScanInformation candidateInformation = debugInformation.scanInformationFor(candidate);
+            final ScanInformation reasonInformation = debugInformation.scanInformationFor(reason);
+            return MapMaidException.mapMaidException(
+                    format("Type '%s' is not registered but needs to be in order to support deserialization of '%s'",
+                            candidate.description(), reason.description()),
+                    candidateInformation, reasonInformation);
+        });
 
         if (definition.deserializer().isEmpty()) {
             throw new UnsupportedOperationException(
-                    format("'%s' is not deserializable but needs to be in order to support deserialization of '%s'. %s",
-                            candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)));
+                    format("'%s' is not deserializable but needs to be in order to support deserialization of '%s'",
+                            candidate.description(), reason.description()));
         } else {
-            definition.deserializer().get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited));
+            definition.deserializer().get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited, debugInformation));
         }
     }
 
@@ -104,52 +118,10 @@ public final class Definitions {
 
         if (definition.serializer().isEmpty()) {
             throw new UnsupportedOperationException(
-                    format("'%s' is not serializable but needs to be in order to support serialization of '%s'. %s",
-                            candidate.description(), reason.description(), this.definitionScanLog.summaryFor(candidate)));
+                    format("'%s' is not serializable but needs to be in order to support serialization of '%s'",
+                            candidate.description(), reason.description()));
         } else {
             definition.serializer().get().requiredTypes().forEach(type -> validateSerialization(type, reason, alreadyVisited));
         }
-    }
-
-    public int countCustomPrimitives() {
-        return (int) this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Custom Primitive"))
-                .count();
-    }
-
-    public int countSerializedObjects() {
-        return (int) this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Serialized Object"))
-                .count();
-    }
-
-    public String dump() {
-        final StringBuilder stringBuilder = new StringBuilder(10);
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("Serialized Objects:\n");
-        this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Serialized Object"))
-                .map(Definition::type)
-                .map(ResolvedType::description)
-                .sorted()
-                .forEach(type -> stringBuilder.append(type).append("\n"));
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("Custom Primitives:\n");
-        this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Custom Primitive"))
-                .map(Definition::type)
-                .map(ResolvedType::description)
-                .sorted()
-                .forEach(type -> stringBuilder.append(type).append("\n"));
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("Collections:\n");
-        this.definitions.values().stream()
-                .filter(definition -> definition.classification().equals("Collection"))
-                .map(Definition::type)
-                .map(ResolvedType::description)
-                .sorted()
-                .forEach(type -> stringBuilder.append(type).append("\n"));
-        stringBuilder.append("------------------------------\n");
-        return stringBuilder.toString();
     }
 }

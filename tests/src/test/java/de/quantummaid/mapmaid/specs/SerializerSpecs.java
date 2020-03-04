@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.MapMaidInstances.theExampleMapMaidWithAllMarshallers;
 import static java.util.Collections.singletonList;
 
 public final class SerializerSpecs {
@@ -162,14 +164,14 @@ public final class SerializerSpecs {
 
     @Test
     public void givenNonCyclicType_whenSerializing_thenDoesNotThrowsError() {
-        final ACyclicType given1 = ACyclicType.deserialize(AString.fromStringValue("a"));
-        final ACyclicType given2 = ACyclicType.deserialize(AString.fromStringValue("b"));
-        final ACyclicType given3 = ACyclicType.deserialize(AString.fromStringValue("c"));
+        final ACyclicType given1 = ACyclicType.deserialize(AString.fromStringValue("a"), null);
+        final ACyclicType given2 = ACyclicType.deserialize(AString.fromStringValue("b"), null);
+        final ACyclicType given3 = ACyclicType.deserialize(AString.fromStringValue("c"), null);
 
         given1.aCyclicType = given2;
         given2.aCyclicType = given3;
 
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(theExampleMapMaidWithAllMarshallers())
                 .when().mapMaidSerializes(given1).withMarshallingType(json())
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +

@@ -21,24 +21,58 @@
 
 package de.quantummaid.mapmaid.builder.recipes.di;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
+import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DiDeserializer implements CustomPrimitiveDeserializer {
+public final class DiDeserializer implements TypeDeserializer {
     private final DependencyInjector<?> injector;
 
-    public static CustomPrimitiveDeserializer diDeserializer(final DependencyInjector<?> injector) {
+    public static TypeDeserializer diDeserializer(final DependencyInjector<?> injector) {
         return new DiDeserializer(injector);
     }
 
     @Override
-    public Object deserialize(final Object value) {
-        return this.injector.getInstance();
+    public List<ResolvedType> requiredTypes() {
+        return emptyList();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T deserialize(final Universal input,
+                             final ExceptionTracker exceptionTracker,
+                             final Injector injector,
+                             final DeserializerCallback callback,
+                             final CustomPrimitiveMappings customPrimitiveMappings,
+                             final ResolvedType resolvedType,
+                             final DebugInformation debugInformation) {
+        return (T) this.injector.getInstance();
+    }
+
+    @Override
+    public Class<? extends Universal> universalRequirement() {
+        return UniversalNull.class;
+    }
+
+    @Override
+    public String description() {
+        return "dependency injection";
     }
 }

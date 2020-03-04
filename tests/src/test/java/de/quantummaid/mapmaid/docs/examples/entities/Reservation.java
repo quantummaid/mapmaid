@@ -21,14 +21,12 @@
 
 package de.quantummaid.mapmaid.docs.examples.entities;
 
-import de.quantummaid.mapmaid.docs.examples.customprimitives.Name;
+import de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-// TODO
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Reservation {
-    // TODO repository? messagebus?
     private final transient ReservationDao reservationDao;
     private final Name name;
 

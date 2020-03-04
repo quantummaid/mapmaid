@@ -21,15 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.recipes.scanner;
 
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
-import de.quantummaid.mapmaid.builder.detection.Detector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
 import lombok.AccessLevel;
@@ -38,18 +33,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Method;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializationOnly;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serializationOnly;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -62,72 +54,35 @@ public final class ClassScannerRecipe implements Recipe {
 
     private final List<Class<?>> classes;
 
-    public static ClassScannerRecipe addAllReferencedClassesIs(final Class<?>... classes) {
+    public static ClassScannerRecipe addAllReferencedClassesIn(final Class<?>... classes) {
         validateNotNull(classes, "classes");
         return new ClassScannerRecipe(asList(classes));
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-        final Detector detector = dependencyRegistry.getDependency(Detector.class);
-        this.classes.forEach(clazz -> addReferencesIn(clazz, mapMaidBuilder, detector));
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
+        this.classes.forEach(clazz -> addReferencesIn(clazz, mapMaidBuilder));
     }
 
-    private static void addReferencesIn(final Class<?> clazz, final MapMaidBuilder builder, final Detector detector) {
+    private static void addReferencesIn(final Class<?> clazz,
+                                        final MapMaidBuilder builder) {
         final ClassType fullType = fromClassWithoutGenerics(clazz);
-        final BuildContextLog contextLog = builder.contextLog().stepInto(ClassScannerRecipe.class);
-        final List<ResolvedMethod> publicMethods = fullType.publicMethods();
-
-        for (final ResolvedMethod method : publicMethods) {
+        final List<ResolvedMethod> methods = fullType.methods();
+        for (final ResolvedMethod method : methods) {
+            if (!method.isPublic()) {
+                continue;
+            }
             if (!OBJECT_METHODS.contains(method.method().getName())) {
-                final List<ResolvedType> offenders = new LinkedList<>();
-                final List<? extends Definition> parameterDefinitions = method.parameters().stream()
+                method.parameters().stream()
                         .map(ResolvedParameter::type)
-                        .collect(toList()).stream()
-                        .map(type -> toDefinition(type, deserializationOnly(), detector, offenders, contextLog))
-                        .flatMap(Optional::stream)
-                        .collect(toList());
-                final Optional<? extends Definition> returnDefinition = method.returnType()
-                        .flatMap(type -> toDefinition(type, serializationOnly(), detector, offenders, contextLog));
-
-                if (offenders.isEmpty()) {
-                    returnDefinition.ifPresent(definition -> {
-                        contextLog.log(definition.type(), "added because return type of method " + method.method().toString());
-                        builder.withManuallyAddedDefinition(definition);
-                    });
-                    parameterDefinitions.forEach(definition -> {
-                        contextLog.log(definition.type(), "added because parameter type of method " + method.method().toString());
-                        builder.withManuallyAddedDefinition(definition);
-                    });
-                } else {
-                    final String offendersString = offendersString(offenders);
-                    returnDefinition.ifPresent(definition -> contextLog.log(definition.type(), format(
-                            "not added as return type of method %s because types not supported: %s",
-                            method.method().toString(), offendersString)));
-
-                    parameterDefinitions.forEach(definition -> contextLog.log(definition.type(), format(
-                            "not added as parameter type of method %stypes not supported: %s",
-                            method.method().toString(), offendersString)));
-                }
+                        .map(GenericType::fromResolvedType)
+                        .forEach(type -> builder.withType(
+                                type, deserialization(), format("because parameter type of method %s", method.describe())));
+                method.returnType()
+                        .map(GenericType::fromResolvedType)
+                        .ifPresent(type -> builder.withType(
+                                type, serialization(), format("because return type of method %s", method.describe())));
             }
         }
-    }
-
-    private static Optional<? extends Definition> toDefinition(final ResolvedType type,
-                                                               final RequiredCapabilities requiredCapabilities,
-                                                               final Detector detector,
-                                                               final List<ResolvedType> offenders,
-                                                               final BuildContextLog contextLog) {
-        final Optional<? extends Definition> definition = detector.detect(type, requiredCapabilities, contextLog);
-        if (definition.isEmpty()) {
-            offenders.add(type);
-        }
-        return definition;
-    }
-
-    private static String offendersString(final List<ResolvedType> offenders) {
-        return offenders.stream()
-                .map(ResolvedType::description)
-                .collect(joining(", ", "[", "]"));
     }
 }

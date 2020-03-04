@@ -74,7 +74,8 @@ MapMaid's url encoded marshaller is shipped with the `core` package and therefor
 You can add it to your MapMaid configuration like this:
 <!---[CodeSnippet](urlencoded)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
         .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
         .build();
 ```
@@ -126,8 +127,9 @@ Assuming you have a configured instance of `Gson` class, adding it as a JSON Mar
 <!---[CodeSnippet](jsonWithGson)-->
 ```java
 final Gson gson = new Gson(); // can be further configured depending on your needs.
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingJsonMarshaller(gson::toJson, gson::fromJson)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
         .build();
 ```
 
@@ -135,8 +137,9 @@ final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
 <!---[CodeSnippet](jsonWithObjectMapper)-->
 ```java
 final ObjectMapper objectMapper = new ObjectMapper();
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
         .build();
 ```
 
@@ -149,14 +152,16 @@ Checkout [ObjectMapperConventionalBuilderTest](../core/src/test/java/de/quantumm
 final XStream xStream = new XStream(new DomDriver());
 xStream.alias("root", Map.class);
 
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
             @SuppressWarnings("unchecked")
             @Override
             public <T> T unmarshal(final String input, final Class<T> type) {
                 return (T) xStream.fromXML(input, type);
             }
-        })
+        }))
+
         .build();
 ```
 
@@ -179,8 +184,9 @@ Note: If you wish to marshall in/from XML, don't forget to add the appropriate d
 ```java
 final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
-        .usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
         .build();
 ```
 
@@ -208,7 +214,8 @@ Recipe is straight forward:
 
 <!---[CodeSnippet](jacksonWithRecipe)-->
 ```java
-final MapMaid mapMaid = MapMaid.aMapMaid(YOUR_PACKAGE_TO_SCAN)
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
         //...
         .usingRecipe(jacksonMarshallerJson(new ObjectMapper()))
         //...

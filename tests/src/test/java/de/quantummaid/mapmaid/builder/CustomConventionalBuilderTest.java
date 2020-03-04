@@ -27,10 +27,9 @@ import de.quantummaid.mapmaid.builder.models.customconvention.Body;
 import de.quantummaid.mapmaid.builder.models.customconvention.Email;
 import de.quantummaid.mapmaid.builder.models.customconvention.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.customconvention.Subject;
-import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
+import de.quantummaid.mapmaid.shared.validators.CustomTypeValidationException;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors.conventionalDetector;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -52,12 +51,14 @@ public final class CustomConventionalBuilderTest {
     public static MapMaid theCustomConventionalMapMaidInstance() {
         final Gson gson = new Gson();
 
-        return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.customconvention")
-                .withDetector(conventionalDetector("serialize",
-                        "deserialize",
-                        "restore"
-                ))
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+        return MapMaid.aMapMaid()
+                .serializingAndDeserializing(Email.class)
+                .withAdvancedSettings(advancedBuilder -> {
+                    advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
+                    advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");
+                    advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
+                    advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
+                })
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

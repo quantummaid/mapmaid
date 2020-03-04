@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -92,7 +93,9 @@ public final class TypeVariableResolvers {
     public List<ResolvedType> resolve(final Object object) {
         return this.relevantTypeVariables.stream()
                 .map(this.typeVariableResolvers::get)
-                .map(resolver -> resolver.orElseThrow(UnsupportedOperationException::new))
+                .map(resolver -> resolver.orElseThrow(() -> {
+                    return new UnsupportedOperationException(format("Unable to resolve type variables based on object '%s'", object));
+                }))
                 .map(resolver -> resolver.resolve(object))
                 .collect(toList());
     }

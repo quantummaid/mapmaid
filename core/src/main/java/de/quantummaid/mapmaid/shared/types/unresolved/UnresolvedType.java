@@ -37,6 +37,7 @@ import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithGeneric
 import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableNamesOf;
 import static de.quantummaid.mapmaid.shared.types.unresolved.breaking.TypeVariableResolvers.resolversFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Arrays.asList;
 
 @ToString
 @EqualsAndHashCode
@@ -53,13 +54,17 @@ public final class UnresolvedType {
     }
 
     public ResolvedType resolve(final ResolvedType... values) {
-        if (values.length != this.variables.size()) {
+        return resolve(asList(values));
+    }
+
+    public ResolvedType resolve(final List<ResolvedType> values) {
+        if (values.size() != this.variables.size()) {
             throw new IllegalArgumentException();
         }
-        final Map<TypeVariableName, ResolvedType> resolvedParameters = new HashMap<>(values.length);
+        final Map<TypeVariableName, ResolvedType> resolvedParameters = new HashMap<>(values.size());
         for (int i = 0; i < this.variables.size(); ++i) {
             final TypeVariableName name = this.variables.get(i);
-            final ResolvedType value = values[i];
+            final ResolvedType value = values.get(i);
             resolvedParameters.put(name, value);
         }
         if(resolvedParameters.isEmpty()) {

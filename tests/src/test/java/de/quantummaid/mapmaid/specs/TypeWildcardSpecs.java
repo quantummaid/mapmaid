@@ -34,22 +34,20 @@ public final class TypeWildcardSpecs {
     public void collectionsWithTypeWildcardsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithWildcardedCollection.class)
+                        .deserializing(AComplexTypeWithWildcardedCollection.class)
                         .build())
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("Type 'java.util.List<?>' is not registered but needs to be in order to support deserialization of 'de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithWildcardedCollection'.\n" +
-                        "Log entries for 'java.util.List<?>'\n");
+                .anExceptionIsThrownWithAMessageContaining("type '?' is not supported because it contains wildcard generics (\"?\")");
     }
 
     @Test
     public void classesWithWildcardGenericsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithTypeWildcards.class)
+                        .serializingAndDeserializing(AComplexTypeWithTypeWildcards.class)
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("Type 'java.util.List<?>' is not registered but needs to be in order to support deserialization of 'de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithTypeWildcards'.\n" +
-                        "Log entries for 'java.util.List<?>'\n");
+                .anExceptionIsThrownWithAMessageContaining("type '?' is not supported because it contains wildcard generics (\"?\")");
     }
 }

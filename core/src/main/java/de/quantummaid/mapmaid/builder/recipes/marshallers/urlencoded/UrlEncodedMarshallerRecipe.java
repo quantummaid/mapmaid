@@ -21,10 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded;
 
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -46,11 +45,11 @@ public final class UrlEncodedMarshallerRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-        mapMaidBuilder.usingMarshaller(
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
+        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(
                 urlEncoded(),
                 UrlEncodedMarshaller.urlEncodedMarshaller(),
                 urlEncodedUnmarshaller()
-        );
+        ));
     }
 }

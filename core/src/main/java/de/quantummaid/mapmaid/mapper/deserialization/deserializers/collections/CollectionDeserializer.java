@@ -21,16 +21,18 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
@@ -51,11 +53,6 @@ public interface CollectionDeserializer extends TypeDeserializer {
         return UniversalCollection.class;
     }
 
-    @Override
-    default String classification() {
-        return "Collection";
-    }
-
     Object deserialize(List<Object> deserializedElements);
 
     @Override
@@ -63,13 +60,18 @@ public interface CollectionDeserializer extends TypeDeserializer {
                               final ExceptionTracker exceptionTracker,
                               final Injector injector,
                               final DeserializerCallback callback,
-                              final CustomPrimitiveMappings customPrimitiveMappings) {
-        final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker);
-        final List deserializedList = new LinkedList();
+                              final CustomPrimitiveMappings customPrimitiveMappings,
+                              final ResolvedType resolvedType,
+                              final DebugInformation debugInformation) {
+        if (input instanceof UniversalNull) {
+            return null;
+        }
+        final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker, resolvedType, debugInformation);
+        final List deserializedList = new ArrayList(10);
         final ResolvedType contentType = contentType();
         int index = 0;
         for (final Universal element : universalCollection.content()) {
-            final Object deserialized = callback.deserializeRecursive(element, contentType, exceptionTracker.stepIntoArray(index), injector);
+            final Object deserialized = callback.deserializeRecursive(element, contentType, exceptionTracker.stepIntoArray(index), injector, debugInformation);
             deserializedList.add(deserialized);
             index = index + 1;
         }

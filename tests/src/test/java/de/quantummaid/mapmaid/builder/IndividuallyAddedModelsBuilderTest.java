@@ -31,8 +31,8 @@ import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors.conventionalDetector;
-import static de.quantummaid.mapmaid.builder.recipes.manualregistry.ManualRegistry.manuallyRegisteredTypes;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -77,16 +77,11 @@ public final class IndividuallyAddedModelsBuilderTest {
 
     public static MapMaid theIndividuallyAddedTypesMapMaidConventional() {
         return MapMaid.aMapMaid()
-                .usingRecipe(manuallyRegisteredTypes()
-                        .withSerializedObjects(
-                                Email.class
-                        )
-                        .withCustomPrimitives(
-                                de.quantummaid.mapmaid.builder.models.conventional.EmailAddress.class,
-                                de.quantummaid.mapmaid.builder.models.conventional.Subject.class,
-                                de.quantummaid.mapmaid.builder.models.conventional.Body.class)
-                )
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+                .serializingAndDeserializing(Email.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.EmailAddress.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.Subject.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.Body.class)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }
@@ -95,15 +90,17 @@ public final class IndividuallyAddedModelsBuilderTest {
         final Class<Body>
                 customConventionBody = Body.class;
         return MapMaid.aMapMaid()
-                .usingRecipe(manuallyRegisteredTypes()
-                        .withSerializedObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class,
-                                de.quantummaid.mapmaid.builder.models.customconvention.Email.class.getFields(),
-                                "restore")
-                        .withCustomPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize)
-                        .withCustomPrimitive(Subject.class, Subject::serialize, Subject::deserialize)
-                        .withCustomPrimitive(customConventionBody, Body::serialize, Body::deserialize)
+                .serializingAndDeserializing(serializedObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
+                        .withField("sender", EmailAddress.class, object -> object.sender)
+                        .withField("receiver", EmailAddress.class, object -> object.receiver)
+                        .withField("subject", Subject.class, object -> object.subject)
+                        .withField("body", Body.class, object -> object.body)
+                        .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore)
                 )
-                .usingJsonMarshaller(GSON::toJson, GSON::fromJson)
+                .serializingAndDeserializing(customPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize))
+                .serializingAndDeserializing(customPrimitive(Subject.class, Subject::serialize, Subject::deserialize))
+                .serializingAndDeserializing(customPrimitive(customConventionBody, Body::serialize, Body::deserialize))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }
@@ -112,17 +109,16 @@ public final class IndividuallyAddedModelsBuilderTest {
         final Gson gson = new Gson();
 
         return MapMaid.aMapMaid()
-                .withDetector(conventionalDetector(
-                        "serialize", "" +
-                                "deserialize",
-                        "restore",
-                        ".*")
-                )
-                .usingRecipe(manuallyRegisteredTypes()
-                        .withSerializedObjects(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
-                        .withCustomPrimitives(EmailAddress.class, Subject.class, Body.class)
-                )
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+                .withAdvancedSettings(advancedBuilder -> {
+                    advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
+                    advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");
+                    advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
+                    advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
+                })
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
+                .serializingAndDeserializing(EmailAddress.class)
+                .serializingAndDeserializing(Subject.class)
+                .serializingAndDeserializing(Body.class)
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

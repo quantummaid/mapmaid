@@ -22,13 +22,6 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
@@ -38,12 +31,9 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
-
-import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 
 public final class IndirectOverrideDefinitionsSpecs {
 
@@ -51,13 +41,11 @@ public final class IndirectOverrideDefinitionsSpecs {
     public void customDeserializationForCustomPrimitiveOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexType.class)
-                        .withManuallyAddedDefinition(generalDefinition(
-                                fromClassWithoutGenerics(ANumber.class),
-                                (CustomPrimitiveSerializer) object -> "23",
-                                (CustomPrimitiveDeserializer) value -> ANumber.fromInt(23)
-                        ))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .serializingAndDeserializing(AComplexType.class)
+                        .serializingAndDeserializing(customPrimitive(ANumber.class, object -> "23", value -> ANumber.fromInt(23)))
+                        .withAdvancedSettings(advancedBuilder -> {
+                            advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller());
+                        })
                         .build()
         )
                 .when().mapMaidDeserializes("42").from(json()).toTheType(ANumber.class)
@@ -69,25 +57,17 @@ public final class IndirectOverrideDefinitionsSpecs {
     public void customDeserializationForSerializedObjectOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .withManuallyAddedType(AComplexNestedType.class)
-                        .withManuallyAddedDefinition(generalDefinition(
-                                fromClassWithoutGenerics(AComplexType.class),
-                                SerializedObjectSerializer.serializedObjectSerializer(SerializationFields.serializationFields(
-                                        List.of(SerializationField.serializationField(fromClassWithoutGenerics(AString.class), "foo", object -> AString.fromStringValue("bar")))
-                                )).get(),
-                                new SerializedObjectDeserializer() {
-                                    @Override
-                                    public Object deserialize(final Map<String, Object> elements) throws Exception {
-                                        return AComplexType.deserialize(AString.fromStringValue("custom1"), AString.fromStringValue("custom2"), ANumber.fromInt(100), ANumber.fromInt(200));
-                                    }
-
-                                    @Override
-                                    public DeserializationFields fields() {
-                                        return DeserializationFields.deserializationFields(Map.of("foo", fromClassWithoutGenerics(AString.class)));
-                                    }
-                                }
-                        ))
-                        .usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller())
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .serializingAndDeserializing(serializedObject(AComplexType.class)
+                                .withField("foo", AString.class, object -> AString.fromStringValue("bar"))
+                                .deserializedUsing(foo -> AComplexType.deserialize(
+                                        AString.fromStringValue("custom1"),
+                                        AString.fromStringValue("custom2"),
+                                        ANumber.fromInt(100),
+                                        ANumber.fromInt(200)
+                                ))
+                        )
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("{\"foo\": \"qwer\"}").from(json()).toTheType(AComplexType.class)

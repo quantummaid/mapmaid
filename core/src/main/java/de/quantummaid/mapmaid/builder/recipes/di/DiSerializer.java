@@ -21,16 +21,39 @@
 
 package de.quantummaid.mapmaid.builder.recipes.di;
 
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
-public final class DiSerializer implements CustomPrimitiveSerializer {
+import java.util.List;
 
-    public static CustomPrimitiveSerializer diSerializer() {
+import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
+import static java.util.Collections.emptyList;
+
+public final class DiSerializer implements TypeSerializer {
+
+    public static TypeSerializer diSerializer() {
         return new DiSerializer();
     }
 
     @Override
-    public Object serialize(final Object object) {
-        throw new UnsupportedOperationException();
+    public List<ResolvedType> requiredTypes() {
+        return emptyList();
+    }
+
+    @Override
+    public Universal serialize(final Object object,
+                               final SerializationCallback callback,
+                               final SerializationTracker tracker,
+                               final CustomPrimitiveMappings customPrimitiveMappings) {
+        return universalNull();
+    }
+
+    @Override
+    public String description() {
+        return "dependency injection";
     }
 }

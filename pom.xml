@@ -26,12 +26,12 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.14</version>
+        <version>0.9.15</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.16</version>
+    <version>0.9.17</version>
     <packaging>pom</packaging>
 
     <description>
@@ -62,29 +62,28 @@
         <module>tests</module>
     </modules>
 
-    <scm>
-        <url>https://github.com/quantummaid/mapmaid</url>
-        <connection>scm:git:git://github.com/quantummaid/mapmaid.git</connection>
-        <developerConnection>scm:git:git@github.com:quantummaid/mapmaid.git</developerConnection>
-    </scm>
-    <distributionManagement>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>sonatype.snapshots</id>
-            <name>Sonatype Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-        </snapshotRepository>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>sonatype.staging</id>
-            <name>Sonatype Staging</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-            <layout>default</layout>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.quantummaid</groupId>
+                <artifactId>documaid</artifactId>
+                <version>0.9.10</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

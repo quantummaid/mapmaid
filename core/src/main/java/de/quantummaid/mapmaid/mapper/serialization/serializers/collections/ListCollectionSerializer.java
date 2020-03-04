@@ -27,9 +27,11 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
+
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -45,7 +47,7 @@ public final class ListCollectionSerializer implements CollectionSerializer {
     @Override
     public List<Object> serialize(final Object collection) {
         final Collection<Object> realCollection = (Collection<Object>) collection;
-        return new LinkedList<>(realCollection);
+        return new ArrayList<>(realCollection);
     }
 
     @Override
@@ -54,7 +56,7 @@ public final class ListCollectionSerializer implements CollectionSerializer {
     }
 
     @Override
-    public String classification() {
-        return "Collection";
+    public String description() {
+        return format("serializing a collection with content type '%s'", this.type.description());
     }
 }

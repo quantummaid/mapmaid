@@ -9,8 +9,8 @@ The builder provides the possibility to register a list of package names, that a
 
 <!---[CodeSnippet](config)-->
 ```java
-MapMaid.aMapMaid(PACKAGE_TO_SCAN_1, PACKAGE_TO_SCAN_2 /* etc.*/)
-        /* further configuration */
+MapMaid.aMapMaid()
+        /* configuration */
         .build();
 ```
 
@@ -34,13 +34,8 @@ factory methods that allow to whitelist or blacklist certain packages and/or cla
 
 <!---[CodeSnippet](api)-->
 ```java
-MapMaid.aMapMaid(DefaultPackageScanner.defaultPackageScanner(
-        List.of(THE_PACKAGE_NAMES_TO_SCAN_RECURSIVELY), // TODO
-        List.of(THE_LIST_OF_CLASSES_TO_INCLUDE), // TODO
-        List.of(THE_PACKAGE_NAMES_TO_BLACKLIST_RECURSIVELY), // TODO
-        List.of(THE_LIST_OF_CLASSES_TO_EXCLUDE)) // TODO
-)
-        .usingJsonMarshaller(gson::toJson, gson::fromJson)
+MapMaid.aMapMaid()
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
         .build();
 ```
 
@@ -187,13 +182,8 @@ deserialization method name, and class name patterns to use for Serialized Objec
 
 <!---[CodeSnippet](detector)-->
 ```java
-MapMaid.aMapMaid("de.quantummaid.examples")
-        .usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson)
-        .withDetector(ConventionalDetectors.conventionalDetector(
-                "myCustomPrimitiveSerializationMethodName",
-                "myCustomPrimitiveDeserializationMethodName",
-                "mySerializedObjectDeserializationMethodName",
-                ".*Dto"))
+MapMaid.aMapMaid()
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
         .build();
 ```
 

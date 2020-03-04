@@ -22,64 +22,27 @@
 package de.quantummaid.mapmaid.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import de.quantummaid.mapmaid.builder.DependencyRegistry;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonMarshaller implements Recipe {
-    private final MarshallingType marshallingType;
+public final class JacksonMarshaller implements Marshaller {
     private final ObjectMapper objectMapper;
 
-    public static JacksonMarshaller jacksonMarshallerFor(final MarshallingType marshallingType,
-                                                         final ObjectMapper objectMapper) {
+    public static Marshaller jacksonMarshaller(final ObjectMapper objectMapper) {
         validateNotNull(objectMapper, "objectMapper");
-        final SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
-        objectMapper.setSerializationInclusion(NON_NULL);
-        objectMapper.registerModule(simpleModule);
-        return new JacksonMarshaller(marshallingType, objectMapper);
-    }
-
-    public static JacksonMarshaller jacksonMarshallerJson() {
-        return jacksonMarshallerFor(json(), new ObjectMapper());
-    }
-
-    public static JacksonMarshaller jacksonMarshallerXml() {
-        final XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        return jacksonMarshallerFor(xml(), xmlMapper);
-    }
-
-    public static JacksonMarshaller jacksonMarshallerYaml() {
-        final YAMLMapper yamlMapper = new YAMLMapper();
-        return jacksonMarshallerFor(yaml(), yamlMapper);
+        return new JacksonMarshaller(objectMapper);
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder, final DependencyRegistry dependencyRegistry) {
-        final SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
-        this.objectMapper.setSerializationInclusion(NON_NULL);
-        this.objectMapper.registerModule(simpleModule);
-        mapMaidBuilder.usingMarshaller(
-                this.marshallingType,
-                this.objectMapper::writeValueAsString,
-                this.objectMapper::readValue);
+    public String marshal(final Object object) throws Exception {
+        return this.objectMapper.writeValueAsString(object);
     }
 }

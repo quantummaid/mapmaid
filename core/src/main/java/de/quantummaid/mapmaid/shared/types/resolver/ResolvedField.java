@@ -29,7 +29,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.StringJoiner;
 
 import static de.quantummaid.mapmaid.shared.types.TypeResolver.resolveType;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -45,12 +47,9 @@ public final class ResolvedField {
     private final ResolvedType type;
     private final Field field;
 
-    public static List<ResolvedField> resolvedPublicFields(final ClassType fullType) {
+    public static List<ResolvedField> resolvedFields(final ClassType fullType) {
         final Class<?> type = fullType.assignableType();
-        return stream(type.getFields())
-                .filter(field -> isPublic(field.getModifiers()))
-                .filter(field -> !isStatic(field.getModifiers()))
-                .filter(field -> !isTransient(field.getModifiers()))
+        return stream(type.getDeclaredFields())
                 .map(field -> {
                     final ResolvedType resolved = resolveType(field.getGenericType(), fullType);
                     return resolvedField(field.getName(), resolved, field);
@@ -58,7 +57,9 @@ public final class ResolvedField {
                 .collect(toList());
     }
 
-    public static ResolvedField resolvedField(final String name, final ResolvedType type, final Field field) {
+    private static ResolvedField resolvedField(final String name,
+                                               final ResolvedType type,
+                                               final Field field) {
         validateNotNull(name, "name");
         validateNotNull(type, "type");
         validateNotNull(field, "field");
@@ -75,5 +76,49 @@ public final class ResolvedField {
 
     public Field field() {
         return this.field;
+    }
+
+    public boolean isPublic() {
+        final int modifiers = this.field.getModifiers();
+        return Modifier.isPublic(modifiers);
+    }
+
+    public boolean isStatic() {
+        final int modifiers = this.field.getModifiers();
+        return Modifier.isStatic(modifiers);
+    }
+
+    public boolean isTransient() {
+        final int modifiers = this.field.getModifiers();
+        return Modifier.isTransient(modifiers);
+    }
+
+    public String describe() {
+        final StringJoiner joiner = new StringJoiner(" ");
+        final int modifiers = this.field.getModifiers();
+        if (isPublic()) {
+            joiner.add("public");
+        }
+        if (isProtected(modifiers)) {
+            joiner.add("protected");
+        }
+        if (isPrivate(modifiers)) {
+            joiner.add("private");
+        }
+        if (isStatic()) {
+            joiner.add("static");
+        }
+        if (isTransient()) {
+            joiner.add("transient");
+        }
+        if (isFinal(modifiers)) {
+            joiner.add("final");
+        }
+
+        final String type = this.type.simpleDescription();
+        joiner.add(type);
+
+        joiner.add(this.name);
+        return joiner.toString();
     }
 }

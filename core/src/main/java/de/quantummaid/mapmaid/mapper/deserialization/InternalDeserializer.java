@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -29,7 +31,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrors
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationResult;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
@@ -38,9 +39,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
-@SuppressWarnings({"unchecked", "InstanceofConcreteClass"})
+@SuppressWarnings("unchecked")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class InternalDeserializer implements DeserializerCallback {
     private final Definitions definitions;
@@ -59,8 +61,9 @@ final class InternalDeserializer implements DeserializerCallback {
     <T> T deserialize(final Universal input,
                       final ResolvedType targetType,
                       final ExceptionTracker exceptionTracker,
-                      final Injector injector) {
-        final T result = (T) this.deserializeRecursive(input, targetType, exceptionTracker, injector);
+                      final Injector injector,
+                      final DebugInformation debugInformation) {
+        final T result = (T) this.deserializeRecursive(input, targetType, exceptionTracker, injector, debugInformation);
         final ValidationResult validationResult = exceptionTracker.validationResult();
         if (validationResult.hasValidationErrors()) {
             this.onValidationErrors.map(validationResult.validationErrors());
@@ -72,7 +75,8 @@ final class InternalDeserializer implements DeserializerCallback {
     public Object deserializeRecursive(final Universal input,
                                        final ResolvedType targetType,
                                        final ExceptionTracker exceptionTracker,
-                                       final Injector injector) {
+                                       final Injector injector,
+                                       final DebugInformation debugInformation) {
         final Optional<Object> namedDirectInjection = injector.getDirectInjectionForPropertyPath(exceptionTracker.getPosition());
         if (namedDirectInjection.isPresent()) {
             return namedDirectInjection.get();
@@ -85,18 +89,12 @@ final class InternalDeserializer implements DeserializerCallback {
 
         final Universal resolved = injector.getUniversalInjectionFor(exceptionTracker.getPosition()).orElse(input);
 
-        if (input instanceof UniversalNull) {
-            return null;
-        }
-
         final Definition definition = this.definitions.getDefinitionForType(targetType);
-        try {
-            final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() ->
-                    new UnsupportedOperationException(format("No deserializer configured for '%s'", definition.type().description())));
-            return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings);
-        } catch (final WrongInputStructureException e) {
-            exceptionTracker.track(e, e.getMessage());
-            return null;
-        }
+        final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
+            final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
+            return mapMaidException(format("No deserializer configured for '%s'",
+                    definition.type().description()), scanInformation);
+        });
+        return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
     }
 }

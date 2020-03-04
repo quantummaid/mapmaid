@@ -21,5 +21,124 @@
 
 package de.quantummaid.mapmaid.builder.detection;
 
-public interface DetectionResult {
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.joining;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DetectionResult<T> {
+    private final T result;
+    private final List<String> reasonsForFailure;
+
+    public static <A, B, C> DetectionResult<C> combine(final DetectionResult<A> a,
+                                                       final DetectionResult<B> b,
+                                                       final BiFunction<A, B, C> combinator) {
+        if (!a.isFailure() && !b.isFailure()) {
+            final C combination = combinator.apply(a.result, b.result);
+            return success(combination);
+        }
+        final List<String> combinedReasons = smallList();
+        combinedReasons.addAll(a.reasonsForFailure);
+        combinedReasons.addAll(b.reasonsForFailure);
+        return failure(combinedReasons);
+    }
+
+    public static <T> DetectionResult<T> success(final T result) {
+        validateNotNull(result, "result");
+        return new DetectionResult<>(result, emptyList());
+    }
+
+    public static <T> DetectionResult<T> failure(final String reasonForFailure) {
+        validateNotNull(reasonForFailure, "reasonForFailure");
+        return failure(singletonList(reasonForFailure));
+    }
+
+    public static <T> DetectionResult<T> failure(final List<String> reasonsForFailure) {
+        validateNotNull(reasonsForFailure, "reasonsForFailure");
+        return new DetectionResult<>(null, reasonsForFailure);
+    }
+
+    public static <T> DetectionResult<T> followUpFailure(final DetectionResult<?>... detectionResults) {
+        final List<String> combinedReasons = smallList();
+        for (final DetectionResult<?> result : detectionResults) {
+            if (!result.isFailure()) {
+                throw new IllegalArgumentException("Can only follow up on failures");
+            }
+            combinedReasons.addAll(result.reasonsForFailure);
+        }
+        return failure(combinedReasons);
+    }
+
+    public void ifSuccess(final Consumer<T> consumer) {
+        if (isSuccess()) {
+            consumer.accept(this.result);
+        }
+    }
+
+    public boolean isFailure() {
+        return !this.reasonsForFailure.isEmpty();
+    }
+
+    public boolean isSuccess() {
+        return !isFailure();
+    }
+
+    public String reasonForFailure() {
+        return this.reasonsForFailure.stream()
+                .collect(joining("\n", "[", "]"));
+    }
+
+    public List<String> reasonsForFailure() {
+        return this.reasonsForFailure;
+    }
+
+    public T result() {
+        return this.result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <X> DetectionResult<X> map(final Function<T, X> mapper) {
+        if (isFailure()) {
+            return (DetectionResult<X>) this;
+        }
+        final X mapped = mapper.apply(this.result);
+        return success(mapped);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <X> DetectionResult<X> flatMap(final Function<T, DetectionResult<X>> mapper) {
+        if (isFailure()) {
+            return (DetectionResult<X>) this;
+        }
+        return mapper.apply(this.result);
+    }
+
+    public DetectionResult<T> or(final Supplier<DetectionResult<T>> alternative) {
+        if (isFailure()) {
+            return alternative.get();
+        }
+        return this;
+    }
+
+    public DetectionResult<T> or(final DetectionResult<T> alternative) {
+        if (isFailure()) {
+            return alternative;
+        }
+        return this;
+    }
 }

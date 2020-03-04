@@ -23,38 +23,23 @@ package de.quantummaid.mapmaid.docs;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.scanning.DefaultPackageScanner;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 public final class PackageScannerExample {
-    private static final String PACKAGE_TO_SCAN_1 = "gfrgr"; // TODO
-    private static final String PACKAGE_TO_SCAN_2 = "vrgr"; // TODO
-
-    private static final String THE_PACKAGE_NAMES_TO_SCAN_RECURSIVELY = "feef"; // TODO
-    private static final Class<?> THE_LIST_OF_CLASSES_TO_INCLUDE = Object.class; // TODO
-    private static final String THE_PACKAGE_NAMES_TO_BLACKLIST_RECURSIVELY = "grge"; // TODO
-    private static final Class<?> THE_LIST_OF_CLASSES_TO_EXCLUDE = Object.class; // TODO
 
     @Test
     public void apiExample() {
         final Gson gson = new Gson();
 
         //Showcase start config
-        MapMaid.aMapMaid(PACKAGE_TO_SCAN_1, PACKAGE_TO_SCAN_2 /* etc.*/)
-                /* further configuration */
+        MapMaid.aMapMaid()
+                /* configuration */
                 .build();
         //Showcase end config
 
         //Showcase start api
-        MapMaid.aMapMaid(DefaultPackageScanner.defaultPackageScanner(
-                List.of(THE_PACKAGE_NAMES_TO_SCAN_RECURSIVELY), // TODO
-                List.of(THE_LIST_OF_CLASSES_TO_INCLUDE), // TODO
-                List.of(THE_PACKAGE_NAMES_TO_BLACKLIST_RECURSIVELY), // TODO
-                List.of(THE_LIST_OF_CLASSES_TO_EXCLUDE)) // TODO
-        )
-                .usingJsonMarshaller(gson::toJson, gson::fromJson)
+        MapMaid.aMapMaid()
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .build();
         //Showcase end api
     }

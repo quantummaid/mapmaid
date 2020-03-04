@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.builder.recipes.di;
 public interface GeneralDependencyInjector {
     <T> T getInstance(Class<T> type);
 
-    default <T> DependencyInjector<T> specialzedFor(final Class<T> type) {
+    default <T> DependencyInjector<T> specializedFor(final Class<T> type) {
         return () -> getInstance(type);
     }
 }

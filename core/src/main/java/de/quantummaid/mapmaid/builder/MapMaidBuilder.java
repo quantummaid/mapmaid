@@ -22,166 +22,192 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.contextlog.BuildContextLog;
-import de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories;
 import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
-import de.quantummaid.mapmaid.builder.conventional.DetectorBuilder;
-import de.quantummaid.mapmaid.builder.detection.Detector;
+import de.quantummaid.mapmaid.builder.customtypes.CustomType;
+import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
+import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
+import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.builder.scanning.DefaultPackageScanner;
-import de.quantummaid.mapmaid.builder.scanning.PackageScanner;
-import de.quantummaid.mapmaid.builder.scanning.PackageScannerRecipe;
+import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.Reason;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
+import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.*;
-import de.quantummaid.mapmaid.mapper.injector.InjectorFactory;
-import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.MapMaid.mapMaid;
-import static de.quantummaid.mapmaid.builder.DefinitionsBuilder.definitionsBuilder;
-import static de.quantummaid.mapmaid.builder.DependencyRegistry.dependency;
-import static de.quantummaid.mapmaid.builder.DependencyRegistry.dependencyRegistry;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.all;
+import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
+import static de.quantummaid.mapmaid.builder.GenericType.genericType;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
+import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
+import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
+import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
+import static de.quantummaid.mapmaid.builder.resolving.Reason.reason;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
+import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
-import static de.quantummaid.mapmaid.mapper.injector.InjectorFactory.injectorFactory;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry.marshallerRegistry;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.theSerializer;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MapMaidBuilder {
-    private final BuildContextLog contextLog = BuildContextLog.emptyLog();
-    private final DependencyRegistry dependencyRegistry = dependencyRegistry(
-            dependency(Detector.class, () -> this.detector)
-    );
-    private final List<Definition> addedDefinitions = new LinkedList<>();
-    private final List<Recipe> recipes = new LinkedList<>();
+    private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
+    private final Processor processor = processor();
+    private final AdvancedBuilder advancedBuilder = advancedBuilder();
+    private final List<Recipe> recipes = smallList();
     private final ValidationMappings validationMappings = ValidationMappings.empty();
     private final ValidationErrorsMapping validationErrorsMapping = validationErrors -> {
         throw AggregatedValidationException.fromList(validationErrors);
     };
-    private Map<MarshallingType, Marshaller> marshallerMap = new HashMap<>(1);
-    private Map<MarshallingType, Unmarshaller> unmarshallerMap = new HashMap<>(1);
-    private volatile InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory();
-    private Detector detector = ConventionalDetectors.conventionalDetector();
 
-    public static MapMaidBuilder mapMaidBuilder(final String... packageNames) {
-        if (packageNames != null) {
-            stream(packageNames).forEach(packageName -> validateNotNull(packageName, "packageName"));
-        }
-        final List<String> packageNameList = Optional.ofNullable(packageNames)
-                .map(Arrays::asList)
-                .orElse(new LinkedList<>());
-
-        if (packageNameList.isEmpty()) {
-            return mapMaidBuilder(List::of);
-        } else {
-            final PackageScanner packageScanner = DefaultPackageScanner.defaultPackageScanner(packageNameList);
-            return mapMaidBuilder(packageScanner);
-        }
+    public static MapMaidBuilder mapMaidBuilder() {
+        return new MapMaidBuilder();
     }
 
-    public static MapMaidBuilder mapMaidBuilder(final PackageScanner packageScanner) {
-        validateNotNull(packageScanner, "packageScanner");
-        return new MapMaidBuilder().usingRecipe(PackageScannerRecipe.packageScannerRecipe(packageScanner));
+    public MapMaidBuilder serializing(final Class<?> type) {
+        return serializing(genericType(type));
     }
 
-    public MapMaidBuilder withDetector(final DetectorBuilder detector) {
-        return withDetector(detector.build());
+    public MapMaidBuilder serializing(final GenericType<?> genericType) {
+        return withType(genericType, serialization());
     }
 
-    public MapMaidBuilder withDetector(final Detector detector) {
-        this.detector = detector;
-        return this;
+    public <T> MapMaidBuilder serializing(final SerializationOnlyType<T> customType) {
+        return withCustomType(serialization(), customType);
     }
 
-    public MapMaidBuilder withManuallyAddedType(final Class<?> type) {
-        return withManuallyAddedType(fromClassWithoutGenerics(type), this.contextLog);
+    public MapMaidBuilder deserializing(final Class<?> type) {
+        return deserializing(genericType(type));
     }
 
-    public MapMaidBuilder withManuallyAddedType(final Class<?> type,
-                                                final RequiredCapabilities capabilities) {
-        return withManuallyAddedType(fromClassWithoutGenerics(type), capabilities);
+    public MapMaidBuilder deserializing(final GenericType<?> genericType) {
+        return withType(genericType, deserialization());
     }
 
-    public MapMaidBuilder withManuallyAddedType(final ResolvedType type,
-                                                final RequiredCapabilities capabilities) {
-        validateNotNull(type, "type");
-        validateNotNull(capabilities, "capabilities");
-        final Definition definition = this.detector.detect(type, capabilities, this.contextLog).orElseThrow();
-        return withManuallyAddedDefinition(definition);
+    public <T> MapMaidBuilder deserializing(final DeserializationOnlyType<T> customType) {
+        return withCustomType(deserialization(), customType);
     }
 
-    public MapMaidBuilder withManuallyAddedType(final ResolvedType type, final BuildContextLog contextLog) {
-        validateNotNull(type, "type");
-        contextLog.stepInto(MapMaidBuilder.class).log(type, "added");
-        return withManuallyAddedType(type);
+    public MapMaidBuilder serializingAndDeserializing(final Class<?> type) {
+        return serializingAndDeserializing(genericType(type));
     }
 
-    public MapMaidBuilder withManuallyAddedType(final ResolvedType type) {
-        return withManuallyAddedType(type, all());
+    public MapMaidBuilder serializingAndDeserializing(final GenericType<?> genericType) {
+        return withType(genericType, duplex());
+    }
+
+    public <T> MapMaidBuilder serializingAndDeserializing(final DuplexType<T> customType) {
+        return withCustomType(duplex(), customType);
     }
 
     public MapMaidBuilder withManuallyAddedTypes(final Class<?>... type) {
         validateNotNull(type, "type");
-        stream(type).forEach(this::withManuallyAddedType);
+        stream(type).forEach(this::serializingAndDeserializing);
         return this;
     }
 
-    public MapMaidBuilder withManuallyAddedDefinition(final Definition definition) {
-        validateNotNull(definition, "definition");
-        this.addedDefinitions.add(definition);
+    public MapMaidBuilder withType(final Class<?> type,
+                                   final RequiredCapabilities capabilities) {
+        return withType(genericType(type), capabilities);
+    }
+
+    public MapMaidBuilder withType(final GenericType<?> type,
+                                   final RequiredCapabilities capabilities) {
+        return withType(type, capabilities, manuallyAdded());
+    }
+
+    public MapMaidBuilder withType(final Class<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final String reason) {
+        return withType(type, capabilities, reason(reason));
+    }
+
+    public MapMaidBuilder withType(final Class<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final Reason reason) {
+        return withType(genericType(type), capabilities, reason);
+    }
+
+    public MapMaidBuilder withType(final GenericType<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final String reason) {
+        return withType(type, capabilities, reason(reason));
+    }
+
+    public MapMaidBuilder withType(final GenericType<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final Reason reason) {
+        validateNotNull(type, "type");
+        validateNotNull(capabilities, "capabilities");
+        validateNotNull(reason, "reason");
+        final ResolvedType resolvedType = type.toResolvedType();
+        if (capabilities.hasSerialization()) {
+            this.processor.dispatch(addSerialization(resolvedType, reason));
+        }
+        if (capabilities.hasDeserialization()) {
+            this.processor.dispatch(addDeserialization(resolvedType, reason));
+        }
         return this;
     }
 
-    public MapMaidBuilder usingJsonMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
-        validateNotNull(marshaller, "jsonMarshaller");
-        validateNotNull(unmarshaller, "jsonUnmarshaller");
-        return usingMarshaller(MarshallingType.json(), marshaller, unmarshaller);
-    }
-
-    public MapMaidBuilder usingYamlMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
-        validateNotNull(marshaller, "yamlMarshaller");
-        validateNotNull(unmarshaller, "yamlUnmarshaller");
-        return usingMarshaller(MarshallingType.yaml(), marshaller, unmarshaller);
-    }
-
-    public MapMaidBuilder usingXmlMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
-        validateNotNull(marshaller, "xmlMarshaller");
-        validateNotNull(unmarshaller, "xmlUnmarshaller");
-        return usingMarshaller(MarshallingType.xml(), marshaller, unmarshaller);
-    }
-
-    public MapMaidBuilder usingMarshaller(final MarshallingType marshallingType,
-                                          final Marshaller marshaller,
-                                          final Unmarshaller unmarshaller) {
-        validateNotNull(marshaller, "marshaller");
-        validateNotNull(unmarshaller, "unmarshaller");
-        validateNotNull(marshallingType, "marshallingType");
-        this.marshallerMap.put(marshallingType, marshaller);
-        this.unmarshallerMap.put(marshallingType, unmarshaller);
-        return this;
-    }
-
-    public MapMaidBuilder usingMarshaller(final Map<MarshallingType, Marshaller> marshallerMap,
-                                          final Map<MarshallingType, Unmarshaller> unmarshallerMap) {
-        this.marshallerMap = new HashMap<>(marshallerMap);
-        this.unmarshallerMap = new HashMap<>(unmarshallerMap);
-        return this;
-    }
-
-    public MapMaidBuilder usingInjectorFactory(final InjectorLambda factory) {
-        this.injectorFactory = injectorFactory(factory);
+    public <T> MapMaidBuilder withCustomType(final RequiredCapabilities capabilities,
+                                             final CustomType<T> customType) {
+        validateNotNull(capabilities, "capabilities");
+        validateNotNull(customType, "customType");
+        final GenericType<T> type = customType.type();
+        final ResolvedType resolvedType = type.toResolvedType();
+        final Optional<TypeSerializer> serializer = customType.serializer();
+        if (capabilities.hasSerialization() && !serializer.isPresent()) {
+            throw new IllegalArgumentException(format("serializer is missing for type '%s'", resolvedType.description()));
+        }
+        final Optional<TypeDeserializer> deserializer = customType.deserializer();
+        if (capabilities.hasDeserialization() && !deserializer.isPresent()) {
+            throw new IllegalArgumentException(format("deserializer is missing for type '%s'", resolvedType.description()));
+        }
+        final Context context = emptyContext(this.processor::dispatch, resolvedType);
+        serializer.ifPresent(context::setSerializer);
+        deserializer.ifPresent(context::setDeserializer);
+        final StatefulDefinition statefulDefinition = fixedUnreasoned(context);
+        this.processor.addState(statefulDefinition);
+        if (capabilities.hasSerialization()) {
+            this.processor.dispatch(addSerialization(resolvedType, manuallyAdded()));
+        }
+        if (capabilities.hasDeserialization()) {
+            this.processor.dispatch(addDeserialization(resolvedType, manuallyAdded()));
+        }
         return this;
     }
 
@@ -216,41 +242,46 @@ public final class MapMaidBuilder {
         return this;
     }
 
-    public BuildContextLog contextLog() {
-        return this.contextLog;
+    public MapMaidBuilder withAdvancedSettings(final Consumer<AdvancedBuilder> configurator) {
+        configurator.accept(this.advancedBuilder);
+        return this;
     }
 
     public MapMaid build() {
-        this.recipes.forEach(recipe -> recipe.init(this.dependencyRegistry));
+        this.recipes.forEach(Recipe::init);
+        this.recipes.forEach(recipe -> recipe.cook(this));
 
-        this.recipes.forEach(recipe -> {
-            recipe.cook(this, this.dependencyRegistry);
+        final Disambiguators disambiguators = this.advancedBuilder.buildDisambiguators();
+        final Map<ResolvedType, CollectionResult> result = this.processor.collect(this.detector, disambiguators);
+
+        final Map<ResolvedType, Definition> definitionsMap = new HashMap<>(result.size());
+        final Map<ResolvedType, ScanInformation> scanInformationMap = new HashMap<>(result.size());
+        result.forEach((type, collectionResult) -> {
+            definitionsMap.put(type, collectionResult.definition());
+            scanInformationMap.put(type, collectionResult.scanInformation());
         });
 
-        final DefinitionsBuilder definitionsBuilder = definitionsBuilder(this.detector, this.contextLog);
+        final DebugInformation debugInformation = debugInformation(scanInformationMap);
+        final Definitions definitions = definitions(definitionsMap, debugInformation);
 
-        this.addedDefinitions.forEach(definition -> {
-            final ResolvedType type = definition.type();
-            definition.serializer().ifPresent(serializer -> definitionsBuilder.addSerializer(type, serializer));
-            definition.deserializer().ifPresent(deserializer -> definitionsBuilder.addDeserializer(type, deserializer));
-        });
+        final MarshallerRegistry<Marshaller> marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();
+        final Serializer serializer = theSerializer(
+                marshallerRegistry,
+                definitions,
+                CUSTOM_PRIMITIVE_MAPPINGS,
+                debugInformation
+        );
 
-        definitionsBuilder.resolveRecursively(this.detector);
-        final Definitions definitions = definitionsBuilder.build();
-
-        final MarshallerRegistry<Marshaller> marshallerRegistry = marshallerRegistry(this.marshallerMap);
-        final Serializer serializer = theSerializer(marshallerRegistry, definitions, ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS);
-
-        final MarshallerRegistry<Unmarshaller> unmarshallerRegistry = marshallerRegistry(this.unmarshallerMap);
+        final MarshallerRegistry<Unmarshaller> unmarshallerRegistry = this.advancedBuilder.buildUnmarshallerRegistry();
         final Deserializer deserializer = theDeserializer(
                 unmarshallerRegistry,
                 definitions,
-                ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS,
+                CUSTOM_PRIMITIVE_MAPPINGS,
                 this.validationMappings,
                 this.validationErrorsMapping,
-                this.injectorFactory
+                debugInformation
         );
-        return mapMaid(serializer, deserializer);
+        return mapMaid(serializer, deserializer, debugInformation);
     }
 }
 

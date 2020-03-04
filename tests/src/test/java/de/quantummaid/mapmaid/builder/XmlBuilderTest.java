@@ -68,13 +68,14 @@ public final class XmlBuilderTest {
         final XStream xStream = new XStream(new DomDriver());
         xStream.alias("root", Map.class);
 
-        return MapMaid.aMapMaid("de.quantummaid.mapmaid.builder.models.conventional")
-                .usingJsonMarshaller(xStream::toXML, new Unmarshaller() {
+        return MapMaid.aMapMaid()
+                .serializingAndDeserializing(Email.class)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(xStream::toXML, new Unmarshaller() {
                     @Override
                     public <T> T unmarshal(final String input, final Class<T> type) {
                         return (T) xStream.fromXML(input, type);
                     }
-                })
+                }))
                 .build();
     }
 

@@ -33,7 +33,8 @@ public final class ACyclicType {
     public final AString aString;
     public ACyclicType aCyclicType;
 
-    public static ACyclicType deserialize(final AString aString) {
+    public static ACyclicType deserialize(final AString aString,
+                                          final ACyclicType aCyclicType) {
         return new ACyclicType(aString);
     }
 }

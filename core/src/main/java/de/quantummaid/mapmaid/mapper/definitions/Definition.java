@@ -33,6 +33,4 @@ public interface Definition {
     Optional<TypeDeserializer> deserializer();
 
     ResolvedType type();
-
-    String classification();
 }

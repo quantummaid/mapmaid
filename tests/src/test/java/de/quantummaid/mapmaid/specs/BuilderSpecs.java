@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIs;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 
 public final class BuilderSpecs {
 
@@ -46,7 +46,7 @@ public final class BuilderSpecs {
     @Test
     public void givenValidCustomPrimitive_whenBuildingWithCustomPrimitive_thenReturnsCorrectDeserializer() {
         Given.given(
-                aMapMaid().withManuallyAddedType(AString.class).build()
+                aMapMaid().serializingAndDeserializing(AString.class).build()
         )
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheCustomPrimitives(AString.class)
@@ -57,7 +57,7 @@ public final class BuilderSpecs {
     public void allKnownCollectionsAreSupported() {
         Given.given(
                 aMapMaid()
-                        .withManuallyAddedType(AComplexTypeWithDifferentCollections.class)
+                        .serializingAndDeserializing(AComplexTypeWithDifferentCollections.class)
                         .build()
         )
                 .when().theDefinitionsAreQueried()
@@ -69,7 +69,7 @@ public final class BuilderSpecs {
     public void referencesInClassesCanBeScanned() {
         Given.given(
                 aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIs(MyRepository.class))
+                        .usingRecipe(addAllReferencedClassesIn(MyRepository.class))
                         .build()
         )
                 .when().theDefinitionsAreQueried()

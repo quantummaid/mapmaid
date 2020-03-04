@@ -30,6 +30,11 @@ public final class InjectionSerializer implements CustomPrimitiveSerializer {
     }
 
     @Override
+    public String description() {
+        return "always inject";
+    }
+
+    @Override
     public Object serialize(final Object object) {
         throw new UnsupportedOperationException();
     }

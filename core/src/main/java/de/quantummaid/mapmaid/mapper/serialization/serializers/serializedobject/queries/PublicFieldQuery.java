@@ -21,29 +21,39 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries;
 
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Field;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PublicFieldQuery implements SerializationFieldQuery {
-    private final Field field;
+    private final ResolvedField field;
 
-    public static SerializationFieldQuery publicFieldQuery(final Field field) {
+    public static SerializationFieldQuery publicFieldQuery(final ResolvedField field) {
         return new PublicFieldQuery(field);
     }
 
     @Override
     public Object query(final Object object) {
         try {
-            return this.field.get(object);
+            return this.field.field().get(object);
         } catch (final IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ResolvedField field() {
+        return this.field;
+    }
+
+    @Override
+    public String describe() {
+        return format("field '%s'", this.field.describe());
     }
 }

@@ -21,8 +21,9 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
-import de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
@@ -31,6 +32,8 @@ import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
+
 public interface TypeDeserializer {
     List<ResolvedType> requiredTypes();
 
@@ -38,17 +41,22 @@ public interface TypeDeserializer {
                       ExceptionTracker exceptionTracker,
                       Injector injector,
                       DeserializerCallback callback,
-                      CustomPrimitiveMappings customPrimitiveMappings);
+                      CustomPrimitiveMappings customPrimitiveMappings,
+                      ResolvedType resolvedType,
+                      DebugInformation debugInformation);
 
     Class<? extends Universal> universalRequirement();
 
-    String classification();
+    String description();
 
     static <T extends Universal> T castSafely(final Universal universalType,
                                               final Class<T> type,
-                                              final ExceptionTracker exceptionTracker) {
+                                              final ExceptionTracker exceptionTracker,
+                                              final ResolvedType resolvedType,
+                                              final DebugInformation debugInformation) {
         if (!type.isInstance(universalType)) {
-            throw WrongInputStructureException.wrongInputStructureException(type, universalType, exceptionTracker.getPosition());
+            final ScanInformation scanInformation = debugInformation.scanInformationFor(resolvedType);
+            throw wrongInputStructureException(type, universalType, exceptionTracker.getPosition(), scanInformation);
         }
         return type.cast(universalType);
     }

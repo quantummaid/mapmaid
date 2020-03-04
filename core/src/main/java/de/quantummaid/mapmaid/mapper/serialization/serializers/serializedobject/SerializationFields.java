@@ -32,6 +32,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 @ToString
@@ -61,5 +62,12 @@ public final class SerializationFields {
         return this.fields.stream()
                 .map(SerializationField::type)
                 .collect(toUnmodifiableList());
+    }
+
+    public String describe() {
+        return this.fields.stream()
+                .map(SerializationField::describe)
+                .map(s -> "\t- " + s)
+                .collect(joining("\n"));
     }
 }
