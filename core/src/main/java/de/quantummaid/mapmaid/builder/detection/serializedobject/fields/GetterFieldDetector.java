@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +55,7 @@ public final class GetterFieldDetector implements FieldDetector {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        return ResolvedMethod.resolveMethodsWithResolvableTypeVariables((ClassType) type).stream()
+        return ((ClassType) type).methods().stream()
                 .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("get"))
                 .filter(resolvedMethod -> !isStatic(resolvedMethod.method().getModifiers()))
                 .filter(resolvedMethod -> resolvedMethod.method().getReturnType() != TYPE)

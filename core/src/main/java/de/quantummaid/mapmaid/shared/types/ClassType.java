@@ -22,11 +22,13 @@
 package de.quantummaid.mapmaid.shared.types;
 
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -37,6 +39,7 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.shared.types.UnresolvableTypeVariableException.unresolvableTypeVariableException;
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -46,6 +49,12 @@ import static java.util.stream.Collectors.toList;
 public final class ClassType implements ResolvedType {
     private final Class<?> clazz;
     private final Map<TypeVariableName, ResolvedType> typeParameters;
+    @Exclude
+    private List<ResolvedMethod> methods;
+    @Exclude
+    private List<ResolvedConstructor> constructors;
+    @Exclude
+    private List<ResolvedField> fields;
 
     public static ResolvedType typeOfObject(final Object object) {
         NotNullValidator.validateNotNull(object, "object");
@@ -94,11 +103,24 @@ public final class ClassType implements ResolvedType {
     }
 
     public List<ResolvedMethod> methods() {
-        return ResolvedMethod.resolveMethodsWithResolvableTypeVariables(this);
+        if (this.methods == null) {
+            this.methods = ResolvedMethod.resolveMethodsWithResolvableTypeVariables(this);
+        }
+        return unmodifiableList(this.methods);
     }
 
     public List<ResolvedConstructor> constructors() {
-        return ResolvedConstructor.resolveConstructors(this);
+        if (this.constructors == null) {
+            this.constructors = ResolvedConstructor.resolveConstructors(this);
+        }
+        return unmodifiableList(this.constructors);
+    }
+
+    public List<ResolvedField> fields() {
+        if (this.fields == null) {
+            this.fields = ResolvedField.resolvedFields(this);
+        }
+        return unmodifiableList(this.fields);
     }
 
     @Override

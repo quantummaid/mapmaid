@@ -57,9 +57,9 @@ public final class ResolvedField {
                 .collect(toList());
     }
 
-    public static ResolvedField resolvedField(final String name,
-                                              final ResolvedType type,
-                                              final Field field) {
+    private static ResolvedField resolvedField(final String name,
+                                               final ResolvedType type,
+                                               final Field field) {
         validateNotNull(name, "name");
         validateNotNull(type, "type");
         validateNotNull(field, "field");

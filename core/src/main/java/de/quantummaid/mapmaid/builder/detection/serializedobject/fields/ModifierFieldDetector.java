@@ -24,7 +24,6 @@ package de.quantummaid.mapmaid.builder.detection.serializedobject.fields;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +48,7 @@ public final class ModifierFieldDetector implements FieldDetector {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        return ResolvedField.resolvedFields((ClassType) type).stream()
+        return ((ClassType) type).fields().stream()
                 .map(resolvedField -> SerializationField.fromField(type, resolvedField))
                 .collect(toList());
     }
