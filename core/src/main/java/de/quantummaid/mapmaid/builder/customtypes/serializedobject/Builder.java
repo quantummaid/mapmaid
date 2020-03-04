@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializationField.deserializationField;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomSerializationField.serializationField;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializer.userProvidedDeserializer;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomSerializationField.serializationField;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField.serializationField;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
@@ -47,12 +47,13 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Builder {
+    private final GenericType<?> type;
     private final List<CustomDeserializationField> deserializationFields;
     private final List<CustomSerializationField> serializationFields;
     private InvocableDeserializer<?> deserializer;
 
-    public static Builder emptyBuilder() {
-        return new Builder(smallList(), smallList());
+    public static Builder emptyBuilder(final GenericType<?> type) {
+        return new Builder(type, smallList(), smallList());
     }
 
     public void addDuplexField(final GenericType<?> type, final String name, final Query<Object, Object> query) {
@@ -77,6 +78,10 @@ public final class Builder {
     public void setDeserializer(final InvocableDeserializer<?> deserializer) {
         validateNotNull(deserializer, "deserializer");
         this.deserializer = deserializer;
+    }
+
+    public GenericType<?> getType() {
+        return this.type;
     }
 
     public TypeDeserializer createDeserializer() {

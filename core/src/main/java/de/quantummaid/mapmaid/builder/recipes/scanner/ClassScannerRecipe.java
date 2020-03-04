@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.recipes.scanner;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.shared.types.ClassType;
@@ -74,15 +75,13 @@ public final class ClassScannerRecipe implements Recipe {
             if (!OBJECT_METHODS.contains(method.method().getName())) {
                 method.parameters().stream()
                         .map(ResolvedParameter::type)
-                        .forEach(type -> builder.mapping(
-                                type,
-                                deserialization(),
-                                format("because parameter type of method %s", method.describe())));
+                        .map(GenericType::fromResolvedType)
+                        .forEach(type -> builder.withType(
+                                type, deserialization(), format("because parameter type of method %s", method.describe())));
                 method.returnType()
-                        .ifPresent(type -> builder.mapping(
-                                type,
-                                serialization(),
-                                format("because return type of method %s", method.describe())));
+                        .map(GenericType::fromResolvedType)
+                        .ifPresent(type -> builder.withType(
+                                type, serialization(), format("because return type of method %s", method.describe())));
             }
         }
     }

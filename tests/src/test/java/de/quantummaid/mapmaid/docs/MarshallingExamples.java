@@ -44,7 +44,7 @@ public final class MarshallingExamples {
     public void urlEncodedExample() {
         //Showcase start urlencoded
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(ComplexPerson.class)
+                .serializingAndDeserializing(ComplexPerson.class)
                 .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .build();
         //Showcase end urlencoded
@@ -72,7 +72,7 @@ public final class MarshallingExamples {
         //Showcase start jsonWithGson
         final Gson gson = new Gson(); // can be further configured depending on your needs.
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(ComplexPerson.class)
+                .serializingAndDeserializing(ComplexPerson.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .build();
         //Showcase end jsonWithGson
@@ -95,7 +95,7 @@ public final class MarshallingExamples {
         //Showcase start jsonWithObjectMapper
         final ObjectMapper objectMapper = new ObjectMapper();
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(ComplexPerson.class)
+                .serializingAndDeserializing(ComplexPerson.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .build();
         //Showcase end jsonWithObjectMapper
@@ -120,7 +120,7 @@ public final class MarshallingExamples {
         xStream.alias("root", Map.class);
 
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(ComplexPerson.class)
+                .serializingAndDeserializing(ComplexPerson.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
                     @SuppressWarnings("unchecked")
                     @Override
@@ -191,7 +191,7 @@ public final class MarshallingExamples {
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(ComplexPerson.class)
+                .serializingAndDeserializing(ComplexPerson.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .build();
         //Showcase end yamlWithObjectMapper
@@ -224,7 +224,7 @@ public final class MarshallingExamples {
     public void jacksonWithRecipe() {
         //Showcase start jacksonWithRecipe
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(ComplexPerson.class)
+                .serializingAndDeserializing(ComplexPerson.class)
                 //...
                 .usingRecipe(jacksonMarshallerJson(new ObjectMapper()))
                 //...

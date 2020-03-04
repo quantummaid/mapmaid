@@ -34,8 +34,8 @@ public final class Examples {
 
     static MapMaid get() {
         return MapMaid.aMapMaid()
-                .mapping(de.quantummaid.mapmaid.examples.domain.Person.class)
-                .mapping(de.quantummaid.mapmaid.examples.domain.ValidPerson.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.examples.domain.Person.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.examples.domain.ValidPerson.class)
                 .withExceptionIndicatingValidationError(IllegalArgumentException.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .build();

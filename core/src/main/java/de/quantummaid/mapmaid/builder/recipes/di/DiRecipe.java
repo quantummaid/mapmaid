@@ -55,12 +55,12 @@ public final class DiRecipe implements Recipe {
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder) {
         this.types.forEach(type -> {
-                    final GenericType<Object> genericType = genericType((Class<Object>) type);
-                    final DependencyInjector<?> dependencyInjector = this.injector.specialzedFor(type);
-                    final TypeSerializer serializer = DiSerializer.diSerializer();
-                    final TypeDeserializer deserializer = diDeserializer(dependencyInjector);
-                    final DuplexType<Object> duplexType = duplexType(serializer, deserializer);
-                    mapMaidBuilder.serializingAndDeserializing(genericType, duplexType);
-                });
+            final GenericType<Object> genericType = genericType((Class<Object>) type);
+            final DependencyInjector<?> dependencyInjector = this.injector.specialzedFor(type);
+            final TypeSerializer serializer = DiSerializer.diSerializer();
+            final TypeDeserializer deserializer = diDeserializer(dependencyInjector);
+            final DuplexType<Object> duplexType = duplexType(genericType, serializer, deserializer);
+            mapMaidBuilder.serializingAndDeserializing(duplexType);
+        });
     }
 }

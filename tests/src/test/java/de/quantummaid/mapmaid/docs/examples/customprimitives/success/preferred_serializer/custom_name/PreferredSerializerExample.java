@@ -36,7 +36,7 @@ public final class PreferredSerializerExample {
                 .withDuplexFailing()
                 .withDeserializationSuccessful()
                 .withFixedScenarios((mapMaidBuilder, capabilities) -> {
-                    mapMaidBuilder.mapping(PreferredSerializerCustomPrimitive.class, capabilities);
+                    mapMaidBuilder.withType(PreferredSerializerCustomPrimitive.class, capabilities);
                     mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
                             .withPreferredCustomPrimitiveSerializationMethodName("myCustomName"));
                 })

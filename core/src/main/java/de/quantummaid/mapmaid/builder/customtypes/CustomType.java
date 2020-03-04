@@ -21,12 +21,15 @@
 
 package de.quantummaid.mapmaid.builder.customtypes;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 
 import java.util.Optional;
 
 public interface CustomType<T> {
+    GenericType<T> type();
+
     Optional<TypeDeserializer> deserializer();
 
     Optional<TypeSerializer> serializer();

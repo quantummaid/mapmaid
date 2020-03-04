@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.GenericType.fromResolvedType;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
@@ -54,7 +55,7 @@ public final class NormalExampleMode implements ExampleMode {
     @Override
     public MapMaid provideMapMaid(final ResolvedType type) {
         return aMapMaid()
-                .mapping(type, this.capabilities)
+                .withType(fromResolvedType(type), this.capabilities)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build();
     }

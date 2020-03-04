@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,11 +34,19 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SimpleSerializationOnlyType<T> implements SerializationOnlyType<T> {
+    private final GenericType<T> type;
     private final TypeSerializer serializer;
 
-    static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final TypeSerializer serializer) {
+    static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final GenericType<T> type,
+                                                                          final TypeSerializer serializer) {
+        validateNotNull(type, "type");
         validateNotNull(serializer, "serializer");
-        return new SimpleSerializationOnlyType<>(serializer);
+        return new SimpleSerializationOnlyType<>(type, serializer);
+    }
+
+    @Override
+    public GenericType<T> type() {
+        return this.type;
     }
 
     @Override

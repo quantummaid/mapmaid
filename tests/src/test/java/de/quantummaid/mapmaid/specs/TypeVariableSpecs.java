@@ -34,9 +34,7 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
-import static de.quantummaid.mapmaid.shared.types.ArrayType.fromArrayClass;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
 import static de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType.unresolvedType;
 import static de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType.deserialize;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
@@ -49,7 +47,7 @@ public final class TypeVariableSpecs {
     public void aSerializedObjectWithTypeVariableFieldsCanBeSerialized() {
         given(
                 aMapMaid()
-                        .mapping(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(AString.class)))
+                        .serializingAndDeserializing(genericType(AComplexParameterizedType.class, AString.class))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
@@ -66,7 +64,7 @@ public final class TypeVariableSpecs {
     public void aSerializedObjectWithTypeVariableFieldsCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .mapping(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(AString.class)))
+                        .serializingAndDeserializing(genericType(AComplexParameterizedType.class, AString.class))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
@@ -81,8 +79,8 @@ public final class TypeVariableSpecs {
     public void aSerializedObjectWithTypeVariableFieldsCanBeRegisteredTwice() {
         given(
                 aMapMaid()
-                        .mapping(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(AString.class)))
-                        .mapping(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(ANumber.class)))
+                        .serializingAndDeserializing(genericType(AComplexParameterizedType.class, AString.class))
+                        .serializingAndDeserializing(genericType(AComplexParameterizedType.class, ANumber.class))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
@@ -116,9 +114,7 @@ public final class TypeVariableSpecs {
     public void aSerializedObjectWithTypeVariableFieldCanBeSerializedIfTheTypeOfTheTypeVariableIsProvidedDuringSerialization() {
         given(
                 aMapMaid()
-                        .mapping(
-                                unresolvedType(AComplexParameterizedType.class)
-                                        .resolve(unresolvedType(List.class).resolve(fromClassWithoutGenerics(AString.class))))
+                        .serializingAndDeserializing(genericType(AComplexParameterizedType.class, genericType(List.class, AString.class)))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
@@ -137,9 +133,7 @@ public final class TypeVariableSpecs {
     public void aSerializedObjectWithTypeVariableCanSerializedIfTheValueOfTheTypeVariableIsAnArray() {
         given(
                 aMapMaid()
-                        .mapping(
-                                unresolvedType(AComplexParameterizedType.class)
-                                        .resolve(fromArrayClass(AString[].class)))
+                        .serializingAndDeserializing(genericType(AComplexParameterizedType.class, AString[].class))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
@@ -158,8 +152,7 @@ public final class TypeVariableSpecs {
     public void methodTypeVariablesDoNotCauseProblems() {
         given(
                 aMapMaid()
-                        .mapping(
-                                resolvedType(AComplexTypeWithParameterizedUnusedMethods.class))
+                        .serializingAndDeserializing(AComplexTypeWithParameterizedUnusedMethods.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )

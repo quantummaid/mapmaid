@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder0;
@@ -33,6 +34,7 @@ import lombok.ToString;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder0.serializedObjectBuilder0;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
@@ -40,60 +42,111 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DuplexType<T> implements CustomType<T> {
+    private final GenericType<T> type;
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
 
-    public static <T> SerializedObjectBuilder0<T> serializedObject() {
-        return serializedObjectBuilder0();
-    }
-
     public static <T> SerializedObjectBuilder0<T> serializedObject(final Class<T> type) {
-        return serializedObjectBuilder0();
+        return serializedObject(genericType(type));
     }
 
-    public static <T> DuplexType<T> customPrimitive(final CustomCustomPrimitiveSerializer<T, String> serializer,
+    public static <T> SerializedObjectBuilder0<T> serializedObject(final GenericType<T> type) {
+        return serializedObjectBuilder0(type);
+    }
+
+    public static <T> DuplexType<T> customPrimitive(final Class<T> type,
+                                                    final CustomCustomPrimitiveSerializer<T, String> serializer,
                                                     final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
-        return stringBasedCustomPrimitive(serializer, deserializer);
+        return customPrimitive(genericType(type), serializer, deserializer);
     }
 
-    public static <T> DuplexType<T> stringBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, String> serializer,
+    public static <T> DuplexType<T> customPrimitive(final GenericType<T> type,
+                                                    final CustomCustomPrimitiveSerializer<T, String> serializer,
+                                                    final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
+        return stringBasedCustomPrimitive(type, serializer, deserializer);
+    }
+
+    public static <T> DuplexType<T> stringBasedCustomPrimitive(final Class<T> type,
+                                                               final CustomCustomPrimitiveSerializer<T, String> serializer,
                                                                final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
-        return createCustomPrimitive(serializer, deserializer, String.class);
+        return stringBasedCustomPrimitive(genericType(type), serializer, deserializer);
     }
 
-    public static <T> DuplexType<T> intBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Integer> serializer,
+    public static <T> DuplexType<T> stringBasedCustomPrimitive(final GenericType<T> type,
+                                                               final CustomCustomPrimitiveSerializer<T, String> serializer,
+                                                               final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
+        return createCustomPrimitive(type, serializer, deserializer, String.class);
+    }
+
+    public static <T> DuplexType<T> intBasedCustomPrimitive(final Class<T> type,
+                                                            final CustomCustomPrimitiveSerializer<T, Integer> serializer,
                                                             final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
-        return createCustomPrimitive(serializer, deserializer, Integer.class);
+        return intBasedCustomPrimitive(genericType(type), serializer, deserializer);
     }
 
-    public static <T> DuplexType<T> floatBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Float> serializer,
+    public static <T> DuplexType<T> intBasedCustomPrimitive(final GenericType<T> type,
+                                                            final CustomCustomPrimitiveSerializer<T, Integer> serializer,
+                                                            final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
+        return createCustomPrimitive(type, serializer, deserializer, Integer.class);
+    }
+
+    public static <T> DuplexType<T> floatBasedCustomPrimitive(final Class<T> type,
+                                                              final CustomCustomPrimitiveSerializer<T, Float> serializer,
                                                               final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {
-        return createCustomPrimitive(serializer, deserializer, Float.class);
+        return floatBasedCustomPrimitive(genericType(type), serializer, deserializer);
     }
 
-    public static <T> DuplexType<T> doubleBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Double> serializer,
+    public static <T> DuplexType<T> floatBasedCustomPrimitive(final GenericType<T> type,
+                                                              final CustomCustomPrimitiveSerializer<T, Float> serializer,
+                                                              final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {
+        return createCustomPrimitive(type, serializer, deserializer, Float.class);
+    }
+
+    public static <T> DuplexType<T> doubleBasedCustomPrimitive(final Class<T> type,
+                                                               final CustomCustomPrimitiveSerializer<T, Double> serializer,
                                                                final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
-        return createCustomPrimitive(serializer, deserializer, Double.class);
+        return doubleBasedCustomPrimitive(genericType(type), serializer, deserializer);
     }
 
-    public static <T> DuplexType<T> booleanBasedCustomPrimitive(final CustomCustomPrimitiveSerializer<T, Boolean> serializer,
+    public static <T> DuplexType<T> doubleBasedCustomPrimitive(final GenericType<T> type,
+                                                               final CustomCustomPrimitiveSerializer<T, Double> serializer,
+                                                               final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
+        return createCustomPrimitive(type, serializer, deserializer, Double.class);
+    }
+
+    public static <T> DuplexType<T> booleanBasedCustomPrimitive(final Class<T> type,
+                                                                final CustomCustomPrimitiveSerializer<T, Boolean> serializer,
                                                                 final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
-        return createCustomPrimitive(serializer, deserializer, Boolean.class);
+        return booleanBasedCustomPrimitive(genericType(type), serializer, deserializer);
     }
 
-    private static <T, B> DuplexType<T> createCustomPrimitive(final CustomCustomPrimitiveSerializer<T, B> serializer,
+    public static <T> DuplexType<T> booleanBasedCustomPrimitive(final GenericType<T> type,
+                                                                final CustomCustomPrimitiveSerializer<T, Boolean> serializer,
+                                                                final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
+        return createCustomPrimitive(type, serializer, deserializer, Boolean.class);
+    }
+
+    private static <T, B> DuplexType<T> createCustomPrimitive(final GenericType<T> type,
+                                                              final CustomCustomPrimitiveSerializer<T, B> serializer,
                                                               final CustomCustomPrimitiveDeserializer<T, B> deserializer,
                                                               final Class<B> baseType) {
         final TypeSerializer typeSerializer = serializer.toTypeSerializer(baseType);
         final TypeDeserializer typeDeserializer = deserializer.toTypeDeserializer(baseType);
-        return new DuplexType<>(typeSerializer, typeDeserializer);
+        return new DuplexType<>(type, typeSerializer, typeDeserializer);
     }
 
-    public static <T> DuplexType<T> duplexType(final TypeSerializer serializer,
+    public static <T> DuplexType<T> duplexType(final GenericType<T> type,
+                                               final TypeSerializer serializer,
                                                final TypeDeserializer deserializer) {
+        validateNotNull(type, "type");
         validateNotNull(serializer, "serializer");
         validateNotNull(deserializer, "deserializer");
-        return new DuplexType<>(serializer, deserializer);
+        return new DuplexType<>(type, serializer, deserializer);
+    }
+
+    @Override
+    public GenericType<T> type() {
+        return this.type;
     }
 
     @Override

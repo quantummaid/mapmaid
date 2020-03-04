@@ -52,7 +52,7 @@ public final class CustomConventionalBuilderTest {
         final Gson gson = new Gson();
 
         return MapMaid.aMapMaid()
-                .mapping(Email.class)
+                .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> {
                     advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
                     advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");

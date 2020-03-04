@@ -69,7 +69,7 @@ public final class XmlBuilderTest {
         xStream.alias("root", Map.class);
 
         return MapMaid.aMapMaid()
-                .mapping(Email.class)
+                .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(xStream::toXML, new Unmarshaller() {
                     @Override
                     public <T> T unmarshal(final String input, final Class<T> type) {

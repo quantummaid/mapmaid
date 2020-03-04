@@ -43,7 +43,7 @@ public final class AllPrivateExample {
                         "}")
                 .withAllScenariosFailing(
                         "de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.all_private.AddALotRequest: unable to detect",
-                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(AddALotRequest.class, capabilities,
+                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
                                 serializedObject(AddALotRequest.class)
                                         .withField("name", Name.class, object -> Name.fromStringValue("a"))
                                         .withField("townNameA", TownName.class, object -> TownName.townName("b"))

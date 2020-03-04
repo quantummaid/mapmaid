@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -32,8 +33,10 @@ public final class Common {
     private Common() {
     }
 
+    @SuppressWarnings("unchecked")
     static <T> DeserializationOnlyType<T> createDeserializationOnlyType(final Builder builder) {
+        final GenericType<?> type = builder.getType();
         final TypeDeserializer deserializer = builder.createDeserializer();
-        return deserializationOnlyType(deserializer);
+        return (DeserializationOnlyType<T>) deserializationOnlyType(type, deserializer);
     }
 }

@@ -41,7 +41,7 @@ public final class DependencyInjectionSpecs {
     public void aClassCanBeDeserializedUsingDependencyInjection() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .mapping(AComplexType.class)
+                        .serializingAndDeserializing(AComplexType.class)
                         .usingRecipe(toUseDependencyInjectionWith(new GeneralDependencyInjector() {
                             @SuppressWarnings("unchecked")
                             @Override
@@ -74,7 +74,7 @@ public final class DependencyInjectionSpecs {
     public void aClassCanBeDeserializedUsingDependencyInjectionEvenIfTheCorrespondingFieldIsNotPresent() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .mapping(AComplexType.class)
+                        .serializingAndDeserializing(AComplexType.class)
                         .usingRecipe(toUseDependencyInjectionWith(new GeneralDependencyInjector() {
                             @SuppressWarnings("unchecked")
                             @Override

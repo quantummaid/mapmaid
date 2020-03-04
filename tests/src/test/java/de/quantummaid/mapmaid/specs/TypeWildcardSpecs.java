@@ -26,7 +26,6 @@ import de.quantummaid.mapmaid.testsupport.domain.wildcards.AComplexTypeWithWildc
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class TypeWildcardSpecs {
@@ -35,7 +34,7 @@ public final class TypeWildcardSpecs {
     public void collectionsWithTypeWildcardsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .mapping(AComplexTypeWithWildcardedCollection.class, deserialization())
+                        .deserializing(AComplexTypeWithWildcardedCollection.class)
                         .build())
                 .when().mapMaidIsInstantiated()
                 .anExceptionIsThrownWithAMessageContaining("type '?' is not supported because it contains wildcard generics (\"?\")");
@@ -45,7 +44,7 @@ public final class TypeWildcardSpecs {
     public void classesWithWildcardGenericsAreIgnored() {
         given(
                 () -> aMapMaid()
-                        .mapping(AComplexTypeWithTypeWildcards.class)
+                        .serializingAndDeserializing(AComplexTypeWithTypeWildcards.class)
                         .build()
         )
                 .when().mapMaidIsInstantiated()

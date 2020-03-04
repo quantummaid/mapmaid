@@ -42,8 +42,8 @@ import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex
 public final class SerializedObjectBuilder0<X> {
     private final Builder builder;
 
-    public static <A, X> SerializedObjectBuilder0<X> serializedObjectBuilder0() {
-        return new SerializedObjectBuilder0<>(emptyBuilder());
+    public static <X> SerializedObjectBuilder0<X> serializedObjectBuilder0(final GenericType<X> type) {
+        return new SerializedObjectBuilder0<>(emptyBuilder(type));
     }
 
     public <A> SerializedObjectBuilder1<X, A> withField(final String name,

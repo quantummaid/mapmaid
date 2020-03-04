@@ -32,7 +32,7 @@ public final class RecursionSpecs {
     @Test
     public void recursionRecipeCanDetectCustomPrimitives() {
         Given.given(
-                aMapMaid().mapping(AString.class).build()
+                aMapMaid().serializingAndDeserializing(AString.class).build()
         )
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheCustomPrimitives(AString.class)
@@ -42,7 +42,7 @@ public final class RecursionSpecs {
     @Test
     public void recursionRecipeCanDetectRequiredTypesForSerializedObjects() {
         Given.given(
-                aMapMaid().mapping(AComplexNestedValidatedType.class).build()
+                aMapMaid().serializingAndDeserializing(AComplexNestedValidatedType.class).build()
         )
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheSerializedObjects(AComplexNestedValidatedType.class, AComplexValidatedType.class)
@@ -52,7 +52,7 @@ public final class RecursionSpecs {
     @Test
     public void recursionRecipeCanDetectThroughCollections() {
         Given.given(
-                aMapMaid().mapping(AComplexTypeWithCollections.class).build()
+                aMapMaid().serializingAndDeserializing(AComplexTypeWithCollections.class).build()
         )
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheSerializedObjects(AComplexTypeWithCollections.class)
@@ -62,7 +62,7 @@ public final class RecursionSpecs {
     @Test
     public void recursionRecipeCanAutoloadPrimitiveDataTypes() {
         Given.given(
-                aMapMaid().mapping(AComplexNestedValidatedType.class).build()
+                aMapMaid().serializingAndDeserializing(AComplexNestedValidatedType.class).build()
         )
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheCustomPrimitives(AValidatedString.class)

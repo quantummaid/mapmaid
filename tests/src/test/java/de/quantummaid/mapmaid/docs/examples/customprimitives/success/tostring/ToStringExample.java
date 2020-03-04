@@ -34,8 +34,8 @@ public final class ToStringExample {
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(MyCustomPrimitive.myCustomPrimitive("foo"))
                 .withDeserializationOnly()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(MyCustomPrimitive.class, capabilities,
-                        customPrimitive(MyCustomPrimitive::toString, MyCustomPrimitive::myCustomPrimitive)))
+                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
+                        customPrimitive(MyCustomPrimitive.class, MyCustomPrimitive::toString, MyCustomPrimitive::myCustomPrimitive)))
                 .run();
     }
 }

@@ -35,7 +35,7 @@ public final class PreferredFactoryExample {
                 .withDeserializationFailing()
                 .withDuplexFailing()
                 .withFixedScenarios((mapMaidBuilder, capabilities) -> {
-                    mapMaidBuilder.mapping(PreferredFactoryCustomPrimitive.class, capabilities);
+                    mapMaidBuilder.withType(PreferredFactoryCustomPrimitive.class, capabilities);
                     mapMaidBuilder.withAdvancedSettings(advancedBuilder ->
                             advancedBuilder.withPreferredCustomPrimitiveFactoryName("myCustomName"));
                 })

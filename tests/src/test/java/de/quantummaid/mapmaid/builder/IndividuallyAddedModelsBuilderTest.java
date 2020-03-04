@@ -77,10 +77,10 @@ public final class IndividuallyAddedModelsBuilderTest {
 
     public static MapMaid theIndividuallyAddedTypesMapMaidConventional() {
         return MapMaid.aMapMaid()
-                .mapping(Email.class)
-                .mapping(de.quantummaid.mapmaid.builder.models.conventional.EmailAddress.class)
-                .mapping(de.quantummaid.mapmaid.builder.models.conventional.Subject.class)
-                .mapping(de.quantummaid.mapmaid.builder.models.conventional.Body.class)
+                .serializingAndDeserializing(Email.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.EmailAddress.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.Subject.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.Body.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
@@ -90,17 +90,16 @@ public final class IndividuallyAddedModelsBuilderTest {
         final Class<Body>
                 customConventionBody = Body.class;
         return MapMaid.aMapMaid()
-                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.customconvention.Email.class,
-                        serializedObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
-                                .withField("sender", EmailAddress.class, object -> object.sender)
-                                .withField("receiver", EmailAddress.class, object -> object.receiver)
-                                .withField("subject", Subject.class, object -> object.subject)
-                                .withField("body", Body.class, object -> object.body)
-                                .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore)
+                .serializingAndDeserializing(serializedObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
+                        .withField("sender", EmailAddress.class, object -> object.sender)
+                        .withField("receiver", EmailAddress.class, object -> object.receiver)
+                        .withField("subject", Subject.class, object -> object.subject)
+                        .withField("body", Body.class, object -> object.body)
+                        .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore)
                 )
-                .serializingAndDeserializing(EmailAddress.class, customPrimitive(EmailAddress::serialize, EmailAddress::deserialize))
-                .serializingAndDeserializing(Subject.class, customPrimitive(Subject::serialize, Subject::deserialize))
-                .serializingAndDeserializing(customConventionBody, customPrimitive(Body::serialize, Body::deserialize))
+                .serializingAndDeserializing(customPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize))
+                .serializingAndDeserializing(customPrimitive(Subject.class, Subject::serialize, Subject::deserialize))
+                .serializingAndDeserializing(customPrimitive(customConventionBody, Body::serialize, Body::deserialize))
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
@@ -116,10 +115,10 @@ public final class IndividuallyAddedModelsBuilderTest {
                     advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
                     advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
                 })
-                .mapping(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
-                .mapping(EmailAddress.class)
-                .mapping(Subject.class)
-                .mapping(Body.class)
+                .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
+                .serializingAndDeserializing(EmailAddress.class)
+                .serializingAndDeserializing(Subject.class)
+                .serializingAndDeserializing(Body.class)
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

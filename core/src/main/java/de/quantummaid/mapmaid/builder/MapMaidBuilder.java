@@ -53,9 +53,13 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.MapMaid.mapMaid;
 import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
@@ -63,6 +67,7 @@ import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
+import static de.quantummaid.mapmaid.builder.resolving.Reason.reason;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
@@ -71,7 +76,6 @@ import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.theSerializer;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -83,7 +87,7 @@ public final class MapMaidBuilder {
     private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
     private final Processor processor = processor();
     private final AdvancedBuilder advancedBuilder = advancedBuilder();
-    private final List<Recipe> recipes = new ArrayList<>(10);
+    private final List<Recipe> recipes = smallList();
     private final ValidationMappings validationMappings = ValidationMappings.empty();
     private final ValidationErrorsMapping validationErrorsMapping = validationErrors -> {
         throw AggregatedValidationException.fromList(validationErrors);
@@ -97,114 +101,93 @@ public final class MapMaidBuilder {
         return serializing(genericType(type));
     }
 
-    public <T> MapMaidBuilder serializing(final Class<T> type, final SerializationOnlyType<T> customType) {
-        return serializing(genericType(type), customType);
-    }
-
     public MapMaidBuilder serializing(final GenericType<?> genericType) {
-        final ResolvedType resolvedType = genericType.toResolvedType();
-        return mapping(resolvedType, serialization());
+        return withType(genericType, serialization());
     }
 
-    public <T> MapMaidBuilder serializing(final GenericType<T> genericType,
-                                          final SerializationOnlyType<T> customType) {
-        return withCustomType(genericType, serialization(), customType);
+    public <T> MapMaidBuilder serializing(final SerializationOnlyType<T> customType) {
+        return withCustomType(serialization(), customType);
     }
 
     public MapMaidBuilder deserializing(final Class<?> type) {
         return deserializing(genericType(type));
     }
 
-    public <T> MapMaidBuilder deserializing(final Class<T> type,
-                                            final DeserializationOnlyType<T> customType) {
-        return deserializing(genericType(type), customType);
-    }
-
     public MapMaidBuilder deserializing(final GenericType<?> genericType) {
-        final ResolvedType resolvedType = genericType.toResolvedType();
-        return mapping(resolvedType, deserialization());
+        return withType(genericType, deserialization());
     }
 
-    public <T> MapMaidBuilder deserializing(final GenericType<T> genericType,
-                                            final DeserializationOnlyType<T> customType) {
-        return withCustomType(genericType, deserialization(), customType);
+    public <T> MapMaidBuilder deserializing(final DeserializationOnlyType<T> customType) {
+        return withCustomType(deserialization(), customType);
     }
 
     public MapMaidBuilder serializingAndDeserializing(final Class<?> type) {
         return serializingAndDeserializing(genericType(type));
     }
 
-    public <T> MapMaidBuilder serializingAndDeserializing(final Class<T> type,
-                                                          final DuplexType<T> customType) {
-        return serializingAndDeserializing(genericType(type), customType);
-    }
-
     public MapMaidBuilder serializingAndDeserializing(final GenericType<?> genericType) {
-        final ResolvedType resolvedType = genericType.toResolvedType();
-        return mapping(resolvedType, duplex());
+        return withType(genericType, duplex());
     }
 
-    public <T> MapMaidBuilder serializingAndDeserializing(final GenericType<T> genericType,
-                                                          final DuplexType<T> customType) {
-        return withCustomType(genericType, duplex(), customType);
-    }
-
-    public MapMaidBuilder mapping(final Class<?> type) {
-        return mapping(fromClassWithoutGenerics(type));
-    }
-
-    public MapMaidBuilder mapping(final Class<?> type,
-                                  final RequiredCapabilities capabilities) {
-        return mapping(fromClassWithoutGenerics(type), capabilities);
-    }
-
-    public MapMaidBuilder mapping(final ResolvedType type,
-                                  final RequiredCapabilities capabilities) {
-        return mapping(type, capabilities, manuallyAdded());
-    }
-
-    public MapMaidBuilder mapping(final ResolvedType type,
-                                  final RequiredCapabilities capabilities,
-                                  final String reason) {
-        return mapping(type, capabilities, Reason.reason(reason));
-    }
-
-    public MapMaidBuilder mapping(final ResolvedType type,
-                                  final RequiredCapabilities capabilities,
-                                  final Reason reason) {
-        validateNotNull(type, "type");
-        validateNotNull(capabilities, "capabilities");
-        if (capabilities.hasSerialization()) {
-            this.processor.dispatch(addSerialization(type, reason));
-        }
-        if (capabilities.hasDeserialization()) {
-            this.processor.dispatch(addDeserialization(type, reason));
-        }
-        return this;
-    }
-
-    public MapMaidBuilder mapping(final ResolvedType type) {
-        return mapping(type, duplex());
+    public <T> MapMaidBuilder serializingAndDeserializing(final DuplexType<T> customType) {
+        return withCustomType(duplex(), customType);
     }
 
     public MapMaidBuilder withManuallyAddedTypes(final Class<?>... type) {
         validateNotNull(type, "type");
-        stream(type).forEach(this::mapping);
+        stream(type).forEach(this::serializingAndDeserializing);
         return this;
     }
 
-    public <T> MapMaidBuilder withCustomType(final Class<T> type,
-                                             final RequiredCapabilities capabilities,
-                                             final CustomType<T> customType) {
-        return withCustomType(genericType(type), capabilities, customType);
+    public MapMaidBuilder withType(final Class<?> type,
+                                   final RequiredCapabilities capabilities) {
+        return withType(genericType(type), capabilities);
     }
 
-    public <T> MapMaidBuilder withCustomType(final GenericType<T> type,
-                                             final RequiredCapabilities capabilities,
-                                             final CustomType<T> customType) {
+    public MapMaidBuilder withType(final GenericType<?> type,
+                                   final RequiredCapabilities capabilities) {
+        return withType(type, capabilities, manuallyAdded());
+    }
+
+    public MapMaidBuilder withType(final Class<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final String reason) {
+        return withType(type, capabilities, reason(reason));
+    }
+
+    public MapMaidBuilder withType(final Class<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final Reason reason) {
+        return withType(genericType(type), capabilities, reason);
+    }
+
+    public MapMaidBuilder withType(final GenericType<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final String reason) {
+        return withType(type, capabilities, reason(reason));
+    }
+
+    public MapMaidBuilder withType(final GenericType<?> type,
+                                   final RequiredCapabilities capabilities,
+                                   final Reason reason) {
         validateNotNull(type, "type");
         validateNotNull(capabilities, "capabilities");
+        validateNotNull(reason, "reason");
+        final ResolvedType resolvedType = type.toResolvedType();
+        if (capabilities.hasSerialization()) {
+            this.processor.dispatch(addSerialization(resolvedType, reason));
+        }
+        if (capabilities.hasDeserialization()) {
+            this.processor.dispatch(addDeserialization(resolvedType, reason));
+        }
+        return this;
+    }
+
+    public <T> MapMaidBuilder withCustomType(final RequiredCapabilities capabilities,
+                                             final CustomType<T> customType) {
+        validateNotNull(capabilities, "capabilities");
         validateNotNull(customType, "customType");
+        final GenericType<T> type = customType.type();
         final ResolvedType resolvedType = type.toResolvedType();
         final Optional<TypeSerializer> serializer = customType.serializer();
         if (capabilities.hasSerialization() && !serializer.isPresent()) {
@@ -224,30 +207,6 @@ public final class MapMaidBuilder {
         }
         if (capabilities.hasDeserialization()) {
             this.processor.dispatch(addDeserialization(resolvedType, manuallyAdded()));
-        }
-        return this;
-    }
-
-    public MapMaidBuilder withManuallyAddedDefinition(final Definition definition) {
-        validateNotNull(definition, "definition");
-        return withManuallyAddedDefinition(definition, fromDefinition(definition));
-    }
-
-    public MapMaidBuilder withManuallyAddedDefinition(final Definition definition,
-                                                      final RequiredCapabilities capabilities) {
-        validateNotNull(definition, "definition");
-        validateNotNull(capabilities, "capabilities");
-        final ResolvedType type = definition.type();
-        final Context context = emptyContext(this.processor::dispatch, type);
-        definition.serializer().ifPresent(context::setSerializer);
-        definition.deserializer().ifPresent(context::setDeserializer);
-        final StatefulDefinition statefulDefinition = fixedUnreasoned(context);
-        this.processor.addState(statefulDefinition);
-        if (capabilities.hasSerialization()) {
-            this.processor.dispatch(addSerialization(type, manuallyAdded()));
-        }
-        if (capabilities.hasDeserialization()) {
-            this.processor.dispatch(addDeserialization(type, manuallyAdded()));
         }
         return this;
     }

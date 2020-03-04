@@ -31,12 +31,9 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
-import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
-import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.constantDeserializer;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer.constantSerializer;
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 
 public final class IndirectOverrideDefinitionsSpecs {
 
@@ -44,12 +41,8 @@ public final class IndirectOverrideDefinitionsSpecs {
     public void customDeserializationForCustomPrimitiveOverridesIndirectDefault() {
         Given.given(
                 MapMaid.aMapMaid()
-                        .mapping(AComplexType.class)
-                        .withManuallyAddedDefinition(generalDefinition(
-                                fromClassWithoutGenerics(ANumber.class),
-                                constantSerializer("23"),
-                                constantDeserializer(ANumber.fromInt(23))
-                        ))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .serializingAndDeserializing(customPrimitive(ANumber.class, object -> "23", value -> ANumber.fromInt(23)))
                         .withAdvancedSettings(advancedBuilder -> {
                             advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller());
                         })
@@ -65,7 +58,7 @@ public final class IndirectOverrideDefinitionsSpecs {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexNestedType.class)
-                        .serializingAndDeserializing(AComplexType.class, serializedObject(AComplexType.class)
+                        .serializingAndDeserializing(serializedObject(AComplexType.class)
                                 .withField("foo", AString.class, object -> AString.fromStringValue("bar"))
                                 .deserializedUsing(foo -> AComplexType.deserialize(
                                         AString.fromStringValue("custom1"),

@@ -51,7 +51,7 @@ public class UsageExamples {
         //Showcase start jsonInstance
         final Gson gson = new Gson();
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(Email.class)
+                .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
                 .build();
         //Showcase end jsonInstance
@@ -73,7 +73,7 @@ public class UsageExamples {
         //Showcase start yamlInstance
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(Email.class)
+                .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder ->
                         advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
                 .build();
@@ -101,7 +101,7 @@ public class UsageExamples {
         final XStream xStream = new XStream(new DomDriver());
         xStream.alias("root", Map.class);
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(Email.class)
+                .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
                         .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
                             @SuppressWarnings("unchecked")
@@ -148,7 +148,7 @@ public class UsageExamples {
         //Showcase start example1
         final Gson gson = new Gson();
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .mapping(Email.class)
+                .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
                         .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
                 .build();

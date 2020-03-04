@@ -62,6 +62,10 @@ public final class GenericType<T> {
         return new GenericType<>(resolvedType);
     }
 
+    public static <T> GenericType<T> fromResolvedType(final ResolvedType type) {
+        return new GenericType<>(type);
+    }
+
     public ResolvedType toResolvedType() {
         return this.type;
     }

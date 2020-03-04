@@ -32,12 +32,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SerializationOnlySerializedObject<T> implements SerializationOnlyType<T> {
     private final Builder builder;
+
+    public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(final GenericType<T> type) {
+        return new SerializationOnlySerializedObject<>(emptyBuilder(type));
+    }
 
     public <B> SerializationOnlySerializedObject<T> withField(final String name,
                                                               final Class<B> type,
@@ -56,5 +61,11 @@ public final class SerializationOnlySerializedObject<T> implements Serialization
     @Override
     public TypeSerializer createSerializer() {
         return this.builder.createSerializer();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public GenericType<T> type() {
+        return (GenericType<T>) this.builder.getType();
     }
 }

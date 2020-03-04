@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex;
 
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -33,9 +34,11 @@ final class Common {
     private Common() {
     }
 
+    @SuppressWarnings("unchecked")
     static <T> DuplexType<T> createDuplexType(final Builder builder) {
+        final GenericType<?> type = builder.getType();
         final TypeSerializer serializer = builder.createSerializer();
         final TypeDeserializer deserializer = builder.createDeserializer();
-        return duplexType(serializer, deserializer);
+        return (DuplexType<T>) duplexType(type, serializer, deserializer);
     }
 }

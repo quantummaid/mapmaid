@@ -22,7 +22,7 @@ If you are following the [default conventions](UserGuide.md#default-conventions-
 ```java
 final Gson gson = new Gson();
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .mapping(Email.class)
+        .serializingAndDeserializing(Email.class)
         .withAdvancedSettings(advancedBuilder -> advancedBuilder
                 .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
         .build();
