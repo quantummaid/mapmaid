@@ -39,7 +39,6 @@
         Json, XML, or YAML format into DTOs composed and vice versa.
     </description>
     <url>https://github.com/quantummaid/mapmaid</url>
-
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -63,6 +62,10 @@
         <module>tests</module>
     </modules>
 
+    <properties>
+        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -83,8 +86,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
-    </properties>
 </project>
