@@ -33,8 +33,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.builder.GenericType.fromResolvedType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
@@ -42,6 +44,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @ToString
@@ -52,11 +55,22 @@ public final class ClassScannerRecipe implements Recipe {
             .map(Method::getName)
             .collect(toList());
 
-    private final List<Class<?>> classes;
+    private final Collection<Class<?>> classes;
+    private final Collection<Class<?>> serializationExclusions;
+    private final Collection<Class<?>> deserializationExclusions;
 
     public static ClassScannerRecipe addAllReferencedClassesIn(final Class<?>... classes) {
         validateNotNull(classes, "classes");
-        return new ClassScannerRecipe(asList(classes));
+        return new ClassScannerRecipe(asList(classes), emptyList(), emptyList());
+    }
+
+    public static ClassScannerRecipe addAllReferencedClassesIn(final Collection<Class<?>> classes,
+                                                               final Collection<Class<?>> serializationExclusions,
+                                                               final Collection<Class<?>> deserializationExclusions) {
+        validateNotNull(classes, "classes");
+        validateNotNull(serializationExclusions, "serializationExclusions");
+        validateNotNull(deserializationExclusions, "deserializationExclusions");
+        return new ClassScannerRecipe(classes, serializationExclusions, deserializationExclusions);
     }
 
     @Override
@@ -64,8 +78,8 @@ public final class ClassScannerRecipe implements Recipe {
         this.classes.forEach(clazz -> addReferencesIn(clazz, mapMaidBuilder));
     }
 
-    private static void addReferencesIn(final Class<?> clazz,
-                                        final MapMaidBuilder builder) {
+    private void addReferencesIn(final Class<?> clazz,
+                                 final MapMaidBuilder builder) {
         final ClassType fullType = fromClassWithoutGenerics(clazz);
         final List<ResolvedMethod> methods = fullType.methods();
         for (final ResolvedMethod method : methods) {
@@ -75,13 +89,20 @@ public final class ClassScannerRecipe implements Recipe {
             if (!OBJECT_METHODS.contains(method.method().getName())) {
                 method.parameters().stream()
                         .map(ResolvedParameter::type)
+                        .filter(type -> !this.deserializationExclusions.contains(type.assignableType()))
                         .map(GenericType::fromResolvedType)
                         .forEach(type -> builder.withType(
                                 type, deserialization(), format("because parameter type of method %s", method.describe())));
-                method.returnType()
-                        .map(GenericType::fromResolvedType)
-                        .ifPresent(type -> builder.withType(
-                                type, serialization(), format("because return type of method %s", method.describe())));
+                method.returnType().ifPresent(type -> {
+                    if (this.serializationExclusions.contains(type.assignableType())) {
+                        return;
+                    }
+                    final GenericType<?> genericType = fromResolvedType(type);
+                    builder.withType(
+                            genericType,
+                            serialization(),
+                            format("because return type of method %s", method.describe()));
+                });
             }
         }
     }
