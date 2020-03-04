@@ -25,17 +25,31 @@
 
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
-        <artifactId>mapmaid-parent</artifactId>
+        <artifactId>integrations-parent</artifactId>
         <version>0.9.17</version>
     </parent>
 
-    <artifactId>integrations-parent</artifactId>
-    <packaging>pom</packaging>
+    <groupId>de.quantummaid.mapmaid.integrations</groupId>
+    <artifactId>mapmaid-all</artifactId>
 
-    <name>MapMaid - integrations</name>
+    <name>MapMaid - Integrations - All</name>
 
-    <modules>
-        <module>all</module>
-        <module>jackson</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.quantummaid.mapmaid</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.quantummaid.mapmaid.integrations</groupId>
+            <artifactId>mapmaid-jackson</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
