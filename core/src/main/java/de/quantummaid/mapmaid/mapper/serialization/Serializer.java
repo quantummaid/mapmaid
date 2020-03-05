@@ -137,6 +137,15 @@ public final class Serializer implements SerializationCallback {
         return (Map<String, Object>) normalized;
     }
 
+    public Object serializeToUniversalObject(final Object object) {
+        if (isNull(object)) {
+            return new HashMap<>(0);
+        }
+        final ResolvedType type = ClassType.typeOfObject(object);
+        final Object normalized = normalize(object, type);
+        return normalized;
+    }
+
     private Object normalize(final Object object, final ResolvedType type) {
         if (isNull(object)) {
             return null;
