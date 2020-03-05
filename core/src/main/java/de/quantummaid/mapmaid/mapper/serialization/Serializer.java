@@ -114,6 +114,16 @@ public final class Serializer implements SerializationCallback {
         }
     }
 
+    public String serializeFromUniversalObject(final Object object,
+                                               final MarshallingType marshallingType) {
+        final Marshaller marshaller = this.marshallers.getForType(marshallingType);
+        try {
+            return marshaller.marshal(object);
+        } catch (final Exception e) {
+            throw new UnsupportedOperationException(format("Could not marshal from object %s", object), e);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public Map<String, Object> serializeToMap(final Object object) {
         if (isNull(object)) {
