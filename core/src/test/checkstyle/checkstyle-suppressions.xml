@@ -55,4 +55,5 @@
     <suppress checks="CommentsIndentation" files="UsageExamples" />
     <suppress checks="MagicNumber" files="Deserializer[0-9]*" />
     <suppress checks="ParameterNumber" files="ActualScanInformation" />
+    <suppress checks="ClassFanOutComplexity" files="Deserializer" />
 </suppressions>

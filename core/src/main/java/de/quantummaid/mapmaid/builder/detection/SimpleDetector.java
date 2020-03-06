@@ -86,7 +86,6 @@ public final class SimpleDetector {
             return failure("can only detect real types");
         }
         final ResolvedType type = typeIdentifier.getRealType();
-
         if (!isSupported(type)) {
             return failure(format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description()));
         }

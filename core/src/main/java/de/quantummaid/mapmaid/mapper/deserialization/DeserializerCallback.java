@@ -22,11 +22,10 @@
 package de.quantummaid.mapmaid.mapper.deserialization;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
-import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 public interface DeserializerCallback {
 

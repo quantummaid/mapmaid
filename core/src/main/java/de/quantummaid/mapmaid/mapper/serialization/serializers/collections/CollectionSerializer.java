@@ -25,15 +25,12 @@ import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalCollection.universalCollection;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 

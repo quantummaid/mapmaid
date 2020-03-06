@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.builder.resolving;
 
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

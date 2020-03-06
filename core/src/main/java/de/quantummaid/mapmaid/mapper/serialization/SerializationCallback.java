@@ -21,10 +21,9 @@
 
 package de.quantummaid.mapmaid.mapper.serialization;
 
-import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 public interface SerializationCallback {
     Universal serializeDefinition(TypeIdentifier type, Object object, SerializationTracker tracker);

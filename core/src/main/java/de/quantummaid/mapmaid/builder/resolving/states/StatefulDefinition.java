@@ -27,7 +27,6 @@ import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 public abstract class StatefulDefinition {
     public final Context context;

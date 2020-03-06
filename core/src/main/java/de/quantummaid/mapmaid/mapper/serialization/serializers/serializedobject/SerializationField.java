@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
-import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
