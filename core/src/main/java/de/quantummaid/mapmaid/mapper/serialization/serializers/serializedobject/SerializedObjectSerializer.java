@@ -25,8 +25,8 @@ import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public final class SerializedObjectSerializer implements TypeSerializer {
     }
 
     @Override
-    public List<ResolvedType> requiredTypes() {
+    public List<TypeIdentifier> requiredTypes() {
         return this.fields.typesList();
     }
 
@@ -68,7 +68,7 @@ public final class SerializedObjectSerializer implements TypeSerializer {
         final SerializationFields fields = fields();
         final Map<String, Universal> map = new HashMap<>(10);
         fields.fields().forEach(serializationField -> {
-            final ResolvedType type = serializationField.type();
+            final TypeIdentifier type = serializationField.type();
             final Object value = ofNullable(object).map(serializationField::query).orElse(null);
             final Universal serializedValue = callback.serializeDefinition(type, value, tracker);
             final String name = serializationField.name();

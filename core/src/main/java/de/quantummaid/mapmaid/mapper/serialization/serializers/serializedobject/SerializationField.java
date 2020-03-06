@@ -23,6 +23,8 @@ package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
+import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
 import lombok.AccessLevel;
@@ -30,6 +32,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 
@@ -60,8 +63,8 @@ public final class SerializationField {
         return serializationField(fullType, name, query);
     }
 
-    public ResolvedType type() {
-        return this.type;
+    public TypeIdentifier type() {
+        return realTypeIdentifier(this.type);
     }
 
     public String name() {

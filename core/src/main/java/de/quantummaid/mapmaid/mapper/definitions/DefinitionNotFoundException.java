@@ -21,14 +21,14 @@
 
 package de.quantummaid.mapmaid.mapper.definitions;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 public final class DefinitionNotFoundException extends RuntimeException {
     private DefinitionNotFoundException(final String msg) {
         super(msg);
     }
 
-    public static DefinitionNotFoundException definitionNotFound(final ResolvedType targetType, final String dump) {
+    public static DefinitionNotFoundException definitionNotFound(final TypeIdentifier targetType, final String dump) {
         final String msg = String.format("no definition found for type '%s'. Known definitions are: %n%s", targetType.description(), dump);
         return new DefinitionNotFoundException(msg);
     }

@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -71,7 +72,7 @@ public final class States {
                     .collect(toList());
             return new States(this.stateFactories, newStates);
         } else {
-            final ResolvedType target = signal.target().get();
+            final TypeIdentifier target = signal.target().get();
             final List<StatefulDefinition> newStates = new ArrayList<>(this.states);
 
             if (!contains(target, newStates)) {
@@ -92,7 +93,7 @@ public final class States {
         }
     }
 
-    public Map<ResolvedType, Report> collect() {
+    public Map<TypeIdentifier, Report> collect() {
         return this.states.stream().collect(toMap(
                 state -> state.context.type(), StatefulDefinition::getDefinition)
         );
@@ -102,7 +103,7 @@ public final class States {
         return this.states.size();
     }
 
-    private static boolean contains(final ResolvedType type,
+    private static boolean contains(final TypeIdentifier type,
                                     final List<StatefulDefinition> states) {
         return states.stream()
                 .anyMatch(statefulDefinition -> statefulDefinition.context.type().equals(type));

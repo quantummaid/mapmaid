@@ -31,6 +31,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -46,6 +47,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -86,9 +88,17 @@ public final class Serializer implements SerializationCallback {
         return serialize(object, type, marshallingType, serializedPropertyInjector);
     }
 
-    @SuppressWarnings("unchecked")
     public String serialize(final Object object,
                             final ResolvedType type,
+                            final MarshallingType marshallingType,
+                            final Function<Map<String, Object>, Map<String, Object>> serializedPropertyInjector) {
+        final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
+        return serialize(object, typeIdentifier, marshallingType, serializedPropertyInjector);
+    }
+
+    @SuppressWarnings("unchecked")
+    public String serialize(final Object object,
+                            final TypeIdentifier type,
                             final MarshallingType marshallingType,
                             final Function<Map<String, Object>, Map<String, Object>> serializedPropertyInjector) {
         NotNullValidator.validateNotNull(object, "object");
@@ -130,7 +140,8 @@ public final class Serializer implements SerializationCallback {
             return new HashMap<>(0);
         }
         final ResolvedType type = ClassType.typeOfObject(object);
-        final Object normalized = normalize(object, type);
+        final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
+        final Object normalized = normalize(object, typeIdentifier);
         if (!(normalized instanceof Map)) {
             throw new UnsupportedOperationException("Only serialized objects can be serialized to map");
         }
@@ -142,11 +153,12 @@ public final class Serializer implements SerializationCallback {
             return new HashMap<>(0);
         }
         final ResolvedType type = ClassType.typeOfObject(object);
-        final Object normalized = normalize(object, type);
+        final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
+        final Object normalized = normalize(object, typeIdentifier);
         return normalized;
     }
 
-    private Object normalize(final Object object, final ResolvedType type) {
+    private Object normalize(final Object object, final TypeIdentifier type) {
         if (isNull(object)) {
             return null;
         }
@@ -154,7 +166,7 @@ public final class Serializer implements SerializationCallback {
     }
 
     @Override
-    public Universal serializeDefinition(final ResolvedType type,
+    public Universal serializeDefinition(final TypeIdentifier type,
                                          final Object object,
                                          final SerializationTracker tracker) {
         if (isNull(object)) {

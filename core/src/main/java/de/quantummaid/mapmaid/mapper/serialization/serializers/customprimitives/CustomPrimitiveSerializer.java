@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
@@ -49,7 +50,7 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
     }
 
     @Override
-    default List<ResolvedType> requiredTypes() {
+    default List<TypeIdentifier> requiredTypes() {
         return emptyList();
     }
 

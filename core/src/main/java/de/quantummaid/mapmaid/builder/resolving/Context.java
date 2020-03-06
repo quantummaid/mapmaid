@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -40,17 +41,17 @@ import static de.quantummaid.mapmaid.builder.resolving.Reason.becauseOf;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Context {
     private final Consumer<Signal> dispatcher;
-    private final ResolvedType type;
+    private final TypeIdentifier type;
     private TypeSerializer serializer;
     private TypeDeserializer deserializer;
     private final ScanInformationBuilder scanInformationBuilder;
 
     public static Context emptyContext(final Consumer<Signal> dispatcher,
-                                       final ResolvedType type) {
+                                       final TypeIdentifier type) {
         return new Context(dispatcher, type, ScanInformationBuilder.scanInformationBuilder(type));
     }
 
-    public ResolvedType type() {
+    public TypeIdentifier type() {
         return this.type;
     }
 

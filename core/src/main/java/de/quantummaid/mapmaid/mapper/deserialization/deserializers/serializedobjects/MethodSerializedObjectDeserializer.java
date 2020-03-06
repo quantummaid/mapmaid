@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
 import lombok.AccessLevel;
@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.stream.Collectors.toList;
@@ -63,10 +64,10 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
                 .map(ResolvedParameter::parameter)
                 .map(Parameter::getName)
                 .collect(toList());
-        final Map<String, ResolvedType> parameterFields = parameters.stream()
+        final Map<String, TypeIdentifier> parameterFields = parameters.stream()
                 .collect(Collectors.toMap(
-                        resolvedParameter -> resolvedParameter.parameter().getName(),
-                        ResolvedParameter::type
+                        ResolvedParameter::name,
+                        resolvedParameter -> realTypeIdentifier(resolvedParameter.type())
                 ));
         return new MethodSerializedObjectDeserializer(deserializationFields(parameterFields), factoryMethod, parameterNames);
     }

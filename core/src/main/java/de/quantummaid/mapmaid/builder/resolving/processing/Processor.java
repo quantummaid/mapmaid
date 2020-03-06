@@ -23,20 +23,24 @@ package de.quantummaid.mapmaid.builder.resolving.processing;
 
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 
-import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.resolve;
+import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
@@ -49,7 +53,7 @@ public final class Processor {
 
     public static Processor processor() {
         final Queue<Signal> pendingSignals = new LinkedList<>();
-        final States states = states(new ArrayList<>(0));
+        final States states = states(smallList());
         final Processor processor = new Processor(states, pendingSignals);
         return processor;
     }
@@ -63,12 +67,12 @@ public final class Processor {
         this.states = this.states.addState(statefulDefinition);
     }
 
-    public Map<ResolvedType, CollectionResult> collect(final SimpleDetector detector,
-                                                       final Disambiguators disambiguators) {
+    public Map<TypeIdentifier, CollectionResult> collect(final SimpleDetector detector,
+                                                         final Disambiguators disambiguators) {
         resolveRecursively(detector, disambiguators);
-        final Map<ResolvedType, Report> reports = this.states.collect();
+        final Map<TypeIdentifier, Report> reports = this.states.collect();
 
-        final Map<ResolvedType, CollectionResult> definitions = new HashMap<>(reports.size());
+        final Map<TypeIdentifier, CollectionResult> definitions = new HashMap<>(reports.size());
         reports.forEach((type, report) -> {
             if (report.isSuccess()) {
                 definitions.put(type, report.result());

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.collections;
 
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.lang.String.format;
 
 @ToString
@@ -51,8 +53,8 @@ public final class ListCollectionSerializer implements CollectionSerializer {
     }
 
     @Override
-    public ResolvedType contentType() {
-        return this.type;
+    public TypeIdentifier contentType() {
+        return realTypeIdentifier(this.type);
     }
 
     @Override

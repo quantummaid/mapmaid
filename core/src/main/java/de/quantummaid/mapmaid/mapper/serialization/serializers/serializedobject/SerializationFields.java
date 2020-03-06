@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
@@ -58,7 +59,7 @@ public final class SerializationFields {
         return unmodifiableList(this.fields);
     }
 
-    public List<ResolvedType> typesList() {
+    public List<TypeIdentifier> typesList() {
         return this.fields.stream()
                 .map(SerializationField::type)
                 .collect(toUnmodifiableList());

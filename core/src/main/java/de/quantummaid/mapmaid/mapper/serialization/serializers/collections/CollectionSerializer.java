@@ -25,12 +25,15 @@ import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalCollection.universalCollection;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
@@ -42,7 +45,7 @@ public interface CollectionSerializer extends TypeSerializer {
                                 final SerializationCallback callback,
                                 final SerializationTracker tracker,
                                 final CustomPrimitiveMappings customPrimitiveMappings) {
-        final ResolvedType contentType = contentType();
+        final TypeIdentifier contentType = contentType();
         final List<Universal> list = serialize(object)
                 .stream()
                 .map(element -> callback.serializeDefinition(contentType, element, tracker))
@@ -51,9 +54,9 @@ public interface CollectionSerializer extends TypeSerializer {
     }
 
     @Override
-    default List<ResolvedType> requiredTypes() {
+    default List<TypeIdentifier> requiredTypes() {
         return singletonList(this.contentType());
     }
 
-    ResolvedType contentType();
+    TypeIdentifier contentType();
 }

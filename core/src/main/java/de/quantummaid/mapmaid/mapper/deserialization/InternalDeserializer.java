@@ -31,6 +31,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrors
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationResult;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
@@ -59,7 +60,7 @@ final class InternalDeserializer implements DeserializerCallback {
     }
 
     <T> T deserialize(final Universal input,
-                      final ResolvedType targetType,
+                      final TypeIdentifier targetType,
                       final ExceptionTracker exceptionTracker,
                       final Injector injector,
                       final DebugInformation debugInformation) {
@@ -73,7 +74,7 @@ final class InternalDeserializer implements DeserializerCallback {
 
     @Override
     public Object deserializeRecursive(final Universal input,
-                                       final ResolvedType targetType,
+                                       final TypeIdentifier targetType,
                                        final ExceptionTracker exceptionTracker,
                                        final Injector injector,
                                        final DebugInformation debugInformation) {

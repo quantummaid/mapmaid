@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 public abstract class StatefulDefinition {
@@ -43,7 +44,7 @@ public abstract class StatefulDefinition {
 
     public abstract StatefulDefinition removeDeserialization(Reason reason);
 
-    public ResolvedType type() {
+    public TypeIdentifier type() {
         return this.context.type();
     }
 

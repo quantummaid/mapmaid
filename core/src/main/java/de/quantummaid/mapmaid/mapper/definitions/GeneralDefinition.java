@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.mapper.definitions;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -38,11 +39,11 @@ import static java.util.Optional.ofNullable;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GeneralDefinition implements Definition {
-    private final ResolvedType type;
+    private final TypeIdentifier type;
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
 
-    public static Definition generalDefinition(final ResolvedType type,
+    public static Definition generalDefinition(final TypeIdentifier type,
                                                final TypeSerializer serializer,
                                                final TypeDeserializer deserializer) {
         validateNotNull(type, "type");
@@ -66,7 +67,7 @@ public final class GeneralDefinition implements Definition {
     }
 
     @Override
-    public ResolvedType type() {
+    public TypeIdentifier type() {
         return this.type;
     }
 }

@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +40,10 @@ import static java.util.Optional.empty;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EquivalenceSignature implements Comparable<EquivalenceSignature> {
-    private final Map<String, ResolvedType> fields;
+    private final Map<String, TypeIdentifier> fields;
 
     public static EquivalenceSignature ofDeserializer(final SerializedObjectDeserializer deserializer) {
-        final Map<String, ResolvedType> fields = deserializer.fields().fields();
+        final Map<String, TypeIdentifier> fields = deserializer.fields().fields();
         return new EquivalenceSignature(fields);
     }
 

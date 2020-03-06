@@ -19,19 +19,31 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.definitions;
+package de.quantummaid.mapmaid.shared.identifier;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
-import java.util.Optional;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 
-public interface Definition {
-    Optional<TypeSerializer> serializer();
+public interface TypeIdentifier {
 
-    Optional<TypeDeserializer> deserializer();
+    static TypeIdentifier virtualTypeIdentifier(final String id) {
+        return VirtualTypeIdentifier.virtualTypeIdentifier(id);
+    }
 
-    TypeIdentifier type();
+    static TypeIdentifier uniqueVirtualTypeIdentifier() {
+        return VirtualTypeIdentifier.uniqueVirtualTypeIdentifier();
+    }
+
+    static TypeIdentifier typeIdentifierFor(final GenericType<?> genericType) {
+        final ResolvedType resolvedType = genericType.toResolvedType();
+        return realTypeIdentifier(resolvedType);
+    }
+
+    boolean isVirtual();
+
+    ResolvedType getRealType();
+
+    String description();
 }

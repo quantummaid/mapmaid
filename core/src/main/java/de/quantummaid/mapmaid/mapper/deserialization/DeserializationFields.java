@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -37,13 +38,13 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DeserializationFields {
-    private final Map<String, ResolvedType> elements;
+    private final Map<String, TypeIdentifier> elements;
 
-    public static DeserializationFields deserializationFields(final Map<String, ResolvedType> elements) {
+    public static DeserializationFields deserializationFields(final Map<String, TypeIdentifier> elements) {
         return new DeserializationFields(elements);
     }
 
-    public Map<String, ResolvedType> fields() {
+    public Map<String, TypeIdentifier> fields() {
         return unmodifiableMap(this.elements);
     }
 
@@ -51,7 +52,7 @@ public final class DeserializationFields {
         return this.elements.size();
     }
 
-    public List<ResolvedType> referencedTypes() {
+    public List<TypeIdentifier> referencedTypes() {
         return this.elements.values()
                 .stream()
                 .distinct()

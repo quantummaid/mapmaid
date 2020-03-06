@@ -27,22 +27,22 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
 
 public interface TypeDeserializer {
-    List<ResolvedType> requiredTypes();
+    List<TypeIdentifier> requiredTypes();
 
     <T> T deserialize(Universal input,
                       ExceptionTracker exceptionTracker,
                       Injector injector,
                       DeserializerCallback callback,
                       CustomPrimitiveMappings customPrimitiveMappings,
-                      ResolvedType resolvedType,
+                      TypeIdentifier typeIdentifier,
                       DebugInformation debugInformation);
 
     Class<? extends Universal> universalRequirement();
@@ -52,7 +52,7 @@ public interface TypeDeserializer {
     static <T extends Universal> T castSafely(final Universal universalType,
                                               final Class<T> type,
                                               final ExceptionTracker exceptionTracker,
-                                              final ResolvedType resolvedType,
+                                              final TypeIdentifier resolvedType,
                                               final DebugInformation debugInformation) {
         if (!type.isInstance(universalType)) {
             final ScanInformation scanInformation = debugInformation.scanInformationFor(resolvedType);

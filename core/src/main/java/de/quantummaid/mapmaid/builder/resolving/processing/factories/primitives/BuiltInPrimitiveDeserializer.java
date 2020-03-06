@@ -19,47 +19,31 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
+package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArrayCollectionDeserializer implements CollectionDeserializer {
-    private final ResolvedType componentType;
+public final class BuiltInPrimitiveDeserializer implements CustomPrimitiveDeserializer {
+    private final PrimitiveInformation primitiveInformation;
 
-    public static CollectionDeserializer arrayDeserializer(final ResolvedType componentType) {
-        return new ArrayCollectionDeserializer(componentType);
+    public static CustomPrimitiveDeserializer builtInPrimitiveDeserializer(final PrimitiveInformation primitiveInformation) {
+        return new BuiltInPrimitiveDeserializer(primitiveInformation);
     }
 
     @Override
-    public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.componentType);
-    }
-
-    @Override
-    public Object deserialize(final List<Object> deserializedElements) {
-        final int size = deserializedElements.size();
-        final Object[] array = (Object[]) Array.newInstance(this.componentType.assignableType(), size);
-        for (int i = 0; i < size; ++i) {
-            array[i] = deserializedElements.get(i);
-        }
-        return array;
+    public Object deserialize(final Object value) throws Exception {
+        return this.primitiveInformation.deserializer.apply((String) value);
     }
 
     @Override
     public String description() {
-        return "array deserialization";
+        return this.primitiveInformation.description;
     }
 }

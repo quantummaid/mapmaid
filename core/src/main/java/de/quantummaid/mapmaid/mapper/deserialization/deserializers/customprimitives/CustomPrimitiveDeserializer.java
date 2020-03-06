@@ -29,6 +29,7 @@ import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
@@ -61,7 +62,7 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
     }
 
     @Override
-    default List<ResolvedType> requiredTypes() {
+    default List<TypeIdentifier> requiredTypes() {
         return emptyList();
     }
 
@@ -83,12 +84,12 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
                               final Injector injector,
                               final DeserializerCallback callback,
                               final CustomPrimitiveMappings customPrimitiveMappings,
-                              final ResolvedType resolvedType,
+                              final TypeIdentifier typeIdentifier,
                               final DebugInformation debugInformation) {
         if (input instanceof UniversalNull) {
             return null;
         }
-        final UniversalPrimitive universalPrimitive = castSafely(input, UniversalPrimitive.class, exceptionTracker, resolvedType, debugInformation);
+        final UniversalPrimitive universalPrimitive = castSafely(input, UniversalPrimitive.class, exceptionTracker, typeIdentifier, debugInformation);
         try {
             final Class<?> baseType = baseType();
             final Object mapped = customPrimitiveMappings.fromUniversal(universalPrimitive, baseType);

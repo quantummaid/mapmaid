@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ArrayType;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -35,7 +36,20 @@ public final class Mirror {
     private Mirror() {
     }
 
-    public static boolean mirrors(final ResolvedType typeA, final ResolvedType typeB) {
+    public static boolean mirrors(final TypeIdentifier typeIdentifierA, final TypeIdentifier typeIdentifierB) {
+        if (typeIdentifierA.isVirtual() && typeIdentifierB.isVirtual()) {
+            return typeIdentifierA.equals(typeIdentifierB);
+        }
+        if (typeIdentifierA.isVirtual()) {
+            return false;
+        }
+        if (typeIdentifierB.isVirtual()) {
+            return false;
+        }
+
+        final ResolvedType typeA = typeIdentifierA.getRealType();
+        final ResolvedType typeB = typeIdentifierB.getRealType();
+
         final Optional<ResolvedType> componentA = collectionComponent(typeA);
         final Optional<ResolvedType> componentB = collectionComponent(typeB);
         if (componentA.isPresent() && componentB.isPresent()) {

@@ -28,8 +28,8 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public final class DiDeserializer implements TypeDeserializer {
     }
 
     @Override
-    public List<ResolvedType> requiredTypes() {
+    public List<TypeIdentifier> requiredTypes() {
         return emptyList();
     }
 
@@ -61,7 +61,7 @@ public final class DiDeserializer implements TypeDeserializer {
                              final Injector injector,
                              final DeserializerCallback callback,
                              final CustomPrimitiveMappings customPrimitiveMappings,
-                             final ResolvedType resolvedType,
+                             final TypeIdentifier typeIdentifier,
                              final DebugInformation debugInformation) {
         return (T) this.injector.getInstance();
     }

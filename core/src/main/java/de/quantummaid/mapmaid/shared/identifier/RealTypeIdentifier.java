@@ -19,47 +19,39 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
+package de.quantummaid.mapmaid.shared.identifier;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArrayCollectionDeserializer implements CollectionDeserializer {
-    private final ResolvedType componentType;
+public final class RealTypeIdentifier implements TypeIdentifier {
+    private final ResolvedType resolvedType;
 
-    public static CollectionDeserializer arrayDeserializer(final ResolvedType componentType) {
-        return new ArrayCollectionDeserializer(componentType);
+    public static TypeIdentifier realTypeIdentifier(final ResolvedType type) {
+        validateNotNull(type, "type");
+        return new RealTypeIdentifier(type);
     }
 
     @Override
-    public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.componentType);
-    }
-
-    @Override
-    public Object deserialize(final List<Object> deserializedElements) {
-        final int size = deserializedElements.size();
-        final Object[] array = (Object[]) Array.newInstance(this.componentType.assignableType(), size);
-        for (int i = 0; i < size; ++i) {
-            array[i] = deserializedElements.get(i);
-        }
-        return array;
+    public ResolvedType getRealType() {
+        return this.resolvedType;
     }
 
     @Override
     public String description() {
-        return "array deserialization";
+        return this.resolvedType.description();
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return false;
     }
 }

@@ -30,13 +30,13 @@ import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static java.lang.String.format;
@@ -48,7 +48,7 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
     }
 
     @Override
-    default List<ResolvedType> requiredTypes() {
+    default List<TypeIdentifier> requiredTypes() {
         return fields().referencedTypes();
     }
 
@@ -68,17 +68,17 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
                               final Injector injector,
                               final DeserializerCallback callback,
                               final CustomPrimitiveMappings customPrimitiveMappings,
-                              final ResolvedType resolvedType,
+                              final TypeIdentifier typeIdentifier,
                               final DebugInformation debugInformation) {
         if (input instanceof UniversalNull) {
             return null;
         }
-        final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker, resolvedType, debugInformation);
+        final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker, typeIdentifier, debugInformation);
         final DeserializationFields deserializationFields = fields();
-        final Map<String, Object> elements = new HashMap<>(0);
-        for (final Map.Entry<String, ResolvedType> entry : deserializationFields.fields().entrySet()) {
+        final Map<String, Object> elements = smallMap();
+        for (final Map.Entry<String, TypeIdentifier> entry : deserializationFields.fields().entrySet()) {
             final String elementName = entry.getKey();
-            final ResolvedType elementType = entry.getValue();
+            final TypeIdentifier elementType = entry.getValue();
 
             final Universal elementInput = universalObject.getField(elementName).orElse(universalNull());
             final Object elementObject = callback.deserializeRecursive(

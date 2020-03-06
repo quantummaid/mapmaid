@@ -22,11 +22,12 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.states.fixed.resolved.FixedResolvedDuplex;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -36,6 +37,8 @@ import lombok.ToString;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.PrimitiveInformation.primitiveInformations;
 import static java.util.Optional.empty;
 
@@ -50,39 +53,19 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final ResolvedType type, final Context context) {
+    public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier, final Context context) {
+        if (typeIdentifier.isVirtual()) {
+            return empty();
+        }
+        final ResolvedType type = typeIdentifier.getRealType();
+
         if (!this.definitions.containsKey(type)) {
             return empty();
         }
         final PrimitiveInformation primitiveInformation = this.definitions.get(type);
-        final CustomPrimitiveSerializer customPrimitiveSerializer = new CustomPrimitiveSerializer() {
-            @Override
-            public Object serialize(final Object object) {
-                if (object != null) {
-                    return String.valueOf(object);
-                } else {
-                    return null;
-                }
-            }
-
-            @Override
-            public String description() {
-                return "toString()";
-            }
-        };
+        final CustomPrimitiveSerializer customPrimitiveSerializer = builtInPrimitiveSerializer();
         context.setSerializer(customPrimitiveSerializer);
-
-        final CustomPrimitiveDeserializer customPrimitiveDeserializer = new CustomPrimitiveDeserializer() {
-            @Override
-            public Object deserialize(final Object value) throws Exception {
-                return primitiveInformation.deserializer.apply((String) value);
-            }
-
-            @Override
-            public String description() {
-                return primitiveInformation.description;
-            }
-        };
+        final CustomPrimitiveDeserializer customPrimitiveDeserializer = builtInPrimitiveDeserializer(primitiveInformation);
         context.setDeserializer(customPrimitiveDeserializer);
 
         return Optional.of(FixedResolvedDuplex.fixedResolvedDuplex(context));

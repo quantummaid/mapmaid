@@ -22,8 +22,9 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.collections;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ArrayType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -48,7 +49,12 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final ResolvedType type, final Context context) {
+    public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier, final Context context) {
+        if (typeIdentifier.isVirtual()) {
+            return empty();
+        }
+        final ResolvedType type = typeIdentifier.getRealType();
+
         if (!(type instanceof ArrayType)) {
             return empty();
         }

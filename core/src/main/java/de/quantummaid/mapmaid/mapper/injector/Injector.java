@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.mapper.injector;
 
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
@@ -90,7 +91,11 @@ public final class Injector {
                 .map(NamedDirectInjection::value);
     }
 
-    public Optional<Object> getDirectInjectionForType(final ResolvedType type) {
+    public Optional<Object> getDirectInjectionForType(final TypeIdentifier typeIdentifier) {
+        if (typeIdentifier.isVirtual()) {
+            return Optional.empty();
+        }
+        final ResolvedType type = typeIdentifier.getRealType();
         final Class<?> clazz = type.assignableType();
         return this.typedDirectInjections.stream()
                 .filter(injection -> clazz.isAssignableFrom(injection.type().assignableType()))

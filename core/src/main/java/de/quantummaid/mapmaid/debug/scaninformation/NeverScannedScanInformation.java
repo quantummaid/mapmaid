@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.debug.scaninformation;
 
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,9 +34,9 @@ import static java.lang.String.format;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class NeverScannedScanInformation implements ScanInformation {
-    private final ResolvedType type;
+    private final TypeIdentifier type;
 
-    public static ScanInformation neverScanned(final ResolvedType type) {
+    public static ScanInformation neverScanned(final TypeIdentifier type) {
         return new NeverScannedScanInformation(type);
     }
 

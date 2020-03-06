@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.mapper.definitions;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -43,22 +44,22 @@ import static java.util.Optional.of;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Definitions {
-    private final Map<ResolvedType, Definition> definitions;
+    private final Map<TypeIdentifier, Definition> definitions;
     private final DebugInformation debugInformation;
 
-    public static Definitions definitions(final Map<ResolvedType, Definition> definitions,
+    public static Definitions definitions(final Map<TypeIdentifier, Definition> definitions,
                                           final DebugInformation debugInformation) {
         final Definitions definitionsObject = new Definitions(definitions, debugInformation);
         definitionsObject.validateNoUnsupportedOutgoingReferences(debugInformation);
         return definitionsObject;
     }
 
-    public Definition getDefinitionForType(final ResolvedType targetType) {
+    public Definition getDefinitionForType(final TypeIdentifier targetType) {
         return getOptionalDefinitionForType(targetType)
                 .orElseThrow(() -> definitionNotFound(targetType, this.debugInformation.dumpAll()));
     }
 
-    public Optional<Definition> getOptionalDefinitionForType(final ResolvedType targetType) {
+    public Optional<Definition> getOptionalDefinitionForType(final TypeIdentifier targetType) {
         if (!this.definitions.containsKey(targetType)) {
             return Optional.empty();
         }
@@ -80,9 +81,9 @@ public final class Definitions {
         });
     }
 
-    private void validateDeserialization(final ResolvedType candidate,
-                                         final ResolvedType reason,
-                                         final List<ResolvedType> alreadyVisited,
+    private void validateDeserialization(final TypeIdentifier candidate,
+                                         final TypeIdentifier reason,
+                                         final List<TypeIdentifier> alreadyVisited,
                                          final DebugInformation debugInformation) {
         if (alreadyVisited.contains(candidate)) {
             return;
@@ -106,7 +107,7 @@ public final class Definitions {
         }
     }
 
-    private void validateSerialization(final ResolvedType candidate, final ResolvedType reason, final List<ResolvedType> alreadyVisited) {
+    private void validateSerialization(final TypeIdentifier candidate, final TypeIdentifier reason, final List<TypeIdentifier> alreadyVisited) {
         if (alreadyVisited.contains(candidate)) {
             return;
         }

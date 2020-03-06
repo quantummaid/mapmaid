@@ -36,6 +36,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ClassType;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
@@ -52,6 +53,7 @@ import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 
@@ -103,7 +105,8 @@ public final class Deserializer {
                                     final ResolvedType targetType,
                                     final InjectorLambda injectorProducer) {
         final UniversalObject universalObject = UniversalObject.universalObjectFromNativeMap(input);
-        return deserialize(universalObject, targetType, injectorProducer);
+        final TypeIdentifier typeIdentifier = realTypeIdentifier(targetType);
+        return deserialize(universalObject, typeIdentifier, injectorProducer);
     }
 
     public Map<String, Object> deserializeToMap(final String input,
@@ -149,6 +152,14 @@ public final class Deserializer {
                               final ResolvedType targetType,
                               final MarshallingType marshallingType,
                               final InjectorLambda injectorProducer) {
+        final TypeIdentifier typeIdentifier = realTypeIdentifier(targetType);
+        return deserialize(input, typeIdentifier, marshallingType, injectorProducer);
+    }
+
+    public Object deserialize(final String input,
+                              final TypeIdentifier targetType,
+                              final MarshallingType marshallingType,
+                              final InjectorLambda injectorProducer) {
         final Definition definition = this.definitions.getDefinitionForType(targetType);
         final Class<? extends Universal> universalRequirement = definition
                 .deserializer()
@@ -170,7 +181,7 @@ public final class Deserializer {
     }
 
     private <T> T deserialize(final Universal input,
-                              final ResolvedType targetType,
+                              final TypeIdentifier targetType,
                               final InjectorLambda injectorProducer) {
         validateNotNull(input, "input");
         validateNotNull(targetType, "targetType");

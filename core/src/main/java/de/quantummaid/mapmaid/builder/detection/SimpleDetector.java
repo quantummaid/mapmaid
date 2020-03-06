@@ -35,6 +35,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.se
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -77,10 +78,15 @@ public final class SimpleDetector {
         );
     }
 
-    public DetectionResult<DisambiguationResult> detect(final ResolvedType type,
+    public DetectionResult<DisambiguationResult> detect(final TypeIdentifier typeIdentifier,
                                                         final ScanInformationBuilder scanInformationBuilder,
                                                         final RequiredCapabilities capabilities,
                                                         final Disambiguators disambiguators) {
+        if (typeIdentifier.isVirtual()) {
+            return failure("can only detect real types");
+        }
+        final ResolvedType type = typeIdentifier.getRealType();
+
         if (!isSupported(type)) {
             return failure(format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description()));
         }

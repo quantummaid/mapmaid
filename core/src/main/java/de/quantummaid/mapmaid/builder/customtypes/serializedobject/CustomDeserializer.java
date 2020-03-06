@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.util.stream.Collectors.toMap;
 
 @ToString
@@ -45,8 +46,11 @@ public final class CustomDeserializer implements SerializedObjectDeserializer {
 
     public static CustomDeserializer userProvidedDeserializer(final InvocableDeserializer<?> invocableDeserializer,
                                                               final List<CustomDeserializationField> fields) {
-        final Map<String, ResolvedType> fieldMap = fields.stream()
-                .collect(toMap(CustomDeserializationField::name, CustomDeserializationField::type));
+        final Map<String, TypeIdentifier> fieldMap = fields.stream()
+                .collect(toMap(
+                        CustomDeserializationField::name,
+                        customDeserializationField -> realTypeIdentifier(customDeserializationField.type()))
+                );
         final DeserializationFields deserializationFields = deserializationFields(fieldMap);
         return new CustomDeserializer(invocableDeserializer, fields, deserializationFields);
     }

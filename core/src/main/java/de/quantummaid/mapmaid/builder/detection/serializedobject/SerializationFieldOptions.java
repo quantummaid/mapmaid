@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -99,17 +100,17 @@ public final class SerializationFieldOptions {
         return success(serializationFieldInstantiation(this.options));
     }
 
-    public DetectionResult<SerializationFieldInstantiation> instantiate(final Map<String, ResolvedType> fields) {
+    public DetectionResult<SerializationFieldInstantiation> instantiate(final Map<String, TypeIdentifier> fields) {
         final Map<String, List<SerializationField>> instantiableFields = new HashMap<>(fields.size());
         final List<String> problems = smallList();
-        for (final Map.Entry<String, ResolvedType> entry : fields.entrySet()) {
+        for (final Map.Entry<String, TypeIdentifier> entry : fields.entrySet()) {
             final String name = entry.getKey();
             if (!this.options.containsKey(name)) {
                 problems.add(format("No field under the name '%s'", name));
                 continue;
             }
             final List<SerializationField> options = this.options.get(name);
-            final ResolvedType type = entry.getValue();
+            final TypeIdentifier type = entry.getValue();
             final List<SerializationField> mirroredFields = mirroredFields(type, options);
             if (mirroredFields.isEmpty()) {
                 problems.add(format("No field under name '%s' of a type similar to '%s'", name, type.description()));
@@ -125,7 +126,7 @@ public final class SerializationFieldOptions {
         return success(instantiation);
     }
 
-    private List<SerializationField> mirroredFields(final ResolvedType type,
+    private List<SerializationField> mirroredFields(final TypeIdentifier type,
                                                     final List<SerializationField> options) {
         validateNotNull(type, "type");
         validateNotNull(options, "options");

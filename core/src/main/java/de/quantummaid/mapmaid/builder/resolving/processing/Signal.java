@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.Optional;
@@ -35,11 +36,11 @@ public interface Signal {
         return definition -> definition.detect(detector, disambiguators);
     }
 
-    static Signal addSerialization(final ResolvedType type, final Reason reason) {
+    static Signal addSerialization(final TypeIdentifier type, final Reason reason) {
         return to(type, definition -> definition.addSerialization(reason));
     }
 
-    static Signal addDeserialization(final ResolvedType type, final Reason reason) {
+    static Signal addDeserialization(final TypeIdentifier type, final Reason reason) {
         return to(type, definition -> definition.addDeserialization(reason));
     }
 
@@ -47,11 +48,11 @@ public interface Signal {
         return StatefulDefinition::resolve;
     }
 
-    static Signal to(final ResolvedType target, final Signal signal) {
+    static Signal to(final TypeIdentifier target, final Signal signal) {
         return new Signal() {
 
             @Override
-            public Optional<ResolvedType> target() {
+            public Optional<TypeIdentifier> target() {
                 return Optional.of(target);
             }
 
@@ -62,7 +63,7 @@ public interface Signal {
         };
     }
 
-    default Optional<ResolvedType> target() {
+    default Optional<TypeIdentifier> target() {
         return Optional.empty();
     }
 

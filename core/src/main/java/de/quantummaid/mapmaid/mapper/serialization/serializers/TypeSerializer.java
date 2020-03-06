@@ -24,13 +24,14 @@ package de.quantummaid.mapmaid.mapper.serialization.serializers;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.List;
 
 public interface TypeSerializer {
-    List<ResolvedType> requiredTypes();
+    List<TypeIdentifier> requiredTypes();
 
     Universal serialize(Object object,
                         SerializationCallback callback,

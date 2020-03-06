@@ -47,6 +47,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -76,6 +77,7 @@ import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.theSerializer;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -173,12 +175,12 @@ public final class MapMaidBuilder {
         validateNotNull(type, "type");
         validateNotNull(capabilities, "capabilities");
         validateNotNull(reason, "reason");
-        final ResolvedType resolvedType = type.toResolvedType();
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         if (capabilities.hasSerialization()) {
-            this.processor.dispatch(addSerialization(resolvedType, reason));
+            this.processor.dispatch(addSerialization(typeIdentifier, reason));
         }
         if (capabilities.hasDeserialization()) {
-            this.processor.dispatch(addDeserialization(resolvedType, reason));
+            this.processor.dispatch(addDeserialization(typeIdentifier, reason));
         }
         return this;
     }
@@ -188,25 +190,25 @@ public final class MapMaidBuilder {
         validateNotNull(capabilities, "capabilities");
         validateNotNull(customType, "customType");
         final GenericType<T> type = customType.type();
-        final ResolvedType resolvedType = type.toResolvedType();
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         final Optional<TypeSerializer> serializer = customType.serializer();
-        if (capabilities.hasSerialization() && !serializer.isPresent()) {
-            throw new IllegalArgumentException(format("serializer is missing for type '%s'", resolvedType.description()));
+        if (capabilities.hasSerialization() && serializer.isEmpty()) {
+            throw new IllegalArgumentException(format("serializer is missing for type '%s'", typeIdentifier.description()));
         }
         final Optional<TypeDeserializer> deserializer = customType.deserializer();
-        if (capabilities.hasDeserialization() && !deserializer.isPresent()) {
-            throw new IllegalArgumentException(format("deserializer is missing for type '%s'", resolvedType.description()));
+        if (capabilities.hasDeserialization() && deserializer.isEmpty()) {
+            throw new IllegalArgumentException(format("deserializer is missing for type '%s'", typeIdentifier.description()));
         }
-        final Context context = emptyContext(this.processor::dispatch, resolvedType);
+        final Context context = emptyContext(this.processor::dispatch, typeIdentifier);
         serializer.ifPresent(context::setSerializer);
         deserializer.ifPresent(context::setDeserializer);
         final StatefulDefinition statefulDefinition = fixedUnreasoned(context);
         this.processor.addState(statefulDefinition);
         if (capabilities.hasSerialization()) {
-            this.processor.dispatch(addSerialization(resolvedType, manuallyAdded()));
+            this.processor.dispatch(addSerialization(typeIdentifier, manuallyAdded()));
         }
         if (capabilities.hasDeserialization()) {
-            this.processor.dispatch(addDeserialization(resolvedType, manuallyAdded()));
+            this.processor.dispatch(addDeserialization(typeIdentifier, manuallyAdded()));
         }
         return this;
     }
@@ -252,10 +254,10 @@ public final class MapMaidBuilder {
         this.recipes.forEach(recipe -> recipe.cook(this));
 
         final Disambiguators disambiguators = this.advancedBuilder.buildDisambiguators();
-        final Map<ResolvedType, CollectionResult> result = this.processor.collect(this.detector, disambiguators);
+        final Map<TypeIdentifier, CollectionResult> result = this.processor.collect(this.detector, disambiguators);
 
-        final Map<ResolvedType, Definition> definitionsMap = new HashMap<>(result.size());
-        final Map<ResolvedType, ScanInformation> scanInformationMap = new HashMap<>(result.size());
+        final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
+        final Map<TypeIdentifier, ScanInformation> scanInformationMap = new HashMap<>(result.size());
         result.forEach((type, collectionResult) -> {
             definitionsMap.put(type, collectionResult.definition());
             scanInformationMap.put(type, collectionResult.scanInformation());

@@ -22,7 +22,8 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
@@ -52,8 +53,11 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
                                                                                            final Map<String, ResolvedMethod> methods) {
         NotNullValidator.validateNotNull(constructor, "constructor");
         NotNullValidator.validateNotNull(methods, "methods");
-        final Map<String, ResolvedType> fieldMap = methods.entrySet()
-                .stream().collect(toMap(Entry::getKey, e -> e.getValue().parameters().get(0).type()));
+        final Map<String, TypeIdentifier> fieldMap = methods.entrySet()
+                .stream().collect(
+                        toMap(
+                                Entry::getKey,
+                                e -> RealTypeIdentifier.realTypeIdentifier(e.getValue().parameters().get(0).type())));
         final DeserializationFields deserializationFields = deserializationFields(fieldMap);
         return new MultipleMethodsSerializedObjectDeserializer(deserializationFields, constructor, methods);
     }

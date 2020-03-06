@@ -29,8 +29,8 @@ import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +41,10 @@ import static java.util.Collections.singletonList;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public interface CollectionDeserializer extends TypeDeserializer {
 
-    ResolvedType contentType();
+    TypeIdentifier contentType();
 
     @Override
-    default List<ResolvedType> requiredTypes() {
+    default List<TypeIdentifier> requiredTypes() {
         return singletonList(contentType());
     }
 
@@ -61,14 +61,14 @@ public interface CollectionDeserializer extends TypeDeserializer {
                               final Injector injector,
                               final DeserializerCallback callback,
                               final CustomPrimitiveMappings customPrimitiveMappings,
-                              final ResolvedType resolvedType,
+                              final TypeIdentifier typeIdentifier,
                               final DebugInformation debugInformation) {
         if (input instanceof UniversalNull) {
             return null;
         }
-        final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker, resolvedType, debugInformation);
+        final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker, typeIdentifier, debugInformation);
         final List deserializedList = new ArrayList(10);
-        final ResolvedType contentType = contentType();
+        final TypeIdentifier contentType = contentType();
         int index = 0;
         for (final Universal element : universalCollection.content()) {
             final Object deserialized = callback.deserializeRecursive(element, contentType, exceptionTracker.stepIntoArray(index), injector, debugInformation);

@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -35,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -43,9 +45,9 @@ import static java.util.Optional.of;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DebugInformation {
-    private final Map<ResolvedType, ScanInformation> scanInformations;
+    private final Map<TypeIdentifier, ScanInformation> scanInformations;
 
-    public static DebugInformation debugInformation(final Map<ResolvedType, ScanInformation> scanInformations) {
+    public static DebugInformation debugInformation(final Map<TypeIdentifier, ScanInformation> scanInformations) {
         return new DebugInformation(scanInformations);
     }
 
@@ -54,6 +56,10 @@ public final class DebugInformation {
     }
 
     public ScanInformation scanInformationFor(final ResolvedType type) {
+        return scanInformationFor(realTypeIdentifier(type));
+    }
+
+    public ScanInformation scanInformationFor(final TypeIdentifier type) {
         return optionalScanInformationFor(type)
                 .orElseGet(() -> neverScanned(type));
     }
@@ -63,6 +69,10 @@ public final class DebugInformation {
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final ResolvedType type) {
+        return optionalScanInformationFor(realTypeIdentifier(type));
+    }
+
+    public Optional<ScanInformation> optionalScanInformationFor(final TypeIdentifier type) {
         if (!this.scanInformations.containsKey(type)) {
             return empty();
         }

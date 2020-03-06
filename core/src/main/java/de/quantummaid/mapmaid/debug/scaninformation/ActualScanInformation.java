@@ -30,6 +30,7 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -47,7 +48,7 @@ import static java.lang.String.format;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ActualScanInformation implements ScanInformation {
-    private final ResolvedType type;
+    private final TypeIdentifier type;
     private final List<Reason> deserializationReasons;
     private final List<Reason> serializationReasons;
     private final TypeSerializer serializer;
@@ -56,7 +57,7 @@ public final class ActualScanInformation implements ScanInformation {
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> ignoredDeserializers;
 
-    public static ScanInformation actualScanInformation(final ResolvedType type,
+    public static ScanInformation actualScanInformation(final TypeIdentifier type,
                                                         final List<Reason> deserializationReasons,
                                                         final List<Reason> serializationReasons,
                                                         final TypeSerializer serializer,

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,7 +35,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Reason {
     private final String reason;
-    private final ResolvedType parent;
+    private final TypeIdentifier parent;
 
     public static Reason reason(final String reason) {
         validateNotNull(reason, "reason");
@@ -45,7 +46,7 @@ public final class Reason {
         return reason("manually added");
     }
 
-    public static Reason becauseOf(final ResolvedType parent) {
+    public static Reason becauseOf(final TypeIdentifier parent) {
         return new Reason(String.format("because of %s", parent.description()), parent);
     }
 

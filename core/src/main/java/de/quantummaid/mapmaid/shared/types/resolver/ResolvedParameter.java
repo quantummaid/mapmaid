@@ -66,6 +66,10 @@ public final class ResolvedParameter {
         return this.type;
     }
 
+    public String name() {
+        return this.parameter.getName();
+    }
+
     public Parameter parameter() {
         return this.parameter;
     }

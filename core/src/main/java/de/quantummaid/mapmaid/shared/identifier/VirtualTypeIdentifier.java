@@ -19,47 +19,46 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
+package de.quantummaid.mapmaid.shared.identifier;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
+import static java.util.UUID.randomUUID;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArrayCollectionDeserializer implements CollectionDeserializer {
-    private final ResolvedType componentType;
+public final class VirtualTypeIdentifier implements TypeIdentifier {
+    private final String id;
 
-    public static CollectionDeserializer arrayDeserializer(final ResolvedType componentType) {
-        return new ArrayCollectionDeserializer(componentType);
+    public static TypeIdentifier virtualTypeIdentifier(final String id) {
+        validateNotNull(id, "id");
+        return new VirtualTypeIdentifier(id);
+    }
+
+    public static TypeIdentifier uniqueVirtualTypeIdentifier() {
+        final String id = randomUUID().toString();
+        return new VirtualTypeIdentifier(id);
     }
 
     @Override
-    public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.componentType);
+    public boolean isVirtual() {
+        return true;
     }
 
     @Override
-    public Object deserialize(final List<Object> deserializedElements) {
-        final int size = deserializedElements.size();
-        final Object[] array = (Object[]) Array.newInstance(this.componentType.assignableType(), size);
-        for (int i = 0; i < size; ++i) {
-            array[i] = deserializedElements.get(i);
-        }
-        return array;
+    public ResolvedType getRealType() {
+        throw new UnsupportedOperationException(format("Virtual type '%s' does not have a real type", description()));
     }
 
     @Override
     public String description() {
-        return "array deserialization";
+        return format("<virtual type '%s'>", this.id);
     }
 }
