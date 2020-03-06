@@ -37,7 +37,7 @@ public final class QuickStartExamples {
         //Showcase start instance
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, input -> new Gson().fromJson(input, Object.class)))
                 .build();
         //Showcase end instance
 

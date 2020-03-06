@@ -53,7 +53,7 @@ public interface Expectation {
     }
 
     static Expectation deserializationFailedForNotSupported(final ResolvedType type) {
-        return deserializationFailed(format("No deserializer registered for type '%s'", type.description()));
+        return deserializationFailed(format("No deserializer configured for '%s'", type.description()));
     }
 
     static Expectation deserializationFailed(final String message) {

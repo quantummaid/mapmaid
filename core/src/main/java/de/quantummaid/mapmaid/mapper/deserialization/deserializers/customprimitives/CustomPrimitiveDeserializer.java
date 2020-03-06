@@ -40,20 +40,6 @@ import static java.util.Collections.emptyList;
 
 public interface CustomPrimitiveDeserializer extends TypeDeserializer {
 
-    static CustomPrimitiveDeserializer constantDeserializer(final Object constant) {
-        return new CustomPrimitiveDeserializer() {
-            @Override
-            public Object deserialize(final Object value) throws Exception {
-                return constant;
-            }
-
-            @Override
-            public String description() {
-                return constant.toString();
-            }
-        };
-    }
-
     static String createDescription(final CustomPrimitiveDeserializer customPrimitiveDeserializer,
                                     final String deserializer) {
         final Class<?> baseType = customPrimitiveDeserializer.baseType();
@@ -67,11 +53,6 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
 
     default Class<?> baseType() {
         return String.class;
-    }
-
-    @Override
-    default Class<? extends Universal> universalRequirement() {
-        return UniversalPrimitive.class;
     }
 
     Object deserialize(Object value) throws Exception;

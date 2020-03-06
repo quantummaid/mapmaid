@@ -45,7 +45,7 @@ public final class ExceptionExamples {
         //Showcase start aggregateException
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
         //Showcase end aggregateException
@@ -67,7 +67,7 @@ public final class ExceptionExamples {
         //Showcase start mappedException
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class,
                         (exception, propertyPath) -> new ValidationError("This is a custom message we are reporting about " + exception.getMessage(), propertyPath))
                 .build();

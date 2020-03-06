@@ -28,7 +28,6 @@ import de.quantummaid.mapmaid.builder.models.conventional.Body;
 import de.quantummaid.mapmaid.builder.models.conventional.Email;
 import de.quantummaid.mapmaid.builder.models.conventional.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.conventional.Subject;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -36,7 +35,6 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@SuppressWarnings("unchecked")
 public final class XmlBuilderTest {
 
     public static final String EMAIL_XML = "<root>\n" +
@@ -70,12 +68,7 @@ public final class XmlBuilderTest {
 
         return MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(xStream::toXML, new Unmarshaller() {
-                    @Override
-                    public <T> T unmarshal(final String input, final Class<T> type) {
-                        return (T) xStream.fromXML(input, type);
-                    }
-                }))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(xStream::toXML, xStream::fromXML))
                 .build();
     }
 

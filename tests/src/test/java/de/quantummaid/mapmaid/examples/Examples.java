@@ -37,7 +37,7 @@ public final class Examples {
                 .serializingAndDeserializing(de.quantummaid.mapmaid.examples.domain.Person.class)
                 .serializingAndDeserializing(de.quantummaid.mapmaid.examples.domain.ValidPerson.class)
                 .withExceptionIndicatingValidationError(IllegalArgumentException.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .build();
     }
 

@@ -29,8 +29,8 @@ public final class UnmarshallingException extends RuntimeException {
         super(message, cause);
     }
 
-    public static UnmarshallingException unmarshallingException(final String target, final Object input, final Exception cause) {
-        final String message = format("Could not unmarshal %s from input %s", target, input);
+    public static UnmarshallingException unmarshallingException(final Object input, final Exception cause) {
+        final String message = format("Could not unmarshal from input %s", input);
         return new UnmarshallingException(message, cause);
     }
 }

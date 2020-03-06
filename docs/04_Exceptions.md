@@ -15,7 +15,7 @@ that is thrown in the factory methods, in case the input is not valid, the MapMa
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(Email.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
         .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
         .build();
 ```
@@ -73,7 +73,7 @@ instance of a
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(Email.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
         .withExceptionIndicatingValidationError(CustomTypeValidationException.class,
                 (exception, propertyPath) -> new ValidationError("This is a custom message we are reporting about " + exception.getMessage(), propertyPath))
         .build();

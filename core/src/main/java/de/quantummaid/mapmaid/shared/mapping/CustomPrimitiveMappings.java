@@ -57,6 +57,10 @@ public final class CustomPrimitiveMappings {
                 final Double doubleValue = parseDouble(stringValue);
                 return UniversalNumber.universalNumber(doubleValue);
             }),
+            Mapping.mapping(UniversalNumber.class, UniversalString.class, universalNumber -> {
+                final Double doubleValue = (Double) universalNumber.toNativeJava();
+                return UniversalString.universalString(doubleValue.toString());
+            }),
             Mapping.mapping(UniversalString.class, UniversalBoolean.class, universalString -> {
                 final String stringValue = (String) universalString.toNativeJava();
                 switch (stringValue) {

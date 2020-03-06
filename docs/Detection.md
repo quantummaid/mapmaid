@@ -35,7 +35,7 @@ factory methods that allow to whitelist or blacklist certain packages and/or cla
 <!---[CodeSnippet](api)-->
 ```java
 MapMaid.aMapMaid()
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
         .build();
 ```
 
@@ -183,7 +183,9 @@ deserialization method name, and class name patterns to use for Serialized Objec
 <!---[CodeSnippet](detector)-->
 ```java
 MapMaid.aMapMaid()
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
+                new Gson()::toJson,
+                input -> new Gson().fromJson(input, Object.class)))
         .build();
 ```
 

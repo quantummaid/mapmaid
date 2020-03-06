@@ -54,11 +54,6 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
 
     DeserializationFields fields();
 
-    @Override
-    default Class<? extends Universal> universalRequirement() {
-        return UniversalObject.class;
-    }
-
     Object deserialize(Map<String, Object> elements) throws Exception;
 
     @SuppressWarnings("unchecked")

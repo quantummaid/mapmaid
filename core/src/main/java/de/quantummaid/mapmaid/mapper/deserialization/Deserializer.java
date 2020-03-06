@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.mapper.deserialization;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrorsMapping;
@@ -109,9 +108,10 @@ public final class Deserializer {
         return deserialize(universalObject, typeIdentifier, injectorProducer);
     }
 
-    public Map<String, Object> deserializeToMap(final String input,
-                                                final MarshallingType type) {
-        return this.unmarshallers.unmarshalToMap(input, type);
+    public Object deserializeToUniversalObject(final String input,
+                                               final MarshallingType type) {
+        final Universal universal = this.unmarshallers.unmarshall(input, type);
+        return universal.toNativeJava();
     }
 
     public <T> T deserializeJson(final String json,
@@ -160,17 +160,8 @@ public final class Deserializer {
                               final TypeIdentifier targetType,
                               final MarshallingType marshallingType,
                               final InjectorLambda injectorProducer) {
-        final Definition definition = this.definitions.getDefinitionForType(targetType);
-        final Class<? extends Universal> universalRequirement = definition
-                .deserializer()
-                .orElseThrow(() -> {
-                    final ScanInformation scanInformation = this.debugInformation.scanInformationFor(definition.type());
-                    return mapMaidException(
-                            format("No deserializer registered for type '%s'", targetType.description()), scanInformation);
-                })
-                .universalRequirement();
         try {
-            final Universal unmarshalled = this.unmarshallers.unmarshalTo(universalRequirement, input, marshallingType);
+            final Universal unmarshalled = this.unmarshallers.unmarshall(input, marshallingType);
             return deserialize(unmarshalled, targetType, injectorProducer);
         } catch (final UnmarshallingException e) {
             final ScanInformation scanInformation = this.debugInformation.scanInformationFor(targetType);

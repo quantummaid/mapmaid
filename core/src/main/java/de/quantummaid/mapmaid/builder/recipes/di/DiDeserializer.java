@@ -27,7 +27,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import lombok.AccessLevel;
@@ -64,11 +63,6 @@ public final class DiDeserializer implements TypeDeserializer {
                              final TypeIdentifier typeIdentifier,
                              final DebugInformation debugInformation) {
         return (T) this.injector.getInstance();
-    }
-
-    @Override
-    public Class<? extends Universal> universalRequirement() {
-        return UniversalNull.class;
     }
 
     @Override

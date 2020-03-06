@@ -48,11 +48,6 @@ public interface CollectionDeserializer extends TypeDeserializer {
         return singletonList(contentType());
     }
 
-    @Override
-    default Class<? extends Universal> universalRequirement() {
-        return UniversalCollection.class;
-    }
-
     Object deserialize(List<Object> deserializedElements);
 
     @Override

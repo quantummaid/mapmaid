@@ -45,8 +45,6 @@ public interface TypeDeserializer {
                       TypeIdentifier typeIdentifier,
                       DebugInformation debugInformation);
 
-    Class<? extends Universal> universalRequirement();
-
     String description();
 
     static <T extends Universal> T castSafely(final Universal universalType,

@@ -24,7 +24,9 @@ final Gson gson = new Gson();
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(Email.class)
         .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
+                .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, input -> {
+                    return gson.fromJson(input, Object.class);
+                }))
         .build();
 ```
 Below you can find detailed information about using this builder and configuring MapMaid. 

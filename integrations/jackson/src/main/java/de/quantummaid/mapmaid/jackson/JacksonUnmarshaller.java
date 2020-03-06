@@ -42,7 +42,7 @@ public final class JacksonUnmarshaller implements Unmarshaller {
     }
 
     @Override
-    public <T> T unmarshal(final String input, final Class<T> type) throws Exception {
-        return this.objectMapper.readValue(input, type);
+    public Object unmarshal(final String input) throws Exception {
+        return this.objectMapper.readValue(input, Object.class);
     }
 }

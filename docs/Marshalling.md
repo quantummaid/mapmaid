@@ -129,7 +129,7 @@ Assuming you have a configured instance of `Gson` class, adding it as a JSON Mar
 final Gson gson = new Gson(); // can be further configured depending on your needs.
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(ComplexPerson.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
         .build();
 ```
 
@@ -139,7 +139,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 final ObjectMapper objectMapper = new ObjectMapper();
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(ComplexPerson.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, input -> objectMapper.readValue(input, Object.class)))
         .build();
 ```
 
@@ -154,14 +154,7 @@ xStream.alias("root", Map.class);
 
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(ComplexPerson.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public <T> T unmarshal(final String input, final Class<T> type) {
-                return (T) xStream.fromXML(input, type);
-            }
-        }))
-
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, xStream::fromXML))
         .build();
 ```
 
@@ -186,7 +179,9 @@ final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(ComplexPerson.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, input -> {
+            return objectMapper.readValue(input, Object.class);
+        }))
         .build();
 ```
 

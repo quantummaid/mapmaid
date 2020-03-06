@@ -82,7 +82,7 @@ public final class ConventionalBuilderTest {
                 .serializingAndDeserializing(EmailDto.class)
                 .serializingAndDeserializing(Name.class)
                 .serializingAndDeserializing(GroupTicketRequest.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

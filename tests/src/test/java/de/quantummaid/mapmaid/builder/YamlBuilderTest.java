@@ -53,7 +53,10 @@ public final class YamlBuilderTest {
 
         return MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
+                        objectMapper::writeValueAsString,
+                        input -> objectMapper.readValue(input, Object.class))
+                )
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

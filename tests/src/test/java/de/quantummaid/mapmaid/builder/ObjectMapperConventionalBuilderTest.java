@@ -54,7 +54,9 @@ public final class ObjectMapperConventionalBuilderTest {
         return MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                        .usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+                        .usingJsonMarshaller(objectMapper::writeValueAsString, input -> {
+                            return objectMapper.readValue(input, Object.class);
+                        }))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

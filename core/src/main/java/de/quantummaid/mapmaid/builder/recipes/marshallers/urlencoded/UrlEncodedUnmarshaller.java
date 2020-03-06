@@ -43,11 +43,10 @@ public final class UrlEncodedUnmarshaller implements Unmarshaller {
         return new UrlEncodedUnmarshaller();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T unmarshal(final String input, final Class<T> type) {
+    public Object unmarshal(final String input) {
         final ParsedUrlEncoded parsed = parse(input);
-        return (T) parseFromKey(Key.emptyKey(), parsed);
+        return parseFromKey(Key.emptyKey(), parsed);
     }
 
     private Object parseFromKey(final Key key, final ParsedUrlEncoded parsed) {

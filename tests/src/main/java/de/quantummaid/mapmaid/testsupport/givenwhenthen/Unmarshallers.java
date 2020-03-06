@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -36,19 +36,16 @@ public final class Unmarshallers {
 
     public static Unmarshaller jsonUnmarshaller() {
         final Gson gson = new Gson();
-        return gson::fromJson;
+        return input -> gson.fromJson(input, Object.class);
     }
 
     public static Unmarshaller xmlUnmarshaller() {
         final XmlMapper xmlMapper = new XmlMapper();
-        return new Unmarshaller() {
-            @Override
-            public <T> T unmarshal(final String input, final Class<T> type) {
-                try {
-                    return xmlMapper.readValue(input, type);
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
+        return input -> {
+            try {
+                return xmlMapper.readValue(input, Object.class);
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
             }
         };
     }
@@ -56,11 +53,6 @@ public final class Unmarshallers {
     public static Unmarshaller yamlUnmarshaller() {
         final DumperOptions options = new DumperOptions();
         final Yaml yaml = new Yaml(options);
-        return new Unmarshaller() {
-            @Override
-            public <T> T unmarshal(final String input, final Class<T> type) {
-                return yaml.load(input);
-            }
-        };
+        return yaml::load;
     }
 }

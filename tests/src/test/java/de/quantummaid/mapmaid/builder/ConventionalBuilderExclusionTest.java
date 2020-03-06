@@ -53,7 +53,7 @@ public final class ConventionalBuilderExclusionTest {
         final Gson gson = new Gson();
 
         return MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }

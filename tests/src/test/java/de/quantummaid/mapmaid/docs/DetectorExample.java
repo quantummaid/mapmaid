@@ -31,7 +31,9 @@ public final class DetectorExample {
     public void test() {
         //Showcase start detector
         MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, new Gson()::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
+                        new Gson()::toJson,
+                        input -> new Gson().fromJson(input, Object.class)))
                 .build();
         //Showcase end detector
     }

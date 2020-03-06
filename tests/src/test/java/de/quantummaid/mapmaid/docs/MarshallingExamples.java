@@ -29,7 +29,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.examples.domain.*;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -73,7 +72,7 @@ public final class MarshallingExamples {
         final Gson gson = new Gson(); // can be further configured depending on your needs.
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(ComplexPerson.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
                 .build();
         //Showcase end jsonWithGson
 
@@ -96,7 +95,7 @@ public final class MarshallingExamples {
         final ObjectMapper objectMapper = new ObjectMapper();
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(ComplexPerson.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(objectMapper::writeValueAsString, input -> objectMapper.readValue(input, Object.class)))
                 .build();
         //Showcase end jsonWithObjectMapper
 
@@ -121,14 +120,7 @@ public final class MarshallingExamples {
 
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(ComplexPerson.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public <T> T unmarshal(final String input, final Class<T> type) {
-                        return (T) xStream.fromXML(input, type);
-                    }
-                }))
-
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xStream::toXML, xStream::fromXML))
                 .build();
         //Showcase end xmlWithXStream
 
@@ -192,7 +184,9 @@ public final class MarshallingExamples {
 
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(ComplexPerson.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, input -> {
+                    return objectMapper.readValue(input, Object.class);
+                }))
                 .build();
         //Showcase end yamlWithObjectMapper
 

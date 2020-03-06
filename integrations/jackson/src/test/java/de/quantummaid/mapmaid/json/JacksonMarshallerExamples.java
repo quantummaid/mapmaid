@@ -81,7 +81,7 @@ public final class JacksonMarshallerExamples {
                 .build();
         //Showcase end json
 
-        final Map<String, Object> deserialized = mapMaid.deserializer().deserializeToMap(JSON, json());
+        final Object deserialized = mapMaid.deserializer().deserializeToUniversalObject(JSON, json());
         assertThat(deserialized, is(MAP));
     }
 
@@ -93,8 +93,8 @@ public final class JacksonMarshallerExamples {
                 .build();
         //Showcase end xml
 
-        final Map<String, Object> deserialized = mapMaid.deserializer().deserializeToMap(XML, xml());
-        assert MAP.equals(deserialized);
+        final Object deserialized = mapMaid.deserializer().deserializeToUniversalObject(XML, xml());
+        assertThat(deserialized, is(MAP));
     }
 
     @Test
@@ -105,7 +105,7 @@ public final class JacksonMarshallerExamples {
                 .build();
         //Showcase end yaml
 
-        final Map<String, Object> deserialized = mapMaid.deserializer().deserializeToMap(YAML, yaml());
-        assert MAP.equals(deserialized);
+        final Object deserialized = mapMaid.deserializer().deserializeToUniversalObject(YAML, yaml());
+        assertThat(deserialized, is(MAP));
     }
 }

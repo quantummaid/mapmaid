@@ -22,5 +22,5 @@
 package de.quantummaid.mapmaid.mapper.marshalling;
 
 public interface Unmarshaller {
-    <T> T unmarshal(String input, Class<T> type) throws Exception;
+    Object unmarshal(String input) throws Exception;
 }

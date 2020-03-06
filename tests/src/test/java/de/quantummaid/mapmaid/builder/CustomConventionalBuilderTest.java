@@ -57,7 +57,7 @@ public final class CustomConventionalBuilderTest {
                     advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
                     advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");
                     advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
-                    advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
+                    advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class));
                 })
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();

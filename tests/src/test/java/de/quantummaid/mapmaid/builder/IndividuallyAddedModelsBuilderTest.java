@@ -81,7 +81,7 @@ public final class IndividuallyAddedModelsBuilderTest {
                 .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.EmailAddress.class)
                 .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.Subject.class)
                 .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.conventional.Body.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }
@@ -100,7 +100,7 @@ public final class IndividuallyAddedModelsBuilderTest {
                 .serializingAndDeserializing(customPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize))
                 .serializingAndDeserializing(customPrimitive(Subject.class, Subject::serialize, Subject::deserialize))
                 .serializingAndDeserializing(customPrimitive(customConventionBody, Body::serialize, Body::deserialize))
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, GSON::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
     }
@@ -113,7 +113,7 @@ public final class IndividuallyAddedModelsBuilderTest {
                     advancedBuilder.withPreferredSerializedObjectFactoryName("restore");
                     advancedBuilder.withPreferredCustomPrimitiveFactoryName("deserialize");
                     advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serialize");
-                    advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson);
+                    advancedBuilder.usingJsonMarshaller(gson::toJson, input -> GSON.fromJson(input, Object.class));
                 })
                 .serializingAndDeserializing(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
                 .serializingAndDeserializing(EmailAddress.class)

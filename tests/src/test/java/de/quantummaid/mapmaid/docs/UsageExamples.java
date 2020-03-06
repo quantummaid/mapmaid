@@ -32,7 +32,6 @@ import de.quantummaid.mapmaid.builder.models.conventional.Email;
 import de.quantummaid.mapmaid.builder.models.conventional.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.conventional.Subject;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -52,7 +51,7 @@ public class UsageExamples {
         final Gson gson = new Gson();
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, gson::fromJson))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
                 .build();
         //Showcase end jsonInstance
 
@@ -75,7 +74,7 @@ public class UsageExamples {
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, objectMapper::readValue))
+                        advancedBuilder.usingYamlMarshaller(objectMapper::writeValueAsString, input -> objectMapper.readValue(input, Object.class)))
                 .build();
         //Showcase end yamlInstance
 
@@ -103,13 +102,7 @@ public class UsageExamples {
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                        .usingXmlMarshaller(xStream::toXML, new Unmarshaller() {
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public <T> T unmarshal(final String input, final Class<T> type) {
-                                return (T) xStream.fromXML(input, type);
-                            }
-                        }))
+                        .usingXmlMarshaller(xStream::toXML, xStream::fromXML))
                 .build();
         //Showcase end xmlInstance
 
@@ -150,7 +143,9 @@ public class UsageExamples {
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                        .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, gson::fromJson))
+                        .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, input -> {
+                            return gson.fromJson(input, Object.class);
+                        }))
                 .build();
         //Showcase end example1
 

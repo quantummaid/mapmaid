@@ -48,7 +48,9 @@ public final class JacksonMarshaller implements Recipe {
         simpleModule.setDeserializerModifier(new AlwaysStringValueJacksonDeserializerModifier());
         this.objectMapper.setSerializationInclusion(NON_NULL);
         this.objectMapper.registerModule(simpleModule);
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingJsonMarshaller(this.objectMapper::writeValueAsString, this.objectMapper::readValue));
+        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
+                this.objectMapper::writeValueAsString,
+                input -> this.objectMapper.readValue(input, Object.class)
+        ));
     }
 }
