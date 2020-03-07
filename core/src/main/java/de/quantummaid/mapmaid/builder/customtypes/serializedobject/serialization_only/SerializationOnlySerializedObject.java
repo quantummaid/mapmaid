@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 
 @ToString
 @EqualsAndHashCode
@@ -41,7 +43,9 @@ public final class SerializationOnlySerializedObject<T> implements Serialization
     private final Builder builder;
 
     public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(final GenericType<T> type) {
-        return new SerializationOnlySerializedObject<>(emptyBuilder(type));
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final Builder builder = emptyBuilder(typeIdentifier);
+        return new SerializationOnlySerializedObject<>(builder);
     }
 
     public <B> SerializationOnlySerializedObject<T> withField(final String name,
@@ -63,9 +67,8 @@ public final class SerializationOnlySerializedObject<T> implements Serialization
         return this.builder.createSerializer();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public GenericType<T> type() {
-        return (GenericType<T>) this.builder.getType();
+    public TypeIdentifier type() {
+        return this.builder.getType();
     }
 }

@@ -188,8 +188,7 @@ public final class MapMaidBuilder {
                                              final CustomType<T> customType) {
         validateNotNull(capabilities, "capabilities");
         validateNotNull(customType, "customType");
-        final GenericType<T> type = customType.type();
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final TypeIdentifier typeIdentifier = customType.type();
         final Optional<TypeSerializer> serializer = customType.serializer();
         if (capabilities.hasSerialization() && serializer.isEmpty()) {
             throw new IllegalArgumentException(format("serializer is missing for type '%s'", typeIdentifier.description()));

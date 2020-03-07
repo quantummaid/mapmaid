@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPr
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder0;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +37,14 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder0.serializedObjectBuilder0;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DuplexType<T> implements CustomType<T> {
-    private final GenericType<T> type;
+    private final TypeIdentifier type;
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
 
@@ -132,10 +134,18 @@ public final class DuplexType<T> implements CustomType<T> {
                                                               final Class<B> baseType) {
         final TypeSerializer typeSerializer = serializer.toTypeSerializer(baseType);
         final TypeDeserializer typeDeserializer = deserializer.toTypeDeserializer(baseType);
-        return new DuplexType<>(type, typeSerializer, typeDeserializer);
+        return duplexType(type, typeSerializer, typeDeserializer);
     }
 
     public static <T> DuplexType<T> duplexType(final GenericType<T> type,
+                                               final TypeSerializer serializer,
+                                               final TypeDeserializer deserializer) {
+        validateNotNull(type, "type");
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return duplexType(typeIdentifier, serializer, deserializer);
+    }
+
+    public static <T> DuplexType<T> duplexType(final TypeIdentifier type,
                                                final TypeSerializer serializer,
                                                final TypeDeserializer deserializer) {
         validateNotNull(type, "type");
@@ -145,7 +155,7 @@ public final class DuplexType<T> implements CustomType<T> {
     }
 
     @Override
-    public GenericType<T> type() {
+    public TypeIdentifier type() {
         return this.type;
     }
 

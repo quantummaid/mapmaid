@@ -76,7 +76,7 @@ public final class When {
     public ToStage mapMaidDeserializesTheMap(final String jsonMap) {
         return type -> {
             final Map<String, Object> map = new Gson().fromJson(jsonMap, Map.class);
-            return doDeserialization(() -> this.mapMaid.deserializer().deserializeFromMap(map, type));
+            return doDeserialization(() -> this.mapMaid.deserializer().deserializeFromUniversalObject(map, type));
         };
     }
 

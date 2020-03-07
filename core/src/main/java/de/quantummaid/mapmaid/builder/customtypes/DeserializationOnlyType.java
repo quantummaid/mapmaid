@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPr
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder0;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +36,14 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder0.serializedObjectBuilder0;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DeserializationOnlyType<T> implements CustomType<T> {
-    private final GenericType<T> type;
+    private final TypeIdentifier type;
     private final TypeDeserializer deserializer;
 
     public static <T> SerializedObjectBuilder0<T> serializedObject(final Class<T> type) {
@@ -121,6 +123,14 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
                                                                          final TypeDeserializer deserializer) {
         validateNotNull(type, "type");
         validateNotNull(deserializer, "deserializer");
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return deserializationOnlyType(typeIdentifier, deserializer);
+    }
+
+    public static <T> DeserializationOnlyType<T> deserializationOnlyType(final TypeIdentifier type,
+                                                                         final TypeDeserializer deserializer) {
+        validateNotNull(type, "type");
+        validateNotNull(deserializer, "deserializer");
         return new DeserializationOnlyType<>(type, deserializer);
     }
 
@@ -128,11 +138,12 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
                                                                            final CustomCustomPrimitiveDeserializer<T, B> deserializer,
                                                                            final Class<B> baseType) {
         final TypeDeserializer typeDeserializer = deserializer.toTypeDeserializer(baseType);
-        return new DeserializationOnlyType<>(type, typeDeserializer);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return new DeserializationOnlyType<>(typeIdentifier, typeDeserializer);
     }
 
     @Override
-    public GenericType<T> type() {
+    public TypeIdentifier type() {
         return this.type;
     }
 

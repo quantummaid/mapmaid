@@ -106,6 +106,10 @@ public final class ResolvedMethod {
         return this.method;
     }
 
+    public String name() {
+        return this.method.getName();
+    }
+
     public boolean isPublic() {
         final int modifiers = this.method.getModifiers();
         return Modifier.isPublic(modifiers);

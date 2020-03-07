@@ -19,18 +19,21 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.customtypes;
+package de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.MapMaid;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface CustomType<T> {
-    TypeIdentifier type();
+public final class ZeroParametersDeserializationWrapper implements MethodParameterDeserializationWrapper {
 
-    Optional<TypeDeserializer> deserializer();
+    public static MethodParameterDeserializationWrapper zeroParameters() {
+        return new ZeroParametersDeserializationWrapper();
+    }
 
-    Optional<TypeSerializer> serializer();
+    @Override
+    public Map<String, Object> deserializeParameters(final Object input, final MapMaid mapMaid) {
+        return new HashMap<>(0);
+    }
 }

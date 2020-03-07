@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer0;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,9 @@ public final class SerializedObjectBuilder0<X> {
     private final Builder builder;
 
     public static <X> SerializedObjectBuilder0<X> serializedObjectBuilder0(final GenericType<X> type) {
-        return new SerializedObjectBuilder0<>(emptyBuilder(type));
+        final TypeIdentifier typeIdentifier = TypeIdentifier.typeIdentifierFor(type);
+        final Builder builder = emptyBuilder(typeIdentifier);
+        return new SerializedObjectBuilder0<>(builder);
     }
 
     public <A> SerializedObjectBuilder1<X, A> withField(final String name,

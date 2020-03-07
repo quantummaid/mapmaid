@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -47,12 +48,12 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Builder {
-    private final GenericType<?> type;
+    private final TypeIdentifier type;
     private final List<CustomDeserializationField> deserializationFields;
     private final List<CustomSerializationField> serializationFields;
     private InvocableDeserializer<?> deserializer;
 
-    public static Builder emptyBuilder(final GenericType<?> type) {
+    public static Builder emptyBuilder(final TypeIdentifier type) {
         return new Builder(type, smallList(), smallList());
     }
 
@@ -80,7 +81,7 @@ public final class Builder {
         this.deserializer = deserializer;
     }
 
-    public GenericType<?> getType() {
+    public TypeIdentifier getType() {
         return this.type;
     }
 
