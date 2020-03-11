@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.15</version>
+        <version>0.9.16</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
@@ -63,7 +63,6 @@
     </modules>
 
     <properties>
-        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
     </properties>
 
     <build>
@@ -71,7 +70,7 @@
             <plugin>
                 <groupId>de.quantummaid</groupId>
                 <artifactId>documaid</artifactId>
-                <version>0.9.10</version>
+                <version>0.9.11</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
