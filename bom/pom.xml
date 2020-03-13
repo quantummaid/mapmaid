@@ -25,31 +25,36 @@
 
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
-        <artifactId>integrations-parent</artifactId>
+        <artifactId>mapmaid-parent</artifactId>
         <version>0.9.19</version>
     </parent>
 
-    <groupId>de.quantummaid.mapmaid.integrations</groupId>
-    <artifactId>mapmaid-all</artifactId>
+    <artifactId>mapmaid-bom</artifactId>
 
-    <name>MapMaid - Integrations - All</name>
+    <name>MapMaid - BOM</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.quantummaid.mapmaid</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.quantummaid.mapmaid.integrations</groupId>
-            <artifactId>mapmaid-jackson</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <properties>
+        <dependency-update-file-checksum>42f33b16b7099885cd5becc23c104f35</dependency-update-file-checksum>
+        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.quantummaid.mapmaid</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.quantummaid.mapmaid.integrations</groupId>
+                <artifactId>mapmaid-all</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.quantummaid.mapmaid.integrations</groupId>
+                <artifactId>mapmaid-jackson</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
