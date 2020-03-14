@@ -54,7 +54,9 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AdvancedBuilder {
     private static final List<Autoloadable<MarshallerAndUnmarshaller>> AUTOLOADABLE_MARSHALLERS = List.of(
-            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonJsonMarshaller")
+            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonJsonMarshaller"),
+            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonXmlMarshaller"),
+            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonYamlMarshaller")
     );
 
     private Map<MarshallingType, Marshaller> marshallerMap = smallMap();
