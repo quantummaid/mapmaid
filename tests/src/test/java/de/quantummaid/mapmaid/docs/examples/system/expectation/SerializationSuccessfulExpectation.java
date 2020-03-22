@@ -21,6 +21,9 @@
 
 package de.quantummaid.mapmaid.docs.examples.system.expectation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.quantummaid.mapmaid.docs.examples.system.Result;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -45,7 +48,16 @@ public final class SerializationSuccessfulExpectation implements Expectation {
     @Override
     public void ensure(final Result result) {
         assertThat("serialization could be completed", result.serializationResult().isPresent(), is(true));
-        final Object serializationResult = result.serializationResult().get();
-        assertThat(serializationResult, is(this.expectedSerializationResult));
+        final String serializationResult = result.serializationResult().get();
+        assertThat(parseJson(serializationResult), is(parseJson(this.expectedSerializationResult)));
+    }
+
+    private static JsonNode parseJson(final String json) {
+        final ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readTree(json);
+        } catch (final JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

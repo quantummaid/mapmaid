@@ -31,6 +31,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrors
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationResult;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalInjection;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
@@ -85,6 +86,9 @@ final class InternalDeserializer implements DeserializerCallback {
         final Optional<Object> typedDirectInjection = injector.getDirectInjectionForType(targetType);
         if (typedDirectInjection.isPresent()) {
             return typedDirectInjection.get();
+        }
+        if (input instanceof UniversalInjection) {
+            return input.toNativeJava();
         }
 
         final Universal resolved = injector.getUniversalInjectionFor(exceptionTracker.getPosition()).orElse(input);

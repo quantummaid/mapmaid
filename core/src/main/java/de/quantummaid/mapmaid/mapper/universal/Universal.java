@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.mapper.universal;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.mapper.universal.UniversalInjection.universalInjection;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -43,7 +44,7 @@ public interface Universal {
         if (type == UniversalNull.class) {
             return "null";
         }
-        throw new UnsupportedOperationException();
+        return format("<injected %s>", type.getSimpleName());
     }
 
     @SuppressWarnings("unchecked")
@@ -66,7 +67,7 @@ public interface Universal {
         if (object instanceof Map) {
             return UniversalObject.universalObjectFromNativeMap((Map<String, Object>) object);
         }
-        throw new UnsupportedOperationException(format("Object '%s' cannot be mapped to universal type", object));
+        return universalInjection(object);
     }
 
     Object toNativeJava();

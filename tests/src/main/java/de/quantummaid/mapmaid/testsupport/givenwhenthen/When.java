@@ -74,8 +74,12 @@ public final class When {
 
     @SuppressWarnings("unchecked")
     public ToStage mapMaidDeserializesTheMap(final String jsonMap) {
+        final Map<String, Object> map = new Gson().fromJson(jsonMap, Map.class);
+        return mapMaidDeserializesTheMap(map);
+    }
+
+    public ToStage mapMaidDeserializesTheMap(final Map<String, Object> map) {
         return type -> {
-            final Map<String, Object> map = new Gson().fromJson(jsonMap, Map.class);
             return doDeserialization(() -> this.mapMaid.deserializer().deserializeFromUniversalObject(map, type));
         };
     }
