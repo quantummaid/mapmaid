@@ -58,4 +58,6 @@
     <suppress checks="VisibilityModifier|DeclarationOrder|MagicNumber|ConstantName"
               files="AddALotRequest|AComplexTypeWithSetters|HashCodeExample|MixedPojo|CustomPrimitive|SerializationOnlyExample|StaticFieldsSerializedObject" />
     <suppress checks="RedundantModifier" files="LocalClassExample" />
+    <suppress checks="MethodLength" files="LotsOfFieldsDtoExample" />
+    <suppress checks="ParameterNumber" files="LotsOfFieldsDto" />
 </suppressions>

@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.builder.customtypes;
 import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder0;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder00;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -36,7 +36,7 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder0.serializedObjectBuilder0;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
@@ -48,12 +48,12 @@ public final class DuplexType<T> implements CustomType<T> {
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
 
-    public static <T> SerializedObjectBuilder0<T> serializedObject(final Class<T> type) {
+    public static <T> SerializedObjectBuilder00<T> serializedObject(final Class<T> type) {
         return serializedObject(genericType(type));
     }
 
-    public static <T> SerializedObjectBuilder0<T> serializedObject(final GenericType<T> type) {
-        return serializedObjectBuilder0(type);
+    public static <T> SerializedObjectBuilder00<T> serializedObject(final GenericType<T> type) {
+        return serializedObjectBuilder00(type);
     }
 
     public static <T> DuplexType<T> customPrimitive(final Class<T> type,
