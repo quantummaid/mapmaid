@@ -30,6 +30,7 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
@@ -69,8 +70,8 @@ final class CommonPreferences {
             if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
                 return false;
             }
-            final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
-            return method.getName().equals(name);
+            final ResolvedMethod method = ((MethodCustomPrimitiveSerializer) serializer).method();
+            return method.name().equals(name);
         };
     }
 

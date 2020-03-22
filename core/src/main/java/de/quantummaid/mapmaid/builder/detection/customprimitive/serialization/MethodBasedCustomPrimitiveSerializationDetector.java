@@ -56,8 +56,6 @@ public final class MethodBasedCustomPrimitiveSerializationDetector implements Cu
         }
         final List<TypeSerializer> serializers = ((ClassType) type).methods().stream()
                 .filter(method -> !isStatic(method.method().getModifiers()))
-                // TODO
-                .filter(method -> isPublic(method.method().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> this.mappings.isPrimitiveType(method.returnType().get().assignableType()))
                 .filter(method -> method.parameters().size() == 0)

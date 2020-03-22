@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
@@ -45,13 +44,6 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
     public static CustomPrimitiveSerializer createSerializer(final ResolvedType type,
                                                              final ResolvedMethod serializationMethod) {
         final int serializationMethodModifiers = serializationMethod.method().getModifiers();
-        if (!Modifier.isPublic(serializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The serialization method %s configured for the custom primitive of type %s must be public",
-                    serializationMethod,
-                    type.description()
-            );
-        }
         if (Modifier.isStatic(serializationMethodModifiers)) {
             throw incompatibleCustomPrimitiveException(
                     "The serialization method %s configured for the custom primitive of type %s must not be static",
@@ -91,8 +83,8 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
         return this.baseType.assignableType();
     }
 
-    public Method method() {
-        return this.serializationMethod.method();
+    public ResolvedMethod method() {
+        return this.serializationMethod;
     }
 
     @Override

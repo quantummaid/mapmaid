@@ -32,8 +32,8 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
+import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 
-import java.lang.reflect.Method;
 import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Filter.filterOfType;
@@ -52,6 +52,16 @@ final class CommonFilters {
                 return allowed();
             } else {
                 return denied("only public static methods are considered for deserialization");
+            }
+        });
+    }
+
+    static Filter<TypeSerializer> ignoreNonPublicConstructorsForCustomPrimitiveSerialization() {
+        return filterOfType(MethodCustomPrimitiveSerializer.class, serializer -> {
+            if (serializer.method().isPublic()) {
+                return allowed();
+            } else {
+                return denied("only public methods are considered for serialization");
             }
         });
     }
@@ -91,8 +101,8 @@ final class CommonFilters {
             if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
                 return allowed();
             }
-            final Method method = ((MethodCustomPrimitiveSerializer) serializer).method();
-            final boolean matchesName = method.getName().equals(name);
+            final ResolvedMethod method = ((MethodCustomPrimitiveSerializer) serializer).method();
+            final boolean matchesName = method.name().equals(name);
             if (!matchesName) {
                 return allowed();
             } else {

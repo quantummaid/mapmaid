@@ -107,6 +107,7 @@ public final class DisambiguatorBuilder {
     private Preferences<TypeSerializer> buildCustomPrimitiveSerializerPreferences() {
         return preferences(
                 List.of(
+                        ignoreNonPublicConstructorsForCustomPrimitiveSerialization(),
                         nameOfSerializerMethodIsNot("toString"),
                         nameOfSerializerMethodIsNot("hashCode")
                 ),
