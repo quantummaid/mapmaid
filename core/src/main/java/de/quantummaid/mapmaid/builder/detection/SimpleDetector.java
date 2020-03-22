@@ -44,6 +44,7 @@ import lombok.ToString;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions.serializationFieldOptions;
@@ -86,12 +87,12 @@ public final class SimpleDetector {
             return failure("can only detect real types");
         }
         final ResolvedType type = typeIdentifier.getRealType();
-        if (!isSupported(type)) {
-            return failure(format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description()));
+        final Optional<DetectionResult<DisambiguationResult>> isNotSupported = validateForSupportedFeatures(type);
+        if (isNotSupported.isPresent()) {
+            return isNotSupported.get();
         }
 
         scanInformationBuilder.resetScan();
-
         final List<TypeSerializer> customPrimitiveSerializers;
         final SerializationFieldOptions serializationFieldOptions;
         if (capabilities.hasSerialization()) {
@@ -120,6 +121,34 @@ public final class SimpleDetector {
         final SerializedObjectOptions serializedObjectOptions = serializedObjectOptions(serializationFieldOptions, serializedObjectDeserializers);
         final SerializersAndDeserializers customPrimitiveOptions = serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
         return disambiguator.disambiguate(type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder);
+    }
+
+    private static Optional<DetectionResult<DisambiguationResult>> validateForSupportedFeatures(final ResolvedType type) {
+        if (!isSupported(type)) {
+            return Optional.of(failure(
+                    format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description())));
+        }
+        if (type.isAnnotation()) {
+            return Optional.of(failure(
+                    format("type '%s' cannot be detected because it is an annotation (you can still register it manually)", type.description())));
+        }
+        if (type.isAnonymousClass()) {
+            return Optional.of(failure(
+                    format("type '%s' cannot be detected because it is an anonymous class (you can still register it manually)", type.description())));
+        }
+        if (type.isLocalClass()) {
+            return Optional.of(failure(
+                    format("type '%s' cannot be detected because it is a local class (you can still register it manually)", type.description())));
+        }
+        if (type.isInnerClass() && !type.isStatic()) {
+            return Optional.of(failure(
+                    format("type '%s' cannot be detected because it is a non-static inner class (you can still register it manually)", type.description())));
+        }
+        if (!type.isPublic()) {
+            return Optional.of(failure(
+                    format("type '%s' cannot be detected because it is not public (you can still register it manually)", type.description())));
+        }
+        return Optional.empty();
     }
 
     private static boolean isSupported(final ResolvedType resolvedType) {

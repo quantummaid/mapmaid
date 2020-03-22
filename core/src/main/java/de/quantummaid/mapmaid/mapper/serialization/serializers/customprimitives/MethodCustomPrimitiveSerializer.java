@@ -59,13 +59,6 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
                     type.description()
             );
         }
-        if (Modifier.isAbstract(serializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The serialization method %s configured for the custom primitive of type %s must not be abstract",
-                    serializationMethod,
-                    type.description()
-            );
-        }
         if (serializationMethod.parameters().size() > 0) {
             throw incompatibleCustomPrimitiveException(
                     "The serialization method %s configured for the custom primitive of type %s must " +

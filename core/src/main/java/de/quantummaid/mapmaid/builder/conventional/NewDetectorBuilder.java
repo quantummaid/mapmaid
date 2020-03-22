@@ -40,7 +40,7 @@ import static de.quantummaid.mapmaid.builder.detection.customprimitive.deseriali
 import static de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.EnumCustomPrimitiveDeserializationDetector.enumDeserialization;
 import static de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.StaticMethodBasedCustomPrimitiveDeserializationDetector.staticMethodBased;
 import static de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.EnumSerializationDetector.enumBased;
-import static de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.MethodNameBasedCustomPrimitiveSerializationDetector.methodBased;
+import static de.quantummaid.mapmaid.builder.detection.customprimitive.serialization.MethodBasedCustomPrimitiveSerializationDetector.methodBased;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString

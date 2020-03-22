@@ -19,16 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.usecases;
+package de.quantummaid.mapmaid.docs.examples.special.annotation;
 
-import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
-
-public final class GetGroupUseCase {
-
-    private GetGroupUseCase() {
-    }
-
-    public String getGroup() {
-        throw wrongMethodCalledException();
-    }
+public @interface Annotation {
+    String value();
 }

@@ -146,6 +146,12 @@ public final class ClassType implements ResolvedType {
     }
 
     @Override
+    public boolean isPublic() {
+        final int modifiers = this.clazz.getModifiers();
+        return Modifier.isPublic(modifiers);
+    }
+
+    @Override
     public boolean isAbstract() {
         if (this.clazz.isPrimitive()) {
             return false;
@@ -156,6 +162,32 @@ public final class ClassType implements ResolvedType {
     @Override
     public boolean isInterface() {
         return this.clazz.isInterface();
+    }
+
+    @Override
+    public boolean isAnonymousClass() {
+        return this.clazz.isAnonymousClass();
+    }
+
+    @Override
+    public boolean isInnerClass() {
+        return this.clazz.getEnclosingClass() != null;
+    }
+
+    @Override
+    public boolean isLocalClass() {
+        return this.clazz.isLocalClass();
+    }
+
+    @Override
+    public boolean isStatic() {
+        final int modifiers = this.clazz.getModifiers();
+        return Modifier.isStatic(modifiers);
+    }
+
+    @Override
+    public boolean isAnnotation() {
+        return this.clazz.isAnnotation();
     }
 
     @Override

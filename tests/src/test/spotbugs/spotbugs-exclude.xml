@@ -62,4 +62,12 @@
         <Class name="de.quantummaid.mapmaid.docs.examples.entities.MixedPojo"/>
         <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.docs.examples.special.annotation.Annotation" />
+        <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE" />
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.docs.examples.special.local_class.LocalClassExample$1LocalClass" />
+        <Bug pattern="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS" />
+    </Match>
 </FindBugsFilter>

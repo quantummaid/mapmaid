@@ -19,15 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.usecases.conflicting;
+package de.quantummaid.mapmaid.docs.examples.special.non_static_inner_class;
 
-import de.quantummaid.mapmaid.examples.domain.Region;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import static de.quantummaid.mapmaid.docs.examples.system.WrongMethodCalledException.wrongMethodCalledException;
+public final class OuterClass {
 
-public final class AddRegionUseCase {
+    @ToString
+    @EqualsAndHashCode
+    public final class NonStaticInnerClass {
+        private final String value;
 
-    public <T> T addRegion(final Region region) {
-        throw wrongMethodCalledException();
+        public NonStaticInnerClass(final String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return this.value;
+        }
     }
 }

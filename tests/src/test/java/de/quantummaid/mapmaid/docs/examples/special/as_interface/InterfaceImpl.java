@@ -19,7 +19,25 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.usecases.conflicting;
+package de.quantummaid.mapmaid.docs.examples.special.as_interface;
 
-public final class EmptyUseCase {
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+final class InterfaceImpl implements Interface {
+    private final String value;
+
+    static Interface interfaceImpl(final String value) {
+        return new InterfaceImpl(value);
+    }
+
+    @Override
+    public String value() {
+        return this.value;
+    }
 }

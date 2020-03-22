@@ -19,23 +19,22 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.usecases;
+package de.quantummaid.mapmaid.docs.examples.special.as_interface;
 
-import de.quantummaid.mapmaid.docs.examples.entities.ReservationDao;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionRecipe.injectionOnly;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
+import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-public final class ExampleTests {
+public final class InterfaceExample {
 
     @Test
-    public void test() {
-        aMapMaid()
-                .usingRecipe(addAllReferencedClassesIn(GetGroupUseCase.class))
-                .usingRecipe(addAllReferencedClassesIn(ReservationUseCase.class))
-                .usingRecipe(injectionOnly(ReservationDao.class))
-                .build();
+    public void interfaceExample() {
+        scenarioBuilderFor(Interface.class)
+                .withSerializedForm("\"foo\"")
+                .withDeserializedForm(Interface.create("foo"))
+                .withSerializationOnlySuccessful()
+                .withDeserializationSuccessful()
+                .withDuplexSuccessful()
+                .run();
     }
 }

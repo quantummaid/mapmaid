@@ -31,10 +31,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.mapper.injector.NamedDirectInjection.namedDirectInjection;
 import static de.quantummaid.mapmaid.mapper.injector.PropertyName.propertyName;
 import static de.quantummaid.mapmaid.mapper.injector.TypedDirectInjection.typedDirectInjection;
@@ -44,9 +44,9 @@ import static de.quantummaid.mapmaid.mapper.injector.UniversalInjection.universa
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Injector {
-    private final List<UniversalInjection> universalInjections = new ArrayList<>(5);
-    private final List<NamedDirectInjection> namedDirectInjections = new ArrayList<>(5);
-    private final List<TypedDirectInjection> typedDirectInjections = new ArrayList<>(5);
+    private final List<UniversalInjection> universalInjections = smallList();
+    private final List<NamedDirectInjection> namedDirectInjections = smallList();
+    private final List<TypedDirectInjection> typedDirectInjections = smallList();
 
     static Injector empty() {
         return new Injector();

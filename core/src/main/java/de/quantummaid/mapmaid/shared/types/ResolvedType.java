@@ -44,6 +44,30 @@ public interface ResolvedType {
 
     boolean isInterface();
 
+    default boolean isPublic() {
+        return true;
+    }
+
+    default boolean isAnonymousClass() {
+        return false;
+    }
+
+    default boolean isInnerClass() {
+        return false;
+    }
+
+    default boolean isLocalClass() {
+        return false;
+    }
+
+    default boolean isStatic() {
+        return false;
+    }
+
+    default boolean isAnnotation() {
+        return false;
+    }
+
     boolean isWildcard();
 
     String description();

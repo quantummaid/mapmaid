@@ -41,12 +41,12 @@ import static java.util.stream.Collectors.toList;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MethodNameBasedCustomPrimitiveSerializationDetector implements CustomPrimitiveSerializationDetector {
+public final class MethodBasedCustomPrimitiveSerializationDetector implements CustomPrimitiveSerializationDetector {
     private final CustomPrimitiveMappings mappings;
 
     public static CustomPrimitiveSerializationDetector methodBased(final CustomPrimitiveMappings mappings) {
         validateNotNull(mappings, "mappings");
-        return new MethodNameBasedCustomPrimitiveSerializationDetector(mappings);
+        return new MethodBasedCustomPrimitiveSerializationDetector(mappings);
     }
 
     @Override
@@ -56,7 +56,7 @@ public final class MethodNameBasedCustomPrimitiveSerializationDetector implement
         }
         final List<TypeSerializer> serializers = ((ClassType) type).methods().stream()
                 .filter(method -> !isStatic(method.method().getModifiers()))
-                .filter(method -> !isAbstract(method.method().getModifiers()))
+                // TODO
                 .filter(method -> isPublic(method.method().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> this.mappings.isPrimitiveType(method.returnType().get().assignableType()))

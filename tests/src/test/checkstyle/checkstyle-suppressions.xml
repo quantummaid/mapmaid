@@ -57,4 +57,5 @@
     <suppress checks="Regex" files="DeserializerSpecs" />
     <suppress checks="VisibilityModifier|DeclarationOrder|MagicNumber|ConstantName"
               files="AddALotRequest|AComplexTypeWithSetters|HashCodeExample|MixedPojo|CustomPrimitive|SerializationOnlyExample|StaticFieldsSerializedObject" />
+    <suppress checks="RedundantModifier" files="LocalClassExample" />
 </suppressions>
