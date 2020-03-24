@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 public final class IndirectInjectionSpecs {
 
     @Test
-    public void indirectInjectionIsPossible() {
+    public void indirectInjectionIsNotPossible() {
         given(
                 aMapMaid()
                         .deserializing(AComplexType.class)
@@ -46,12 +45,7 @@ public final class IndirectInjectionSpecs {
                         "number1", "1",
                         "number2", "2"
                 )).toTheType(AComplexType.class)
-                .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(AComplexType.deserialize(
-                        AString.fromStringValue("a"),
-                        AString.fromStringValue("b"),
-                        ANumber.fromInt(1),
-                        ANumber.fromInt(2)
-                ));
+                .anExceptionIsThrownWithAMessageContaining("Pre-deserialized objects are not supported in the input but found 'AString(value=b)'. " +
+                        "Please use injections to add pre-deserialized objects.");
     }
 }

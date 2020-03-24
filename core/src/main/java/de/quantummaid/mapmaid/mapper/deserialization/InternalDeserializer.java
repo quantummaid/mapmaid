@@ -36,14 +36,17 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
-@SuppressWarnings("unchecked")
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class InternalDeserializer implements DeserializerCallback {
     private final Definitions definitions;
@@ -59,6 +62,7 @@ final class InternalDeserializer implements DeserializerCallback {
         return new InternalDeserializer(definitions, customPrimitiveMappings, validationErrorsMapping);
     }
 
+    @SuppressWarnings("unchecked")
     <T> T deserialize(final Universal input,
                       final TypeIdentifier targetType,
                       final ExceptionTracker exceptionTracker,
@@ -88,7 +92,9 @@ final class InternalDeserializer implements DeserializerCallback {
             return typedDirectInjection.get();
         }
         if (input instanceof UniversalInjection) {
-            return input.toNativeJava();
+            final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
+            throw mapMaidException(format("Pre-deserialized objects are not supported in the input but found '%s'. " +
+                    "Please use injections to add pre-deserialized objects.", input.toNativeJava()), scanInformation);
         }
 
         final Universal resolved = injector.getUniversalInjectionFor(exceptionTracker.getPosition()).orElse(input);
