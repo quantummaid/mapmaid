@@ -19,21 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers;
+package de.quantummaid.mapmaid.builder.injection;
 
-import de.quantummaid.mapmaid.MapMaid;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public final class ZeroParametersDeserializationWrapper implements MethodParameterDeserializationWrapper {
-
-    public static MethodParameterDeserializationWrapper zeroParameters() {
-        return new ZeroParametersDeserializationWrapper();
-    }
-
-    @Override
-    public Map<String, Object> deserializeParameters(final Object input, final MapMaid mapMaid) {
-        return new HashMap<>(0);
-    }
+public interface FixedInjector<T> {
+    T getInstance();
 }

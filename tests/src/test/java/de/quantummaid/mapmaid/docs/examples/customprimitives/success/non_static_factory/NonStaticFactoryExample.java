@@ -32,7 +32,7 @@ public final class NonStaticFactoryExample {
         scenarioBuilderFor(NonStaticFactoryCustomPrimitive.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(NonStaticFactoryCustomPrimitive.EXAMPLE)
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
                 .run();

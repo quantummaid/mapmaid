@@ -40,7 +40,7 @@ public final class PackagePrivateFactoryExample {
                         "  \"townName\": \"bar\"\n" +
                         "}")
 
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
                 .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,

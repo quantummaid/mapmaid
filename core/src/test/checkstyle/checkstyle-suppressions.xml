@@ -43,7 +43,7 @@
             files="Examples|Instances"/>
     <suppress checks="VisibilityModifier" files="AComplexValidatedType|ACyclicType|User"/>
     <suppress checks="MethodName|Regex" files="Examples"/>
-    <suppress checks="ClassFanOutComplexityCheck" files="MapMaidBuilder.java"/>
+    <suppress checks="ClassFanOutComplexityCheck|MethodCount" files="MapMaidBuilder.java"/>
     <suppress checks="RedundantModifier" files="DefaultPackageScanner.java"/>
     <suppress checks="MethodName|MagicNumber|LineLength|FileLength|MethodLength|ClassDataAbstractionCoupling" files=".*Specs"/>
     <suppress checks="ExplicitInitialization" files=".*"/>

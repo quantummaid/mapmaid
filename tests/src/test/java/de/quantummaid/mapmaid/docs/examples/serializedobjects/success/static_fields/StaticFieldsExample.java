@@ -36,7 +36,7 @@ public final class StaticFieldsExample {
                         "  \"fieldD\": \"d!\"\n" +
                         "}")
                 .withDeserializedForm(StaticFieldsSerializedObject.staticFieldsSerializedObject("a!", "b!", "c!", "d!"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexFailing()
                 .run();

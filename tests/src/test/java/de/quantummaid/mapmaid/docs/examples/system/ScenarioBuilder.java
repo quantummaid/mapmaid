@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation;
 import de.quantummaid.mapmaid.docs.examples.system.mode.ExampleMode;
+import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -55,6 +56,8 @@ public final class ScenarioBuilder {
     private final ResolvedType type;
     private String serializedForm;
     private Object deserializedForm;
+    private InjectorLambda injectorLambda = injector -> {
+    };
     private final Map<ExampleMode, List<Expectation>> scenarios = smallMap();
 
     public static ScenarioBuilder scenarioBuilderFor(final Class<?> type) {
@@ -72,6 +75,11 @@ public final class ScenarioBuilder {
 
     public ScenarioBuilder withDeserializedForm(final Object deserializedForm) {
         this.deserializedForm = deserializedForm;
+        return this;
+    }
+
+    public ScenarioBuilder withInjection(final InjectorLambda injectorLambda) {
+        this.injectorLambda = injectorLambda;
         return this;
     }
 
@@ -144,7 +152,7 @@ public final class ScenarioBuilder {
 
     public ScenarioBuilder withAllScenariosSuccessful() {
         withDuplexSuccessful();
-        withSerializationOnlySuccessful();
+        withSerializationSuccessful();
         withDeserializationSuccessful();
         return this;
     }
@@ -154,13 +162,13 @@ public final class ScenarioBuilder {
         return this;
     }
 
-    public ScenarioBuilder withSerializationOnlySuccessful(final String serializedForm) {
+    public ScenarioBuilder withSerializationSuccessful(final String serializedForm) {
         withScenario(serializationOnly(), serializationWas(serializedForm), deserializationFailedForNotSupported(this.type));
         return this;
     }
 
-    public ScenarioBuilder withSerializationOnlySuccessful() {
-        return withSerializationOnlySuccessful(this.serializedForm);
+    public ScenarioBuilder withSerializationSuccessful() {
+        return withSerializationSuccessful(this.serializedForm);
     }
 
     public ScenarioBuilder withDeserializationSuccessful() {
@@ -213,7 +221,7 @@ public final class ScenarioBuilder {
         }
 
         try {
-            final Object deserialized = mapMaid.deserializer().deserialize(this.serializedForm, this.type, json());
+            final Object deserialized = mapMaid.deserializer().deserialize(this.serializedForm, this.type, json(), injectorLambda);
             result.withDeserializationResult(deserialized);
         } catch (final Throwable throwable) {
             throwable.printStackTrace();

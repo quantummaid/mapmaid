@@ -74,11 +74,6 @@ public final class EquivalenceSignature implements Comparable<EquivalenceSignatu
                 .collect(toList());
     }
 
-    public static EquivalenceSignature ofDeserializer(final SerializedObjectDeserializer deserializer) {
-        final Map<String, TypeIdentifier> fields = deserializer.fields().fields();
-        return new EquivalenceSignature(fields);
-    }
-
     public Optional<SerializationFieldInstantiation> match(final SerializationFieldOptions serializer) {
         final DetectionResult<SerializationFieldInstantiation> instance = serializer.instantiate(this.fields);
         if (instance.isFailure()) {

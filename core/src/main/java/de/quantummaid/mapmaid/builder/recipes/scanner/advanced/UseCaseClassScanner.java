@@ -19,12 +19,12 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.advancedscanner;
+package de.quantummaid.mapmaid.builder.recipes.scanner.advanced;
 
 import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers.MethodParameterDeserializationWrapper;
+import de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers.MethodParameterDeserializationWrapper;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ClassType;
@@ -46,10 +46,10 @@ import static de.quantummaid.mapmaid.builder.GenericType.fromResolvedType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.deserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.recipes.advancedscanner.VirtualDeserializer.virtualDeserializerFor;
-import static de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers.MultipleParametersDeserializationWrapper.multipleParamters;
-import static de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers.SingleParameterDeserializationWrapper.singleParameter;
-import static de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers.ZeroParametersDeserializationWrapper.zeroParameters;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.advanced.VirtualDeserializer.virtualDeserializerFor;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers.MultipleParametersDeserializationWrapper.multipleParamters;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers.SingleParameterDeserializationWrapper.singleParameter;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers.ZeroParametersDeserializationWrapper.zeroParameters;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.virtualTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;

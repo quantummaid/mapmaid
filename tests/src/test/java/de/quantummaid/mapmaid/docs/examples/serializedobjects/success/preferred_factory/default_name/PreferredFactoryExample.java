@@ -38,7 +38,7 @@ public final class PreferredFactoryExample {
                         "  \"value3\": \"c\"\n" +
                         "}")
                 .withDeserializedForm(PreferredFactorySerializedObject.deserialize("a", "b", "c", "d"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

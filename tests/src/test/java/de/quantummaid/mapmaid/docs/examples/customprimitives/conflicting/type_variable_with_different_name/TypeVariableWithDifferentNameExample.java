@@ -37,7 +37,7 @@ public final class TypeVariableWithDifferentNameExample {
         scenarioBuilderFor(genericType.toResolvedType())
                 .withDeserializedForm(street("foo"))
                 .withSerializedForm("\"foo\"")
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
                 .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,

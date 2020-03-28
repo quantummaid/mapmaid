@@ -37,7 +37,7 @@ public final class AmbiguousSymmetryExample {
                         "  \"fieldB\": \"b\"\n" +
                         "}")
                 .withDeserializedForm(AmbiguousSymmetrySerializedObject.factoryA("a", "b", "c"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
                 .run();

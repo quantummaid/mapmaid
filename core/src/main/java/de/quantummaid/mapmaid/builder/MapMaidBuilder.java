@@ -29,8 +29,8 @@ import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.builder.recipes.injection.FixedInjector;
-import de.quantummaid.mapmaid.builder.recipes.injection.InjectionCustomType;
+import de.quantummaid.mapmaid.builder.injection.FixedInjector;
+import de.quantummaid.mapmaid.builder.injection.InjectionDeserializer;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -67,9 +67,9 @@ import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
-import static de.quantummaid.mapmaid.builder.recipes.injection.FixedInjectionDeserializer.diDeserializer;
-import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionCustomType.injectionCustomType;
-import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionSerializer.injectionSerializer;
+import static de.quantummaid.mapmaid.builder.injection.FixedInjectionDeserializer.diDeserializer;
+import static de.quantummaid.mapmaid.builder.injection.InjectionDeserializer.injectionDeserializer;
+import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.reason;
@@ -151,8 +151,8 @@ public final class MapMaidBuilder {
     }
 
     public MapMaidBuilder injecting(final TypeIdentifier typeIdentifier) {
-        final InjectionCustomType injectionCustomType = injectionCustomType(typeIdentifier);
-        return withCustomType(duplex(), injectionCustomType);
+        final InjectionDeserializer deserializer = injectionDeserializer(typeIdentifier);
+        return injecting(typeIdentifier, deserializer);
     }
 
     public <T> MapMaidBuilder injecting(final Class<T> type, final FixedInjector<T> injector) {
@@ -166,10 +166,14 @@ public final class MapMaidBuilder {
     }
 
     public MapMaidBuilder injecting(final TypeIdentifier typeIdentifier, final FixedInjector<?> injector) {
+        final TypeDeserializer deserializer = diDeserializer(injector);
+        return injecting(typeIdentifier, deserializer);
+    }
+
+    private MapMaidBuilder injecting(final TypeIdentifier typeIdentifier, final TypeDeserializer deserializer) {
         final Context context = emptyContext(this.processor::dispatch, typeIdentifier);
         final TypeSerializer serializer = injectionSerializer(typeIdentifier);
         context.setSerializer(serializer);
-        final TypeDeserializer deserializer = diDeserializer(injector);
         context.setDeserializer(deserializer);
         final StatefulDefinition statefulDefinition = injectedDefinition(context);
         this.processor.addState(statefulDefinition);

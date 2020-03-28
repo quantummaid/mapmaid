@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers;
+package de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers;
 
 import de.quantummaid.mapmaid.MapMaid;
 

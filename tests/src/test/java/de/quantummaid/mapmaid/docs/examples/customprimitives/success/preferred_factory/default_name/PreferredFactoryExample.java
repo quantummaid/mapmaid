@@ -32,7 +32,7 @@ public final class PreferredFactoryExample {
         scenarioBuilderFor(PreferredFactoryCustomPrimitive.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(PreferredFactoryCustomPrimitive.fromStringValue("foo"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

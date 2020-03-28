@@ -33,7 +33,7 @@ public final class StaticInnerClassExample {
         scenarioBuilderFor(StaticInnerClass.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(new StaticInnerClass("foo"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

@@ -32,7 +32,7 @@ public final class InterfaceExample {
         scenarioBuilderFor(Interface.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(Interface.create("foo"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

@@ -19,32 +19,39 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.preferred_factory.custom_name;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.normalinjection;
 
+import de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.DtoWithInjections;
 import org.junit.jupiter.api.Test;
+
+import java.io.OutputStream;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-public final class PreferredFactoryExample {
+public final class NormalInjectionExample {
 
     @Test
-    public void preferredFactoryExample() {
-        scenarioBuilderFor(PreferredFactorySerializedObject.class)
+    public void normalInjectionExample() {
+        scenarioBuilderFor(DtoWithInjections.class)
                 .withSerializedForm("" +
                         "{\n" +
-                        "  \"value2\": \"b\",\n" +
-                        "  \"value1\": \"a\",\n" +
-                        "  \"value4\": \"d\",\n" +
-                        "  \"value3\": \"c\"\n" +
+                        "  \"normalField2\": \"b\",\n" +
+                        "  \"normalField1\": \"a\"\n" +
                         "}")
-                .withDeserializedForm(PreferredFactorySerializedObject.myCustomName("a", "b", "c", "d"))
+                .withDeserializedForm(DtoWithInjections.dtoWithInjections("a", "b", System.out))
+                .withInjection(injector -> injector.put(System.out))
                 .withSerializationSuccessful()
-                .withDeserializationFailing()
+                .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
                 .withDuplexFailing()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> {
-                    mapMaidBuilder.withType(PreferredFactorySerializedObject.class, capabilities);
-                    mapMaidBuilder.withAdvancedSettings(advancedBuilder ->
-                            advancedBuilder.withPreferredSerializedObjectFactoryName("myCustomName"));
+                .withFixedDeserialization(mapMaidBuilder -> {
+                    mapMaidBuilder.deserializing(DtoWithInjections.class)
+                            .injecting(OutputStream.class)
+                            .build();
+                })
+                .withFixedDuplex(mapMaidBuilder -> {
+                    mapMaidBuilder.serializingAndDeserializing(DtoWithInjections.class)
+                            .injecting(OutputStream.class)
+                            .build();
                 })
                 .run();
     }

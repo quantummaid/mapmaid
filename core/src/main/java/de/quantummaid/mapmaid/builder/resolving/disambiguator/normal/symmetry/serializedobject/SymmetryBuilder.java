@@ -62,7 +62,7 @@ public final class SymmetryBuilder {
         final List<EquivalenceSignature> equivalenceSignatures = allOfDeserializer(serializedObjectDeserializer, injectedTypes);
         equivalenceSignatures.forEach(equivalenceSignature -> {
             if (!this.equivalenceClasses.containsKey(equivalenceSignature)) {
-                final int size = serializedObjectDeserializer.fields().size();
+                final int size = equivalenceSignature.size();
                 this.equivalenceClasses.put(equivalenceSignature, equivalenceClass(size));
             }
             this.equivalenceClasses.get(equivalenceSignature).addDeserializer(deserializer);

@@ -33,7 +33,7 @@ public final class CustomPrimitiveWithPrivateSerializationMethodsExample {
         scenarioBuilderFor(CustomPrimitiveWithPrivateSerializationMethods.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(customPrimitiveWithPrivateSerializationMethods("foo"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

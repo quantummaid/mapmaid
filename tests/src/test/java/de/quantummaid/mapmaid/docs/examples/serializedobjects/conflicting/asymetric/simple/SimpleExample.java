@@ -48,7 +48,7 @@ public final class SimpleExample {
                         "  \"townNameC\": \"d\"\n" +
                         "}")
                 .withDeserializationSuccessful()
-                .withSerializationOnlySuccessful("" +
+                .withSerializationSuccessful("" +
                         "{\n" +
                         "  \"streetName\": \"a\",\n" +
                         "  \"townNameA\": \"b\",\n" +

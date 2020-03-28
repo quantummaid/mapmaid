@@ -37,7 +37,7 @@ public final class MapToArrayExample {
                         "    \"qwer\"\n" +
                         "  ]\n" +
                         "}")
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing(
                         "java.util.Map<de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name, " +
                                 "de.quantummaid.mapmaid.docs.examples.customprimitives.success.normal.example1.Name>: unable to detect deserializer")

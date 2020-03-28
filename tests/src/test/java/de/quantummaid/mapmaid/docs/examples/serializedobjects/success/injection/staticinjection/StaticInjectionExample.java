@@ -19,18 +19,19 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.staticinjection;
 
+import de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.DtoWithInjections;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStream;
 
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-public final class InjectionExample {
+public final class StaticInjectionExample {
 
     @Test
-    public void injectionExample() {
+    public void staticInjectionExample() {
         scenarioBuilderFor(DtoWithInjections.class)
                 .withSerializedForm("" +
                         "{\n" +
@@ -38,7 +39,7 @@ public final class InjectionExample {
                         "  \"normalField1\": \"a\"\n" +
                         "}")
                 .withDeserializedForm(DtoWithInjections.dtoWithInjections("a", "b", System.out))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
                 .withDuplexFailing()
                 .withFixedDeserialization(mapMaidBuilder -> {

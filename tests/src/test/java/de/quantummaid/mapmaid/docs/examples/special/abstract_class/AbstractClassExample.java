@@ -32,7 +32,7 @@ public final class AbstractClassExample {
         scenarioBuilderFor(AbstractClass.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(AbstractClass.abstractClass("foo"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

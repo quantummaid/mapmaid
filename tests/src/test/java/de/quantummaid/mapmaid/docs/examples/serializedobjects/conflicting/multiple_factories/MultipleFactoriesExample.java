@@ -48,7 +48,7 @@ public final class MultipleFactoriesExample {
                         "}")
                 .withDuplexFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.multiple_factories.AddALotRequest: unable to detect")
                 .withDeserializationFailing("de.quantummaid.mapmaid.docs.examples.serializedobjects.conflicting.multiple_factories.AddALotRequest: unable to detect")
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withFixedScenarios(
                         (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities, serializedObject(AddALotRequest.class)
                                 .withField("name", Name.class, object -> object.name)

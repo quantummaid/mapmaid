@@ -39,7 +39,7 @@ public final class DifferentNameExample {
                         "  \"countryName\": \"d\",\n" +
                         "  \"regionName\": \"c\"\n" +
                         "}")
-                .withSerializationOnlySuccessful("" +
+                .withSerializationSuccessful("" +
                         "{\n" +
                         "  \"streetName\": \"a\",\n" +
                         "  \"townName\": \"b\",\n" +

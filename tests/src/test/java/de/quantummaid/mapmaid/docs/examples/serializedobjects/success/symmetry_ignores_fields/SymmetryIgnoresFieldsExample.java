@@ -36,7 +36,7 @@ public final class SymmetryIgnoresFieldsExample {
                         "  \"b\": \"b\"\n" +
                         "}")
                 .withDeserializedForm(SymmetryIgnoresFieldsSerializedObject.deserialize("a", "b"))
-                .withSerializationOnlySuccessful("" +
+                .withSerializationSuccessful("" +
                         "{\n" +
                         "  \"a\": \"a\",\n" +
                         "  \"b\": \"b\",\n" +

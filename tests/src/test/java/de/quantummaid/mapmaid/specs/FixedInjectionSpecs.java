@@ -22,22 +22,20 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.recipes.di.GeneralDependencyInjector;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.recipes.di.DiRecipe.toUseDependencyInjectionWith;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
-public final class DependencyInjectionSpecs {
+public final class FixedInjectionSpecs {
 
     @Test
-    public void aClassCanBeDeserializedUsingDependencyInjection() {
+    public void aClassCanBeDeserializedUsingFixedInjection() {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
@@ -62,7 +60,6 @@ public final class DependencyInjectionSpecs {
                 ));
     }
 
-    @SuppressWarnings("AnonymousInnerClassMayBeStatic")
     @Test
     public void aClassCanBeDeserializedUsingFixedInjectionEvenIfTheCorrespondingFieldIsNotPresent() {
         Given.given(

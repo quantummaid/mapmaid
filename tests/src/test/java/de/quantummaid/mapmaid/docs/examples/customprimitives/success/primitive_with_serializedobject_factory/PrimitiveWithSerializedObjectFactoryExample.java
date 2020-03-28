@@ -36,7 +36,7 @@ public final class PrimitiveWithSerializedObjectFactoryExample {
                         "   \"name2\": \"er\"\n" +
                         "}")
                 .withDeserializedForm(Name.EXAMPLE)
-                .withSerializationOnlySuccessful("\"qwer\"")
+                .withSerializationSuccessful("\"qwer\"")
                 .withDeserializationSuccessful()
                 .withDuplexFailing()
                 .run();

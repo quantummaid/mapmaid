@@ -32,7 +32,7 @@ public final class PreferredSerializerExample {
         scenarioBuilderFor(PreferredSerializerCustomPrimitive.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(PreferredSerializerCustomPrimitive.fromStringValue("foo"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();

@@ -32,7 +32,7 @@ public final class PrivateFactoryExample {
         scenarioBuilderFor(PrivateFactoryCustomPrimitive.class)
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(PrivateFactoryCustomPrimitive.EXAMPLE)
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
                 .run();

@@ -19,10 +19,10 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers;
+package de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,17 +33,15 @@ import java.util.Map;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SingleParameterDeserializationWrapper implements MethodParameterDeserializationWrapper {
-    private final String name;
-    private final ResolvedType type;
+public final class MultipleParametersDeserializationWrapper implements MethodParameterDeserializationWrapper {
+    private final TypeIdentifier typeIdentifier;
 
-    public static MethodParameterDeserializationWrapper singleParameter(final String name, final ResolvedType type) {
-        return new SingleParameterDeserializationWrapper(name, type);
+    public static MethodParameterDeserializationWrapper multipleParamters(final TypeIdentifier typeIdentifier) {
+        return new MultipleParametersDeserializationWrapper(typeIdentifier);
     }
 
     @Override
     public Map<String, Object> deserializeParameters(final Object input, final MapMaid mapMaid) {
-        final Object value = mapMaid.deserializer().deserializeFromUniversalObject(input, this.type);
-        return Map.of(this.name, value);
+        return mapMaid.deserializer().deserializeFromUniversalObject(input, this.typeIdentifier);
     }
 }

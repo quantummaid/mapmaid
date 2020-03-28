@@ -36,7 +36,7 @@ public final class SerializationOnlyExample {
         scenarioBuilderFor(DateFormatted.class)
                 .withSerializedForm("\"01-01-2010\"")
                 .withDeserializedForm(fromDate(new GregorianCalendar(2010, Calendar.JANUARY, 1).getTime()))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationFailing("java.util.Date: unable to detect deserializer:\n" +
                         "no deserializer detected:\n" +
                         "[Native java classes cannot be detected]")

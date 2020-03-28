@@ -39,7 +39,7 @@ public final class TransientFieldExample {
                         "  \"name\": \"foo\",\n" +
                         "  \"townName\": \"bar\"\n" +
                         "}")
-                .withSerializationOnlySuccessful("" +
+                .withSerializationSuccessful("" +
                         "{\n" +
                         "  \"townName\": \"bar\"\n" +
                         "}")

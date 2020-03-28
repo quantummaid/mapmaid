@@ -19,29 +19,21 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.advancedscanner.deserialization_wrappers;
+package de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
+import java.util.HashMap;
 import java.util.Map;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MultipleParametersDeserializationWrapper implements MethodParameterDeserializationWrapper {
-    private final TypeIdentifier typeIdentifier;
+public final class ZeroParametersDeserializationWrapper implements MethodParameterDeserializationWrapper {
 
-    public static MethodParameterDeserializationWrapper multipleParamters(final TypeIdentifier typeIdentifier) {
-        return new MultipleParametersDeserializationWrapper(typeIdentifier);
+    public static MethodParameterDeserializationWrapper zeroParameters() {
+        return new ZeroParametersDeserializationWrapper();
     }
 
     @Override
     public Map<String, Object> deserializeParameters(final Object input, final MapMaid mapMaid) {
-        return mapMaid.deserializer().deserializeFromUniversalObject(input, this.typeIdentifier);
+        return new HashMap<>(0);
     }
 }

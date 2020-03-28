@@ -40,7 +40,7 @@ public final class GetterAndPublicFieldsExample {
                 .withDeserializedForm(
                         GetterAndPublicFieldsSerializedObject.getterAndPublicFieldsSerializedObject(
                                 "a", "b", "c", "d"))
-                .withSerializationOnlySuccessful()
+                .withSerializationSuccessful()
                 .withDeserializationSuccessful()
                 .withDuplexSuccessful()
                 .run();
