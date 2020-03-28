@@ -23,14 +23,13 @@ package de.quantummaid.mapmaid.docs.examples.system.mode;
 
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
@@ -40,19 +39,10 @@ import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jso
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FixedExampleMode implements ExampleMode {
-    private final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix;
-    private final RequiredCapabilities capabilities;
+    private final Consumer<MapMaidBuilder> fix;
 
-    public static ExampleMode fixedWithAllCapabilities(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        return new FixedExampleMode(fix, RequiredCapabilities.duplex());
-    }
-
-    public static ExampleMode fixedDeserializationOnly(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        return new FixedExampleMode(fix, RequiredCapabilities.deserialization());
-    }
-
-    public static ExampleMode fixedSerializationOnly(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        return new FixedExampleMode(fix, RequiredCapabilities.serialization());
+    public static ExampleMode fixed(final Consumer<MapMaidBuilder> fix) {
+        return new FixedExampleMode(fix);
     }
 
     @Override
@@ -60,17 +50,7 @@ public final class FixedExampleMode implements ExampleMode {
         final MapMaidBuilder mapMaidBuilder = aMapMaid()
                 .withAdvancedSettings(advancedBuilder ->
                         advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()));
-        this.fix.accept(mapMaidBuilder, this.capabilities);
+        this.fix.accept(mapMaidBuilder);
         return mapMaidBuilder.build();
-    }
-
-    @Override
-    public boolean serialize() {
-        return this.capabilities.hasSerialization();
-    }
-
-    @Override
-    public boolean deserialize() {
-        return this.capabilities.hasDeserialization();
     }
 }

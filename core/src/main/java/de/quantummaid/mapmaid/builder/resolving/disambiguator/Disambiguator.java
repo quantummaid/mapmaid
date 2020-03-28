@@ -24,11 +24,15 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
+
+import java.util.List;
 
 public interface Disambiguator {
     DetectionResult<DisambiguationResult> disambiguate(ResolvedType type,
                                                        SerializedObjectOptions serializedObjectOptions,
                                                        SerializersAndDeserializers serializersAndDeserializers,
-                                                       ScanInformationBuilder scanInformationBuilder);
+                                                       ScanInformationBuilder scanInformationBuilder,
+                                                       List<TypeIdentifier> injectedTypes);
 }

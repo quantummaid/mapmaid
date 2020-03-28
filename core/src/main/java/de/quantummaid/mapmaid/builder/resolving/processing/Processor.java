@@ -32,10 +32,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
@@ -87,11 +84,12 @@ public final class Processor {
 
     private void resolveRecursively(final SimpleDetector detector,
                                     final Disambiguators disambiguators) {
+        final List<TypeIdentifier> injectedTypes = this.states.injections();
         while (!this.pendingSignals.isEmpty()) {
             final Signal signal = this.pendingSignals.remove();
             this.states = this.states.apply(signal, this);
         }
-        final States detected = this.states.apply(detect(detector, disambiguators), this);
+        final States detected = this.states.apply(detect(detector, disambiguators, injectedTypes), this);
         final States resolved = detected.apply(resolve(), this);
         this.states = resolved;
 

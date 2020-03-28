@@ -35,13 +35,14 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.docs.examples.system.Result.emptyResult;
 import static de.quantummaid.mapmaid.docs.examples.system.expectation.DeserializationSuccessfulExpectation.deserializationWas;
 import static de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation.*;
 import static de.quantummaid.mapmaid.docs.examples.system.expectation.SerializationSuccessfulExpectation.serializationWas;
-import static de.quantummaid.mapmaid.docs.examples.system.mode.FixedExampleMode.*;
+import static de.quantummaid.mapmaid.docs.examples.system.mode.FixedExampleMode.fixed;
 import static de.quantummaid.mapmaid.docs.examples.system.mode.NormalExampleMode.*;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
@@ -92,10 +93,25 @@ public final class ScenarioBuilder {
         return this;
     }
 
+    public ScenarioBuilder withFixedDuplex(final Consumer<MapMaidBuilder> fix) {
+        withScenario(fixed(fix), deserializationWas(this.deserializedForm), serializationWas(this.serializedForm));
+        return this;
+    }
+
+    public ScenarioBuilder withFixedSerialization(final Consumer<MapMaidBuilder> fix) {
+        withScenario(fixed(fix), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        return this;
+    }
+
+    public ScenarioBuilder withFixedDeserialization(final Consumer<MapMaidBuilder> fix) {
+        withScenario(fixed(fix), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        return this;
+    }
+
     public ScenarioBuilder withFixedScenarios(final BiConsumer<MapMaidBuilder, RequiredCapabilities> fix) {
-        withScenario(fixedWithAllCapabilities(fix), deserializationWas(this.deserializedForm), serializationWas(this.serializedForm));
-        withScenario(fixedDeserializationOnly(fix), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
-        withScenario(fixedSerializationOnly(fix), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        withFixedDuplex(mapMaidBuilder -> fix.accept(mapMaidBuilder, RequiredCapabilities.duplex()));
+        withFixedSerialization(mapMaidBuilder -> fix.accept(mapMaidBuilder, RequiredCapabilities.serialization()));
+        withFixedDeserialization(mapMaidBuilder -> fix.accept(mapMaidBuilder, RequiredCapabilities.deserialization()));
         return this;
     }
 

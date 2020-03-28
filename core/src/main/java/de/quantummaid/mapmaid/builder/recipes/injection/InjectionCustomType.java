@@ -21,35 +21,46 @@
 
 package de.quantummaid.mapmaid.builder.recipes.injection;
 
-import de.quantummaid.mapmaid.builder.GenericType;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import de.quantummaid.mapmaid.builder.customtypes.CustomType;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.GenericType.genericType;
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.duplexType;
+import java.util.Optional;
+
 import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionDeserializer.injectionDeserializer;
 import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionSerializer.injectionSerializer;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class InjectionRecipe implements Recipe {
-    private final GenericType<?> resolvedType;
+public final class InjectionCustomType implements CustomType<Object> {
+    private final TypeIdentifier typeIdentifier;
+    private final InjectionSerializer injectionSerializer;
+    private final InjectionDeserializer injectionDeserializer;
 
-    public static Recipe injectionOnly(final Class<?> type) {
-        return new InjectionRecipe(genericType(type));
-    }
-
-    public static Recipe injectionOnly(final GenericType<?> type) {
-        return new InjectionRecipe(type);
+    public static InjectionCustomType injectionCustomType(final TypeIdentifier typeIdentifier) {
+        final InjectionDeserializer injectionDeserializer = injectionDeserializer(typeIdentifier);
+        final InjectionSerializer injectionSerializer = injectionSerializer(typeIdentifier);
+        return new InjectionCustomType(typeIdentifier, injectionSerializer, injectionDeserializer);
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
-        mapMaidBuilder.serializingAndDeserializing(duplexType(this.resolvedType, injectionSerializer(), injectionDeserializer()));
+    public TypeIdentifier type() {
+        return this.typeIdentifier;
+    }
+
+    @Override
+    public Optional<TypeDeserializer> deserializer() {
+        return Optional.of(this.injectionDeserializer);
+    }
+
+    @Override
+    public Optional<TypeSerializer> serializer() {
+        return Optional.of(this.injectionSerializer);
     }
 }

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
@@ -35,7 +36,8 @@ public interface TypeSerializer {
     Universal serialize(Object object,
                         SerializationCallback callback,
                         SerializationTracker tracker,
-                        CustomPrimitiveMappings customPrimitiveMappings);
+                        CustomPrimitiveMappings customPrimitiveMappings,
+                        DebugInformation debugInformation);
 
     String description();
 }

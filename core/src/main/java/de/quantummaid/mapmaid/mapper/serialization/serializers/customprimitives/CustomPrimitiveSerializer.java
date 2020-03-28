@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -34,20 +35,6 @@ import static java.util.Collections.emptyList;
 
 public interface CustomPrimitiveSerializer extends TypeSerializer {
 
-    static CustomPrimitiveSerializer constantSerializer(final String constant) {
-        return new CustomPrimitiveSerializer() {
-            @Override
-            public Object serialize(final Object object) {
-                return constant;
-            }
-
-            @Override
-            public String description() {
-                return constant;
-            }
-        };
-    }
-
     @Override
     default List<TypeIdentifier> requiredTypes() {
         return emptyList();
@@ -59,7 +46,8 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
     default Universal serialize(final Object object,
                                 final SerializationCallback callback,
                                 final SerializationTracker tracker,
-                                final CustomPrimitiveMappings customPrimitiveMappings) {
+                                final CustomPrimitiveMappings customPrimitiveMappings,
+                                final DebugInformation debugInformation) {
         final Object serialized = serialize(object);
         return customPrimitiveMappings.toUniversal(serialized);
     }

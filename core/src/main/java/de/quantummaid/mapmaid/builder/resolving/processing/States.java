@@ -64,6 +64,13 @@ public final class States {
         return new States(this.stateFactories, newStates);
     }
 
+    public List<TypeIdentifier> injections() {
+        return this.states.stream()
+                .filter(StatefulDefinition::isInjection)
+                .map(StatefulDefinition::type)
+                .collect(toList());
+    }
+
     public States apply(final Signal signal, final Processor processor) {
         if (signal.target().isEmpty()) {
             final List<StatefulDefinition> newStates = this.states.stream()

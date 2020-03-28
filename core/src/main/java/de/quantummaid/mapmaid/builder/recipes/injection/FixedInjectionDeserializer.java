@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.di;
+package de.quantummaid.mapmaid.builder.recipes.injection;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
@@ -41,11 +41,11 @@ import static java.util.Collections.emptyList;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DiDeserializer implements TypeDeserializer {
-    private final DependencyInjector<?> injector;
+public final class FixedInjectionDeserializer implements TypeDeserializer {
+    private final FixedInjector<?> injector;
 
-    public static TypeDeserializer diDeserializer(final DependencyInjector<?> injector) {
-        return new DiDeserializer(injector);
+    public static FixedInjectionDeserializer diDeserializer(final FixedInjector<?> injector) {
+        return new FixedInjectionDeserializer(injector);
     }
 
     @Override

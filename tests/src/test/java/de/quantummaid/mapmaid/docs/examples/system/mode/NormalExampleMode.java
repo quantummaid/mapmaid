@@ -59,14 +59,4 @@ public final class NormalExampleMode implements ExampleMode {
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build();
     }
-
-    @Override
-    public boolean serialize() {
-        return this.capabilities.hasSerialization();
-    }
-
-    @Override
-    public boolean deserialize() {
-        return this.capabilities.hasDeserialization();
-    }
 }

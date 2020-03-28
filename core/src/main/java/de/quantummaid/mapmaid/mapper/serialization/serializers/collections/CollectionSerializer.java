@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.collections;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -41,7 +42,8 @@ public interface CollectionSerializer extends TypeSerializer {
     default Universal serialize(final Object object,
                                 final SerializationCallback callback,
                                 final SerializationTracker tracker,
-                                final CustomPrimitiveMappings customPrimitiveMappings) {
+                                final CustomPrimitiveMappings customPrimitiveMappings,
+                                final DebugInformation debugInformation) {
         final TypeIdentifier contentType = contentType();
         final List<Universal> list = serialize(object)
                 .stream()

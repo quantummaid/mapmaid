@@ -21,17 +21,53 @@
 
 package de.quantummaid.mapmaid.builder.recipes.injection;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
+import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public class InjectionDeserializer implements CustomPrimitiveDeserializer {
+import java.util.List;
 
-    public static CustomPrimitiveDeserializer injectionDeserializer() {
-        return new InjectionDeserializer();
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class InjectionDeserializer implements TypeDeserializer {
+    private final TypeIdentifier typeIdentifier;
+
+    public static InjectionDeserializer injectionDeserializer(final TypeIdentifier typeIdentifier) {
+        return new InjectionDeserializer(typeIdentifier);
     }
 
     @Override
-    public Object deserialize(final Object value) throws Exception {
-        throw new UnsupportedOperationException();
+    public List<TypeIdentifier> requiredTypes() {
+        return emptyList();
+    }
+
+    @Override
+    public <T> T deserialize(final Universal input,
+                             final ExceptionTracker exceptionTracker,
+                             final Injector injector,
+                             final DeserializerCallback callback,
+                             final CustomPrimitiveMappings customPrimitiveMappings,
+                             final TypeIdentifier typeIdentifier,
+                             final DebugInformation debugInformation) {
+        final ScanInformation scanInformation = debugInformation.scanInformationFor(this.typeIdentifier);
+        throw mapMaidException(format(
+                "Tried to deserialize type '%s' that is marked as injection-only (input was '%s')",
+                this.typeIdentifier.description(), input.toNativeJava()), scanInformation);
     }
 
     @Override

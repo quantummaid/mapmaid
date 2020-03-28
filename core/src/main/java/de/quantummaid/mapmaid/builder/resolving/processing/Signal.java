@@ -27,12 +27,13 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface Signal {
 
-    static Signal detect(final SimpleDetector detector, final Disambiguators disambiguators) {
-        return definition -> definition.detect(detector, disambiguators);
+    static Signal detect(final SimpleDetector detector, final Disambiguators disambiguators, final List<TypeIdentifier> injectedTypes) {
+        return definition -> definition.detect(detector, disambiguators, injectedTypes);
     }
 
     static Signal addSerialization(final TypeIdentifier type, final Reason reason) {

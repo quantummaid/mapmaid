@@ -24,13 +24,16 @@ package de.quantummaid.mapmaid.builder.resolving.states.undetected;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDuplex;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDuplex;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.duplex;
 import static de.quantummaid.mapmaid.builder.resolving.states.resolving.ResolvingDuplex.resolvingDuplex;
@@ -51,10 +54,12 @@ public final class UndetectedDuplex extends StatefulDuplex {
 
     @Override
     public StatefulDefinition detect(final SimpleDetector detector,
-                                     final Disambiguators disambiguators) {
+                                     final Disambiguators disambiguators,
+                                     final List<TypeIdentifier> injectedTypes) {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(), scanInformationBuilder, duplex(), disambiguators);
+                this.context.type(), scanInformationBuilder, duplex(), disambiguators, injectedTypes
+        );
         if (result.isFailure()) {
             return undetectableDuplex(this.context, format("no duplex detected:%n%s", result.reasonForFailure()));
         }

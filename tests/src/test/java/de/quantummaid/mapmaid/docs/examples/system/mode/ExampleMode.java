@@ -25,10 +25,5 @@ import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 
 public interface ExampleMode {
-
     MapMaid provideMapMaid(ResolvedType type);
-
-    boolean serialize();
-
-    boolean deserialize();
 }

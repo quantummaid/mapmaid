@@ -29,6 +29,8 @@ import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import de.quantummaid.mapmaid.builder.recipes.injection.FixedInjector;
+import de.quantummaid.mapmaid.builder.recipes.injection.InjectionCustomType;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -65,6 +67,9 @@ import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
+import static de.quantummaid.mapmaid.builder.recipes.injection.FixedInjectionDeserializer.diDeserializer;
+import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionCustomType.injectionCustomType;
+import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
 import static de.quantummaid.mapmaid.builder.resolving.Reason.reason;
@@ -72,6 +77,7 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.proc
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
@@ -132,6 +138,44 @@ public final class MapMaidBuilder {
 
     public <T> MapMaidBuilder serializingAndDeserializing(final DuplexType<T> customType) {
         return withCustomType(duplex(), customType);
+    }
+
+    public MapMaidBuilder injecting(final Class<?> type) {
+        final GenericType<?> genericType = genericType(type);
+        return injecting(genericType);
+    }
+
+    public MapMaidBuilder injecting(final GenericType<?> genericType) {
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(genericType);
+        return injecting(typeIdentifier);
+    }
+
+    public MapMaidBuilder injecting(final TypeIdentifier typeIdentifier) {
+        final InjectionCustomType injectionCustomType = injectionCustomType(typeIdentifier);
+        return withCustomType(duplex(), injectionCustomType);
+    }
+
+    public <T> MapMaidBuilder injecting(final Class<T> type, final FixedInjector<T> injector) {
+        final GenericType<T> genericType = genericType(type);
+        return injecting(genericType, injector);
+    }
+
+    public <T> MapMaidBuilder injecting(final GenericType<T> genericType, final FixedInjector<T> injector) {
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(genericType);
+        return injecting(typeIdentifier, injector);
+    }
+
+    public MapMaidBuilder injecting(final TypeIdentifier typeIdentifier, final FixedInjector<?> injector) {
+        final Context context = emptyContext(this.processor::dispatch, typeIdentifier);
+        final TypeSerializer serializer = injectionSerializer(typeIdentifier);
+        context.setSerializer(serializer);
+        final TypeDeserializer deserializer = diDeserializer(injector);
+        context.setDeserializer(deserializer);
+        final StatefulDefinition statefulDefinition = injectedDefinition(context);
+        this.processor.addState(statefulDefinition);
+        this.processor.dispatch(addSerialization(typeIdentifier, manuallyAdded()));
+        this.processor.dispatch(addDeserialization(typeIdentifier, manuallyAdded()));
+        return this;
     }
 
     public MapMaidBuilder withManuallyAddedTypes(final Class<?>... type) {

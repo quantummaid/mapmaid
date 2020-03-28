@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
+import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -64,7 +65,8 @@ public final class SerializedObjectSerializer implements TypeSerializer {
     public Universal serialize(final Object object,
                                final SerializationCallback callback,
                                final SerializationTracker tracker,
-                               final CustomPrimitiveMappings customPrimitiveMappings) {
+                               final CustomPrimitiveMappings customPrimitiveMappings,
+                               final DebugInformation debugInformation) {
         final SerializationFields fields = fields();
         final Map<String, Universal> map = new HashMap<>(10);
         fields.fields().forEach(serializationField -> {

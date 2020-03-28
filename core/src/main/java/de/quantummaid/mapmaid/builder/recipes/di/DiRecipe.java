@@ -25,8 +25,11 @@ import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import de.quantummaid.mapmaid.builder.recipes.injection.FixedInjector;
+import de.quantummaid.mapmaid.builder.recipes.injection.InjectionSerializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +39,7 @@ import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.duplexType;
-import static de.quantummaid.mapmaid.builder.recipes.di.DiDeserializer.diDeserializer;
+import static de.quantummaid.mapmaid.builder.recipes.injection.FixedInjectionDeserializer.diDeserializer;
 import static java.util.Arrays.asList;
 
 @ToString
@@ -56,9 +59,10 @@ public final class DiRecipe implements Recipe {
     public void cook(final MapMaidBuilder mapMaidBuilder) {
         this.types.forEach(type -> {
             final GenericType<Object> genericType = genericType((Class<Object>) type);
-            final DependencyInjector<?> dependencyInjector = this.injector.specializedFor(type);
-            final TypeSerializer serializer = DiSerializer.diSerializer();
-            final TypeDeserializer deserializer = diDeserializer(dependencyInjector);
+            final TypeIdentifier typeIdentifier = TypeIdentifier.typeIdentifierFor(genericType);
+            final FixedInjector<?> fixedInjector = this.injector.specializedFor(type);
+            final TypeSerializer serializer = InjectionSerializer.injectionSerializer(typeIdentifier);
+            final TypeDeserializer deserializer = diDeserializer(fixedInjector);
             final DuplexType<Object> duplexType = duplexType(genericType, serializer, deserializer);
             mapMaidBuilder.serializingAndDeserializing(duplexType);
         });

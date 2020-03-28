@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceClass.equivalenceClass;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceSignature.ofDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceSignature.allOfDeserializer;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -52,18 +53,20 @@ public final class SymmetryBuilder {
         return new SymmetryBuilder(smallMap());
     }
 
-    public void addDeserializer(final TypeDeserializer deserializer) {
+    public void addDeserializer(final TypeDeserializer deserializer, final List<TypeIdentifier> injectedTypes) {
         if (!(deserializer instanceof SerializedObjectDeserializer)) {
-            throw new UnsupportedOperationException("This should never happen." +
+            throw new UnsupportedOperationException("This should never happen. " +
                     "Only serialized object deserializers can be checked for symmetry, but got: " + deserializer);
         }
         final SerializedObjectDeserializer serializedObjectDeserializer = (SerializedObjectDeserializer) deserializer;
-        final EquivalenceSignature equivalenceSignature = ofDeserializer(serializedObjectDeserializer);
-        if (!this.equivalenceClasses.containsKey(equivalenceSignature)) {
-            final int size = serializedObjectDeserializer.fields().size();
-            this.equivalenceClasses.put(equivalenceSignature, equivalenceClass(size));
-        }
-        this.equivalenceClasses.get(equivalenceSignature).addDeserializer(deserializer);
+        final List<EquivalenceSignature> equivalenceSignatures = allOfDeserializer(serializedObjectDeserializer, injectedTypes);
+        equivalenceSignatures.forEach(equivalenceSignature -> {
+            if (!this.equivalenceClasses.containsKey(equivalenceSignature)) {
+                final int size = serializedObjectDeserializer.fields().size();
+                this.equivalenceClasses.put(equivalenceSignature, equivalenceClass(size));
+            }
+            this.equivalenceClasses.get(equivalenceSignature).addDeserializer(deserializer);
+        });
     }
 
     public void addSerializer(final SerializationFieldOptions serializer) {

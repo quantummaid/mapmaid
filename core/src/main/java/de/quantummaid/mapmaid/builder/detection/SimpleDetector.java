@@ -82,7 +82,8 @@ public final class SimpleDetector {
     public DetectionResult<DisambiguationResult> detect(final TypeIdentifier typeIdentifier,
                                                         final ScanInformationBuilder scanInformationBuilder,
                                                         final RequiredCapabilities capabilities,
-                                                        final Disambiguators disambiguators) {
+                                                        final Disambiguators disambiguators,
+                                                        final List<TypeIdentifier> injectedTypes) {
         if (typeIdentifier.isVirtual()) {
             return failure("can only detect real types");
         }
@@ -120,7 +121,7 @@ public final class SimpleDetector {
         final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
         final SerializedObjectOptions serializedObjectOptions = serializedObjectOptions(serializationFieldOptions, serializedObjectDeserializers);
         final SerializersAndDeserializers customPrimitiveOptions = serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
-        return disambiguator.disambiguate(type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder);
+        return disambiguator.disambiguate(type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder, injectedTypes);
     }
 
     private static Optional<DetectionResult<DisambiguationResult>> validateForSupportedFeatures(final ResolvedType type) {

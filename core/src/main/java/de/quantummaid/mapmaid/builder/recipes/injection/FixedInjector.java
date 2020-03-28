@@ -19,8 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.di;
+package de.quantummaid.mapmaid.builder.recipes.injection;
 
-public interface DependencyInjector<T> {
+public interface FixedInjector<T> {
     T getInstance();
 }

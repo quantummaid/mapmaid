@@ -24,13 +24,16 @@ package de.quantummaid.mapmaid.builder.resolving.states.undetected;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulSerializer;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulSerializer;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.builder.resolving.states.resolving.ResolvingSerializer.resolvingSerializer;
@@ -51,10 +54,12 @@ public final class UndetectedSerializer extends StatefulSerializer {
 
     @Override
     public StatefulDefinition detect(final SimpleDetector detector,
-                                     final Disambiguators disambiguators) {
+                                     final Disambiguators disambiguators,
+                                     final List<TypeIdentifier> injectedTypes) {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(), scanInformationBuilder, serialization(), disambiguators);
+                this.context.type(), scanInformationBuilder, serialization(), disambiguators, injectedTypes
+        );
         if (result.isFailure()) {
             return undetectableSerializer(this.context, format("no serializer detected:%n%s", result.reasonForFailure()));
         }

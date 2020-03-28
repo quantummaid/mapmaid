@@ -21,21 +21,54 @@
 
 package de.quantummaid.mapmaid.builder.recipes.injection;
 
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public final class InjectionSerializer implements CustomPrimitiveSerializer {
+import java.util.List;
 
-    public static CustomPrimitiveSerializer injectionSerializer() {
-        return new InjectionSerializer();
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class InjectionSerializer implements TypeSerializer {
+    private final TypeIdentifier typeIdentifier;
+
+    public static InjectionSerializer injectionSerializer(final TypeIdentifier typeIdentifier) {
+        return new InjectionSerializer(typeIdentifier);
+    }
+
+    @Override
+    public List<TypeIdentifier> requiredTypes() {
+        return emptyList();
+    }
+
+    @Override
+    public Universal serialize(final Object object,
+                               final SerializationCallback callback,
+                               final SerializationTracker tracker,
+                               final CustomPrimitiveMappings customPrimitiveMappings,
+                               final DebugInformation debugInformation) {
+        final ScanInformation scanInformation = debugInformation.scanInformationFor(this.typeIdentifier);
+        throw mapMaidException(format(
+                "Tried to serialize type '%s' that is marked as injection-only (input was '%s')",
+                this.typeIdentifier.description(), object), scanInformation);
     }
 
     @Override
     public String description() {
         return "always inject";
-    }
-
-    @Override
-    public Object serialize(final Object object) {
-        throw new UnsupportedOperationException();
     }
 }

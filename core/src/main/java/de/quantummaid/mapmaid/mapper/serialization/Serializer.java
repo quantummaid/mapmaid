@@ -180,7 +180,7 @@ public final class Serializer implements SerializationCallback {
                     return mapMaidException(
                             format("No serializer configured for type '%s'", definition.type().description()), scanInformation);
                 })
-                .serialize(object, this, childTracker, this.customPrimitiveMappings);
+                .serialize(object, this, childTracker, this.customPrimitiveMappings, this.debugInformation);
     }
 
     public Definitions getDefinitions() {

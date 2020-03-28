@@ -28,6 +28,8 @@ import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
+import java.util.List;
+
 public abstract class StatefulDefinition {
     public final Context context;
 
@@ -47,8 +49,13 @@ public abstract class StatefulDefinition {
         return this.context.type();
     }
 
+    public boolean isInjection() {
+        return false;
+    }
+
     public StatefulDefinition detect(final SimpleDetector detector,
-                                     final Disambiguators disambiguators) {
+                                     final Disambiguators disambiguators,
+                                     final List<TypeIdentifier> injectedTypes) {
         return this;
     }
 

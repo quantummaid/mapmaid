@@ -31,16 +31,48 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.Combinations.allCombinations;
 import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EquivalenceSignature implements Comparable<EquivalenceSignature> {
     private final Map<String, TypeIdentifier> fields;
+
+    public static List<EquivalenceSignature> allOfDeserializer(final SerializedObjectDeserializer deserializer,
+                                                               final List<TypeIdentifier> injectedTypes) {
+        final Map<String, TypeIdentifier> fields = deserializer.fields().fields();
+        final List<Map<String, TypeIdentifier>> combinations = combinations(fields, injectedTypes);
+        return combinations.stream()
+                .map(EquivalenceSignature::new)
+                .collect(toList());
+    }
+
+    private static List<Map<String, TypeIdentifier>> combinations(final Map<String, TypeIdentifier> fields,
+                                                                  final List<TypeIdentifier> injectedTypes) {
+        final List<String> requiredKeys = smallList();
+        final List<String> optionalKeys = smallList();
+        fields.forEach((key, typeIdentifier) -> {
+            if (injectedTypes.contains(typeIdentifier)) {
+                optionalKeys.add(key);
+            } else {
+                requiredKeys.add(key);
+            }
+        });
+
+        final List<List<String>> keyCombinations = allCombinations(requiredKeys, optionalKeys);
+        return keyCombinations.stream()
+                .map(keys -> subMap(keys, fields))
+                .collect(toList());
+    }
 
     public static EquivalenceSignature ofDeserializer(final SerializedObjectDeserializer deserializer) {
         final Map<String, TypeIdentifier> fields = deserializer.fields().fields();
@@ -64,5 +96,15 @@ public final class EquivalenceSignature implements Comparable<EquivalenceSignatu
         final Integer mySize = this.fields.size();
         final Integer otherSize = other.fields.size();
         return mySize.compareTo(otherSize) * -1;
+    }
+
+    private static Map<String, TypeIdentifier> subMap(final List<String> keys,
+                                                      final Map<String, TypeIdentifier> map) {
+        final Map<String, TypeIdentifier> subMap = new HashMap<>(keys.size());
+        keys.forEach(key -> {
+            final TypeIdentifier typeIdentifier = map.get(key);
+            subMap.put(key, typeIdentifier);
+        });
+        return subMap;
     }
 }

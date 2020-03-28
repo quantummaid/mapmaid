@@ -27,19 +27,20 @@ import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFi
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.customprimitive.CustomPrimitiveSymmetryBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Filters;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreaker;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.customprimitive.CustomPrimitiveSymmetryBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceClass;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SymmetryBuilder;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreaker;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -91,7 +92,8 @@ public final class NormalDisambiguator implements Disambiguator {
     public DetectionResult<DisambiguationResult> disambiguate(final ResolvedType type,
                                                               final SerializedObjectOptions serializedObjectOptions,
                                                               final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
-                                                              final ScanInformationBuilder scanInformationBuilder) {
+                                                              final ScanInformationBuilder scanInformationBuilder,
+                                                              final List<TypeIdentifier> injectedTypes) {
         if (type.assignableType().getPackageName().startsWith("java.")) {
             return failure("Native java classes cannot be detected");
         }
@@ -110,7 +112,7 @@ public final class NormalDisambiguator implements Disambiguator {
             return deserializationOnly(preferredCustomPrimitiveSerializersAndDeserializers, filteredSerializedObjectOptions, scanInformationBuilder);
         }
 
-        return duplex(type, preferredCustomPrimitiveSerializersAndDeserializers, filteredSerializedObjectOptions, scanInformationBuilder);
+        return duplex(type, preferredCustomPrimitiveSerializersAndDeserializers, filteredSerializedObjectOptions, scanInformationBuilder, injectedTypes);
     }
 
     private DetectionResult<DisambiguationResult> serializationOnly(final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
@@ -139,7 +141,8 @@ public final class NormalDisambiguator implements Disambiguator {
     private DetectionResult<DisambiguationResult> duplex(final ResolvedType type,
                                                          final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
                                                          final SerializedObjectOptions serializedObjectOptions,
-                                                         final ScanInformationBuilder scanInformationBuilder) {
+                                                         final ScanInformationBuilder scanInformationBuilder,
+                                                         final List<TypeIdentifier> injectedTypes) {
         final CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder = customPrimitiveSymmetryBuilder();
         customPrimitiveSerializersAndDeserializers.serializers()
                 .forEach(serializer -> customPrimitiveSymmetryBuilder.addSerializer((CustomPrimitiveSerializer) serializer));
@@ -150,7 +153,7 @@ public final class NormalDisambiguator implements Disambiguator {
         if (customPrimitiveResult.isPresent()) {
             return symmetricCustomPrimitive(customPrimitiveResult.get(), scanInformationBuilder);
         }
-        return symmetricSerializedObject(type, serializedObjectOptions, scanInformationBuilder);
+        return symmetricSerializedObject(type, serializedObjectOptions, scanInformationBuilder, injectedTypes);
     }
 
     private DetectionResult<DisambiguationResult> symmetricCustomPrimitive(final SerializersAndDeserializers serializersAndDeserializers,
@@ -170,10 +173,11 @@ public final class NormalDisambiguator implements Disambiguator {
 
     private DetectionResult<DisambiguationResult> symmetricSerializedObject(final ResolvedType type,
                                                                             final SerializedObjectOptions serializedObjectOptions,
-                                                                            final ScanInformationBuilder scanInformationBuilder) {
+                                                                            final ScanInformationBuilder scanInformationBuilder,
+                                                                            final List<TypeIdentifier> injectedTypes) {
         final SymmetryBuilder symmetryBuilder = symmetryBuilder();
         final List<TypeDeserializer> deserializers = serializedObjectOptions.deserializers();
-        deserializers.forEach(symmetryBuilder::addDeserializer);
+        deserializers.forEach(deserializer -> symmetryBuilder.addDeserializer(deserializer, injectedTypes));
         symmetryBuilder.addSerializer(serializedObjectOptions.serializationFieldOptions());
 
         final DetectionResult<EquivalenceClass> symmetric = symmetryBuilder.determineGreatestCommonFields();

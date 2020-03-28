@@ -19,23 +19,28 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.configuration;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection;
 
-import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.docs.examples.entities.Reservation;
-import de.quantummaid.mapmaid.docs.examples.entities.ReservationDao;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.injection.InjectionRecipe.injectionOnly;
+import java.io.OutputStream;
 
-public final class InjectionOnlyConfiguration {
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DtoWithInjections {
+    public final String normalField1;
+    public final String normalField2;
+    @Include
+    public final transient OutputStream injectedField;
 
-    public MapMaid mapMaid() {
-        //Showcase start injectionOnly
-        return aMapMaid()
-                .serializingAndDeserializing(Reservation.class)
-                .usingRecipe(injectionOnly(ReservationDao.class))
-                .build();
-        //Showcase end injectionOnly
+    public static DtoWithInjections dtoWithInjections(final String normalField1,
+                                                      final String normalField2,
+                                                      final OutputStream injectedField) {
+        return new DtoWithInjections(normalField1, normalField2, injectedField);
     }
 }
