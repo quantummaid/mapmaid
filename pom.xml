@@ -60,6 +60,7 @@
         <module>core</module>
         <module>integrations</module>
         <module>tests</module>
+        <module>documentation</module>
         <module>bom</module>
     </modules>
 

@@ -1,10 +1,3 @@
-* [Concepts](#concepts)
-  * [Custom Primitives](#custom-primitives)
-  * [Serialized Objects](#serialized-objects)
-  * [String Representation](#string-representation)
-  * [(Un)marshalling](#unmarshalling)
-  * [Validation Errors](#validation-errors)
-
 # Concepts
 
 What we call "Custom primitives and Serialized Objects" comes under many names. Some call it [Value Object](http://wiki.c2.com/?ValueObject) or [Value Java Objects or VALJO](https://blog.joda.org/2014/03/valjos-value-java-objects.html), some call it [Data Value](https://refactoring.guru/replace-data-value-with-object) or [Custom Value Type](https://en.wikipedia.org/wiki/Value_object#Java). You may have also heard about [Project Valhalla](https://en.wikipedia.org/wiki/Project_Valhalla_(Java_language) and Value Types that come with it.  

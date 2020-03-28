@@ -64,14 +64,14 @@ Some features MapMaid offers:
 Check out these resources, and let us know if you don't find the information you are looking for, 
 we'll be happy to address that.
 
-* [QuickStart](docs/QuickStart.md) - Minimal configuration and example usage of MapMaid
-* [User Guide](docs/UserGuide.md) - Detailed description of MapMaid functionality, walkthrough features and configuration possibilities
+* [QuickStart](documentation/QuickStart.md) - Minimal configuration and example usage of MapMaid
+* [User Guide](documentation/UserGuide.md) - Detailed description of MapMaid functionality, walkthrough features and configuration possibilities
 * [Introduction Blogpost](https://github.com/quantummaid/mapmaid) - Example application, rationale behind MapMaid
-* [Concepts](docs/Concepts.md) - Terminology we use explained. Check this document out to understand what we call [Custom Primitive](docs/Concepts.md#custom-primitives) and [Serialized Object](docs/Concepts.md#serialized-objects) and why we choose [String as the representation method](docs/Concepts.md#string-representation).
+* [Concepts](documentation/Concepts.md) - Terminology we use explained. Check this document out to understand what we call [Custom Primitive](documentation/Concepts.md#custom-primitives) and [Serialized Object](documentation/Concepts.md#serialized-objects) and why we choose [String as the representation method](documentation/Concepts.md#string-representation).
 
 Also, take a look into these articles to get an idea of why we created MapMaid in the first place:
 
-* [Domain Driven Security](docs/articles/DomainDrivenSecurity.md)
+* [Domain Driven Security](documentation/articles/DomainDrivenSecurity.md)
 
 ## Contributing
 

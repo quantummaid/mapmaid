@@ -6,7 +6,7 @@ However, if you have no control over the data format being passed around and wou
 
 ## Serialization
 
-The Recipe is called [BuiltInPrimitveSerializedAsStringSupport](../core/src/main/java/de/quantummaid/mapmaid/builder/recipes/primitives/BuiltInPrimitveSerializedAsStringSupport.java) and it registers a list of primitives as Custom Primitives so if you try to serialize let's say a JSON, containing a numeric type, you'll get it wrapped into a String.
+The recipe is called [BuiltInPrimitveSerializedAsStringSupport](../core/src/main/java/de/quantummaid/mapmaid/builder/recipes/primitives/BuiltInPrimitveSerializedAsStringSupport.java) and it registers a list of primitives as Custom Primitives so if you try to serialize let's say a JSON, containing a numeric type, you'll get it wrapped into a String.
 
 ```java
 final ObjectMapper objectMapper = new ObjectMapper();

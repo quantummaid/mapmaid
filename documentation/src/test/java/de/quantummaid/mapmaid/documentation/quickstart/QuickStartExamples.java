@@ -19,25 +19,22 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs;
+package de.quantummaid.mapmaid.documentation.quickstart;
 
-import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.models.conventional.Body;
-import de.quantummaid.mapmaid.builder.models.conventional.Email;
-import de.quantummaid.mapmaid.builder.models.conventional.EmailAddress;
-import de.quantummaid.mapmaid.builder.models.conventional.Subject;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Body;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Email;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.EmailAddress;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Subject;
 import org.junit.jupiter.api.Test;
 
 public final class QuickStartExamples {
-    private static final String YOUR_PACKAGE_TO_SCAN = Email.class.getPackageName();
 
     @Test
     public void quickStart() {
         //Showcase start instance
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(new Gson()::toJson, input -> new Gson().fromJson(input, Object.class)))
                 .build();
         //Showcase end instance
 
