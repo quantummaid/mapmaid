@@ -19,28 +19,22 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs;
+package de.quantummaid.mapmaid.documentation;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
 
-public final class PackageScannerExample {
+public final class DetectorExample {
 
     @Test
-    public void apiExample() {
-        final Gson gson = new Gson();
-
-        //Showcase start config
+    public void test() {
+        //Showcase start detector
         MapMaid.aMapMaid()
-                /* configuration */
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
+                        new Gson()::toJson,
+                        input -> new Gson().fromJson(input, Object.class)))
                 .build();
-        //Showcase end config
-
-        //Showcase start api
-        MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(gson::toJson, input -> gson.fromJson(input, Object.class)))
-                .build();
-        //Showcase end api
+        //Showcase end detector
     }
 }

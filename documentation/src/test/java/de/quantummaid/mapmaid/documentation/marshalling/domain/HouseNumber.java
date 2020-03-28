@@ -19,22 +19,20 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs;
+package de.quantummaid.mapmaid.documentation.marshalling.domain;
 
-import com.google.gson.Gson;
-import de.quantummaid.mapmaid.MapMaid;
-import org.junit.jupiter.api.Test;
+public final class HouseNumber {
+    private final String value;
 
-public final class DetectorExample {
+    private HouseNumber(final String value) {
+        this.value = value;
+    }
 
-    @Test
-    public void test() {
-        //Showcase start detector
-        MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
-                        new Gson()::toJson,
-                        input -> new Gson().fromJson(input, Object.class)))
-                .build();
-        //Showcase end detector
+    public static HouseNumber fromStringValue(final String value) {
+        return new HouseNumber(value);
+    }
+
+    public String stringValue() {
+        return this.value;
     }
 }

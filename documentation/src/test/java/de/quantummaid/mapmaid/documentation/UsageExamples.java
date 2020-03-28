@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs;
+package de.quantummaid.mapmaid.documentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -27,10 +27,10 @@ import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.models.conventional.Body;
-import de.quantummaid.mapmaid.builder.models.conventional.Email;
-import de.quantummaid.mapmaid.builder.models.conventional.EmailAddress;
-import de.quantummaid.mapmaid.builder.models.conventional.Subject;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Body;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Email;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.EmailAddress;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Subject;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
 

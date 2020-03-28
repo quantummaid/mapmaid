@@ -19,12 +19,12 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs;
+package de.quantummaid.mapmaid.documentation;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.models.conventional.Email;
-import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
+import de.quantummaid.mapmaid.documentation.quickstart.domain.Email;
+import de.quantummaid.mapmaid.documentation.validation.CustomTypeValidationException;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.AggregatedValidationException;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError;
 import org.junit.jupiter.api.Test;

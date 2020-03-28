@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.json;
+package de.quantummaid.mapmaid.documentation;
 
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;

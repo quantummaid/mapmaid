@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs;
+package de.quantummaid.mapmaid.documentation.marshalling;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe;
-import de.quantummaid.mapmaid.examples.domain.*;
+import de.quantummaid.mapmaid.documentation.marshalling.domain.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -63,7 +63,9 @@ public final class MarshallingExamples {
         final String urlEncoded = mapMaid.serializeTo(object, UrlEncodedMarshallerRecipe.urlEncoded());
         //Showcase end urlencodedusage
 
-        assert urlEncoded.equals("addresses[0][houseNumber]=7a&addresses[0][zipCode]=423423&addresses[0][country]=USA&addresses[0][streetName]=Nulla+Street&addresses[0][region]=Mississippi&addresses[0][city]=Mankato&firstNames[0]=Aaron&firstNames[1]=Adam");
+        assert urlEncoded.equals("addresses[0][houseNumber]=7a&addresses[0][zipCode]=423423&addresses[0][country]=USA&" +
+                "addresses[0][streetName]=Nulla+Street&addresses[0][region]=Mississippi&addresses[0][city]=Mankato&" +
+                "firstNames[0]=Aaron&firstNames[1]=Adam");
     }
 
     @Test
@@ -86,7 +88,8 @@ public final class MarshallingExamples {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\",\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
+        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
+                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
     }
 
     @Test
@@ -109,7 +112,8 @@ public final class MarshallingExamples {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\",\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
+        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
+                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
     }
 
     @Test
@@ -235,6 +239,7 @@ public final class MarshallingExamples {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\",\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
+        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
+                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
     }
 }
