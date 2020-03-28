@@ -36,19 +36,12 @@ import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jso
 
 public final class DependencyInjectionSpecs {
 
-    @SuppressWarnings("AnonymousInnerClassMayBeStatic")
     @Test
     public void aClassCanBeDeserializedUsingDependencyInjection() {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
-                        .usingRecipe(toUseDependencyInjectionWith(new GeneralDependencyInjector() {
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public <T> T getInstance(final Class<T> type) {
-                                return (T) ANumber.fromInt(42);
-                            }
-                        }, ANumber.class))
+                        .injecting(ANumber.class, () -> ANumber.fromInt(42))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
@@ -71,17 +64,11 @@ public final class DependencyInjectionSpecs {
 
     @SuppressWarnings("AnonymousInnerClassMayBeStatic")
     @Test
-    public void aClassCanBeDeserializedUsingDependencyInjectionEvenIfTheCorrespondingFieldIsNotPresent() {
+    public void aClassCanBeDeserializedUsingFixedInjectionEvenIfTheCorrespondingFieldIsNotPresent() {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
-                        .usingRecipe(toUseDependencyInjectionWith(new GeneralDependencyInjector() {
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public <T> T getInstance(final Class<T> type) {
-                                return (T) ANumber.fromInt(42);
-                            }
-                        }, ANumber.class))
+                        .injecting(ANumber.class, () -> ANumber.fromInt(42))
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
