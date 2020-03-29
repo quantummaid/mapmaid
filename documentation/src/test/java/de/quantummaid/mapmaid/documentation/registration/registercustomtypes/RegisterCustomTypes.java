@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.registercustomtypes;
+package de.quantummaid.mapmaid.documentation.registration.registercustomtypes;
 
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;

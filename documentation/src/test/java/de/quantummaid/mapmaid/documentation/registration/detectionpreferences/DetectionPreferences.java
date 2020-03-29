@@ -19,43 +19,49 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.detectionpreferences;
+package de.quantummaid.mapmaid.documentation.registration.detectionpreferences;
 
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class DetectionPreferences {
 
     @Test
     public void preferredCustomPrimitiveFactoryName() {
         //Showcase start preferredCustomPrimitiveFactoryName
-        MapMaid.aMapMaid()
+        final MapMaid mapMaid = MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> {
                     advancedBuilder.withPreferredCustomPrimitiveFactoryName("instantiate");
                 })
                 .build();
         //Showcase end preferredCustomPrimitiveFactoryName
+        assertThat(mapMaid, notNullValue());
     }
 
     @Test
     public void preferredCustomPrimitiveSerializationMethodName() {
         //Showcase start preferredCustomPrimitiveSerializationMethodName
-        MapMaid.aMapMaid()
+        final MapMaid mapMaid = MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> {
                     advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serializeToString");
                 })
                 .build();
         //Showcase end preferredCustomPrimitiveSerializationMethodName
+        assertThat(mapMaid, notNullValue());
     }
 
     @Test
     public void preferredSerializedObjectFactoryName() {
         //Showcase start preferredSerializedObjectFactoryName
-        MapMaid.aMapMaid()
+        final MapMaid mapMaid = MapMaid.aMapMaid()
                 .withAdvancedSettings(advancedBuilder -> {
                     advancedBuilder.withPreferredSerializedObjectFactoryName("instantiate");
                 })
                 .build();
         //Showcase end preferredSerializedObjectFactoryName
+        assertThat(mapMaid, notNullValue());
     }
 }

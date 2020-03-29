@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.injection;
+package de.quantummaid.mapmaid.documentation.registration.registercustomtypes;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +28,10 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public final class MyInjectedValue {
+public final class MyCustomPrimitive {
     private final String value;
 
-    public String getValue() {
+    public String value() {
         return this.value;
     }
 }

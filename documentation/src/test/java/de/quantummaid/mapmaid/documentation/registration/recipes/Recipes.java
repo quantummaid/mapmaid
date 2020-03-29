@@ -19,47 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.registernormaltypes;
+package de.quantummaid.mapmaid.documentation.registration.recipes;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class RegisterNormalTypes {
+public final class Recipes {
 
     @Test
-    public void registeringDuplex() {
-        //Showcase start duplexConfig
-        final MapMaid mapMaid = MapMaid.aMapMaid()
-                .serializingAndDeserializing(MyCustomClass.class)
+    public void recipes() {
+        //Showcase start recipeConfig
+        final MapMaid mapMaid = MapMaidBuilder.mapMaidBuilder()
+                .usingRecipe(new MyRecipe())
                 .build();
-        //Showcase end duplexConfig
+        //Showcase end recipeConfig
         final String json = mapMaid.serializeToJson(MyCustomClass.myCustomClass("foo"));
         assertThat(json, is("\"foo\""));
-        final MyCustomClass deserialized = mapMaid.deserializeJson("\"foo\"", MyCustomClass.class);
-        assertThat(deserialized, is(MyCustomClass.myCustomClass("foo")));
-    }
-
-    @Test
-    public void registeringSerialization() {
-        //Showcase start serializationConfig
-        final MapMaid mapMaid = MapMaid.aMapMaid()
-                .serializing(MyCustomClass.class)
-                .build();
-        //Showcase end serializationConfig
-        final String json = mapMaid.serializeToJson(MyCustomClass.myCustomClass("foo"));
-        assertThat(json, is("\"foo\""));
-    }
-
-    @Test
-    public void registeringDeserialization() {
-        //Showcase start deserializationConfig
-        final MapMaid mapMaid = MapMaid.aMapMaid()
-                .deserializing(MyCustomClass.class)
-                .build();
-        //Showcase end deserializationConfig
         final MyCustomClass deserialized = mapMaid.deserializeJson("\"foo\"", MyCustomClass.class);
         assertThat(deserialized, is(MyCustomClass.myCustomClass("foo")));
     }

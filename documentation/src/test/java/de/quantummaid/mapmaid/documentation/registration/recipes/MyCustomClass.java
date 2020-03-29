@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.registernormaltypes;
+package de.quantummaid.mapmaid.documentation.registration.recipes;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

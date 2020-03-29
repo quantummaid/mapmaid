@@ -1,4 +1,4 @@
-# Domain Driven Security
+# Domain-Driven Security
 
 Domain-Driven Security is an approach to address technical security risks like injection attacks (SQL injection, 
 cross-site scripting, ...), and **insecure deserialization** using core principals of Domain-Driven Design. 

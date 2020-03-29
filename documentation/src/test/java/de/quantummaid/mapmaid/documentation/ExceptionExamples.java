@@ -30,6 +30,8 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Objects.nonNull;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class ExceptionExamples {
     private static final Gson GSON = new Gson();
@@ -45,7 +47,6 @@ public final class ExceptionExamples {
         //Showcase start aggregateException
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();
         //Showcase end aggregateException
@@ -59,7 +60,7 @@ public final class ExceptionExamples {
                     "Invalid email address: 'not-a-valid-receiver-value'; " +
                     "Validation error at 'sender', Invalid email address: 'not-a-valid-sender-value'; ");
         }
-        assert nonNull(message);
+        assertThat(message, notNullValue());
     }
 
     @Test

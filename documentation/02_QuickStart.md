@@ -14,10 +14,10 @@ In order to use MapMaid, just add the following dependency to your project:
 ```
 
 ## Compiler Configuration
-
-MapMaid uses method parameter names to construct your objects, hence requires you to compile with parameter names.
-This is configured by passing the `-parameters` flag to the java compiler. The `maven-compiler-plugin`
-can be easily configured to do this:
+MapMaid requires you to compile your project with the `-parameter` compile flag.
+Doing so gives MapMaid [runtime access to parameter names](http://openjdk.java.net/jeps/118) and
+enables it to map parameters automatically.
+The `maven-compiler-plugin` can be easily configured to do this:
 ```
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -28,7 +28,12 @@ can be easily configured to do this:
 </plugin>
 ```
 
-For your IDE it's as simple as having it compile using the `-parameters` command-line argument of the Java compiler.
+Also, include this flag in your IDE's `javac` configuration, and make sure to rebuild your project after the 
+configuration changes:
+
+* [Configuration for IntelliJ IDEA](https://www.jetbrains.com/help/idea/java-compiler.html)
+* [Configuration for Eclipse](http://help.eclipse.org/2019-03/topic/org.eclipse.jdt.doc.user/reference/preferences/java/ref-preferences-compiler.htm)
+
 
 ## Minimal Configuration
 

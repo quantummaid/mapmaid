@@ -19,9 +19,10 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation;
+package de.quantummaid.mapmaid.documentation.marshalling;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.AdvancedBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -78,6 +79,7 @@ public final class JacksonMarshallerExamples {
         //Showcase start json
         final MapMaid mapMaid = aMapMaid()
                 .usingRecipe(jacksonMarshallerJson())
+                .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         //Showcase end json
 
@@ -90,6 +92,7 @@ public final class JacksonMarshallerExamples {
         //Showcase start xml
         final MapMaid mapMaid = aMapMaid()
                 .usingRecipe(jacksonMarshallerXml())
+                .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         //Showcase end xml
 
@@ -102,6 +105,7 @@ public final class JacksonMarshallerExamples {
         //Showcase start yaml
         final MapMaid mapMaid = aMapMaid()
                 .usingRecipe(jacksonMarshallerYaml())
+                .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         //Showcase end yaml
 

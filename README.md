@@ -71,7 +71,7 @@ we'll be happy to address that.
 
 Also, take a look into these articles to get an idea of why we created MapMaid in the first place:
 
-* [Domain Driven Security](documentation/articles/DomainDrivenSecurity.md)
+* [Domain-Driven Security](documentation/articles/DomainDrivenSecurity.md)
 
 ## Contributing
 

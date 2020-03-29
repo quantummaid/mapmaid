@@ -19,19 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.registercustomtypes;
+package de.quantummaid.mapmaid.documentation.registration.recipes;
 
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import de.quantummaid.mapmaid.builder.MapMaidBuilder;
+import de.quantummaid.mapmaid.builder.recipes.Recipe;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
-public final class MyCustomPrimitive {
-    private final String value;
+//Showcase start recipe
+public final class MyRecipe implements Recipe {
 
-    public String value() {
-        return this.value;
+    @Override
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
+        mapMaidBuilder.serializingAndDeserializing(MyCustomClass.class);
     }
 }
+//Showcase end recipe

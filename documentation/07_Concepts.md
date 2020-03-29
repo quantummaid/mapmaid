@@ -10,12 +10,12 @@ You may have also heard about [Project Valhalla](https://en.wikipedia.org/wiki/P
 The definition also differs in terms of whether or not to combine multiple primitive values into one object or create classes for each such field. 
 Independent of how they are called, and even how the details of definition look like, all of them are there to fight [Primitive Obsession](https://blog.ploeh.dk/2011/05/25/DesignSmellPrimitiveObsession/).
 
-The concept is there for a long time now. Yet a lot of frameworks that have become "industry standards" rely on [JavaBeans style objects]((http://www.javapractices.com/topic/TopicAction.do?Id=84)) and offer little to none support for this concept.
+The concept exists for a long time now. Yet a lot of frameworks that have become "industry standards" rely on [JavaBeans style objects]((http://www.javapractices.com/topic/TopicAction.do?Id=84)) and offer little to none support for this concept.
 
 We think that creating your own classes and
 [keeping the validation logic inside the class](https://enterprisecraftsmanship.com/2017/08/07/always-valid-vs-not-always-valid-domain-model/)
 makes the code cleaner, more readable, [less dependant on the framework](https://blog.cleancoder.com/uncle-bob/2014/05/11/FrameworkBound.html) being used and most of
-all [safer](articles/DomainDrivenSecurity.md). 
+all [safer](10_DomainDrivenSecurity.md). 
 
 On this page, we'd like to define what we call **Custom Primitives** and **Serialized Objects**, and which conventions we use to declare them. 
 
@@ -116,7 +116,7 @@ public final class UpdateShippingAddressRequest {
     //...
 }
 ```
-The Usecase would look like this:
+The usecase would look like this:
 ```java
 public UpdateShippingAddressResult updateShippingAddress(final UpdateShippingAddressRequest request) {
     //...

@@ -19,37 +19,25 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.injection;
+package de.quantummaid.mapmaid.documentation.marshalling;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.builder.AdvancedBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class RegisterInjection {
+public final class Deactivation {
 
     @Test
-    public void registeringNormalInjection() {
-        //Showcase start normalInjection
+    public void deactivateDefaultMarshallers() {
+        //Showcase start deactivateDefaultMarshallers
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .injecting(MyInjectedValue.class)
+                .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
-        //Showcase end normalInjection
-
-        final MyInjectedValue deserialized = mapMaid.deserializeJson("{}", MyInjectedValue.class, injector -> injector.put(new MyInjectedValue("injected")));
-        assertThat(deserialized, is(new MyInjectedValue("injected")));
-    }
-
-    @Test
-    public void registeringFixedInjection() {
-        //Showcase start fixedInjection
-        final MapMaid mapMaid = MapMaid.aMapMaid()
-                .injecting(MyInjectedValue.class, () -> new MyInjectedValue("this is injected"))
-                .build();
-        //Showcase end fixedInjection
-
-        final MyInjectedValue deserialized = mapMaid.deserializeJson("{}", MyInjectedValue.class);
-        assertThat(deserialized, is(new MyInjectedValue("this is injected")));
+        //Showcase end deactivateDefaultMarshallers
+        assertThat(mapMaid.deserializer().supportedMarshallingTypes().size(), is(0));
+        assertThat(mapMaid.serializer().supportedMarshallingTypes().size(), is(0));
     }
 }

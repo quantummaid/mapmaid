@@ -1,21 +1,21 @@
 # Exception Handling
-
-## Aggregating Validation Errors
-
-For the rationale behind Validation Errors check out the [Concepts page](Concepts.md#validation-errors).
-
-By default, MapMaid does not aggregate exceptions and simply returns an instance of 
+During the deserialization of objects using MapMaid, exceptions might be thrown by the factory methods or
+constructors used to instantiate these objects.
+Whenever an exception is thrown, MapMaid will by default immediately rethrow that exception wrapped in an instance of 
 [UnrecognizedExceptionOccurredException](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/UnrecognizedExceptionOccurredException.java).
 
-To enable reporting of aggregated messages, MapMaid needs to be made aware of the validation exception (the exception 
-class it needs to recognize as validation error). Assuming one has a single ValidationException somewhere in the domain
-that is thrown in the factory methods, in case the input is not valid, the MapMaid configuration looks like:
+In order to catch all [validation errors](07_Concepts.md#validation-errors), MapMaid supports the aggregation of exceptions.
+If used, MapMaid will continue deserialize even though it has caught an exception. In the end, it will throw
+an instance of [AggregatedValidationException](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/AggregatedValidationException.java)
+with a detailed report of all encountered exception and where exactly in the object hierarchy they were thrown. 
+
+MapMaid will only aggregate exceptions that are explicitly registered as validation errors.
+For example:
 
 <!---[CodeSnippet](aggregateException)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(Email.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
         .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
         .build();
 ```
@@ -50,8 +50,7 @@ public final class Email {
 }
 ```
 
-Upon receiving invalid email addresses for both receiver and sender
-
+MapMaid now tries to deserializes an `Email` object from an invalid input like the following:  
 ```json
 {
   "sender": "not-a-valid-sender-value",
@@ -59,14 +58,13 @@ Upon receiving invalid email addresses for both receiver and sender
 }
 ```
 
-MapMaid will now return an instance of [AggregatedValidationException](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/AggregatedValidationException.java):
-
+Instead of returning an instance of type `Email`, MapMaid will throw this exception:  
 ```bash
 de.quantummaid.mapmaid.deserialization.validation.AggregatedValidationException: deserialization encountered validation errors. Validation error at 'receiver', Invalid email address: 'not-a-valid-receiver-value'; Validation error at 'sender', Invalid email address: 'not-a-valid-sender-value';
 ```
 
-You can further customize the message of this error by giving in a lambda that maps your validation exception to an 
-instance of a 
+You can further customize the message of this error by providing a lambda that maps your validation exception to an 
+instance of
 [ValidationError](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/ValidationError.java):
 
 <!---[CodeSnippet](mappedException)-->
@@ -79,12 +77,13 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
-will produce:
+With the same invalid input as before, you will receive:
 
 ```bash
 de.quantummaid.mapmaid.deserialization.validation.AggregatedValidationException: deserialization encountered validation errors. Validation error at 'receiver', This is a custom message we are reporting about Invalid email address: 'not-a-valid-receiver-value'; Validation error at 'sender', This is a custom message we are reporting about Invalid email address: 'not-a-valid-sender-value';
 ```
 
-Web(service) frameworks usually offer a way to register global exception handlers that map an exception into a response.
-This is the place where you register a mapper that generates a response using the instance of
+Webservice frameworks usually offer a way to register global exception handlers that map an exception to an HTTP response.
+This is the place where you can register a mapper that generates a response from the caught instance of
 [AggregatedValidationException](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/AggregatedValidationException.java).
+

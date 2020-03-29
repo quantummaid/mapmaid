@@ -34,19 +34,31 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.builder.recipes.marshallers.jackson.JacksonMarshaller.jacksonMarshallerJson;
+import static de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public final class MarshallingExamples {
 
     @Test
-    public void urlEncodedExample() {
+    public void urlEncodedConfig() {
         //Showcase start urlencoded
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                .build();
+        //Showcase end urlencoded
+        assertThat(mapMaid.deserializer().supportedMarshallingTypes(), containsInAnyOrder(urlEncoded()));
+        assertThat(mapMaid.serializer().supportedMarshallingTypes(), containsInAnyOrder(urlEncoded()));
+    }
+
+    @Test
+    public void urlEncodedExample() {
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(ComplexPerson.class)
                 .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .build();
-        //Showcase end urlencoded
 
         final ComplexPerson object = ComplexPerson.deserialize(
                 asList(FirstName.fromStringValue("Aaron"), FirstName.fromStringValue("Adam")),
@@ -60,7 +72,7 @@ public final class MarshallingExamples {
                 )));
 
         //Showcase start urlencodedusage
-        final String urlEncoded = mapMaid.serializeTo(object, UrlEncodedMarshallerRecipe.urlEncoded());
+        final String urlEncoded = mapMaid.serializeTo(object, urlEncoded());
         //Showcase end urlencodedusage
 
         assert urlEncoded.equals("addresses[0][houseNumber]=7a&addresses[0][zipCode]=423423&addresses[0][country]=USA&" +

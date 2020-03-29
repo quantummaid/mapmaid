@@ -1,6 +1,6 @@
 # Basic Usage
 
-Once you got hold of a MapMaid instance you can then perform:
+Once you have configured a MapMaid instance you can perform:
  
 ## Serializing to JSON
 <!---[CodeSnippet](serializeToJson)-->

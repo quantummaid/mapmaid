@@ -35,6 +35,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -48,6 +49,7 @@ import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -154,7 +156,22 @@ public final class Serializer implements SerializationCallback {
         }
         final ResolvedType type = ClassType.typeOfObject(object);
         final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
-        final Object normalized = normalize(object, typeIdentifier);
+        return serializeToUniversalObject(object, typeIdentifier);
+    }
+
+    public Object serializeToUniversalObject(final Object object, final GenericType<?> type) {
+        if (isNull(object)) {
+            return new HashMap<>(0);
+        }
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return serializeToUniversalObject(typeIdentifier);
+    }
+
+    public Object serializeToUniversalObject(final Object object, final TypeIdentifier type) {
+        if (isNull(object)) {
+            return new HashMap<>(0);
+        }
+        final Object normalized = normalize(object, type);
         return normalized;
     }
 

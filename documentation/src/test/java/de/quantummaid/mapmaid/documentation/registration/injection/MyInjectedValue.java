@@ -19,19 +19,19 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.configuration.registercustomtypes;
+package de.quantummaid.mapmaid.documentation.registration.injection;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @ToString
-@Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public final class MySerializedObject {
-    private final String field1;
-    private final String field2;
-    private final String field3;
+public final class MyInjectedValue {
+    private final String value;
+
+    public String getValue() {
+        return this.value;
+    }
 }

@@ -35,29 +35,36 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 ```
 
 ### Changing detection preferences
-Whenever MapMaid does not 
+MapMaid follows certain rules when detecting how to (de-)serialize a class.
+These rules can be configured to match your specific code base.
 
+By default, MapMaid is looking for a public static method named `fromStringValue` to deserialize a
+class as a [Custom Primitive](07_Concepts.md). The default name can be changed like this:
 <!---[CodeSnippet](preferredCustomPrimitiveFactoryName)-->
 ```java
-MapMaid.aMapMaid()
+final MapMaid mapMaid = MapMaid.aMapMaid()
         .withAdvancedSettings(advancedBuilder -> {
             advancedBuilder.withPreferredCustomPrimitiveFactoryName("instantiate");
         })
         .build();
 ```
 
+By default, MapMaid is looking for a public method named `stringValue` to serialize a
+class as a [Custom Primitive](07_Concepts.md). The default name can be changed like this:
 <!---[CodeSnippet](preferredCustomPrimitiveSerializationMethodName)-->
 ```java
-MapMaid.aMapMaid()
+final MapMaid mapMaid = MapMaid.aMapMaid()
         .withAdvancedSettings(advancedBuilder -> {
             advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serializeToString");
         })
         .build();
 ```
 
+By default, MapMaid is looking for a public static method named `deserialize` to deserialize a
+class as a [Serialized Object](07_Concepts.md). The default name can be changed like this:
 <!---[CodeSnippet](preferredSerializedObjectFactoryName)-->
 ```java
-MapMaid.aMapMaid()
+final MapMaid mapMaid = MapMaid.aMapMaid()
         .withAdvancedSettings(advancedBuilder -> {
             advancedBuilder.withPreferredSerializedObjectFactoryName("instantiate");
         })
@@ -67,7 +74,7 @@ MapMaid.aMapMaid()
 ## Registering custom types
 If you want to tell MapMaid exactly how to
 (de-)serialize a given type rather than rely on its autodetection mechanism,
-you can do so by registering a custom type. You can register it as a [Custom Primitive](Concepts.md) like this:
+you can do so by registering a custom type. You can register it as a [Custom Primitive](07_Concepts.md) like this:
 
 <!---[CodeSnippet](duplexCustomCustomPrimitiveConfig)-->
 ```java
@@ -82,7 +89,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
-To register a custom type as a [Serialized Object](Concepts.md), the configuration would look
+To register a custom type as a [Serialized Object](07_Concepts.md), the configuration would look
 like this:
 
 <!---[CodeSnippet](duplexCustomSerializedObjectConfig)-->
@@ -173,3 +180,26 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .injecting(MyInjectedValue.class, () -> new MyInjectedValue("this is injected"))
         .build();
 ```
+
+## Recipes
+To bundle together common configuration options, you can implement the `Recipe` interface: 
+<!---[CodeSnippet](recipe)-->
+```java
+public final class MyRecipe implements Recipe {
+
+    @Override
+    public void cook(final MapMaidBuilder mapMaidBuilder) {
+        mapMaidBuilder.serializingAndDeserializing(MyCustomClass.class);
+    }
+}
+```
+
+Once created, you can use it to configure a MapMaid instance like this:
+
+<!---[CodeSnippet](recipeConfig)-->
+```java
+final MapMaid mapMaid = MapMaidBuilder.mapMaidBuilder()
+        .usingRecipe(new MyRecipe())
+        .build();
+```
+
