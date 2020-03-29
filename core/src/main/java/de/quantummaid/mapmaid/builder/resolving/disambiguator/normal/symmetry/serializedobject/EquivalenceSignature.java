@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.s
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -48,20 +49,20 @@ public final class EquivalenceSignature implements Comparable<EquivalenceSignatu
     private final Map<String, TypeIdentifier> fields;
 
     public static List<EquivalenceSignature> allOfDeserializer(final SerializedObjectDeserializer deserializer,
-                                                               final List<TypeIdentifier> injectedTypes) {
+                                                               final DisambiguationContext context) {
         final Map<String, TypeIdentifier> fields = deserializer.fields().fields();
-        final List<Map<String, TypeIdentifier>> combinations = combinations(fields, injectedTypes);
+        final List<Map<String, TypeIdentifier>> combinations = combinations(fields, context);
         return combinations.stream()
                 .map(EquivalenceSignature::new)
                 .collect(toList());
     }
 
     private static List<Map<String, TypeIdentifier>> combinations(final Map<String, TypeIdentifier> fields,
-                                                                  final List<TypeIdentifier> injectedTypes) {
+                                                                  final DisambiguationContext context) {
         final List<String> requiredKeys = smallList();
         final List<String> optionalKeys = smallList();
         fields.forEach((key, typeIdentifier) -> {
-            if (injectedTypes.contains(typeIdentifier)) {
+            if (context.isInjected(typeIdentifier)) {
                 optionalKeys.add(key);
             } else {
                 requiredKeys.add(key);

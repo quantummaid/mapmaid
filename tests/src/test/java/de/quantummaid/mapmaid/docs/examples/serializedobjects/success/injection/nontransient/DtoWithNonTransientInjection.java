@@ -19,28 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.nontransient;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.EqualsAndHashCode.Include;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import java.io.OutputStream;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DtoWithInjections {
+public final class DtoWithNonTransientInjection {
     public final String normalField1;
     public final String normalField2;
-    @Include
-    public final transient OutputStream injectedField;
+    public final InjectionObject injectedField;
 
-    public static DtoWithInjections dtoWithInjections(final String normalField1,
-                                                      final String normalField2,
-                                                      final OutputStream injectedField) {
-        return new DtoWithInjections(normalField1, normalField2, injectedField);
+    public static DtoWithNonTransientInjection dtoWithNonTransientInjection(final String normalField1,
+                                                                            final String normalField2,
+                                                                            final InjectionObject injectedField) {
+        return new DtoWithNonTransientInjection(normalField1, normalField2, injectedField);
     }
 }

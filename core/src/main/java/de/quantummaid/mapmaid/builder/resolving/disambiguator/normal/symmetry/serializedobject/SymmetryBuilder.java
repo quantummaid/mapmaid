@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.s
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -53,13 +53,13 @@ public final class SymmetryBuilder {
         return new SymmetryBuilder(smallMap());
     }
 
-    public void addDeserializer(final TypeDeserializer deserializer, final List<TypeIdentifier> injectedTypes) {
+    public void addDeserializer(final TypeDeserializer deserializer, final DisambiguationContext context) {
         if (!(deserializer instanceof SerializedObjectDeserializer)) {
             throw new UnsupportedOperationException("This should never happen. " +
                     "Only serialized object deserializers can be checked for symmetry, but got: " + deserializer);
         }
         final SerializedObjectDeserializer serializedObjectDeserializer = (SerializedObjectDeserializer) deserializer;
-        final List<EquivalenceSignature> equivalenceSignatures = allOfDeserializer(serializedObjectDeserializer, injectedTypes);
+        final List<EquivalenceSignature> equivalenceSignatures = allOfDeserializer(serializedObjectDeserializer, context);
         equivalenceSignatures.forEach(equivalenceSignature -> {
             if (!this.equivalenceClasses.containsKey(equivalenceSignature)) {
                 final int size = equivalenceSignature.size();

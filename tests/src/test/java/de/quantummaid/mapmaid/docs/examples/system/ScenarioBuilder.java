@@ -158,7 +158,19 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withDuplexSuccessful() {
-        withScenario(withAllCapabilities(), deserializationWas(this.deserializedForm), serializationWas(this.serializedForm));
+        return withDuplexSuccessful(this.serializedForm, this.deserializedForm);
+    }
+
+    public ScenarioBuilder withDuplexSuccessful(final String serializedForm) {
+        return withDuplexSuccessful(serializedForm, this.deserializedForm);
+    }
+
+    public ScenarioBuilder withDuplexSuccessful(final Object deserializedForm) {
+        return withDuplexSuccessful(this.serializedForm, deserializedForm);
+    }
+
+    public ScenarioBuilder withDuplexSuccessful(final String serializedForm, final Object deserializedForm) {
+        withScenario(withAllCapabilities(), deserializationWas(deserializedForm), serializationWas(serializedForm));
         return this;
     }
 
@@ -173,6 +185,11 @@ public final class ScenarioBuilder {
 
     public ScenarioBuilder withDeserializationSuccessful() {
         withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        return this;
+    }
+
+    public ScenarioBuilder withDeserializationSuccessful(final Object deserializedForm) {
+        withScenario(deserializationOnly(), deserializationWas(deserializedForm), serializationFailedForNotSupported(this.type));
         return this;
     }
 

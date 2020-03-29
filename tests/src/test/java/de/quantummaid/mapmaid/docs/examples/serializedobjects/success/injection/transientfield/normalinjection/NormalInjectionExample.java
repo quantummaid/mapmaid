@@ -19,9 +19,9 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.normalinjection;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.transientfield.normalinjection;
 
-import de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.DtoWithInjections;
+import de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.transientfield.DtoWithTransientInjection;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStream;
@@ -32,24 +32,24 @@ public final class NormalInjectionExample {
 
     @Test
     public void normalInjectionExample() {
-        scenarioBuilderFor(DtoWithInjections.class)
+        scenarioBuilderFor(DtoWithTransientInjection.class)
                 .withSerializedForm("" +
                         "{\n" +
                         "  \"normalField2\": \"b\",\n" +
                         "  \"normalField1\": \"a\"\n" +
                         "}")
-                .withDeserializedForm(DtoWithInjections.dtoWithInjections("a", "b", System.out))
+                .withDeserializedForm(DtoWithTransientInjection.dtoWithTransientInjection("a", "b", System.out))
                 .withInjection(injector -> injector.put(System.out))
                 .withSerializationSuccessful()
                 .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
                 .withDuplexFailing()
                 .withFixedDeserialization(mapMaidBuilder -> {
-                    mapMaidBuilder.deserializing(DtoWithInjections.class)
+                    mapMaidBuilder.deserializing(DtoWithTransientInjection.class)
                             .injecting(OutputStream.class)
                             .build();
                 })
                 .withFixedDuplex(mapMaidBuilder -> {
-                    mapMaidBuilder.serializingAndDeserializing(DtoWithInjections.class)
+                    mapMaidBuilder.serializingAndDeserializing(DtoWithTransientInjection.class)
                             .injecting(OutputStream.class)
                             .build();
                 })

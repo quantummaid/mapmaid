@@ -19,22 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.nontransient;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.allowed;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public interface Filter<T, C> {
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class InjectionObject {
+    private final String value;
 
-    @SuppressWarnings("unchecked")
-    static <T, V extends T, C> Filter<T, C> filterOfType(final Class<V> type, final Filter<V, C> filter) {
-        return (t, context) -> {
-            if(!type.isInstance(t)) {
-                return allowed();
-            } else {
-                return filter.filter((V) t, context);
-            }
-        };
+    public static InjectionObject injectionObject(final String value) {
+        return new InjectionObject(value);
     }
 
-    FilterResult filter(T t, C context);
+    public String value() {
+        return this.value;
+    }
 }

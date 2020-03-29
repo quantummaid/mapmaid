@@ -19,22 +19,27 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
+package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.allowed;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public interface Filter<T, C> {
+import java.util.List;
 
-    @SuppressWarnings("unchecked")
-    static <T, V extends T, C> Filter<T, C> filterOfType(final Class<V> type, final Filter<V, C> filter) {
-        return (t, context) -> {
-            if(!type.isInstance(t)) {
-                return allowed();
-            } else {
-                return filter.filter((V) t, context);
-            }
-        };
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DisambiguationContext {
+    private final List<TypeIdentifier> injectedTypes;
+
+    public static DisambiguationContext disambiguationContext(final List<TypeIdentifier> injectedTypes) {
+        return new DisambiguationContext(injectedTypes);
     }
 
-    FilterResult filter(T t, C context);
+    public boolean isInjected(final TypeIdentifier typeIdentifier) {
+        return this.injectedTypes.contains(typeIdentifier);
+    }
 }

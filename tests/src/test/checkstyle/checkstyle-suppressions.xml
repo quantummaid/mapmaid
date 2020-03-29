@@ -60,4 +60,5 @@
     <suppress checks="RedundantModifier" files="LocalClassExample" />
     <suppress checks="MethodLength" files="LotsOfFieldsDtoExample" />
     <suppress checks="ParameterNumber" files="LotsOfFieldsDto" />
+    <suppress checks="MethodCount" files="ScenarioBuilder" />
 </suppressions>

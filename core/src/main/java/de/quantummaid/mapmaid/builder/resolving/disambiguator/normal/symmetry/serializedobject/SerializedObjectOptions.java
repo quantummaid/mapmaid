@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.s
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -57,8 +58,9 @@ public final class SerializedObjectOptions {
         return this.serializationFieldOptions;
     }
 
-    public DetectionResult<TypeSerializer> determineSerializer(final Preferences<SerializationField> preferences,
-                                                               final ScanInformationBuilder scanInformationBuilder) {
+    public DetectionResult<TypeSerializer> determineSerializer(final Preferences<SerializationField, DisambiguationContext> preferences,
+                                                               final ScanInformationBuilder scanInformationBuilder,
+                                                               final DisambiguationContext context) {
         if (this.serializationFieldOptions == null) {
             throw new UnsupportedOperationException("This should never happen");
         }
@@ -66,6 +68,6 @@ public final class SerializedObjectOptions {
             return failure("No serialization fields");
         }
         return this.serializationFieldOptions.instantiateAll()
-                .flatMap(instantiation -> instantiation.instantiate(preferences, scanInformationBuilder));
+                .flatMap(instantiation -> instantiation.instantiate(preferences, scanInformationBuilder, context));
     }
 }

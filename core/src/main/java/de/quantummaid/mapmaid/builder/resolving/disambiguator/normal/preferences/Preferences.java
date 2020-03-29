@@ -34,22 +34,22 @@ import static java.util.stream.Collectors.toList;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Preferences<T> {
-    private final Filters<T> filters;
+public final class Preferences<T, C> {
+    private final Filters<T, C> filters;
     private final List<Preference<T>> preferences;
 
-    public static <T> Preferences<T> preferences(final List<Filter<T>> filters,
+    public static <T, C> Preferences<T, C> preferences(final List<Filter<T, C>> filters,
                                                  final List<Preference<T>> preferences) {
         return new Preferences<>(Filters.filters(filters), preferences);
     }
 
-    public static <T> Preferences<T> preferences(final List<Preference<T>> preferences) {
+    public static <T, C> Preferences<T, C> preferences(final List<Preference<T>> preferences) {
         return preferences(emptyList(), preferences);
     }
 
-    public List<T> preferred(final List<T> options, final Striker<T> striker) {
+    public List<T> preferred(final List<T> options, final C context, final Striker<T> striker) {
         final List<T> filtered = options.stream()
-                .filter(t -> this.filters.isAllowed(t, striker))
+                .filter(t -> this.filters.isAllowed(t, context, striker))
                 .collect(toList());
         for (final Preference<T> preference : this.preferences) {
             final List<T> preferred = filtered.stream()

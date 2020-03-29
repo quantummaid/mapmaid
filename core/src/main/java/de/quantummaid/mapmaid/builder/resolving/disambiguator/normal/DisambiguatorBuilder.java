@@ -69,13 +69,13 @@ public final class DisambiguatorBuilder {
     }
 
     public NormalDisambiguator build() {
-        final Preferences<TypeDeserializer> customPrimitiveDeserializerPreferences = buildCustomPrimitiveDeserializerPreferences();
-        final Preferences<TypeSerializer> customPrimitiveSerializerPreferences = buildCustomPrimitiveSerializerPreferences();
+        final Preferences<TypeDeserializer, DisambiguationContext> customPrimitiveDeserializerPreferences = buildCustomPrimitiveDeserializerPreferences();
+        final Preferences<TypeSerializer, DisambiguationContext> customPrimitiveSerializerPreferences = buildCustomPrimitiveSerializerPreferences();
 
-        final Preferences<TypeDeserializer> serializedObjectPreferences = buildSerializedObjectPreferences();
-        final Filters<SerializationField> serializationFieldFilters = buildSerializationFieldFilters();
+        final Preferences<TypeDeserializer, DisambiguationContext> serializedObjectPreferences = buildSerializedObjectPreferences();
+        final Filters<SerializationField, DisambiguationContext> serializationFieldFilters = buildSerializationFieldFilters();
 
-        final Preferences<SerializationField> postSymmetrySerializationFieldPreferences = preferences(List.of(
+        final Preferences<SerializationField, DisambiguationContext> postSymmetrySerializationFieldPreferences = preferences(List.of(
                 publicFields()
         ));
 
@@ -91,7 +91,7 @@ public final class DisambiguatorBuilder {
         );
     }
 
-    private Preferences<TypeDeserializer> buildCustomPrimitiveDeserializerPreferences() {
+    private Preferences<TypeDeserializer, DisambiguationContext> buildCustomPrimitiveDeserializerPreferences() {
         return preferences(
                 List.of(
                         ignoreNonPublicMethodsForCustomPrimitiveDeserialization(),
@@ -104,7 +104,7 @@ public final class DisambiguatorBuilder {
                 ));
     }
 
-    private Preferences<TypeSerializer> buildCustomPrimitiveSerializerPreferences() {
+    private Preferences<TypeSerializer, DisambiguationContext> buildCustomPrimitiveSerializerPreferences() {
         return preferences(
                 List.of(
                         ignoreNonPublicConstructorsForCustomPrimitiveSerialization(),
@@ -117,7 +117,7 @@ public final class DisambiguatorBuilder {
                 ));
     }
 
-    private Preferences<TypeDeserializer> buildSerializedObjectPreferences() {
+    private Preferences<TypeDeserializer, DisambiguationContext> buildSerializedObjectPreferences() {
         return preferences(
                 List.of(
                         ignoreNonPublicMethodsForSerializedObjectDeserialization(),
@@ -130,11 +130,12 @@ public final class DisambiguatorBuilder {
                 ));
     }
 
-    private Filters<SerializationField> buildSerializationFieldFilters() {
+    private Filters<SerializationField, DisambiguationContext> buildSerializationFieldFilters() {
         return filters(List.of(
                 ignoreStaticFields(),
                 ignoreTransientFields(),
-                ignoreNonPublicFields()
+                ignoreNonPublicFields(),
+                ignoreInjectedFields()
         ));
     }
 

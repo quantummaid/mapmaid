@@ -19,38 +19,28 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
+package de.quantummaid.mapmaid.docs.examples.serializedobjects.success.injection.transientfield;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.combined;
-import static java.util.stream.Collectors.toList;
+import java.io.OutputStream;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Filters<T, C> {
-    private final List<Filter<T, C>> filters;
+public final class DtoWithTransientInjection {
+    public final String normalField1;
+    public final String normalField2;
+    @Include
+    public final transient OutputStream injectedField;
 
-    public static <T, C> Filters<T, C> filters(final List<Filter<T, C>> filters) {
-        return new Filters<>(filters);
-    }
-
-    public boolean isAllowed(final T t, final C context, final Striker<T> striker) {
-        final List<FilterResult> filterResults = this.filters.stream()
-                .map(filter -> filter.filter(t, context))
-                .collect(toList());
-        final FilterResult combinedResult = combined(filterResults);
-        if (combinedResult.isAllowed()) {
-            return true;
-        } else {
-            striker.strike(t, combinedResult.reasonsForDenial());
-            return false;
-        }
+    public static DtoWithTransientInjection dtoWithTransientInjection(final String normalField1,
+                                                                      final String normalField2,
+                                                                      final OutputStream injectedField) {
+        return new DtoWithTransientInjection(normalField1, normalField2, injectedField);
     }
 }
