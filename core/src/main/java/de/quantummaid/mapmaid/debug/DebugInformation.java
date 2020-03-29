@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
+import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 

@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

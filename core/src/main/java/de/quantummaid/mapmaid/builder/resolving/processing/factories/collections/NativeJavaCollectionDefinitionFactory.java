@@ -22,20 +22,20 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.collections;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingDuplex.fixedResolvingDuplex;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.CollectionInformation.collectionInformations;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingDuplex.fixedResolvingDuplex;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ListCollectionDeserializer.listDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ListCollectionSerializer.listSerializer;
-import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
+import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 

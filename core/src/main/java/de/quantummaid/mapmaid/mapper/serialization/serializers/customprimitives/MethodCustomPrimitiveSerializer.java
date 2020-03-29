@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

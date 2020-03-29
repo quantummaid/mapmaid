@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries;
 
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedField;
+import de.quantummaid.reflectmaid.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

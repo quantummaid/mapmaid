@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation;
 import de.quantummaid.mapmaid.docs.examples.system.mode.ExampleMode;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +46,7 @@ import static de.quantummaid.mapmaid.docs.examples.system.expectation.Serializat
 import static de.quantummaid.mapmaid.docs.examples.system.mode.FixedExampleMode.fixed;
 import static de.quantummaid.mapmaid.docs.examples.system.mode.NormalExampleMode.*;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
+import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 import static java.lang.String.format;
 
 @ToString

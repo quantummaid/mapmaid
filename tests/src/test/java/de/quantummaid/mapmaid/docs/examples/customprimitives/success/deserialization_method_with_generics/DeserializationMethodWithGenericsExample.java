@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.docs.examples.customprimitives.success.deserialization_method_with_generics.Street.street;
 import static de.quantummaid.mapmaid.docs.examples.system.ScenarioBuilder.scenarioBuilderFor;
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
-import static de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType.unresolvedType;
+import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
+import static de.quantummaid.reflectmaid.unresolved.UnresolvedType.unresolvedType;
 
 public final class DeserializationMethodWithGenericsExample {
 

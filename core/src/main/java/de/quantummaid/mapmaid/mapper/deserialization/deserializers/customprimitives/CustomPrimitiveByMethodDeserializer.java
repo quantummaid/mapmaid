@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

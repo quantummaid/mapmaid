@@ -24,9 +24,9 @@ package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedob
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

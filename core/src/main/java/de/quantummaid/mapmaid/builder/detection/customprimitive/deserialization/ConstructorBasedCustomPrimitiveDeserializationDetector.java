@@ -24,10 +24,10 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByConstructorDeserializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

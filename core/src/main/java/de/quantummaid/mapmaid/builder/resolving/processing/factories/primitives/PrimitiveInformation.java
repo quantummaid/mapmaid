@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
+import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 

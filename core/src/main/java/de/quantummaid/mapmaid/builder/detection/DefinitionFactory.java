@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.detection;
 
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 import java.util.Optional;
 

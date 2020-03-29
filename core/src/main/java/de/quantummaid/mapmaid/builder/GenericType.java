@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.builder;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.unresolved.UnresolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,8 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.shared.types.ResolvedType.resolvedType;
-import static de.quantummaid.mapmaid.shared.types.unresolved.UnresolvedType.unresolvedType;
+import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
+import static de.quantummaid.reflectmaid.unresolved.UnresolvedType.unresolvedType;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 

@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.shared.identifier;
 
 import de.quantummaid.mapmaid.builder.GenericType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 

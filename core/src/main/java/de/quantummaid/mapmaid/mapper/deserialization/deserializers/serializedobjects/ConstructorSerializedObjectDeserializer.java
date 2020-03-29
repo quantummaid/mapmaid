@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedob
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,7 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
     private final List<String> parameterNames;
 
     public static SerializedObjectDeserializer createDeserializer(final ClassType type,
-                                                      final ResolvedConstructor deserializationConstructor) {
+                                                                  final ResolvedConstructor deserializationConstructor) {
         validateDeserializerModifiers(type, deserializationConstructor);
         return verifiedDeserializationDTOConstructor(deserializationConstructor);
     }

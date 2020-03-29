@@ -30,7 +30,7 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;

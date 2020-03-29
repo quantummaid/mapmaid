@@ -22,14 +22,14 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.shared.types.ArrayType;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ArrayType;
+import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 import java.util.Collection;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.shared.types.TypeVariableName.typeVariableName;
+import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;
 
 public final class Mirror {
 

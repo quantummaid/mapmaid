@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
-import de.quantummaid.mapmaid.shared.types.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

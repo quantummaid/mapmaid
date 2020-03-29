@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 
-import static de.quantummaid.mapmaid.shared.types.ClassType.fromClassWithoutGenerics;
+import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
 
 public interface ToStage {
     default Then toTheType(final Class<?> type) {

@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.docs.examples.system.mode;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 public interface ExampleMode {
     MapMaid provideMapMaid(ResolvedType type);

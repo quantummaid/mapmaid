@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.docs.examples.system.expectation;
 
 import de.quantummaid.mapmaid.docs.examples.system.Result;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.containsString;

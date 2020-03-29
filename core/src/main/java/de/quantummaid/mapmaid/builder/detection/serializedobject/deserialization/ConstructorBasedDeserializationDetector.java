@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.types.ClassType;
-import de.quantummaid.mapmaid.shared.types.ResolvedType;
+import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import lombok.ToString;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.ConstructorSerializedObjectDeserializer.createDeserializer;
-import static de.quantummaid.mapmaid.shared.types.resolver.ResolvedConstructor.resolveConstructors;
+import static de.quantummaid.reflectmaid.resolver.ResolvedConstructor.resolveConstructors;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
