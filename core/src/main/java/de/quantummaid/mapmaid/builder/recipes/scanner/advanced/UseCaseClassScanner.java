@@ -21,13 +21,13 @@
 
 package de.quantummaid.mapmaid.builder.recipes.scanner.advanced;
 
-import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserialization_wrappers.MethodParameterDeserializationWrapper;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.quantummaid.mapmaid.builder.GenericType.fromResolvedType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.deserializationOnlyType;
@@ -53,6 +52,7 @@ import static de.quantummaid.mapmaid.builder.recipes.scanner.advanced.deserializ
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.virtualTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
+import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;

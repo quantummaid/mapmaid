@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
-import de.quantummaid.mapmaid.builder.GenericType;
+import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

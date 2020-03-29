@@ -9,25 +9,3 @@ However, sometimes MapMaid complains during initialization about classes it is u
 to (de-)serialize. Or you are just unhappy with the conventions MapMaid uses.
 In either case, it is possible to tweak MapMaids behaviour using so-called hints.
 These hints are explained in the following paragraphs.
-
-## Per-class hints
-### Custom primitives
-
-### Serialized objects
-
-
-
-
-## Global hints
-Sometimes, you have projects with conventions that are a bit different than MapMaid
-assumptions.
-
-### Preferring specific factories
-
-### Ignoring methods
-
-### Ignoring constructors
-
-### Ignoring fields
-
-### Adding fields

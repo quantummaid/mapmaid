@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
+import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

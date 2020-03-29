@@ -1,16 +1,25 @@
 # Concepts
 
-What we call "Custom primitives and Serialized Objects" comes under many names. Some call it [Value Object](http://wiki.c2.com/?ValueObject) or [Value Java Objects or VALJO](https://blog.joda.org/2014/03/valjos-value-java-objects.html), some call it [Data Value](https://refactoring.guru/replace-data-value-with-object) or [Custom Value Type](https://en.wikipedia.org/wiki/Value_object#Java). You may have also heard about [Project Valhalla](https://en.wikipedia.org/wiki/Project_Valhalla_(Java_language) and Value Types that come with it.  
-The definition also differs in terms of whether or not to combine multiple primitive values into one Object or create classes for each such field. 
+## Serialized Objects and Custom Primitive
+MapMaid is based around two concepts: **Custom Primitives** and **Serialized Objects**.
+You might already be familiar with them under a different name or in a different context.
+Some call it [Value Object](http://wiki.c2.com/?ValueObject) or 
+[Value Java Objects (VALJO)](https://blog.joda.org/2014/03/valjos-value-java-objects.html),
+some call it [Data Value](https://refactoring.guru/replace-data-value-with-object) or [Custom Value Type](https://en.wikipedia.org/wiki/Value_object#Java).
+You may have also heard about [Project Valhalla](https://en.wikipedia.org/wiki/Project_Valhalla_(Java_language) and the Value Types that will come with it.
+The definition also differs in terms of whether or not to combine multiple primitive values into one object or create classes for each such field. 
 Independent of how they are called, and even how the details of definition look like, all of them are there to fight [Primitive Obsession](https://blog.ploeh.dk/2011/05/25/DesignSmellPrimitiveObsession/).
 
 The concept is there for a long time now. Yet a lot of frameworks that have become "industry standards" rely on [JavaBeans style objects]((http://www.javapractices.com/topic/TopicAction.do?Id=84)) and offer little to none support for this concept.
 
-We think that creating your own classes and [keeping the validation logic inside the class](https://enterprisecraftsmanship.com/2017/08/07/always-valid-vs-not-always-valid-domain-model/), makes the code cleaner, more readable, [less dependant on the framework](https://blog.cleancoder.com/uncle-bob/2014/05/11/FrameworkBound.html) being used and most of all [safer](articles/DomainDrivenSecurity.md). 
+We think that creating your own classes and
+[keeping the validation logic inside the class](https://enterprisecraftsmanship.com/2017/08/07/always-valid-vs-not-always-valid-domain-model/)
+makes the code cleaner, more readable, [less dependant on the framework](https://blog.cleancoder.com/uncle-bob/2014/05/11/FrameworkBound.html) being used and most of
+all [safer](articles/DomainDrivenSecurity.md). 
 
-On this page, we'd like to define what we call Custom Primitives and Serialized Objects, and which conventions we use to declare them. 
+On this page, we'd like to define what we call **Custom Primitives** and **Serialized Objects**, and which conventions we use to declare them. 
 
-## Custom Primitives
+### Custom Primitives
 
 are, in a way, extending java with your domain's language. They represent only a single value and contain a factory 
 method, that validates the value and only after that creates the instance.
@@ -29,9 +38,10 @@ List of properties that describe a Custom Primitive:
 * Factory method (in our default convention called "fromStringValue") that validates and creates the object from a String
 * A method that returns the String representation of the value for serialization (conventional method name - "stringValue")
 
-## Serialized Objects
+### Serialized Objects
 
-is anything in your domain that you aim to Serialize at some point. Anything you need to transport over the wire, save in the database, print to the console, etc. 
+A **Serialized Object** is anything in your domain that you aim to serialize at some point.
+Anything you need to transport over the wire, save in the database, print to the console, etc. 
 
 These are constructed using Custom Primitives or other Serialized Objects and are essentially a [composite data type](https://en.wikipedia.org/wiki/Composite_data_type) except it's built with your domain's Custom Primitives. 
 You can also think of it as a "bag of custom primitives or serialized objects", a combination of those that aim to represent data. 
@@ -71,7 +81,7 @@ Examples of these frameworks include [Gson](https://github.com/google/gson), [Ja
 
 ## Validation Errors
 
-Typically, when used in a web(service) framework context, MapMaid is acting as a Request/Response (de)serialization framework. The validation of the request is then expected to return a clear message to the caller about the occurred validation errors. In case of multiple validation errors, communicating those one-by-one, especially in case of a UI, does not make sense to us. Hence, we have implemented a built-in aggregation of validation errors. These are based on the validation exception class provided by you during the configuration of MapMaid instance. The [ValidationError](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/ValidationError.java) is then constructed, whenever the instance of that exception is thrown, and the message returned contains the dot-notation "path" to the invalid field.
+Typically, when used in a web(service) framework context, MapMaid is acting as a request/response (de)serialization framework. The validation of the request is then expected to return a clear message to the caller about the occurred validation errors. In case of multiple validation errors, communicating those one-by-one, especially in case of a UI, does not make sense to us. Hence, we have implemented a built-in aggregation of validation errors. These are based on the validation exception class provided by you during the configuration of MapMaid instance. The [ValidationError](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/ValidationError.java) is then constructed, whenever the instance of that exception is thrown, and the message returned contains the dot-notation "path" to the invalid field.
 
 ## Injections
 
@@ -106,7 +116,7 @@ public final class UpdateShippingAddressRequest {
     //...
 }
 ```
-The Use Case would look like this:
+The Usecase would look like this:
 ```java
 public UpdateShippingAddressResult updateShippingAddress(final UpdateShippingAddressRequest request) {
     //...

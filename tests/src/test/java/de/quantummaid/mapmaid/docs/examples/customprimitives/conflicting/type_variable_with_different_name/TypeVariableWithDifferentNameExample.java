@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.docs.examples.customprimitives.conflicting.type_variable_with_different_name;
 
-import de.quantummaid.mapmaid.builder.GenericType;
+import de.quantummaid.reflectmaid.GenericType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;

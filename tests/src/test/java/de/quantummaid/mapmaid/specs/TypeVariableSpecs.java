@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.GenericType.genericType;
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType.deserialize;
@@ -39,6 +38,7 @@ import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static de.quantummaid.reflectmaid.unresolved.UnresolvedType.unresolvedType;
 
 public final class TypeVariableSpecs {

@@ -1,7 +1,7 @@
 # Domain Driven Security
 
-Domain Driven Security is an approach to address technical security risks like injection attacks (SQL injection, 
-cross-site scripting, ...), and Insecure Deserialization using core principals of Domain Driven Design. 
+Domain-Driven Security is an approach to address technical security risks like injection attacks (SQL injection, 
+cross-site scripting, ...), and **insecure deserialization** using core principals of Domain-Driven Design. 
 If you've never heard of Domain Driven Design, Bounded Contexts, ubiquitous language, but know about Objects,
 Constructors and Factory Methods - don't worry - you know all the building blocks already.
 

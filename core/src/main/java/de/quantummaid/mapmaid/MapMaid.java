@@ -21,12 +21,13 @@
 
 package de.quantummaid.mapmaid;
 
-import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
+import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
+import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -84,12 +85,24 @@ public final class MapMaid {
         return this.deserializer.deserializeJson(json, targetType);
     }
 
+    public <T> T deserializeJson(final String json, final Class<T> targetType, final InjectorLambda injector) {
+        return this.deserializer.deserializeJson(json, targetType, injector);
+    }
+
     public <T> T deserializeYaml(final String yaml, final Class<T> targetType) {
         return this.deserializer.deserialize(yaml, targetType, MarshallingType.yaml());
     }
 
+    public <T> T deserializeYaml(final String yaml, final Class<T> targetType, final InjectorLambda injector) {
+        return this.deserializer.deserialize(yaml, targetType, MarshallingType.yaml(), injector);
+    }
+
     public <T> T deserializeXml(final String xml, final Class<T> targetType) {
         return this.deserializer.deserialize(xml, targetType, MarshallingType.xml());
+    }
+
+    public <T> T deserializeXml(final String xml, final Class<T> targetType, final InjectorLambda injector) {
+        return this.deserializer.deserialize(xml, targetType, MarshallingType.xml(), injector);
     }
 
     public <T> T deserialize(final String input, final Class<T> targetType, final MarshallingType marshallingType) {

@@ -1,8 +1,11 @@
-# Configuring a MapMaid instance
-Before you can use MapMaid to serialize and/or deserialize objects, you need to create a `MapMaid` instance.
-This chapter explains all possible ways to configure that instance. 
+# Registering types
+The following chapter explains how to create a `MapMaid` instance and register classes for serialization and deserialization.
 
-## Registering types
+## Provided types
+The `java.lang.String` class, language primitives (`int`, `boolean`, etc.), standard collections (`List`, `Set`, `ArrayList`, etc.) and
+arrays are supported out of the box and do not need to be registered.
+
+## Registering types for autodetection
 
 In order for MapMaid to be able to (de-)serialize a given class, you need to register it in the configuration:
 <!---[CodeSnippet](duplexConfig)-->
@@ -31,8 +34,35 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
-**Note:** `String`, language primitives (`int`, `boolean`, etc.), standard collections (`List`, `Set`, `ArrayList`, etc.) and
-arrays are supported out of the box and do not need to be registered.
+### Changing detection preferences
+Whenever MapMaid does not 
+
+<!---[CodeSnippet](preferredCustomPrimitiveFactoryName)-->
+```java
+MapMaid.aMapMaid()
+        .withAdvancedSettings(advancedBuilder -> {
+            advancedBuilder.withPreferredCustomPrimitiveFactoryName("instantiate");
+        })
+        .build();
+```
+
+<!---[CodeSnippet](preferredCustomPrimitiveSerializationMethodName)-->
+```java
+MapMaid.aMapMaid()
+        .withAdvancedSettings(advancedBuilder -> {
+            advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serializeToString");
+        })
+        .build();
+```
+
+<!---[CodeSnippet](preferredSerializedObjectFactoryName)-->
+```java
+MapMaid.aMapMaid()
+        .withAdvancedSettings(advancedBuilder -> {
+            advancedBuilder.withPreferredSerializedObjectFactoryName("instantiate");
+        })
+        .build();
+```
 
 ## Registering custom types
 If you want to tell MapMaid exactly how to
@@ -122,38 +152,24 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 
 ## Registering injection-only types
 
-## Exception handling
+Some types are needed to create certain objects, but should not be serialized or deserialized themselves. Examples for such classes
+are database connections and loggers.
+To tell MapMaid to never (de-)serialize types, you can register them as injection-only.
+In order to always expect objects of a certain type to be provided via per-deserialization injections,
+register it like this:   
 
-## Changing detection preferences
-Whenever MapMaid does not 
-
-<!---[CodeSnippet](preferredCustomPrimitiveFactoryName)-->
+<!---[CodeSnippet](normalInjection)-->
 ```java
-MapMaid.aMapMaid()
-        .withAdvancedSettings(advancedBuilder -> {
-            advancedBuilder.withPreferredCustomPrimitiveFactoryName("instantiate");
-        })
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .injecting(MyInjectedValue.class)
         .build();
 ```
 
-<!---[CodeSnippet](preferredCustomPrimitiveSerializationMethodName)-->
+Alternatively, you can tell MapMaid how to create instances of a certain type on its own like this:
+
+<!---[CodeSnippet](fixedInjection)-->
 ```java
-MapMaid.aMapMaid()
-        .withAdvancedSettings(advancedBuilder -> {
-            advancedBuilder.withPreferredCustomPrimitiveSerializationMethodName("serializeToString");
-        })
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .injecting(MyInjectedValue.class, () -> new MyInjectedValue("this is injected"))
         .build();
 ```
-
-<!---[CodeSnippet](preferredSerializedObjectFactoryName)-->
-```java
-MapMaid.aMapMaid()
-        .withAdvancedSettings(advancedBuilder -> {
-            advancedBuilder.withPreferredSerializedObjectFactoryName("instantiate");
-        })
-        .build();
-```
-
-## Marshalling
-
-## Recipes

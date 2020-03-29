@@ -19,31 +19,19 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.shared.identifier;
+package de.quantummaid.mapmaid.documentation.configuration.injection;
 
-import de.quantummaid.reflectmaid.GenericType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public final class MyInjectedValue {
+    private final String value;
 
-public interface TypeIdentifier {
-
-    static TypeIdentifier virtualTypeIdentifier(final String id) {
-        return VirtualTypeIdentifier.virtualTypeIdentifier(id);
+    public String getValue() {
+        return this.value;
     }
-
-    static TypeIdentifier uniqueVirtualTypeIdentifier() {
-        return VirtualTypeIdentifier.uniqueVirtualTypeIdentifier();
-    }
-
-    static TypeIdentifier typeIdentifierFor(final GenericType<?> genericType) {
-        final ResolvedType resolvedType = genericType.toResolvedType();
-        return realTypeIdentifier(resolvedType);
-    }
-
-    boolean isVirtual();
-
-    ResolvedType getRealType();
-
-    String description();
 }

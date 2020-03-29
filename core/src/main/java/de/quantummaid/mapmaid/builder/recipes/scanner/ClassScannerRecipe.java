@@ -21,10 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.recipes.scanner;
 
-import de.quantummaid.mapmaid.builder.GenericType;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
 import lombok.AccessLevel;
@@ -36,11 +36,11 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.GenericType.fromResolvedType;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
+import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
