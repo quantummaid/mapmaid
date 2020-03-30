@@ -62,7 +62,7 @@ public final class ConventionalBuilderExclusionTest {
     public void testEmailSerialization() {
         Exception exception = null;
         try {
-            theConventionalMapMaidInstance().serializer().serializeToJson(EMAIL);
+            theConventionalMapMaidInstance().serializeToJson(EMAIL);
         } catch (final DefinitionNotFoundException e) {
             exception = e;
         }
@@ -73,7 +73,7 @@ public final class ConventionalBuilderExclusionTest {
     public void testEmailDeserialization() {
         Exception exception = null;
         try {
-            theConventionalMapMaidInstance().deserializer().deserializeJson(EMAIL_JSON, Email.class);
+            theConventionalMapMaidInstance().deserializeJson(EMAIL_JSON, Email.class);
         } catch (final DefinitionNotFoundException e) {
             exception = e;
         }

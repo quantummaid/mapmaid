@@ -34,9 +34,7 @@ import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
-import de.quantummaid.reflectmaid.ClassType;
 import de.quantummaid.reflectmaid.GenericType;
-import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +46,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -71,31 +69,6 @@ public final class Serializer implements SerializationCallback {
 
     public Set<MarshallingType> supportedMarshallingTypes() {
         return this.marshallers.supportedTypes();
-    }
-
-    public String serializeToJson(final Object object) {
-        return serialize(object, MarshallingType.json());
-    }
-
-    public String serialize(final Object object,
-                            final MarshallingType marshallingType) {
-        return serialize(object, marshallingType, input -> input);
-    }
-
-    public String serialize(final Object object,
-                            final MarshallingType marshallingType,
-                            final Function<Map<String, Object>, Map<String, Object>> serializedPropertyInjector) {
-        NotNullValidator.validateNotNull(object, "object");
-        final ResolvedType type = ClassType.typeOfObject(object);
-        return serialize(object, type, marshallingType, serializedPropertyInjector);
-    }
-
-    public String serialize(final Object object,
-                            final ResolvedType type,
-                            final MarshallingType marshallingType,
-                            final Function<Map<String, Object>, Map<String, Object>> serializedPropertyInjector) {
-        final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
-        return serialize(object, typeIdentifier, marshallingType, serializedPropertyInjector);
     }
 
     @SuppressWarnings("unchecked")
@@ -141,8 +114,7 @@ public final class Serializer implements SerializationCallback {
         if (isNull(object)) {
             return new HashMap<>(0);
         }
-        final ResolvedType type = ClassType.typeOfObject(object);
-        final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(object.getClass());
         final Object normalized = normalize(object, typeIdentifier);
         if (!(normalized instanceof Map)) {
             throw new UnsupportedOperationException("Only serialized objects can be serialized to map");
@@ -154,9 +126,16 @@ public final class Serializer implements SerializationCallback {
         if (isNull(object)) {
             return new HashMap<>(0);
         }
-        final ResolvedType type = ClassType.typeOfObject(object);
-        final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
-        return serializeToUniversalObject(object, typeIdentifier);
+        final Class<?> type = object.getClass();
+        return serializeToUniversalObject(object, type);
+    }
+
+    public Object serializeToUniversalObject(final Object object, final Class<?> type) {
+        if (isNull(object)) {
+            return new HashMap<>(0);
+        }
+        final GenericType<?> genericType = genericType(type);
+        return serializeToUniversalObject(object, genericType);
     }
 
     public Object serializeToUniversalObject(final Object object, final GenericType<?> type) {

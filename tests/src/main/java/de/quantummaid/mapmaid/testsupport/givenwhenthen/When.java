@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Then.then;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.ThenData.thenData;
 
@@ -63,13 +66,17 @@ public final class When {
     }
 
     public AsStage mapMaidDeserializes(final String input) {
-        return marshallingType -> type ->
-                doDeserialization(() -> this.mapMaid.deserialize(input, type, marshallingType));
+        return marshallingType -> type -> {
+            final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
+            return doDeserialization(() -> this.mapMaid.deserialize(input, typeIdentifier, marshallingType));
+        };
     }
 
     public AsStage mapMaidDeserializesWithInjection(final String input, final InjectorLambda injector) {
-        return marshallingType -> type ->
-                doDeserialization(() -> this.mapMaid.deserializer().deserialize(input, type, marshallingType, injector));
+        return marshallingType -> type -> {
+            final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
+            return doDeserialization(() -> this.mapMaid.deserialize(input, typeIdentifier, marshallingType, injector));
+        };
     }
 
     @SuppressWarnings("unchecked")
@@ -110,7 +117,8 @@ public final class When {
                                                              final Function<Map<String, Object>, Map<String, Object>> injector) {
         return marshallingType -> {
             try {
-                final String serialized = this.mapMaid.serializer().serialize(object, marshallingType, injector);
+                final TypeIdentifier typeIdentifier = typeIdentifierFor(object.getClass());
+                final String serialized = this.mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
                 return then(this.thenData.withSerializationResult(serialized));
             } catch (final Exception e) {
                 return then(this.thenData.withException(e));

@@ -28,7 +28,6 @@ import de.quantummaid.mapmaid.builder.models.customconvention.Body;
 import de.quantummaid.mapmaid.builder.models.customconvention.EmailAddress;
 import de.quantummaid.mapmaid.builder.models.customconvention.Subject;
 import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
-import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
@@ -126,7 +125,6 @@ public final class IndividuallyAddedModelsBuilderTest {
     @Test
     public void testEmailSerializationConventional() {
         final String result = theIndividuallyAddedTypesMapMaidConventional()
-                .serializer()
                 .serializeToJson(CONVENTIONAL_EMAIL);
         assertThat(result, is(EMAIL_JSON));
     }
@@ -134,34 +132,33 @@ public final class IndividuallyAddedModelsBuilderTest {
     @Test
     public void testEmailDeserializationConventional() {
         final Email result = theIndividuallyAddedTypesMapMaidConventional()
-                .deserializer()
                 .deserializeJson(EMAIL_JSON, Email.class);
         assertThat(result, is(CONVENTIONAL_EMAIL));
     }
 
     @Test
     public void testEmailSerialization() {
-        final String result = theIndividuallyAddedTypesMapMaid().serializer().serializeToJson(EMAIL);
+        final String result = theIndividuallyAddedTypesMapMaid().serializeToJson(EMAIL);
         assertThat(result, is(EMAIL_JSON));
     }
 
     @Test
     public void testEmailDeserialization() {
-        final Deserializer deserializer = theIndividuallyAddedTypesMapMaid().deserializer();
-        final de.quantummaid.mapmaid.builder.models.customconvention.Email result = deserializer.deserializeJson(EMAIL_JSON, de.quantummaid.mapmaid.builder.models.customconvention.Email.class);
+        final MapMaid mapMaid = theIndividuallyAddedTypesMapMaid();
+        final de.quantummaid.mapmaid.builder.models.customconvention.Email result = mapMaid.deserializeJson(EMAIL_JSON, de.quantummaid.mapmaid.builder.models.customconvention.Email.class);
         assertThat(result, is(EMAIL));
     }
 
     @Test
     public void testEmailSerialization1() {
-        final String result = theIndividuallyAddedTypesMapMaid1().serializer().serializeToJson(EMAIL);
+        final String result = theIndividuallyAddedTypesMapMaid1().serializeToJson(EMAIL);
         assertThat(result, is(EMAIL_JSON));
     }
 
     @Test
     public void testEmailDeserialization1() {
-        final Deserializer deserializer = theIndividuallyAddedTypesMapMaid1().deserializer();
-        final de.quantummaid.mapmaid.builder.models.customconvention.Email result = deserializer.deserializeJson(EMAIL_JSON, de.quantummaid.mapmaid.builder.models.customconvention.Email.class);
+        final MapMaid mapMaid = theIndividuallyAddedTypesMapMaid1();
+        final de.quantummaid.mapmaid.builder.models.customconvention.Email result = mapMaid.deserializeJson(EMAIL_JSON, de.quantummaid.mapmaid.builder.models.customconvention.Email.class);
         assertThat(result, is(EMAIL));
     }
 }

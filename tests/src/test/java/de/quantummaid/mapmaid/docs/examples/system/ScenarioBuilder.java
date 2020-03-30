@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.docs.examples.system.expectation.Expectation;
 import de.quantummaid.mapmaid.docs.examples.system.mode.ExampleMode;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -46,6 +47,8 @@ import static de.quantummaid.mapmaid.docs.examples.system.expectation.Serializat
 import static de.quantummaid.mapmaid.docs.examples.system.mode.FixedExampleMode.fixed;
 import static de.quantummaid.mapmaid.docs.examples.system.mode.NormalExampleMode.*;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 import static java.lang.String.format;
 
@@ -228,9 +231,9 @@ public final class ScenarioBuilder {
             return result;
         }
 
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(fromResolvedType(this.type));
         try {
-            final String serialized = mapMaid.serializer()
-                    .serialize(this.deserializedForm, this.type, json(), stringObjectMap -> stringObjectMap);
+            final String serialized = mapMaid.serializeTo(this.deserializedForm, json(), typeIdentifier);
             result.withSerializationResult(serialized);
         } catch (final Throwable throwable) {
             throwable.printStackTrace();
@@ -238,7 +241,7 @@ public final class ScenarioBuilder {
         }
 
         try {
-            final Object deserialized = mapMaid.deserializer().deserialize(this.serializedForm, this.type, json(), injectorLambda);
+            final Object deserialized = mapMaid.deserialize(this.serializedForm, typeIdentifier, json(), this.injectorLambda);
             result.withDeserializationResult(deserialized);
         } catch (final Throwable throwable) {
             throwable.printStackTrace();

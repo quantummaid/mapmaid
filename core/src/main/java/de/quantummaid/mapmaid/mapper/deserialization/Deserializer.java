@@ -49,7 +49,6 @@ import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer.internalDeserializer;
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -123,48 +122,6 @@ public final class Deserializer {
                                                final MarshallingType type) {
         final Universal universal = this.unmarshallers.unmarshall(input, type);
         return universal.toNativeJava();
-    }
-
-    public <T> T deserializeJson(final String json,
-                                 final Class<T> targetType) {
-        return deserialize(json, targetType, json());
-    }
-
-    public <T> T deserializeJson(final String json,
-                                 final Class<T> targetType,
-                                 final InjectorLambda injectorLambda) {
-        return deserialize(json, targetType, json(), injectorLambda);
-    }
-
-    public <T> T deserialize(final String input,
-                             final Class<T> targetType,
-                             final MarshallingType marshallingType) {
-        return deserialize(input, targetType, marshallingType, noop());
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T deserialize(final String input,
-                             final ResolvedType targetType,
-                             final MarshallingType marshallingType) {
-        return (T) deserialize(input, targetType, marshallingType, noop());
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T deserialize(final String input,
-                             final Class<T> targetType,
-                             final MarshallingType marshallingType,
-                             final InjectorLambda injectorProducer) {
-        validateNotNull(input, "input");
-        final ClassType resolvedType = ClassType.fromClassWithoutGenerics(targetType);
-        return (T) deserialize(input, resolvedType, marshallingType, injectorProducer);
-    }
-
-    public Object deserialize(final String input,
-                              final ResolvedType targetType,
-                              final MarshallingType marshallingType,
-                              final InjectorLambda injectorProducer) {
-        final TypeIdentifier typeIdentifier = realTypeIdentifier(targetType);
-        return deserialize(input, typeIdentifier, marshallingType, injectorProducer);
     }
 
     public Object deserialize(final String input,

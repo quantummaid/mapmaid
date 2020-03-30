@@ -21,9 +21,8 @@ On this page, we'd like to define what we call **Custom Primitives** and **Seria
 
 ### Custom Primitives
 
-are, in a way, extending java with your domain's language. They represent only a single value and contain a factory 
-method, that validates the value and only after that creates the instance.
-
+Custom primitives are - in a way - extending Java with your domain's language.
+Ideally, they represent a single immutable value and validate this value upon creation so that they are always in a valid state.
 Examples of custom primitive are an email address, a zip code, a first name, an amount, a price, a currency, an ID, etc. 
 
 List of properties that describe a Custom Primitive:
@@ -33,8 +32,8 @@ List of properties that describe a Custom Primitive:
     * final modifier on the class
     * the field being private and final
     * no setters
-* equals and hashCode implemented 
-* Only private Constructors to enforce the use of factory methods that perform validation 
+* `equals` and `hashCode` implemented 
+* Only private constructors to enforce the use of factory methods that perform validation 
 * Factory method (in our default convention called "fromStringValue") that validates and creates the object from a String
 * A method that returns the String representation of the value for serialization (conventional method name - "stringValue")
 

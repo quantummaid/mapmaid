@@ -86,7 +86,6 @@ public final class WithPrimitivesBuilderTest {
     @Test
     public void testSerialization() {
         final String result = MAP_MAID
-                .serializer()
                 .serializeToJson(SERIALIZED_OBJECT);
         assertThat(result, is(JSON_WITH_STRING_SERIALIZED_PRIMITIVES));
     }
@@ -94,7 +93,6 @@ public final class WithPrimitivesBuilderTest {
     @Test
     public void testDeserializationOfStringSerializedPrimitives() {
         final SerializedObjectWithPrimitives result = MAP_MAID
-                .deserializer()
                 .deserializeJson(JSON_WITH_STRING_SERIALIZED_PRIMITIVES, SerializedObjectWithPrimitives.class);
         assertThat(result, is(SERIALIZED_OBJECT));
     }
@@ -102,7 +100,6 @@ public final class WithPrimitivesBuilderTest {
     @Test
     public void testDeserializationOfPrimitives() {
         final SerializedObjectWithPrimitives result = MAP_MAID
-                .deserializer()
                 .deserializeJson(JSON_WITH_SERIALIZED_PRIMITIVES, SerializedObjectWithPrimitives.class);
         assertThat(result, is(SERIALIZED_OBJECT));
     }

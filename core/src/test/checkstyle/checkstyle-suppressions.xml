@@ -56,4 +56,5 @@
     <suppress checks="MagicNumber|ParameterNumber" files="Deserializer[0-9]*" />
     <suppress checks="ParameterNumber" files="ActualScanInformation" />
     <suppress checks="ClassFanOutComplexity" files="Deserializer" />
+    <suppress checks="MethodCount" files="MapMaid" />
 </suppressions>

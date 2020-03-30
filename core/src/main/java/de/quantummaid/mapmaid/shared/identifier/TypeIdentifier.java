@@ -25,6 +25,7 @@ import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ResolvedType;
 
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 public interface TypeIdentifier {
 
@@ -34,6 +35,11 @@ public interface TypeIdentifier {
 
     static TypeIdentifier uniqueVirtualTypeIdentifier() {
         return VirtualTypeIdentifier.uniqueVirtualTypeIdentifier();
+    }
+
+    static TypeIdentifier typeIdentifierFor(final Class<?> type) {
+        final GenericType<?> genericType = genericType(type);
+        return typeIdentifierFor(genericType);
     }
 
     static TypeIdentifier typeIdentifierFor(final GenericType<?> genericType) {

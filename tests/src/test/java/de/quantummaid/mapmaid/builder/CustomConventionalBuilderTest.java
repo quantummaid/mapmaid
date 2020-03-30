@@ -65,13 +65,13 @@ public final class CustomConventionalBuilderTest {
 
     @Test
     public void testEmailSerialization() {
-        final String result = theCustomConventionalMapMaidInstance().serializer().serializeToJson(EMAIL);
+        final String result = theCustomConventionalMapMaidInstance().serializeToJson(EMAIL);
         assertThat(result, is(EMAIL_JSON));
     }
 
     @Test
     public void testEmailDeserialization() {
-        final Email result = theCustomConventionalMapMaidInstance().deserializer().deserializeJson(EMAIL_JSON, Email.class);
+        final Email result = theCustomConventionalMapMaidInstance().deserializeJson(EMAIL_JSON, Email.class);
         assertThat(result, is(EMAIL));
     }
 }

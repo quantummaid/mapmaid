@@ -89,25 +89,25 @@ public final class ConventionalBuilderTest {
 
     @Test
     public void testEmailSerialization() {
-        final String result = theConventionalMapMaidInstance().serializer().serializeToJson(EMAIL);
+        final String result = theConventionalMapMaidInstance().serializeToJson(EMAIL);
         assertThat(result, is(EMAIL_JSON));
     }
 
     @Test
     public void testEmailDeserialization() {
-        final Email result = theConventionalMapMaidInstance().deserializer().deserializeJson(EMAIL_JSON, Email.class);
+        final Email result = theConventionalMapMaidInstance().deserializeJson(EMAIL_JSON, Email.class);
         assertThat(result, is(EMAIL));
     }
 
     @Test
     public void testEmailSerializationClassNameFactories() {
-        final String result = theConventionalMapMaidInstance().serializer().serializeToJson(EMAIL_DTO);
+        final String result = theConventionalMapMaidInstance().serializeToJson(EMAIL_DTO);
         assertThat(result, is(EMAIL_JSON));
     }
 
     @Test
     public void testEmailDeserializationClassNameFactories() {
-        final EmailDto result = theConventionalMapMaidInstance().deserializer().deserializeJson(
+        final EmailDto result = theConventionalMapMaidInstance().deserializeJson(
                 EMAIL_JSON, EmailDto.class
         );
         assertThat(result, is(EMAIL_DTO));
@@ -115,13 +115,13 @@ public final class ConventionalBuilderTest {
 
     @Test
     public void testNameDeserialization() {
-        final Name result = theConventionalMapMaidInstance().deserializer().deserializeJson("bob", Name.class);
+        final Name result = theConventionalMapMaidInstance().deserializeJson("bob", Name.class);
         assertThat(result, is(new Name("bob")));
     }
 
     @Test
     public void testGroupTicketDeserialization() {
-        final GroupTicketRequest result = theConventionalMapMaidInstance().deserializer()
+        final GroupTicketRequest result = theConventionalMapMaidInstance()
                 .deserializeJson(GROUP_TICKET_REQUEST_JSON, GroupTicketRequest.class);
         assertThat(result, is(GROUP_TICKET_REQUEST));
     }
