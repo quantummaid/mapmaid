@@ -1,4 +1,10 @@
 # Exception Handling
+
+## Validation Errors
+
+Typically, when used in a web(service) framework context, MapMaid is acting as a request/response (de)serialization framework. The validation of the request is then expected to return a clear message to the caller about the occurred validation errors. In case of multiple validation errors, communicating those one-by-one, especially in case of a UI, does not make sense to us. Hence, we have implemented a built-in aggregation of validation errors. These are based on the validation exception class provided by you during the configuration of MapMaid instance. The [ValidationError](../core/src/main/java/de/quantummaid/mapmaid/deserialization/validation/ValidationError.java) is then constructed, whenever the instance of that exception is thrown, and the message returned contains the dot-notation "path" to the invalid field.
+
+
 During the deserialization of objects using MapMaid, exceptions might be thrown by the factory methods or
 constructors used to instantiate these objects.
 Whenever an exception is thrown, MapMaid will by default immediately rethrow that exception wrapped in an instance of 

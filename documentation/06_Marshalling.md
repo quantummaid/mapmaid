@@ -1,4 +1,12 @@
 # Marshalling
+
+## (Un-)marshalling
+
+To support multiple formats like JSON, XML, YAML, etc. Serialized Objects are converted into Maps of Maps and Strings.
+This map is respectively deserialized from a specific format or serialized into that format.
+The process of serializing that map into a format is what we call [Marshalling](https://en.wikipedia.org/wiki/Marshalling_(computer_science)) and the reverse operation Unmarshalling.
+Examples of these frameworks include [Gson](https://github.com/google/gson), [Jackson](https://github.com/FasterXML/jackson), [X-Stream](https://x-stream.github.io/).
+
 MapMaid is unaware of the format you chose to represent the string value of your objects.
 Upon reception of the string input, MapMaid first asks the configured (un-)marshaller to parse the `String`
 into a `Map<String, Object>`.

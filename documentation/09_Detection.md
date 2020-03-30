@@ -119,8 +119,5 @@ MapMaid.aMapMaid()
         .build();
 ```
 
-Please note that all the string values accepted by the `conventionalDetector` factory method support regular 
-expressions.
-
 Also take a look at [CustomConventionalBuilderTest](../core/src/test/java/de/quantummaid/mapmaid/builder/CustomConventionalBuilderTest.java) 
 for some examples of customizing the conventions.

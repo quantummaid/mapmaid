@@ -1,5 +1,7 @@
 # Quick Start
 
+This chapter walks you through the minimum necessary steps to use MapMaid.
+
 ## Maven 
 
 In order to use MapMaid, just add the following dependency to your project:
