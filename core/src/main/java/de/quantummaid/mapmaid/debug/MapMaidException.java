@@ -23,10 +23,13 @@ package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 
+import java.util.List;
+
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 
 public final class MapMaidException extends RuntimeException {
-    private static final String URL = "https://github.com/quantummaid/mapmaid/tree/master/docs";
+    private static final String URL = "https://github.com/quantummaid/mapmaid/tree/master/documentation";
 
     private MapMaidException(final String message,
                              final Throwable cause) {
@@ -39,8 +42,20 @@ public final class MapMaidException extends RuntimeException {
     }
 
     public static MapMaidException mapMaidException(final String message,
+                                                    final List<ScanInformation> scanInformations) {
+        return mapMaidException(message, null, scanInformations);
+    }
+
+    public static MapMaidException mapMaidException(final String message,
                                                     final Exception cause,
                                                     final ScanInformation... scanInformations) {
+        final List<ScanInformation> asList = asList(scanInformations);
+        return mapMaidException(message, cause, asList);
+    }
+
+    public static MapMaidException mapMaidException(final String message,
+                                                    final Exception cause,
+                                                    final List<ScanInformation> scanInformations) {
         final StringBuilder messageBuilder = new StringBuilder();
         messageBuilder.append(message);
         messageBuilder.append("\n\n");

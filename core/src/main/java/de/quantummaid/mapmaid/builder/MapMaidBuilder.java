@@ -32,13 +32,13 @@ import de.quantummaid.mapmaid.builder.injection.FixedInjector;
 import de.quantummaid.mapmaid.builder.injection.InjectionDeserializer;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.DebugInformation;
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
@@ -71,14 +71,14 @@ import static de.quantummaid.mapmaid.builder.injection.FixedInjectionDeserialize
 import static de.quantummaid.mapmaid.builder.injection.InjectionDeserializer.injectionDeserializer;
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
-import static de.quantummaid.mapmaid.builder.resolving.Reason.manuallyAdded;
-import static de.quantummaid.mapmaid.builder.resolving.Reason.reason;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
+import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
+import static de.quantummaid.mapmaid.debug.Reason.reason;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.theSerializer;
@@ -304,7 +304,7 @@ public final class MapMaidBuilder {
         final Map<TypeIdentifier, CollectionResult> result = this.processor.collect(this.detector, disambiguators);
 
         final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
-        final Map<TypeIdentifier, ScanInformation> scanInformationMap = new HashMap<>(result.size());
+        final Map<TypeIdentifier, ScanInformationBuilder> scanInformationMap = new HashMap<>(result.size());
         result.forEach((type, collectionResult) -> {
             definitionsMap.put(type, collectionResult.definition());
             scanInformationMap.put(type, collectionResult.scanInformation());

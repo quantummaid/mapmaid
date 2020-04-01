@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing;
 
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,18 +33,18 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CollectionResult {
     private final Definition definition;
-    private final ScanInformation scanInformation;
+    private final ScanInformationBuilder scanInformationBuilder;
 
     public static CollectionResult collectionResult(final Definition definition,
-                                                    final ScanInformation scanInformation) {
-        return new CollectionResult(definition, scanInformation);
+                                                    final ScanInformationBuilder scanInformationBuilder) {
+        return new CollectionResult(definition, scanInformationBuilder);
     }
 
     public Definition definition() {
         return this.definition;
     }
 
-    public ScanInformation scanInformation() {
-        return this.scanInformation;
+    public ScanInformationBuilder scanInformation() {
+        return this.scanInformationBuilder;
     }
 }

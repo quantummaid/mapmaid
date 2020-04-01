@@ -25,6 +25,8 @@ import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -35,11 +37,14 @@ import lombok.ToString;
 import java.util.*;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.resolve;
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
+import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -69,16 +74,31 @@ public final class Processor {
         resolveRecursively(detector, disambiguators);
         final Map<TypeIdentifier, Report> reports = this.states.collect();
 
+        final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders = new HashMap<>(reports.size());
         final Map<TypeIdentifier, CollectionResult> definitions = new HashMap<>(reports.size());
+        final Map<TypeIdentifier, Report> failures = smallMap();
         reports.forEach((type, report) -> {
+            final CollectionResult result = report.result();
+            scanInformationBuilders.put(type, result.scanInformation());
             if (report.isSuccess()) {
-                definitions.put(type, report.result());
+                definitions.put(type, result);
             } else {
-                final ScanInformation scanInformation = report.result().scanInformation();
-                throw mapMaidException(type.description() + ": " + report.errorMessage(), scanInformation);
+                failures.put(type, report);
             }
         });
 
+        if (!failures.isEmpty()) {
+            final DebugInformation debugInformation = debugInformation(scanInformationBuilders);
+            final StringJoiner errorMessageJoiner = new StringJoiner("\n\n");
+            final List<ScanInformation> scanInformations = new ArrayList<>(failures.size());
+            failures.forEach((typeIdentifier, report) -> {
+                errorMessageJoiner.add(typeIdentifier.description() + ": " + report.errorMessage());
+                final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
+                scanInformations.add(scanInformation);
+            });
+            final String errorMessage = format("The following classes could not be detected properly:%n%n%s", errorMessageJoiner.toString());
+            throw mapMaidException(errorMessage, scanInformations);
+        }
         return definitions;
     }
 

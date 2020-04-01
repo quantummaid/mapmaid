@@ -19,26 +19,12 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.debug.scaninformation;
+package de.quantummaid.mapmaid.debug;
 
-import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-
-public interface ScanInformation {
-    String render();
-
-    default Classification classification() {
-        throw new UnsupportedOperationException();
-    }
-
-    default List<Reason> reasonsForSerialization() {
-        return emptyList();
-    }
-
-    default List<Reason> reasonsForDeserialization() {
-        return emptyList();
-    }
+public interface SubReasonProvider {
+    List<Reason> reasonsFor(TypeIdentifier typeIdentifier);
 }

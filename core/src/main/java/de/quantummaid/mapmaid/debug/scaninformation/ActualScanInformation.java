@@ -21,8 +21,9 @@
 
 package de.quantummaid.mapmaid.debug.scaninformation;
 
-import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.debug.Lingo;
+import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.debug.SubReasonProvider;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
@@ -36,12 +37,14 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.Classification.OTHER;
 import static java.lang.String.format;
+import static java.util.Collections.unmodifiableList;
 
 @ToString
 @EqualsAndHashCode
@@ -55,6 +58,8 @@ public final class ActualScanInformation implements ScanInformation {
     private final Map<TypeSerializer, List<String>> ignoredSerializers;
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> ignoredDeserializers;
+    private final SubReasonProvider serializationSubReasonProvider;
+    private final SubReasonProvider deserializationSubReasonProvider;
 
     public static ScanInformation actualScanInformation(final TypeIdentifier type,
                                                         final List<Reason> deserializationReasons,
@@ -63,7 +68,9 @@ public final class ActualScanInformation implements ScanInformation {
                                                         final TypeDeserializer deserializer,
                                                         final Map<TypeSerializer, List<String>> ignoredSerializers,
                                                         final Map<SerializationField, List<String>> serializationFields,
-                                                        final Map<TypeDeserializer, List<String>> ignoredDeserializers) {
+                                                        final Map<TypeDeserializer, List<String>> ignoredDeserializers,
+                                                        final SubReasonProvider serializationSubReasonProvider,
+                                                        final SubReasonProvider deserializationSubReasonProvider) {
         return new ActualScanInformation(
                 type,
                 deserializationReasons,
@@ -72,7 +79,10 @@ public final class ActualScanInformation implements ScanInformation {
                 deserializer,
                 ignoredSerializers,
                 serializationFields,
-                ignoredDeserializers);
+                ignoredDeserializers,
+                serializationSubReasonProvider,
+                deserializationSubReasonProvider
+        );
     }
 
     @Override
@@ -89,7 +99,10 @@ public final class ActualScanInformation implements ScanInformation {
             stringBuilder.append(format("\t%s", renderSerializer()));
 
             stringBuilder.append("\nWhy it needs to be serializable:\n");
-            this.serializationReasons.forEach(reason -> stringBuilder.append(format("\t- %s%n", reason.render())));
+            this.serializationReasons.stream()
+                    .map(reason -> reason.render(serializationSubReasonProvider))
+                    .flatMap(Collection::stream)
+                    .forEach(reason -> stringBuilder.append(format("\t- %s%n", reason)));
 
             if (!this.ignoredSerializers.isEmpty()) {
                 stringBuilder.append(renderIgnoredSerializers());
@@ -101,7 +114,10 @@ public final class ActualScanInformation implements ScanInformation {
             stringBuilder.append(format("\t%s", renderDeserializer()));
 
             stringBuilder.append("\nWhy it needs to be deserializable:\n");
-            this.deserializationReasons.forEach(reason -> stringBuilder.append(format("\t- %s%n", reason.render())));
+            this.deserializationReasons.stream()
+                    .map(reason -> reason.render(deserializationSubReasonProvider))
+                    .flatMap(Collection::stream)
+                    .forEach(reason -> stringBuilder.append(format("\t- %s%n", reason)));
 
             if (!this.ignoredDeserializers.isEmpty()) {
                 stringBuilder.append(renderIgnoredDeserializers());
@@ -179,6 +195,16 @@ public final class ActualScanInformation implements ScanInformation {
         } else {
             return this.deserializer.description();
         }
+    }
+
+    @Override
+    public List<Reason> reasonsForSerialization() {
+        return unmodifiableList(this.serializationReasons);
+    }
+
+    @Override
+    public List<Reason> reasonsForDeserialization() {
+        return unmodifiableList(this.deserializationReasons);
     }
 
     @Override

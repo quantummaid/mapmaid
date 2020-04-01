@@ -19,26 +19,21 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.debug.scaninformation;
+package de.quantummaid.mapmaid.specs.rootcause.cyclic;
 
-import de.quantummaid.mapmaid.debug.Reason;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import java.util.List;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class LevelB {
+    public final LevelA levelA;
+    public final LevelC levelC;
 
-import static java.util.Collections.emptyList;
-
-public interface ScanInformation {
-    String render();
-
-    default Classification classification() {
-        throw new UnsupportedOperationException();
-    }
-
-    default List<Reason> reasonsForSerialization() {
-        return emptyList();
-    }
-
-    default List<Reason> reasonsForDeserialization() {
-        return emptyList();
+    public static LevelB levelB(final LevelA levelA, final LevelC levelC) {
+        return new LevelB(levelA, levelC);
     }
 }

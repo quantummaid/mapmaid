@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.resolving.Reason.becauseOf;
+import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 import static de.quantummaid.mapmaid.builder.resolving.states.resolved.ResolvedDeserializer.resolvedDeserializer;
 
 @ToString

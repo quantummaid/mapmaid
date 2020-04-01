@@ -19,37 +19,15 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving;
+package de.quantummaid.mapmaid.specs.rootcause.cyclic;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Reason {
-    private final String reason;
-    private final TypeIdentifier parent;
-
-    public static Reason reason(final String reason) {
-        validateNotNull(reason, "reason");
-        return new Reason(reason, null);
-    }
-
-    public static Reason manuallyAdded() {
-        return reason("manually added");
-    }
-
-    public static Reason becauseOf(final TypeIdentifier parent) {
-        return new Reason(String.format("because of %s", parent.description()), parent);
-    }
-
-    public String render() {
-        return this.reason;
-    }
+public final class LevelC {
 }
