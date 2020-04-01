@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.debug;
 
-import de.quantummaid.mapmaid.builder.resolving.Reason;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -50,6 +49,8 @@ public final class ScanInformationBuilder {
     private final Map<TypeSerializer, List<String>> serializers;
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> deserializers;
+    private TypeSerializer serializer;
+    private TypeDeserializer deserializer;
 
     public static ScanInformationBuilder scanInformationBuilder(final TypeIdentifier type) {
         return new ScanInformationBuilder(
@@ -161,23 +162,38 @@ public final class ScanInformationBuilder {
         }
     }
 
-    public ScanInformation build(final TypeSerializer serializer, final TypeDeserializer deserializer) {
-        if (serializer instanceof SerializedObjectSerializer) {
-            final SerializedObjectSerializer serializedObjectSerializer = (SerializedObjectSerializer) serializer;
-            serializedObjectSerializer.fields().fields().forEach(this.serializationFields::remove);
-        } else {
-            this.serializers.remove(serializer);
+    public void setSerializer(final TypeSerializer serializer) {
+        this.serializer = serializer;
+    }
+
+    public void setDeserializer(final TypeDeserializer deserializer) {
+        this.deserializer = deserializer;
+    }
+
+    public ScanInformation build(final SubReasonProvider serializationSubReasonProvider,
+                                 final SubReasonProvider deserializationSubReasonProvider) {
+        if (this.serializer != null) {
+            if (this.serializer instanceof SerializedObjectSerializer) {
+                final SerializedObjectSerializer serializedObjectSerializer = (SerializedObjectSerializer) this.serializer;
+                serializedObjectSerializer.fields().fields().forEach(this.serializationFields::remove);
+            } else {
+                this.serializers.remove(this.serializer);
+            }
         }
-        this.deserializers.remove(deserializer);
+        if (this.deserializer != null) {
+            this.deserializers.remove(this.deserializer);
+        }
         return actualScanInformation(
                 this.type,
                 this.deserializationReasons,
                 this.serializationReasons,
-                serializer,
-                deserializer,
+                this.serializer,
+                this.deserializer,
                 this.serializers,
                 this.serializationFields,
-                this.deserializers
+                this.deserializers,
+                serializationSubReasonProvider,
+                deserializationSubReasonProvider
         );
     }
 }

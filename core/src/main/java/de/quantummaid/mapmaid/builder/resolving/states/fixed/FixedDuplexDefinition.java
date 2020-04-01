@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Reason;
+import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingDeserializer.fixedResolvingDeserializer;

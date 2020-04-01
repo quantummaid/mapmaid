@@ -29,17 +29,14 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.joining;
 
 @ToString
 @EqualsAndHashCode
@@ -47,7 +44,16 @@ import static java.util.Optional.of;
 public final class DebugInformation {
     private final Map<TypeIdentifier, ScanInformation> scanInformations;
 
-    public static DebugInformation debugInformation(final Map<TypeIdentifier, ScanInformation> scanInformations) {
+    public static DebugInformation debugInformation(final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders) {
+        final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(scanInformationBuilders.size());
+        final SubReasonProvider serializationSubReasonProvider = typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
+        final SubReasonProvider deserializationSubReasonProvider = typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
+        scanInformationBuilders.forEach(
+                (typeIdentifier, scanInformationBuilder) -> {
+                    final ScanInformation scanInformation = scanInformationBuilder.build(serializationSubReasonProvider, deserializationSubReasonProvider);
+                    scanInformations.put(typeIdentifier, scanInformation);
+                }
+        );
         return new DebugInformation(scanInformations);
     }
 
@@ -86,6 +92,6 @@ public final class DebugInformation {
     public String dumpAll() {
         return allScanInformations().stream()
                 .map(ScanInformation::render)
-                .collect(Collectors.joining("\n\n\n"));
+                .collect(joining("\n\n\n"));
     }
 }

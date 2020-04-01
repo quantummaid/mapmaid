@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving;
 
 import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
+import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -33,7 +34,7 @@ import lombok.ToString;
 
 import java.util.function.Consumer;
 
-import static de.quantummaid.mapmaid.builder.resolving.Reason.becauseOf;
+import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
 @ToString
 @EqualsAndHashCode

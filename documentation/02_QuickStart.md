@@ -11,7 +11,7 @@ In order to use MapMaid, just add the following dependency to your project:
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-all</artifactId>
-    <version>0.9.33</version>
+    <version>0.9.34</version>
 </dependency>
 ```
 

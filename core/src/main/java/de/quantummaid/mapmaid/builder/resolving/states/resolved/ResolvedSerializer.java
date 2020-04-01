@@ -23,10 +23,10 @@ package de.quantummaid.mapmaid.builder.resolving.states.resolved;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulSerializer;
-import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
@@ -51,8 +51,9 @@ public final class ResolvedSerializer extends StatefulSerializer {
     public Report getDefinition() {
         final TypeSerializer serializer = this.context.serializer();
         final Definition definition = generalDefinition(this.context.type(), serializer, null);
-        final ScanInformation scanInformation = this.context.scanInformationBuilder().build(serializer, null);
-        final CollectionResult collectionResult = CollectionResult.collectionResult(definition, scanInformation);
+        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        scanInformationBuilder.setSerializer(serializer);
+        final CollectionResult collectionResult = CollectionResult.collectionResult(definition, scanInformationBuilder);
         return success(collectionResult);
     }
 }

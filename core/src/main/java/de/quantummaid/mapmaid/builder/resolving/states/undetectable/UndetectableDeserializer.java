@@ -23,10 +23,10 @@ package de.quantummaid.mapmaid.builder.resolving.states.undetectable;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDeserializer;
-import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -50,8 +50,8 @@ public final class UndetectableDeserializer extends StatefulDeserializer {
 
     @Override
     public Report getDefinition() {
-        final ScanInformation scanInformation = this.context.scanInformationBuilder().build(null, null);
-        final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformation);
+        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformationBuilder);
         return failure(collectionResult, "unable to detect deserializer:\n" + this.reason);
     }
 }
