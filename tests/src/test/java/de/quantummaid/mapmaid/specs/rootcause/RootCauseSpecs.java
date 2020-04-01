@@ -21,8 +21,11 @@
 
 package de.quantummaid.mapmaid.specs.rootcause;
 
+import de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe;
+import de.quantummaid.mapmaid.builder.recipes.scanner.advanced.UseCaseClassScanner;
 import de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA;
 import de.quantummaid.mapmaid.specs.rootcause.normal.Level1;
+import de.quantummaid.mapmaid.specs.rootcause.wildcardusecase.UseCaseWithWildcardInReturnType;
 import de.quantummaid.reflectmaid.GenericType;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
@@ -73,5 +77,17 @@ public final class RootCauseSpecs {
         )
                 .when().mapMaidIsInstantiated()
                 .anExceptionIsThrownWithAMessageContaining("java.util.LinkedList<?> -> java.util.ArrayList<java.util.LinkedList<?>> -> java.util.List<java.util.ArrayList<java.util.LinkedList<?>>> -> manually added");
+    }
+
+    @Test
+    public void rootCauseForUseCaseWithWildcardInReturnType() {
+        given(
+                () -> aMapMaid()
+                        .usingRecipe(addAllReferencedClassesIn(UseCaseWithWildcardInReturnType.class))
+                        .build()
+        )
+                .when().mapMaidIsInstantiated()
+                .anExceptionIsThrownWithAMessageContaining("java.util.List<?> -> because return type of method 'List method()' " +
+                        "[public java.util.List<?> de.quantummaid.mapmaid.specs.rootcause.wildcardusecase.UseCaseWithWildcardInReturnType.method()]");
     }
 }
