@@ -21,8 +21,6 @@
 
 package de.quantummaid.mapmaid.specs.rootcause;
 
-import de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe;
-import de.quantummaid.mapmaid.builder.recipes.scanner.advanced.UseCaseClassScanner;
 import de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA;
 import de.quantummaid.mapmaid.specs.rootcause.normal.Level1;
 import de.quantummaid.mapmaid.specs.rootcause.wildcardusecase.UseCaseWithWildcardInReturnType;
