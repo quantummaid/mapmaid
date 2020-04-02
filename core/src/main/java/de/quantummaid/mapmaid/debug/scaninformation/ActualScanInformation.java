@@ -222,7 +222,7 @@ public final class ActualScanInformation implements ScanInformation {
             if (this.serializer instanceof SerializedObjectSerializer) {
                 return Classification.SERIALIZED_OBJECT;
             } else if (this.serializer instanceof CustomPrimitiveSerializer) {
-                return Classification.SERIALIZED_OBJECT;
+                return Classification.CUSTOM_PRIMITIVE;
             } else {
                 return OTHER;
             }

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.CollectionInformation.collectionInformations;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingDuplex.fixedResolvingDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ListCollectionDeserializer.listDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ListCollectionSerializer.listSerializer;
 import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;
@@ -64,6 +64,6 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
         final CollectionInformation collectionInformation = this.collectionInformations.get(type.assignableType());
         context.setSerializer(listSerializer(genericType));
         context.setDeserializer(listDeserializer(genericType, collectionInformation.mapper));
-        return Optional.of(fixedResolvingDuplex(context));
+        return Optional.of(fixedUnreasoned(context));
     }
 }
