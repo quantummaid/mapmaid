@@ -21,10 +21,24 @@
 
 package de.quantummaid.mapmaid.debug.scaninformation;
 
+import de.quantummaid.mapmaid.debug.Reason;
+
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+
 public interface ScanInformation {
     String render();
 
     default Classification classification() {
         throw new UnsupportedOperationException();
+    }
+
+    default List<Reason> reasonsForSerialization() {
+        return emptyList();
+    }
+
+    default List<Reason> reasonsForDeserialization() {
+        return emptyList();
     }
 }

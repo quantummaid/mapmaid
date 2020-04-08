@@ -21,9 +21,6 @@
 
 package de.quantummaid.mapmaid.json;
 
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -35,16 +32,11 @@ public final class AutoloadingSpecs {
     @Test
     public void jacksonMarshallersAreAutoloadable() {
         given(aMapMaid()
-                .serializingAndDeserializing(AComplexType.class)
+                .serializingAndDeserializing(MySerializedObject.class)
                 .build()
         )
-                .when().mapMaidSerializes(AComplexType.deserialize(
-                AString.fromStringValue("a"),
-                AString.fromStringValue("b"),
-                ANumber.fromInt(42),
-                ANumber.fromInt(42)
-                )).withMarshallingType(JSON)
+                .when().mapMaidSerializes(new MySerializedObject("a", "b", "c")).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("{\"number1\":\"42\",\"number2\":\"42\",\"stringA\":\"a\",\"stringB\":\"b\"}");
+                .theSerializationResultWas("{\"field3\":\"c\",\"field2\":\"b\",\"field1\":\"a\"}");
     }
 }

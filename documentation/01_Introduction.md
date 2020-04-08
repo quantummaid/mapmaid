@@ -1,24 +1,92 @@
 # User Guide
 This guide walks you through the features of MapMaid, how to configure MapMaid, and how to get the most out of it.
 
-Please skip to [Quick Start](02_QuickStart.md) if you want to jump right into coding.
+## Quick Start
 
-## Motivation
+This chapter walks you through the necessary steps to use MapMaid.
 
-The most generic form of data representation that is both human-friendly and serialization-friendly is arguably the string.
-You use strings to transport information from one service to another, from server to client, from server to database, 
-from client back to server or even from screen to paper or paper to screen. 
+### Maven 
 
-Keeping all data as a string comes with a drawback.
-Since a string can contain pretty much anything, you don't have any validation on the actual content.
-You end upo repeatedly verifying (i.e. doubting) whether the string entering your application is valid or not,
-whether it is really an email address or not, whether it can be converted to an integer, etc.
+In order to use MapMaid, just add the following dependency to your project:
 
-To circumvent 
+<!---[CodeSnippet](mapmaidalldependency)-->
+```xml
+<dependency>
+    <groupId>de.quantummaid.mapmaid.integrations</groupId>
+    <artifactId>mapmaid-all</artifactId>
+    <version>0.9.35</version>
+</dependency>
+```
 
-So you keep your validation and construction logic _inside_ the object and provide methods for converting it back to the transportation mechanism (i.e. string).
+MapMaid requires you to compile your project with the `-parameter` compile flag.
+Doing so gives MapMaid [runtime access to parameter names](http://openjdk.java.net/jeps/118) and
+enables it to map parameters automatically.
+The `maven-compiler-plugin` can be easily configured to do this:
+```
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <configuration>
+        <parameters>true</parameters>
+    </configuration>
+</plugin>
+```
+
+Also, include this flag in your IDE's `javac` configuration, and make sure to rebuild your project after the 
+configuration changes:
+
+* [Configuration for IntelliJ IDEA](https://www.jetbrains.com/help/idea/java-compiler.html)
+* [Configuration for Eclipse](http://help.eclipse.org/2019-03/topic/org.eclipse.jdt.doc.user/reference/preferences/java/ref-preferences-compiler.htm)
 
 
-This approach also means MapMaid expects that the Unmarshaller does not attempt to guess and parse number literals into specific types. The parser's guesstimate might or might not be correct and even features targeting that problem (e.g. [USE_BIG_DECIMAL_FOR_FLOATS, USE_BIG_INTEGER_FOR_INTS](https://github.com/FasterXML/jackson-databind/wiki/Deserialization-Features)) don't cover all possible scenarios.
-Having this in mind, we propose centralizing the parsing and validation of the Custom Primitive, at the same time giving the control to you. Validate once, use everywhere.
+### Minimal configuration
 
+You can now create a MapMaid serializer/deserializer for any class like this:
+<!---[CodeSnippet](instance)-->
+```java
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(Email.class)
+        .build();
+```
+MapMaid will intelligently analyze the `Email` class and make an educated guess on how the class should be serialized and
+deserialized. It will take into account features like public constructors, static factory methods, public fields,
+getters/setters and more.
+If necessary, it will continue to apply the same logic recursively to all referenced classes in `Email`.
+If it is unable to find a way to (de-)serialize any class during the process or a decision is ambiguous,
+it will complain by throwing an exception with a detailed explanation.
+MapMaid then offers intuitive but powerful ways to quickly resolve these conflicts.
+### Serialization
+
+Serializing an object of type `Email` works like this:
+
+<!---[CodeSnippet](serialization)-->
+```java
+final Email email = Email.deserialize(
+        EmailAddress.fromStringValue("sender@example.com"),
+        EmailAddress.fromStringValue("receiver@example.com"),
+        Subject.fromStringValue("Hello"),
+        Body.fromStringValue("Hello World!!!")
+);
+
+final String json = mapMaid.serializeToJson(email);
+```
+
+It will yield the following JSON representation:
+
+```json
+{
+  "receiver": "receiver@example.com",
+  "body": "Hello World!!!",
+  "sender": "sender@example.com",
+  "subject": "Hello"
+}
+```
+
+### Deserialization
+
+If you want to deserialize a JSON string to an `Email` object, you can do so like this:
+
+<!---[CodeSnippet](deserialization)-->
+```java
+final Email deserializedEmail = mapMaid.deserializeJson(json, Email.class);
+```

@@ -34,7 +34,7 @@ import lombok.ToString;
 
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingDuplex.fixedResolvingDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ArrayCollectionSerializer.arraySerializer;
 import static java.util.Optional.empty;
@@ -61,6 +61,6 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
         final ResolvedType genericType = ((ArrayType) type).componentType();
         context.setDeserializer(arrayDeserializer(genericType));
         context.setSerializer(arraySerializer(genericType));
-        return Optional.of(fixedResolvingDuplex(context));
+        return Optional.of(fixedUnreasoned(context));
     }
 }

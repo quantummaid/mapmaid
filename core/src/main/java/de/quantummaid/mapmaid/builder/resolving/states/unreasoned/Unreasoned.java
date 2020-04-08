@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.states.unreasoned;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Reason;
+import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

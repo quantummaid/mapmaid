@@ -24,7 +24,6 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.fixed.resolved.FixedResolvedDuplex;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -40,6 +39,7 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.PrimitiveInformation.primitiveInformations;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static java.util.Optional.empty;
 
 @ToString
@@ -68,6 +68,6 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
         final CustomPrimitiveDeserializer customPrimitiveDeserializer = builtInPrimitiveDeserializer(primitiveInformation);
         context.setDeserializer(customPrimitiveDeserializer);
 
-        return Optional.of(FixedResolvedDuplex.fixedResolvedDuplex(context));
+        return Optional.of(fixedUnreasoned(context));
     }
 }
