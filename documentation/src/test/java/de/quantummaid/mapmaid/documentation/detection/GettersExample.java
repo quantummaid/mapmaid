@@ -19,24 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.json;
+package de.quantummaid.mapmaid.documentation.detection;
 
-import org.junit.jupiter.api.Test;
+//Showcase start gettersExample
+public final class GettersExample {
+    public final String value1 = "value1";
+    public final String value2 = "value2";
+    public final String value3 = "value3";
 
-import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+    public String getValue1() {
+        return this.value1;
+    }
 
-public final class AutoloadingSpecs {
+    public String getValue2() {
+        return this.value2;
+    }
 
-    @Test
-    public void jacksonMarshallersAreAutoloadable() {
-        given(aMapMaid()
-                .serializingAndDeserializing(MySerializedObject.class)
-                .build()
-        )
-                .when().mapMaidSerializes(new MySerializedObject("a", "b", "c")).withMarshallingType(JSON)
-                .noExceptionHasBeenThrown()
-                .theSerializationResultWas("{\"field3\":\"c\",\"field2\":\"b\",\"field1\":\"a\"}");
+    public String getValue3() {
+        return this.value3;
     }
 }
+//Showcase end gettersExample

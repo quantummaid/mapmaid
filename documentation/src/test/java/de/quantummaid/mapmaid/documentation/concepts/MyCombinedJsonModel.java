@@ -19,24 +19,16 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.json;
+package de.quantummaid.mapmaid.documentation.concepts;
 
-import org.junit.jupiter.api.Test;
+public final class MyCombinedJsonModel {
+    public final MyOtherJsonModel field1;
+    public final MyOtherJsonModel field2;
+    public final MyOtherJsonModel field3;
 
-import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-
-public final class AutoloadingSpecs {
-
-    @Test
-    public void jacksonMarshallersAreAutoloadable() {
-        given(aMapMaid()
-                .serializingAndDeserializing(MySerializedObject.class)
-                .build()
-        )
-                .when().mapMaidSerializes(new MySerializedObject("a", "b", "c")).withMarshallingType(JSON)
-                .noExceptionHasBeenThrown()
-                .theSerializationResultWas("{\"field3\":\"c\",\"field2\":\"b\",\"field1\":\"a\"}");
+    public MyCombinedJsonModel(final MyOtherJsonModel field1, final MyOtherJsonModel field2, final MyOtherJsonModel field3) {
+        this.field1 = field1;
+        this.field2 = field2;
+        this.field3 = field3;
     }
 }

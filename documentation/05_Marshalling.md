@@ -1,11 +1,12 @@
 # Marshalling
 
-## (Un-)marshalling
-
-To support multiple formats like JSON, XML, YAML, etc. Serialized Objects are converted into Maps of Maps and Strings.
+To support multiple data interchange formats like JSON, XML, YAML, etc., MapMaid does not work directly on strings.
+Instead, objects are serialized and deserialized to and from nested maps (`Map<String, Object>`).
+This `Map<String, Object` can then be easily converted into any data interchange format of choice. 
 This map is respectively deserialized from a specific format or serialized into that format.
 The process of serializing that map into a format is what we call [Marshalling](https://en.wikipedia.org/wiki/Marshalling_(computer_science)) and the reverse operation Unmarshalling.
-Examples of these frameworks include [Gson](https://github.com/google/gson), [Jackson](https://github.com/FasterXML/jackson), [X-Stream](https://x-stream.github.io/).
+Examples of frameworks that can perform this operation include [Gson](https://github.com/google/gson), [Jackson](https://github.com/FasterXML/jackson)
+and [X-Stream](https://x-stream.github.io/).
 
 MapMaid is unaware of the format you chose to represent the string value of your objects.
 Upon reception of the string input, MapMaid first asks the configured (un-)marshaller to parse the `String`
@@ -13,18 +14,18 @@ into a `Map<String, Object>`.
 From now on, it operates with that `Map<String, Object>` by mapping its structure onto the pre-calculated
 object hierarchy of the class to be deserialized.
 
-Vice versa, the process is reverse on serialization.
+Vice versa, the process is reversed on serialization.
 MapMaid will take the object to be serialized and deconstructs its object hierarchy into
 a `Map<String, Object>`.
 This map is then passed on to the configured marshaller which will transform it into a `String`
-of the chosen format (Json, XML, etc.).
+of the chosen format (JSON, XML, etc.).
 
 ## Common marshallers
-MapMaid ships with integrated marshallers for the common formats Json, XML and YAML as well as
+MapMaid ships with integrated marshallers for the common formats JSON, XML and YAML as well as
 the so-called `x-www-form-urlencoded` (url-encoded) format used in the HTTP protocol.
 
 ### Pre-configured marshallers
-MapMaid comes pre-configured with marshallers for Json, XML and YAML.
+MapMaid comes pre-configured with marshallers for JSON, XML and YAML.
 They will be automatically deregistered once you manually register a marshaller.
 Alternatively, you can deactivate the pre-configured marshallers like this:
 <!---[CodeSnippet](deactivateDefaultMarshallers)-->
@@ -34,7 +35,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
-You can manually configure the default Json marshaller like this: 
+You can manually configure the default JSON marshaller like this: 
 <!---[CodeSnippet](json)-->
 ```java
 final MapMaid mapMaid = aMapMaid()
@@ -79,13 +80,12 @@ final String urlEncoded = mapMaid.serializeTo(object, urlEncoded());
 
 ## Registering your own marshaller
 If these marshallers do not fit your needs, you can easily provide your own by implementing the
-[Marshaller](../core/src/main/java/de/quantummaid/mapmaid/serialization/Marshaller.java) and 
-[Unmarshaller](../core/src/main/java/de/quantummaid/mapmaid/deserialization/Unmarshaller.java) interfaces.
+`Marshaller` and `Unmarshaller` interfaces.
 In this section, we show the registration of some commonly used marshalling libraries.
 
 ### JSON with GSON
 
-Assuming you have a configured instance of `Gson` class, adding it as a JSON Marshaller for MapMaid looks like:
+Assuming you have a configured instance of `Gson` class, adding it as a JSON marshaller for MapMaid looks like:
 <!---[CodeSnippet](jsonWithGson)-->
 ```java
 final Gson gson = new Gson(); // can be further configured depending on your needs.
@@ -117,7 +117,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
-Note: If you wish to marshall in/from XML, don't forget to add the appropriate dependency:
+**Note:** If you wish to marshall in/from XML, don't forget to add the appropriate dependency:
 
 ```xml
 <dependency>
@@ -141,7 +141,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
-Note: Don't forget to add the appropriate dependency to use the YAMLFactory with the ObjectMapper.
+**Note:** Don't forget to add the appropriate dependency to use the `YAMLFactory` with the `ObjectMapper`.
 ```xml
 <dependency>
     <groupId>com.fasterxml.jackson.dataformat</groupId>

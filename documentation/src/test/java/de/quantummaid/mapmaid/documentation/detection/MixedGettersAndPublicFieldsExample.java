@@ -19,24 +19,18 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.json;
+package de.quantummaid.mapmaid.documentation.detection;
 
-import org.junit.jupiter.api.Test;
+//Showcase start mixedGettersAndPublicFieldsExample
+public final class MixedGettersAndPublicFieldsExample {
+    public final String value1 = "value1 from public field";
 
-import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+    public String getValue2() {
+        return "value2 from getter method";
+    }
 
-public final class AutoloadingSpecs {
-
-    @Test
-    public void jacksonMarshallersAreAutoloadable() {
-        given(aMapMaid()
-                .serializingAndDeserializing(MySerializedObject.class)
-                .build()
-        )
-                .when().mapMaidSerializes(new MySerializedObject("a", "b", "c")).withMarshallingType(JSON)
-                .noExceptionHasBeenThrown()
-                .theSerializationResultWas("{\"field3\":\"c\",\"field2\":\"b\",\"field1\":\"a\"}");
+    public String getValue3() {
+        return "value3 from getter method";
     }
 }
+//Showcase end mixedGettersAndPublicFieldsExample
