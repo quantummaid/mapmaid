@@ -57,7 +57,6 @@ public class UsageExamples {
 
         //Showcase start serializeToJson
         final String json = mapMaid.serializeToJson(EMAIL);
-        System.out.println(json);
         //Showcase end serializeToJson
         assert json.equals("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}");
 
@@ -108,7 +107,6 @@ public class UsageExamples {
 
         //Showcase start serializeToXml
         final String xml = mapMaid.serializeToXml(EMAIL);
-        System.out.println(xml);
         //Showcase end serializeToXml
         assert xml.equals("" +
                 "<root>\n" +
@@ -151,7 +149,6 @@ public class UsageExamples {
 
         //Showcase start serializeToCustomFormat
         final String customFormat = mapMaid.serializeTo(EMAIL, MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"));
-        System.out.println(customFormat);
         //Showcase end serializeToCustomFormat
         assert customFormat.equals("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}");
 

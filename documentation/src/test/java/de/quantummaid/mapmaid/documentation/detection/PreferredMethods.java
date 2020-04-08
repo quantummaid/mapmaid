@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.registration.detectionpreferences;
+package de.quantummaid.mapmaid.documentation.detection;
 
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class DetectionPreferences {
+public final class PreferredMethods {
 
     @Test
     public void preferredCustomPrimitiveFactoryName() {

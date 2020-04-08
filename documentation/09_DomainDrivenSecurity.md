@@ -1,26 +1,26 @@
 # Domain-Driven Security
 
 Domain-Driven Security is an approach to address technical security risks like injection attacks (SQL injection, 
-cross-site scripting, ...), and **insecure deserialization** using core principals of Domain-Driven Design. 
-If you've never heard of Domain Driven Design, Bounded Contexts, ubiquitous language, but know about Objects,
-Constructors and Factory Methods - don't worry - you know all the building blocks already.
+cross-site scripting, etc.) and **insecure deserialization** using the core principles of Domain-Driven Design. 
+If you've never heard of Domain-Driven Design, bounded contexts, ubiquitous language, but know about objects,
+constructors and factory methods - don't worry - you know all the building blocks already.
 
-## Brief Introduction
+## Brief introduction
 
-Let's analyse an imaginary "Order Book" method signature taken from some interface:
+Let's analyse an imaginary `orderBook` method signature taken from some interface:
 
 ```java
 void orderBook(final String isbn, final int amount);
 ```
 
-Given only that method signature, an eager unit tester will know that `amount` can be 0 or even -100. The impact of 0
+Given only the method signature, an eager unit tester will know that `amount` can be 0 or even -100. The impact of 0
 is not as hazardous as of an automated payment system transferring money from the book store to the customers account
 in case of -100, yet worth testing.
 
-Of course the method can start with some `if` statements to ensure the value of the amount is within a valid range. But
-the moment you add another method dealing with `amount`(e.g. your repository, DAO, another slightly different orderBook
+Of course the method can start with some `if` statements to ensure the value of the amount is within the valid range. But
+the moment you add another method dealing with `amount` (e.g. your repository, DAO, another slightly different `orderBook`
 method), you'd have to do the same thing again. A better approach would be to create a small class for `isbn` and
-`amount`(We'll focus on OrderAmount to keep things short):
+`amount` (we'll focus on `orderAmount` to keep things short):
 
 ```java
 public final class OrderAmount {
@@ -38,7 +38,7 @@ public final class OrderAmount {
 }
 ```
 
-The imaginary "Order Book" method signature would change into something like this:
+The imaginary `orderBook` method signature would change into something like this:
 
 ```java
 void orderBook(final Isbn isbn, final OrderAmount amount);
@@ -46,7 +46,7 @@ void orderBook(final Isbn isbn, final OrderAmount amount);
 Now, the compiler will ensure that `isbn` and `amount` are either null or a valid isbn and amount - no matter where you
 are using it.
 
-## Conference Talks
+## Conference talks
 
 A brief description of what that means is available here: [Øredev 2014 - Security For Developers](https://youtu.be/CZZIoLZyqTM?t=1018)
 
@@ -56,8 +56,8 @@ A more in depth presentation about the topic is available here: [Domain Driven S
 
 **Is all of this effort really necessary?**
 
-Quality/Security usually doesn't come free of charge and you have to weight the risk and cost of mitigation.
-A good source to get started doing so is [OWASP Top 10-2017 A1-Injection](https://www.owasp.org/index.php/Top_10-2017_A1-Injection)
+Quality and security usually doesn't come free of charge and you have to weigh the risk and cost of mitigation.
+A good source to get started is [OWASP Top 10-2017 A1-Injection](https://www.owasp.org/index.php/Top_10-2017_A1-Injection).
 
 > Injection can result in data loss, corruption, or disclosure to unauthorized parties, loss of accountability,
  or denial of access. Injection can sometimes lead to complete host takeover. The business impact depends on
@@ -82,7 +82,7 @@ Constructors are less powerful/more limited than factory methods. See
 MapMaid supports Integers or int's in these cases as well. In caparison to using a string, the int has the disadvantage
 that your validation of the input is now happening in at least 2 different places:
 
-- The parser, that is parsing xml,json, yaml, ...
+- The parser, that is parsing XML, JSON, YAML, ...
 - The factory method
 
 That makes it harder to write your validation error message generation in a way that is uniform and nice experience for

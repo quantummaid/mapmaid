@@ -1,5 +1,6 @@
+[![Last Commit](https://img.shields.io/github/last-commit/quantummaid/mapmaid)](https://github.com/quantummaid/mapmaid)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.quantummaid.mapmaid/core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.quantummaid.mapmaid/core)
-[![Code Size](https://img.shields.io/github/languages/code-size/quantummaid/mapmaid)](https://github.com/quantummaid/httpmaid)
+[![Code Size](https://img.shields.io/github/languages/code-size/quantummaid/mapmaid)](https://github.com/quantummaid/mapmaid)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Slack](https://img.shields.io/badge/chat%20on-Slack-brightgreen)](https://join.slack.com/t/quantummaid/shared_invite/zt-cx5qd605-vG10I~WazfgH9WOnXMzl3Q)
 [![Gitter](https://img.shields.io/badge/chat%20on-Gitter-brightgreen)](https://gitter.im/quantum-maid-framework/community)
@@ -15,13 +16,13 @@ It deeply understands and respects the concepts of Domain-Driven Design.
 ## Rationale
 
 Almost any modern application nowadays is dealing with mapping incoming requests to domain objects and 
-outputting resulting domain objects to a specific format (typically Json, XML or YAML). 
+outputting resulting domain objects to a specific format (typically JSON, XML or YAML). 
 
-As a result, we keep writing the same code over and over again. We
-* parse strings into domain objects, 
-* we validate these on initialization, 
-* we process the requests and 
-* we do the mapping again to output a certain response.
+As a result, we keep writing the same code over and over again:
+* Parse strings into domain objects
+* Validate the objects on initialization 
+* Process the requests 
+* Serialize the response objects
  
 While there are numerous frameworks that help you on some of the stages of this process, we believe there is a need for a simple,
  non-invasive library that would allow you to integrate this process into your application seamlessly and concentrate on 
@@ -44,22 +45,22 @@ While there are numerous frameworks that help you on some of the stages of this 
  
  - **Domain-Driven Validation**:
     - MapMaid allows you to check for validation exceptions and aggregates them accordingly
-    - you will know precisely which field of which object was faulty
+    - You will know precisely which field of which object was faulty
     - MapMaid also offers ways to detect redundant validation exceptions
     
  - **Non-intrusive usage and configuration:**
-    - configuration in one place
-    - no annotations 
-    - simple adaptation to your specific style of defining objects
-    - no dependencies to serialization and validation frameworks in your domain code
+    - Configuration in one place
+    - No annotations 
+    - Simple adaptation to your specific style of defining objects
+    - No dependencies to serialization and validation frameworks in your domain code
     
   - **Flexible:**
-    - support for all common data formats (Json, XML and YAML)
-    - (de-)serialize any object of any class - no matter how weird their structure    
+    - Support for all common data formats (JSON, XML and YAML)
+    - Serialize and deserialize any object of any class - no matter how weird their structure    
 
 ## Getting started
-MapMaid is part of the QuantumMaid framework. You can find easy-to-follow and
-interesting tutorials [here](https://github.com/quantummaid/quantummaid-tutorials/blob/master/README.md).
+MapMaid is part of the QuantumMaid framework which provides [easy-to-follow and
+interesting tutorials](https://github.com/quantummaid/quantummaid-tutorials/blob/master/README.md).
 
 ## Get in touch
 Feel free to join us on [Slack](https://join.slack.com/t/quantummaid/shared_invite/zt-cx5qd605-vG10I~WazfgH9WOnXMzl3Q)

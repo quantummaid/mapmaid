@@ -19,22 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation;
+package de.quantummaid.mapmaid.json;
 
-import com.google.gson.Gson;
-import de.quantummaid.mapmaid.MapMaid;
-import org.junit.jupiter.api.Test;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public final class DetectorExample {
-
-    @Test
-    public void test() {
-        //Showcase start detector
-        MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(
-                        new Gson()::toJson,
-                        input -> new Gson().fromJson(input, Object.class)))
-                .build();
-        //Showcase end detector
-    }
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public final class MySerializedObject {
+    public final String field1;
+    public final String field2;
+    public final String field3;
 }
