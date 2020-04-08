@@ -24,6 +24,9 @@ package de.quantummaid.mapmaid.documentation.detection;
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public final class DetectionExamples {
 
     @Test
@@ -32,7 +35,7 @@ public final class DetectionExamples {
                 .serializing(GettersExample.class)
                 .build();
         final String json = mapMaid.serializeToJson(new GettersExample());
-        System.out.println(json);
+        assertThat(json, is("{\"value2\":\"value2\",\"value1\":\"value1\",\"value3\":\"value3\"}"));
     }
 
     @Test
@@ -41,7 +44,7 @@ public final class DetectionExamples {
                 .serializing(MixedGettersAndPublicFieldsExample.class)
                 .build();
         final String json = mapMaid.serializeToJson(new MixedGettersAndPublicFieldsExample());
-        System.out.println(json);
+        assertThat(json, is("{\"value2\":\"value2 from getter method\",\"value1\":\"value1 from public field\",\"value3\":\"value3 from getter method\"}"));
     }
 
     @Test
@@ -50,6 +53,6 @@ public final class DetectionExamples {
                 .serializing(GettersAndPublicFieldsExample.class)
                 .build();
         final String json = mapMaid.serializeToJson(new GettersAndPublicFieldsExample());
-        System.out.println(json);
+        assertThat(json, is("{\"value2\":\"value2 from public field\",\"value1\":\"value1 from public field\",\"value3\":\"value3 from public field\"}"));
     }
 }
