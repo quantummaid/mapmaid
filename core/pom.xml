@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.35</version>
+        <version>0.9.36</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>de.quantummaid.reflectmaid</groupId>
             <artifactId>reflectmaid-parent</artifactId>
-            <version>0.1.3</version>
+            <version>0.1.4</version>
         </dependency>
 
         <dependency>
