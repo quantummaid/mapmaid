@@ -26,5 +26,7 @@
 <suppressions>
     <suppress checks="TrailingComment|Regex|MethodLength"
               files="PackageScannerExample|MarshallingExamples|DocExample1|DetectorExample|ExceptionExamples"/>
-    <suppress checks="CommentsIndentation|Regex" files="UsageExamples" />
+    <suppress checks="CommentsIndentation|Regex" files="UsageExamples"/>
+    <suppress checks="MagicNumber" files="OrderAmountTest|PlayerTests"/>
+    <suppress checks="MagicNumber|FinalParameters" files="Player"/>
 </suppressions>
