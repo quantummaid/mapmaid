@@ -91,16 +91,13 @@ public class Player {
     }
 }
 ```
-MapMaid does not encourage the use of JSR 303. Validations like this are generally not enforceable.
+Validations like this are generally not enforceable.
 They always rely on a framework to execute the actual validation.
 Even if the framework is called correctly, any line of code might change any value at any time - most often by accident.
-**You can never be sure whether an object of a class that relies on JSR 303 validation is actually in a valid state. This defeats the purpose of validation.**
-
-A related problem is the fact that JSR 303 prevents you from declaring any fields as `final`.
-Because immutability is a desirable trait, this is a serious problem.
+You can never be sure whether an object of a class that relies on JSR 303 validation is actually in a valid state.
 Another downside to JSR 303 validation is the required dependency overhead.
 For the `Player` class to compile, you would need to add at least the following dependency to your
-`pom.xml`:
+`pom.xml` file:
 <!---[CodeSnippet](jsr303dependency)-->
 ```xml
 <dependency>
