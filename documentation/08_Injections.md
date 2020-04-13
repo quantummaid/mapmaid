@@ -1,4 +1,4 @@
-## Injections
+# Injections
 
 Injections allow enriching the original serialized information with contextual data that is available when a factory 
 method of any Serialized Object is called. The intended use case for this feature is to allow web frameworks to map
