@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>1.0.44</version>
+        <version>0.9.44</version>
     </parent>
 
     <artifactId>mapmaid-bom</artifactId>
