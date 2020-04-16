@@ -29,56 +29,67 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.MapMaidInstances.theExampleMapMaidWithAllMarshallers;
+import static java.lang.System.out;
 
 public final class PerformanceSpecs {
 
-    @Disabled
     @Test
     public void aLotOfSerializationsDoNotCauseProblems() {
-        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
+        final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
+        if (runThisTest) {
+            final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
 
-        for (int i = 0; i < 10_000_000; ++i) {
-            Given.given(mapMaid)
-                    .when().mapMaidSerializes(
-                    AComplexType.deserialize(
-                            AString.fromStringValue("asdf"),
-                            AString.fromStringValue("qwer"),
-                            ANumber.fromInt(1),
-                            ANumber.fromInt(5)))
-                    .withMarshallingType(json())
-                    .theSerializationResultWas("" +
-                            "{\n" +
-                            "  \"number1\": \"1\",\n" +
-                            "  \"number2\": \"5\",\n" +
-                            "  \"stringA\": \"asdf\",\n" +
-                            "  \"stringB\": \"qwer\"\n" +
-                            "}");
+            for (int i = 0; i < 10_000_000; ++i) {
+                Given.given(mapMaid)
+                        .when().mapMaidSerializes(
+                        AComplexType.deserialize(
+                                AString.fromStringValue("asdf"),
+                                AString.fromStringValue("qwer"),
+                                ANumber.fromInt(1),
+                                ANumber.fromInt(5)))
+                        .withMarshallingType(json())
+                        .theSerializationResultWas("" +
+                                "{\n" +
+                                "  \"number1\": \"1\",\n" +
+                                "  \"number2\": \"5\",\n" +
+                                "  \"stringA\": \"asdf\",\n" +
+                                "  \"stringB\": \"qwer\"\n" +
+                                "}");
+            }
+        } else {
+            out.println("Skipping this test, since system property testMode is not set to RELEASE");
         }
     }
 
     @Disabled
     @Test
     public void aLotOfDeserializationsDoNotCauseProblems() {
-        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
-
-        for (int i = 0; i < 10_000_000; ++i) {
-            Given.given(mapMaid)
-                    .when().mapMaidDeserializes("" +
-                    "{\n" +
-                    "  \"number1\": \"1\",\n" +
-                    "  \"number2\": \"5\",\n" +
-                    "  \"stringA\": \"asdf\",\n" +
-                    "  \"stringB\": \"qwer\"\n" +
-                    "}")
-                    .from(json()).toTheType(AComplexType.class)
-                    .noExceptionHasBeenThrown()
-                    .theDeserializedObjectIs(AComplexType.deserialize(
-                            AString.fromStringValue("asdf"),
-                            AString.fromStringValue("qwer"),
-                            ANumber.fromInt(1),
-                            ANumber.fromInt(5)));
+        final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
+        if (runThisTest) {
+            final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
+            for (int i = 0; i < 10_000_000; ++i) {
+                Given.given(mapMaid)
+                        .when().mapMaidDeserializes("" +
+                        "{\n" +
+                        "  \"number1\": \"1\",\n" +
+                        "  \"number2\": \"5\",\n" +
+                        "  \"stringA\": \"asdf\",\n" +
+                        "  \"stringB\": \"qwer\"\n" +
+                        "}")
+                        .from(json()).toTheType(AComplexType.class)
+                        .noExceptionHasBeenThrown()
+                        .theDeserializedObjectIs(AComplexType.deserialize(
+                                AString.fromStringValue("asdf"),
+                                AString.fromStringValue("qwer"),
+                                ANumber.fromInt(1),
+                                ANumber.fromInt(5)));
+            }
+        } else {
+            out.println("Skipping this test, since system property testMode is not set to RELEASE");
         }
     }
 }
