@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.30</version>
+        <version>0.9.31-SNAPSHOT</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
@@ -34,6 +34,7 @@
     <version>0.9.43</version>
     <packaging>pom</packaging>
 
+    <name>MapMaid</name>
     <description>
         MapMaid is a modern mapping framework in the scope of mapping data in
         Json, XML, or YAML format into DTOs composed and vice versa.
@@ -63,6 +64,10 @@
         <module>documentation</module>
         <module>bom</module>
     </modules>
+
+    <properties>
+        <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+    </properties>
 
     <build>
         <plugins>
