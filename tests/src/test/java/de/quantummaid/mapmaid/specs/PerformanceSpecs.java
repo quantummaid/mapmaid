@@ -26,7 +26,6 @@ import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -65,7 +64,6 @@ public final class PerformanceSpecs {
         }
     }
 
-    @Disabled
     @Test
     public void aLotOfDeserializationsDoNotCauseProblems() {
         final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
