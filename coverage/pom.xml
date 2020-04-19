@@ -25,31 +25,62 @@
 
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
-        <artifactId>integrations-parent</artifactId>
+        <artifactId>mapmaid-parent</artifactId>
         <version>0.9.45</version>
     </parent>
 
-    <groupId>de.quantummaid.mapmaid.integrations</groupId>
-    <artifactId>mapmaid-all</artifactId>
+    <artifactId>coverage</artifactId>
 
-    <name>MapMaid - Integrations - All</name>
+    <name>MapMaid - Coverage</name>
+
+    <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-            <scope>provided</scope>
+            <groupId>de.quantummaid.mapmaid</groupId>
+            <artifactId>core</artifactId>
+            <version>0.9.45</version>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.mapmaid</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <artifactId>documentation</artifactId>
+            <version>0.9.45</version>
+        </dependency>
+        <dependency>
+            <groupId>de.quantummaid.mapmaid</groupId>
+            <artifactId>documentation</artifactId>
+            <version>0.9.45</version>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
             <artifactId>mapmaid-jackson</artifactId>
-            <version>${project.version}</version>
+            <version>0.9.45</version>
+        </dependency>
+        <dependency>
+            <groupId>de.quantummaid.mapmaid</groupId>
+            <artifactId>tests</artifactId>
+            <version>0.9.45</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <execution>
+                        <id>report-aggregate2</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

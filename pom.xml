@@ -26,12 +26,12 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.31</version>
+        <version>0.9.32</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.44</version>
+    <version>0.9.45</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
@@ -63,6 +63,7 @@
         <module>tests</module>
         <module>documentation</module>
         <module>bom</module>
+        <module>coverage</module>
     </modules>
 
     <properties>
@@ -89,4 +90,38 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>development</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!deployToMavenCentral</name>
+                </property>
+            </activation>
+            <modules>
+                <module>bom</module>
+                <module>core</module>
+                <module>coverage</module>
+                <module>documentation</module>
+                <module>integrations</module>
+                <module>tests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>deployToMavenCentral</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>deployToMavenCentral</name>
+                </property>
+            </activation>
+            <modules>
+                <module>bom</module>
+                <module>core</module>
+                <module>integrations</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
