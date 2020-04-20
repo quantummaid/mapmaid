@@ -43,7 +43,6 @@
         </spotbugs.excludeFilterFile>
         <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
         <sonar.coverage.jacoco.xmlReportPaths>../coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-
     </properties>
 
     <dependencies>
@@ -56,7 +55,7 @@
         <dependency>
             <groupId>de.quantummaid.reflectmaid</groupId>
             <artifactId>reflectmaid-parent</artifactId>
-            <version>0.1.11</version>
+            <version>0.1.12</version>
         </dependency>
 
         <dependency>

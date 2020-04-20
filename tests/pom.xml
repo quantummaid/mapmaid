@@ -20,8 +20,7 @@
   ~ under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -43,7 +42,7 @@
             ${project.basedir}/src/test/spotbugs/spotbugs-exclude.xml
         </spotbugs.excludeFilterFile>
 
-        <plugin-update-file-checksum>915baffd77985e9da0d3cfee67e149eb</plugin-update-file-checksum>
+        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
         <sonar.coverage.jacoco.xmlReportPaths>../coverage/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
@@ -63,13 +62,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.6.2</version>
+            <version>5.7.0-M1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.6.2</version>
+            <version>5.7.0-M1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
