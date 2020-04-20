@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.32</version>
+        <version>0.9.33</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
@@ -56,15 +56,6 @@
             <organizationUrl>http://www.quantummaid.de</organizationUrl>
         </developer>
     </developers>
-
-    <modules>
-        <module>core</module>
-        <module>integrations</module>
-        <module>tests</module>
-        <module>documentation</module>
-        <module>bom</module>
-        <module>coverage</module>
-    </modules>
 
     <properties>
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
