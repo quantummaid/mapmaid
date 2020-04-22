@@ -1,15 +1,3 @@
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3873/badge)](https://bestpractices.coreinfrastructure.org/projects/3873)
-[![Last Commit](https://img.shields.io/github/last-commit/quantummaid/mapmaid)](https://github.com/quantummaid/mapmaid)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.quantummaid.mapmaid/core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.quantummaid.mapmaid/core)
-[![Code Size](https://img.shields.io/github/languages/code-size/quantummaid/mapmaid)](https://github.com/quantummaid/mapmaid)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Slack](https://img.shields.io/badge/chat%20on-Slack-brightgreen)](https://join.slack.com/t/quantummaid/shared_invite/zt-cx5qd605-vG10I~WazfgH9WOnXMzl3Q)
-[![Gitter](https://img.shields.io/badge/chat%20on-Gitter-brightgreen)](https://gitter.im/quantum-maid-framework/community)
-[![Twitter](https://img.shields.io/twitter/follow/quantummaid)](https://twitter.com/quantummaid)
-
-
-<img src="mapmaid_logo.png" align="left"/>
-
 # MapMaid
 MapMaid serializes, deserializes and validates Java objects in a clean and non-invasive way.
 It deeply understands and respects the concepts of Domain-Driven Design.
@@ -58,15 +46,3 @@ While there are numerous frameworks that help you on some of the stages of this 
   - **Flexible:**
     - Support for all common data formats (JSON, XML and YAML)
     - Serialize and deserialize any object of any class - no matter how weird their structure    
-
-## Getting started
-MapMaid is part of the QuantumMaid framework which provides [easy-to-follow and
-interesting tutorials](https://github.com/quantummaid/quantummaid-tutorials/blob/master/README.md).
-
-The MapMaid documentation can be found [here](https://quantummaid.de/docs.html).
-
-## Get in touch
-Feel free to join us on [Slack](https://join.slack.com/t/quantummaid/shared_invite/zt-cx5qd605-vG10I~WazfgH9WOnXMzl3Q)
-or [Gitter](https://gitter.im/quantum-maid-framework/community) to ask questions, give feedback or just discuss software
-architecture with the team behind MapMaid. Also, don't forget to visit our [website](https://quantummaid.de) and follow
-us on [Twitter](https://twitter.com/quantummaid)!
