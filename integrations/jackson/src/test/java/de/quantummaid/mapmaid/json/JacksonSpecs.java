@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.json;
 
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.AdvancedBuilder;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.json.domain.AComplexType;
+import de.quantummaid.mapmaid.json.domain.ANumber;
+import de.quantummaid.mapmaid.json.domain.AString;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.jacksonMarshallerJson;

@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexTypeWithArray;
+import de.quantummaid.mapmaid.domain.AComplexNestedType;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithArray;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -33,7 +33,7 @@ import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
-import static de.quantummaid.mapmaid.testsupport.instances.Instances.*;
+import static de.quantummaid.mapmaid.domain.Instances.*;
 
 public final class UnmarshallerSpecs {
 

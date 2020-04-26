@@ -31,6 +31,8 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Optional;
+
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
@@ -48,11 +50,11 @@ public final class FixedResolvedSerializer extends FixedSerializerDefinition {
     }
 
     @Override
-    public Report getDefinition() {
+    public Optional<Report> getDefinition() {
         final TypeSerializer serializer = this.context.serializer();
         final Definition definition = generalDefinition(this.context.type(), serializer, null);
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         scanInformationBuilder.setSerializer(serializer);
-        return success(collectionResult(definition, scanInformationBuilder));
+        return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
     }
 }

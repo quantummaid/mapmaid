@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.specs.usecasescanning;
 
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
+import de.quantummaid.mapmaid.domain.AComplexType;
 
 public final class UseCase2 {
 

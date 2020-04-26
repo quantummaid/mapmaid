@@ -23,10 +23,10 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.domain.AComplexNestedType;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;

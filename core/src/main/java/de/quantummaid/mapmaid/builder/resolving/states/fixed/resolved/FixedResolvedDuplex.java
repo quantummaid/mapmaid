@@ -32,6 +32,8 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Optional;
+
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
@@ -49,13 +51,13 @@ public final class FixedResolvedDuplex extends FixedDuplexDefinition {
     }
 
     @Override
-    public Report getDefinition() {
+    public Optional<Report> getDefinition() {
         final TypeSerializer serializer = this.context.serializer();
         final TypeDeserializer deserializer = this.context.deserializer();
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         scanInformationBuilder.setSerializer(serializer);
         scanInformationBuilder.setDeserializer(deserializer);
         final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
-        return success(collectionResult(definition, scanInformationBuilder));
+        return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
     }
 }

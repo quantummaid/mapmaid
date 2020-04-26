@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.Optional;
 
-public interface CustomType<T> {
+public interface CustomType<T> { // NOSONAR
     TypeIdentifier type();
 
     Optional<TypeDeserializer> deserializer();

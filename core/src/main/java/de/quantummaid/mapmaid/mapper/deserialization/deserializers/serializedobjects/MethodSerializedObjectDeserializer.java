@@ -36,10 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.stream.Collectors.toList;
@@ -99,19 +100,16 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
 
         if (!isStatic(deserializationMethodModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The deserialization method %s configured for the SerializedObject of type %s must be static",
-                    deserializationMethod, type);
+            throw mapMaidException(format("The deserialization method %s configured for the SerializedObject " +
+                    "of type %s must be static", deserializationMethod, type));
         }
         if (isAbstract(deserializationMethodModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The deserialization method %s configured for the SerializedObject of type %s must not be abstract",
-                    deserializationMethod, type);
+            throw mapMaidException(format("The deserialization method %s configured for the SerializedObject " +
+                    "of type %s must not be abstract", deserializationMethod, type));
         }
         if (!deserializationMethod.returnType().map(type::equals).orElse(false)) {
-            throw incompatibleSerializedObjectException(
-                    "The deserialization method %s configured for the SerializedObject of type %s must return the DTO",
-                    deserializationMethod, type);
+            throw mapMaidException(format("The deserialization method %s configured for the SerializedObject " +
+                    "of type %s must return the DTO", deserializationMethod, type));
         }
     }
 }

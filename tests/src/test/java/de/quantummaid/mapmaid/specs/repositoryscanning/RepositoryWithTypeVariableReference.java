@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.specs.repositoryscanning;
 
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.domain.AString;
 
 public final class RepositoryWithTypeVariableReference {
 

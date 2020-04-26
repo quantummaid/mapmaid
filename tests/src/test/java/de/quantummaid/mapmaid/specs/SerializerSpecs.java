@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.domain.*;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

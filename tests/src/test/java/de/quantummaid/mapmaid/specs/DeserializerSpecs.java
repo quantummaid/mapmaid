@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.domain.exceptions.AnException;
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
+import de.quantummaid.mapmaid.domain.*;
+import de.quantummaid.mapmaid.domain.exceptions.AnException;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -168,7 +168,7 @@ public final class DeserializerSpecs {
         )
                 .when().mapMaidDeserializes("{\"number1\";\"1\",\"number2\":\"2\",\"stringA\"=\"a\",\"stringB\":\"b\"}")
                 .from(JSON).toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Error during unmarshalling for type 'de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType' with input '{" +
+                .anExceptionIsThrownWithAMessageContaining("Error during unmarshalling for type 'de.quantummaid.mapmaid.domain.AComplexType' with input '{" +
                         "\"number1\";\"1\"," +
                         "\"number2\":\"2\"," +
                         "\"stringA\"=\"a\"," +

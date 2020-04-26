@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
+import de.quantummaid.mapmaid.domain.*;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;

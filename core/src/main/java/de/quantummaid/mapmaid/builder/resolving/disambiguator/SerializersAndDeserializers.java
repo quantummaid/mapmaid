@@ -30,7 +30,6 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Objects.isNull;
 
 @ToString
@@ -39,16 +38,6 @@ import static java.util.Objects.isNull;
 public final class SerializersAndDeserializers {
     private final List<TypeSerializer> serializers;
     private final List<TypeDeserializer> deserializers;
-
-    public static SerializersAndDeserializers serializersOnly(final List<TypeSerializer> serializers) {
-        validateNotNull(serializers, "serializers");
-        return new SerializersAndDeserializers(serializers, null);
-    }
-
-    public static SerializersAndDeserializers deserializersOnly(final List<TypeDeserializer> deserializers) {
-        validateNotNull(deserializers, "deserializers");
-        return new SerializersAndDeserializers(null, deserializers);
-    }
 
     public static SerializersAndDeserializers serializersAndDeserializers(final List<TypeSerializer> serializers,
                                                                           final List<TypeDeserializer> deserializers) {

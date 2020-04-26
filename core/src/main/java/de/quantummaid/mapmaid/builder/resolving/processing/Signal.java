@@ -40,8 +40,16 @@ public interface Signal {
         return to(type, definition -> definition.addSerialization(reason));
     }
 
+    static Signal removeSerialization(final Reason reason) {
+        return definition -> definition.removeSerialization(reason);
+    }
+
     static Signal addDeserialization(final TypeIdentifier type, final Reason reason) {
         return to(type, definition -> definition.addDeserialization(reason));
+    }
+
+    static Signal removeDeserialization(final Reason reason) {
+        return definition -> definition.removeDeserialization(reason);
     }
 
     static Signal resolve() {

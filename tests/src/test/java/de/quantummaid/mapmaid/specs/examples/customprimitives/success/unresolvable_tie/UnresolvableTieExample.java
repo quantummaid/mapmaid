@@ -30,14 +30,7 @@ public final class UnresolvableTieExample {
     @Test
     public void unresolvableTieExample() {
         scenarioBuilderFor(UnresolvableTieObject.class)
-                //.withSerializationFailing()
-                //.withDeserializationFailing()
-                .withDuplexFailing()
-                //.withSerializedForm("\"foo\"")
-                //.withDeserializedForm(MyCustomPrimitive.myCustomPrimitive("foo"))
-                //.withDeserializationOnly()
-                //.withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
-                //        customPrimitive(MyCustomPrimitive.class, MyCustomPrimitive::toString, MyCustomPrimitive::myCustomPrimitive)))
+                .withDeserializationFailing()
                 .run();
     }
 }

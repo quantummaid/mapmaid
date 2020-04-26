@@ -61,18 +61,6 @@ public final class DetectorBuilder {
         );
     }
 
-    public DetectorBuilder withCustomPrimitiveSerializerFactory(final CustomPrimitiveSerializationDetector detector) {
-        validateNotNull(detector, "detector");
-        this.customPrimitiveSerializationDetectors.add(detector);
-        return this;
-    }
-
-    public DetectorBuilder withCustomPrimitiveDeserializerFactory(final CustomPrimitiveDeserializationDetector detector) {
-        validateNotNull(detector, "detector");
-        this.customPrimitiveDeserializationDetectors.add(detector);
-        return this;
-    }
-
     public DetectorBuilder withFieldDetector(final FieldDetector fieldDetector) {
         validateNotNull(fieldDetector, "fieldDetector");
         this.fieldDetectors.add(fieldDetector);

@@ -22,10 +22,12 @@
 package de.quantummaid.mapmaid.builder.resolving.states;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import de.quantummaid.mapmaid.debug.Reason;
 
 import static de.quantummaid.mapmaid.builder.resolving.states.undetected.UndetectedDuplex.undetectedDuplex;
 import static de.quantummaid.mapmaid.builder.resolving.states.unreasoned.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
 public abstract class StatefulSerializer extends StatefulDefinition {
 
@@ -52,6 +54,7 @@ public abstract class StatefulSerializer extends StatefulDefinition {
     @Override
     public StatefulDefinition addDeserialization(final Reason reason) {
         this.context.scanInformationBuilder().addDeserializationReason(reason);
+        this.context.dispatch(Signal.removeSerialization(becauseOf(this.context.type())));
         return undetectedDuplex(this.context);
     }
 

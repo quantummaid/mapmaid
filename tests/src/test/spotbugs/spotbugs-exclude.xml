@@ -43,11 +43,11 @@
         <Bug pattern="NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS"/>
     </Match>
     <Match>
-        <Class name="de.quantummaid.mapmaid.testsupport.domain.valid.AComplexValidatedType"/>
+        <Class name="de.quantummaid.mapmaid.domain.AComplexValidatedType"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
-        <Class name="de.quantummaid.mapmaid.testsupport.domain.valid.ACyclicType"/>
+        <Class name="de.quantummaid.mapmaid.domain.ACyclicType"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>

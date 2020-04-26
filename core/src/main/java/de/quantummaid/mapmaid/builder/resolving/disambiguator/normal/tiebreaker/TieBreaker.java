@@ -82,16 +82,13 @@ public final class TieBreaker {
         }
 
         if (customPrimitiveBreaking.isTieBreaking() && serializedObjectBreaking.isTieBreaking()) {
-            final String explanation = format("" +
-                            "Unable to choose between serialized object and custom primitive%n" +
+            final String explanation = format("Unable to choose between serialized object and custom primitive%n" +
                             "\tSerialized Object serializer: %s%n" +
                             "\tPrioritized because: %s%n" +
                             "\tCustom Primitive serializer: %s%n" +
                             "\tPrioritized because: %s%n",
-                    serializedObject.result().description(),
-                    serializedObjectBreaking.getReason(),
-                    customPrimitive.result().description(),
-                    customPrimitiveBreaking.getReason()
+                    serializedObject.result().description(), serializedObjectBreaking.getReason(),
+                    customPrimitive.result().description(), customPrimitiveBreaking.getReason()
             );
             return failure(explanation);
         }

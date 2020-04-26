@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.specs;
 
+import de.quantummaid.mapmaid.domain.*;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -47,7 +47,7 @@ public final class CyclicReferencesSpecs {
         )
                 .when().mapMaidSerializes(given1).withMarshallingType(MarshallingType.JSON)
                 .anExceptionIsThrownWithAMessageContaining("a circular reference has been detected for objects " +
-                        "of type de.quantummaid.mapmaid.testsupport.domain.valid.ACyclicType");
+                        "of type de.quantummaid.mapmaid.domain.ACyclicType");
     }
 
     @Test

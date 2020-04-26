@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -103,10 +102,6 @@ public final class DetectionResult<T> {
                 .collect(joining("\n", "[", "]"));
     }
 
-    public List<String> reasonsForFailure() {
-        return this.reasonsForFailure;
-    }
-
     public T result() {
         return this.result;
     }
@@ -126,19 +121,5 @@ public final class DetectionResult<T> {
             return (DetectionResult<X>) this;
         }
         return mapper.apply(this.result);
-    }
-
-    public DetectionResult<T> or(final Supplier<DetectionResult<T>> alternative) {
-        if (isFailure()) {
-            return alternative.get();
-        }
-        return this;
-    }
-
-    public DetectionResult<T> or(final DetectionResult<T> alternative) {
-        if (isFailure()) {
-            return alternative;
-        }
-        return this;
     }
 }

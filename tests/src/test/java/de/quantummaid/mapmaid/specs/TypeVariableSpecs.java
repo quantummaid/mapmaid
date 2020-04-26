@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType;
-import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexTypeWithParameterizedUnusedMethods;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithParameterizedUnusedMethods;
+import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.domain.AString;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -34,9 +34,7 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
-import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
-import static de.quantummaid.reflectmaid.unresolved.UnresolvedType.unresolvedType;
 
 public final class TypeVariableSpecs {
 
@@ -68,7 +66,7 @@ public final class TypeVariableSpecs {
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"value\": \"foo\"\n" +
-                "}").from(MarshallingType.JSON).toTheType(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(AString.class)))
+                "}").from(MarshallingType.JSON).toTheType(genericType(AComplexParameterizedType.class, AString.class))
                 .noExceptionHasBeenThrown();
     }
 

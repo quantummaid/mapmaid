@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.specs.repositoryscanning;
 
+import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.domain.valid.*;
 
 import java.util.Collection;

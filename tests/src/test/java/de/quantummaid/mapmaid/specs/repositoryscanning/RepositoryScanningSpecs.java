@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyComplexT
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.APrimitiveBoolean;
 import de.quantummaid.mapmaid.testsupport.domain.valid.APrimitiveInteger;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Then.then;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.ThenData.thenData;
@@ -67,17 +67,13 @@ public final class When {
     }
 
     public AsStage mapMaidDeserializes(final String input) {
-        return marshallingType -> type -> {
-            final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
-            return doDeserialization(() -> this.mapMaid.deserialize(input, typeIdentifier, marshallingType));
-        };
+        return marshallingType -> type ->
+                doDeserialization(() -> this.mapMaid.deserialize(input, type, marshallingType));
     }
 
     public AsStage mapMaidDeserializesWithInjection(final String input, final InjectorLambda injector) {
-        return marshallingType -> type -> {
-            final TypeIdentifier typeIdentifier = realTypeIdentifier(type);
-            return doDeserialization(() -> this.mapMaid.deserialize(input, typeIdentifier, marshallingType, injector));
-        };
+        return marshallingType -> type ->
+                doDeserialization(() -> this.mapMaid.deserialize(input, type, marshallingType, injector));
     }
 
     @SuppressWarnings("unchecked")
@@ -87,7 +83,7 @@ public final class When {
     }
 
     public ToStage mapMaidDeserializesTheMap(final Map<String, Object> map) {
-        return type -> doDeserialization(() -> this.mapMaid.deserializer().deserializeFromUniversalObject(map, type));
+        return type -> doDeserialization(() -> this.mapMaid.deserializer().deserializeFromUniversalObject(map, type, noop()));
     }
 
     public WithMarshallingType mapMaidSerializes(final Object object) {
@@ -103,12 +99,8 @@ public final class When {
 
     public WithMarshallingType mapMaidSerializes(final Object object, final GenericType<?> type) {
         return marshallingType -> {
-            try {
-                final String serialized = this.mapMaid.serializeTo(object, marshallingType, type);
-                return then(this.thenData.withSerializationResult(serialized));
-            } catch (final Exception e) {
-                return then(this.thenData.withException(e));
-            }
+            final String serialized = this.mapMaid.serializeTo(object, marshallingType, type);
+            return then(this.thenData.withSerializationResult(serialized));
         };
     }
 
@@ -127,13 +119,9 @@ public final class When {
     public WithMarshallingType mapMaidSerializesWithInjector(final Object object,
                                                              final UnaryOperator<Map<String, Object>> injector) {
         return marshallingType -> {
-            try {
-                final TypeIdentifier typeIdentifier = typeIdentifierFor(object.getClass());
-                final String serialized = this.mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
-                return then(this.thenData.withSerializationResult(serialized));
-            } catch (final Exception e) {
-                return then(this.thenData.withException(e));
-            }
+            final TypeIdentifier typeIdentifier = typeIdentifierFor(object.getClass());
+            final String serialized = this.mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
+            return then(this.thenData.withSerializationResult(serialized));
         };
     }
 

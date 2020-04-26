@@ -34,9 +34,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.createDescription;
-import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException;
 import static java.lang.String.format;
 
 @ToString
@@ -50,29 +49,24 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
                                                       final ResolvedMethod deserializationMethod) {
         final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
         if (!Modifier.isStatic(deserializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization method %s configured for the custom primitive of type %s must be static",
-                    deserializationMethod.describe(), type.description());
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+                    "of type %s must be static", deserializationMethod.describe(), type.description()));
         }
         if (Modifier.isAbstract(deserializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization method %s configured for the custom primitive of type %s must not be abstract",
-                    deserializationMethod.describe(), type.description());
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+                    "of type %s must not be abstract", deserializationMethod.describe(), type.description()));
         }
         final List<ResolvedParameter> parameters = deserializationMethod.parameters();
         if (parameters.size() != 1) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization method %s configured for the custom primitive of type %s must " +
-                            "accept only one parameter",
-                    deserializationMethod.describe(), type.description());
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+                    "of type %s must accept only one parameter", deserializationMethod.describe(), type.description()));
         }
         final boolean correctReturnType = deserializationMethod.returnType()
                 .map(type::equals)
                 .orElse(false);
         if (!correctReturnType) {
-            throw incompatibleCustomPrimitiveException(
-                    "The deserialization method %s configured for the custom primitive of type %s must return " +
-                            "the custom primitive", deserializationMethod.describe(), type.description());
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+                    "of type %s must return the custom primitive", deserializationMethod.describe(), type.description()));
         }
 
         final ResolvedType baseType = parameters.get(0).type();
@@ -89,7 +83,7 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         try {
             return this.deserializationMethod.method().invoke(null, value);
         } catch (final IllegalAccessException e) {
-            throw customPrimitiveSerializationMethodCallException(format(
+            throw mapMaidException(format(
                     "Unexpected error invoking deserialization method %s for serialized custom primitive %s",
                     this.deserializationMethod, value), e);
         } catch (final InvocationTargetException e) {
@@ -111,8 +105,7 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         if (targetException instanceof Exception) {
             return (Exception) targetException;
         } else {
-            throw customPrimitiveSerializationMethodCallException(format(
-                    "Unexpected error invoking deserialization method %s for serialized custom primitive %s",
+            throw mapMaidException(format("Unexpected error invoking deserialization method %s for serialized custom primitive %s",
                     this.deserializationMethod, value), e);
         }
     }

@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.specs.usecasescanning;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 

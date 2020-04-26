@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexTypeWithCollections;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithCollections;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;

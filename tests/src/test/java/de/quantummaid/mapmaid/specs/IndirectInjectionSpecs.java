@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.AString;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
