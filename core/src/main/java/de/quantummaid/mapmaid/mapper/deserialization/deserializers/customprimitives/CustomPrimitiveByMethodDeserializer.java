@@ -66,7 +66,7 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
                             "accept only one parameter",
                     deserializationMethod.describe(), type.description());
         }
-        final Boolean correctReturnType = deserializationMethod.returnType()
+        final boolean correctReturnType = deserializationMethod.returnType()
                 .map(type::equals)
                 .orElse(false);
         if (!correctReturnType) {

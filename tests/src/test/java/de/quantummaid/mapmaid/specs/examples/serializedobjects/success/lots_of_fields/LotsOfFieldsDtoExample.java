@@ -54,7 +54,7 @@ public final class LotsOfFieldsDtoExample {
                 .withDeserializedForm(LotsOfFieldsDto.lotsOfFieldsDto(
                         "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"
                 ))
-                .withFixedScenarios((mapMaidBuilder, requiredCapabilities) -> {
+                .withManual((mapMaidBuilder, requiredCapabilities) -> {
                     if (requiredCapabilities.hasDeserialization() && requiredCapabilities.hasSerialization()) {
                         mapMaidBuilder.serializingAndDeserializing(DuplexType.serializedObject(LotsOfFieldsDto.class)
                                 .withField("field1", String.class, object -> object.field1)

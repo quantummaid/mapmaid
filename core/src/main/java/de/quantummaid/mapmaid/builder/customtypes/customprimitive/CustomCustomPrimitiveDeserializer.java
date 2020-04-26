@@ -28,7 +28,7 @@ public interface CustomCustomPrimitiveDeserializer<T, B> {
     T deserialize(B value);
 
     default TypeDeserializer toTypeDeserializer(final Class<B> baseType) {
-        final TypeDeserializer customPrimitiveDeserializer = new CustomPrimitiveDeserializer() {
+        return new CustomPrimitiveDeserializer() {
             @SuppressWarnings("unchecked")
             @Override
             public Object deserialize(final Object value) {
@@ -45,6 +45,5 @@ public interface CustomCustomPrimitiveDeserializer<T, B> {
                 return "custom provided";
             }
         };
-        return customPrimitiveDeserializer;
     }
 }

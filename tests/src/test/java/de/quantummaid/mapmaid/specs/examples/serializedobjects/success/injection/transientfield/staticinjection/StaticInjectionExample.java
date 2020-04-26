@@ -42,12 +42,12 @@ public final class StaticInjectionExample {
                 .withSerializationSuccessful()
                 .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
                 .withDuplexFailing()
-                .withFixedDeserialization(mapMaidBuilder -> {
+                .withManualDeserialization(mapMaidBuilder -> {
                     mapMaidBuilder.deserializing(DtoWithTransientInjection.class)
                             .injecting(OutputStream.class, () -> System.out)
                             .build();
                 })
-                .withFixedDuplex(mapMaidBuilder -> {
+                .withManualDuplex(mapMaidBuilder -> {
                     mapMaidBuilder.serializingAndDeserializing(DtoWithTransientInjection.class)
                             .injecting(OutputStream.class, () -> System.out)
                             .build();

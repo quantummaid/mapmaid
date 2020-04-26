@@ -43,7 +43,7 @@ public final class AnonymousClassExample {
                         "cannot be detected because it is an anonymous class (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.anonymous_class.AnonymousClassExample$1' " +
                         "cannot be detected because it is an anonymous class (you can still register it manually)")
-                .withFixedScenarios((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
+                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
                         .withCustomType(requiredCapabilities, customPrimitive((Class<BaseInterface>) instance.getClass(), object -> "foo", value -> instance)))
                 .run();
     }

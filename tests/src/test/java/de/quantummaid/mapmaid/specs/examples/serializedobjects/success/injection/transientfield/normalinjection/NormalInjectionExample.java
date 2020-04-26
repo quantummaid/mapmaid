@@ -43,12 +43,12 @@ public final class NormalInjectionExample {
                 .withSerializationSuccessful()
                 .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
                 .withDuplexFailing()
-                .withFixedDeserialization(mapMaidBuilder -> {
+                .withManualDeserialization(mapMaidBuilder -> {
                     mapMaidBuilder.deserializing(DtoWithTransientInjection.class)
                             .injecting(OutputStream.class)
                             .build();
                 })
-                .withFixedDuplex(mapMaidBuilder -> {
+                .withManualDuplex(mapMaidBuilder -> {
                     mapMaidBuilder.serializingAndDeserializing(DtoWithTransientInjection.class)
                             .injecting(OutputStream.class)
                             .build();

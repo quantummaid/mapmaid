@@ -54,7 +54,7 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
 
     DeserializationFields fields();
 
-    Object deserialize(Map<String, Object> elements) throws Exception;
+    Object deserialize(Map<String, Object> elements) throws Exception; // NOSONAR
 
     @SuppressWarnings("unchecked")
     @Override

@@ -21,88 +21,127 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe;
+import de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexTypeWithArray;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
 import static de.quantummaid.mapmaid.testsupport.instances.Instances.*;
 
 public final class UnmarshallerSpecs {
 
     @Test
     public void testJsonUnmarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"number1\": \"1\",\n" +
                 "  \"number2\": \"5\",\n" +
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
-                "}").from(json()).toTheType(AComplexType.class)
+                "}").from(JSON).toTheType(AComplexType.class)
                 .theDeserializedObjectIs(theFullyInitializedExampleDto());
     }
 
     @Test
     public void testJsonUnmarshallingWithCollectionsIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithArray.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"array\": [\n" +
                 "    \"1\",\n" +
                 "    \"2\"\n" +
                 "  ]\n" +
-                "}").from(json()).toTheType(AComplexTypeWithArray.class)
+                "}").from(JSON).toTheType(AComplexTypeWithArray.class)
                 .theDeserializedObjectIs(theFullyInitializedExampleDtoWithCollections());
     }
 
     @Test
     public void testXmlUnmarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xmlMarshaller(), xmlUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "<HashMap>\n" +
                 "  <number1>1</number1>\n" +
                 "  <number2>5</number2>\n" +
                 "  <stringA>asdf</stringA>\n" +
                 "  <stringB>qwer</stringB>\n" +
-                "</HashMap>\n").from(xml()).toTheType(AComplexType.class)
+                "</HashMap>\n").from(XML).toTheType(AComplexType.class)
                 .theDeserializedObjectIs(theFullyInitializedExampleDto());
     }
 
     @Test
     public void testYamlUnmarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "number1: '1'\n" +
                 "number2: '5'\n" +
                 "stringA: asdf\n" +
-                "stringB: qwer\n").from(yaml()).toTheType(AComplexType.class)
+                "stringB: qwer\n").from(YAML).toTheType(AComplexType.class)
                 .theDeserializedObjectIs(theFullyInitializedExampleDto());
     }
 
     @Test
     public void testUrlEncodedUnmarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("number1=1&number2=5&stringA=asdf&stringB=qwer")
-                .from(UrlEncodedMarshallerRecipe.urlEncoded()).toTheType(AComplexType.class)
+                .from(urlEncoded()).toTheType(AComplexType.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(theFullyInitializedExampleDto());
     }
 
     @Test
     public void testUrlEncodedUnmarshallingWithCollectionsIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexTypeWithArray.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("array[0]=1&array[1]=2")
-                .from(UrlEncodedMarshallerRecipe.urlEncoded()).toTheType(AComplexTypeWithArray.class)
+                .from(urlEncoded()).toTheType(AComplexTypeWithArray.class)
                 .theDeserializedObjectIs(theFullyInitializedExampleDtoWithCollections());
     }
 
     @Test
     public void testUrlEncodedUnmarshallingWithMapsIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "complexType2[number1]=3&" +
                 "complexType2[number2]=4&" +
@@ -111,13 +150,18 @@ public final class UnmarshallerSpecs {
                 "complexType1[number1]=1&" +
                 "complexType1[number2]=2&" +
                 "complexType1[stringA]=a&" +
-                "complexType1[stringB]=b").from(UrlEncodedMarshallerRecipe.urlEncoded()).toTheType(AComplexNestedType.class)
+                "complexType1[stringB]=b").from(urlEncoded()).toTheType(AComplexNestedType.class)
                 .theDeserializedObjectIs(theFullyInitializedNestedExampleDto());
     }
 
     @Test
     public void testUnknownUnmarshallerThrowsAnException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xmlMarshaller(), xmlUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"number1\": \"1\",\n" +
@@ -127,6 +171,6 @@ public final class UnmarshallerSpecs {
                 "}").from(marshallingType("unknown")).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining(
                         "Unsupported marshalling type 'unknown'," +
-                                " known marshalling types are: ['urlencoded', 'json', 'xml', 'yaml']");
+                                " known marshalling types are: ['xml']");
     }
 }

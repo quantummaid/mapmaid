@@ -146,8 +146,8 @@ public final class ActualScanInformation implements ScanInformation {
     private String renderIgnoredSerializers() {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Ignored features for serialization:\n");
-        this.ignoredSerializers.forEach((serializer, reasons) -> {
-            final String description = serializer.description();
+        this.ignoredSerializers.forEach((ignoredSerializer, reasons) -> {
+            final String description = ignoredSerializer.description();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
             stringBuilder.append("\n\t  Ignored because:\n");
@@ -168,8 +168,8 @@ public final class ActualScanInformation implements ScanInformation {
     private String renderIgnoredDeserializers() {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Ignored features for deserialization:\n");
-        this.ignoredDeserializers.forEach((deserializer, reasons) -> {
-            final String description = deserializer.description();
+        this.ignoredDeserializers.forEach((ignoredDeserializer, reasons) -> {
+            final String description = ignoredDeserializer.description();
             stringBuilder.append("\t- ");
             stringBuilder.append(description);
             stringBuilder.append("\n\t  Ignored because:\n");

@@ -41,7 +41,7 @@ public final class PreferredFactoryExample {
                 .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> {
+                .withManual((mapMaidBuilder, capabilities) -> {
                     mapMaidBuilder.withType(PreferredFactorySerializedObject.class, capabilities);
                     mapMaidBuilder.withAdvancedSettings(advancedBuilder ->
                             advancedBuilder.withPreferredSerializedObjectFactoryName("myCustomName"));

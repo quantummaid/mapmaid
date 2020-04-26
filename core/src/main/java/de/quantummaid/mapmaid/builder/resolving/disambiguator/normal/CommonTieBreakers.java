@@ -23,7 +23,10 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.IrrefutableHint;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.MethodSerializedObjectDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreakingReason.aTieBreakingReason;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreakingReason.notATieBreakingReason;
@@ -40,6 +43,34 @@ public final class CommonTieBreakers {
                 return notATieBreakingReason();
             }
             final String methodName = ((MethodSerializedObjectDeserializer) element).method().method().getName();
+            if (methodName.equals(name)) {
+                return aTieBreakingReason(format("factory method named '%s'", name));
+            } else {
+                return notATieBreakingReason();
+            }
+        };
+    }
+
+    public static IrrefutableHint<TypeDeserializer> primitiveFactoryNamed(final String name) {
+        return element -> {
+            if (!(element instanceof CustomPrimitiveByMethodDeserializer)) {
+                return notATieBreakingReason();
+            }
+            final String methodName = ((CustomPrimitiveByMethodDeserializer) element).method().method().getName();
+            if (methodName.equals(name)) {
+                return aTieBreakingReason(format("factory method named '%s'", name));
+            } else {
+                return notATieBreakingReason();
+            }
+        };
+    }
+
+    public static IrrefutableHint<TypeSerializer> primitiveSerializationMethodNamed(final String name) {
+        return element -> {
+            if (!(element instanceof MethodCustomPrimitiveSerializer)) {
+                return notATieBreakingReason();
+            }
+            final String methodName = ((MethodCustomPrimitiveSerializer) element).method().method().getName();
             if (methodName.equals(name)) {
                 return aTieBreakingReason(format("factory method named '%s'", name));
             } else {

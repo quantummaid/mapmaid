@@ -61,8 +61,9 @@ public final class SerializationFieldInstantiation {
                                                        final DisambiguationContext context) {
         final List<SerializationField> serializationFieldList = new ArrayList<>(this.fields.size());
         final List<String> problems = smallList();
-        this.fields.forEach((name, fields) -> {
-            final List<SerializationField> preferredFields = preferences.preferred(fields, context, scanInformationBuilder::ignoreSerializationField);
+        this.fields.forEach((name, fieldImplementations) -> {
+            final List<SerializationField> preferredFields = preferences.preferred(
+                    fieldImplementations, context, scanInformationBuilder::ignoreSerializationField);
             if (preferredFields.size() != 1) {
                 final String fieldsString = preferredFields.stream()
                         .map(SerializationField::describe)

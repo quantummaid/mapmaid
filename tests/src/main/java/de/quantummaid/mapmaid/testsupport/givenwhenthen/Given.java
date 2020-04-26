@@ -27,8 +27,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.function.Supplier;
 
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.MapMaidInstances.theExampleMapMaidWithAllMarshallers;
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Given {
     private final Supplier<MapMaid> mapMaid;
@@ -39,10 +37,6 @@ public final class Given {
 
     public static Given given(final MapMaid mapMaid) {
         return given(() -> mapMaid);
-    }
-
-    public static Given givenTheExampleMapMaidWithAllMarshallers() {
-        return given(theExampleMapMaidWithAllMarshallers());
     }
 
     public When when() {

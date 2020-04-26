@@ -45,7 +45,7 @@ public final class TransientFieldExample {
                         "}")
                 .withDuplexFailing()
                 .withDeserializationSuccessful()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
+                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
                         serializedObject(AddALotRequest.class)
                                 .withField("name", Name.class, object -> object.name)
                                 .withField("townName", TownName.class, object -> object.townName)

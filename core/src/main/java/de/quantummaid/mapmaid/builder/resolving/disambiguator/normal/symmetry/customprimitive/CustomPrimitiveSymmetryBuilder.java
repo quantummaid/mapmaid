@@ -49,6 +49,7 @@ public final class CustomPrimitiveSymmetryBuilder {
             String.class,
             int.class, Integer.class,
             long.class, Long.class,
+            float.class, Float.class,
             double.class, Double.class,
             boolean.class, Boolean.class
     );

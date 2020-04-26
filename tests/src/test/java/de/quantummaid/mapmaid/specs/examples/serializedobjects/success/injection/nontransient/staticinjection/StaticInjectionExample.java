@@ -44,13 +44,13 @@ public final class StaticInjectionExample {
                         "  \"normalField1\": \"a\",\n" +
                         "  \"injectedField\": \"foo\"\n" +
                         "}")
-                .withFixedSerialization(mapMaidBuilder -> {
+                .withManualSerialization(mapMaidBuilder -> {
                     mapMaidBuilder
                             .serializing(DtoWithNonTransientInjection.class)
                             .injecting(InjectionObject.class, () -> InjectionObject.injectionObject("foo"));
                 })
                 .withDeserializationSuccessful(DtoWithNonTransientInjection.dtoWithNonTransientInjection("a", "b", null))
-                .withFixedDeserialization(mapMaidBuilder -> {
+                .withManualDeserialization(mapMaidBuilder -> {
                     mapMaidBuilder
                             .deserializing(DtoWithNonTransientInjection.class)
                             .injecting(InjectionObject.class, () -> InjectionObject.injectionObject("foo"));
@@ -61,7 +61,7 @@ public final class StaticInjectionExample {
                         "  \"normalField1\": \"a\",\n" +
                         "  \"injectedField\": \"foo\"\n" +
                         "}", DtoWithNonTransientInjection.dtoWithNonTransientInjection("a", "b", null))
-                .withFixedDuplex(mapMaidBuilder -> {
+                .withManualDuplex(mapMaidBuilder -> {
                     mapMaidBuilder
                             .serializingAndDeserializing(DtoWithNonTransientInjection.class)
                             .injecting(InjectionObject.class, () -> InjectionObject.injectionObject("foo"));

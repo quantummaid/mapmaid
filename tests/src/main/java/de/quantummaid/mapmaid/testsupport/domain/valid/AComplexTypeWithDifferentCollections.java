@@ -35,37 +35,37 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AComplexTypeWithDifferentCollections {
     public final Collection<ANumber> collection;
-    public final LinkedList<ANumber> linkedList;
-    public final Set<ANumber> set;
-    public final HashSet<ANumber> hashSet;
-    public final ArrayList<ANumber> arrayList;
-    public final AbstractCollection<ANumber> abstractCollection;
-    public final AbstractList<ANumber> abstractList;
-    public final AbstractSequentialList<ANumber> abstractSequentialList;
-    public final CopyOnWriteArrayList<ANumber> copyOnWriteArrayList;
-    public final CopyOnWriteArraySet<ANumber> copyOnWriteArraySet;
-    public final LinkedHashSet<ANumber> linkedHashSet;
-    public final Stack<ANumber> stack;
-    public final TreeSet<ANumber> treeSet;
-    public final Vector<ANumber> vector;
+    public final LinkedList<ANumber> linkedList; // NOSONAR
+    public final Set<ANumber> set; // NOSONAR
+    public final HashSet<ANumber> hashSet; // NOSONAR
+    public final ArrayList<ANumber> arrayList; // NOSONAR
+    public final AbstractCollection<ANumber> abstractCollection; // NOSONAR
+    public final AbstractList<ANumber> abstractList; // NOSONAR
+    public final AbstractSequentialList<ANumber> abstractSequentialList; // NOSONAR
+    public final CopyOnWriteArrayList<ANumber> copyOnWriteArrayList; // NOSONAR
+    public final CopyOnWriteArraySet<ANumber> copyOnWriteArraySet; // NOSONAR
+    public final LinkedHashSet<ANumber> linkedHashSet; // NOSONAR
+    public final Stack<ANumber> stack; // NOSONAR
+    public final TreeSet<ANumber> treeSet; // NOSONAR
+    public final Vector<ANumber> vector; // NOSONAR
 
-    public static AComplexTypeWithDifferentCollections deserialize(final Collection<ANumber> collection,
-                                                                   final LinkedList<ANumber> linkedList,
-                                                                   final Set<ANumber> set,
-                                                                   final HashSet<ANumber> hashSet,
-                                                                   final ArrayList<ANumber> arrayList,
-                                                                   final AbstractCollection<ANumber> abstractCollection,
-                                                                   final AbstractList<ANumber> abstractList,
-                                                                   final AbstractSequentialList<ANumber> abstractSequentialList,
-                                                                   final CopyOnWriteArrayList<ANumber> copyOnWriteArrayList,
-                                                                   final CopyOnWriteArraySet<ANumber> copyOnWriteArraySet,
-                                                                   final LinkedHashSet<ANumber> linkedHashSet,
-                                                                   final Stack<ANumber> stack,
-                                                                   final TreeSet<ANumber> treeSet,
-                                                                   final Vector<ANumber> vector) {
-        return new AComplexTypeWithDifferentCollections(collection,
-                linkedList, set, hashSet, arrayList, abstractCollection,
-                abstractList, abstractSequentialList, copyOnWriteArrayList,
-                copyOnWriteArraySet, linkedHashSet, stack, treeSet, vector);
+    public static AComplexTypeWithDifferentCollections deserialize(final Collection<ANumber> collection, // NOSONAR
+                                                                   final LinkedList<ANumber> linkedList, // NOSONAR
+                                                                   final Set<ANumber> set, // NOSONAR
+                                                                   final HashSet<ANumber> hashSet, // NOSONAR
+                                                                   final ArrayList<ANumber> arrayList, // NOSONAR
+                                                                   final AbstractCollection<ANumber> abstractCollection, // NOSONAR
+                                                                   final AbstractList<ANumber> abstractList, // NOSONAR
+                                                                   final AbstractSequentialList<ANumber> abstractSequentialList, // NOSONAR
+                                                                   final CopyOnWriteArrayList<ANumber> copyOnWriteArrayList, // NOSONAR
+                                                                   final CopyOnWriteArraySet<ANumber> copyOnWriteArraySet, // NOSONAR
+                                                                   final LinkedHashSet<ANumber> linkedHashSet, // NOSONAR
+                                                                   final Stack<ANumber> stack, // NOSONAR
+                                                                   final TreeSet<ANumber> treeSet, // NOSONAR
+                                                                   final Vector<ANumber> vector) { // NOSONAR
+        return new AComplexTypeWithDifferentCollections(collection, // NOSONAR
+                linkedList, set, hashSet, arrayList, abstractCollection, // NOSONAR
+                abstractList, abstractSequentialList, copyOnWriteArrayList, // NOSONAR
+                copyOnWriteArraySet, linkedHashSet, stack, treeSet, vector); // NOSONAR
     }
 }

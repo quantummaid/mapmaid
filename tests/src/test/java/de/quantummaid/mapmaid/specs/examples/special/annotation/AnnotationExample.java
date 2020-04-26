@@ -50,7 +50,7 @@ public final class AnnotationExample {
                         "cannot be detected because it is an annotation (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.annotation.Annotation' " +
                         "cannot be detected because it is an annotation (you can still register it manually)")
-                .withFixedScenarios((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
+                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
                         .withCustomType(requiredCapabilities, customPrimitive(Annotation.class, object -> "foo", value -> instance)))
                 .run();
     }

@@ -58,7 +58,7 @@ public final class CollectionInformation {
                 collectionInformation(TreeSet.class, TreeSet::new),
                 collectionInformation(Vector.class, Vector::new),
                 collectionInformation(Stack.class, objects -> {
-                    final Stack<Object> stack = new Stack<>();
+                    final Stack<Object> stack = new Stack<>(); // NOSONAR
                     stack.addAll(objects);
                     return stack;
                 })

@@ -37,7 +37,7 @@ public interface UniversalPrimitive extends Universal {
         if (value instanceof Double) {
             return universalNumber((Double) value);
         }
-        if(value instanceof Boolean) {
+        if (value instanceof Boolean) {
             return universalBoolean((Boolean) value);
         }
         throw new UnsupportedOperationException();

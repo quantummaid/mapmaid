@@ -56,8 +56,7 @@ public final class Processor {
     public static Processor processor() {
         final Queue<Signal> pendingSignals = new LinkedList<>();
         final States states = states(smallList());
-        final Processor processor = new Processor(states, pendingSignals);
-        return processor;
+        return new Processor(states, pendingSignals);
     }
 
     public void dispatch(final Signal signal) {

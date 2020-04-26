@@ -81,12 +81,12 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
 
     @Override
     public String description() {
-        final String methods = this.methods.values().stream()
+        final String joinedMethods = this.methods.values().stream()
                 .map(ResolvedMethod::describe)
                 .collect(joining(", ", "[", "]"));
         return String.format(
                 "as serialized object by calling the constructor '%s' and then calling the methods: %s",
-                this.constructor.describe(), methods
+                this.constructor.describe(), joinedMethods
         );
     }
 }

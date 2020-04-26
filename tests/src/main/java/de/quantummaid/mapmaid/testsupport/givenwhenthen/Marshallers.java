@@ -21,12 +21,11 @@
 
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
-import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
@@ -44,13 +43,7 @@ public final class Marshallers {
     public static Marshaller xmlMarshaller() {
         final XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        return object -> {
-            try {
-                return xmlMapper.writeValueAsString(object);
-            } catch (final JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        };
+        return xmlMapper::writeValueAsString;
     }
 
     public static Marshaller yamlMarshaller() {

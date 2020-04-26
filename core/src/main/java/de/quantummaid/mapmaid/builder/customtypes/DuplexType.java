@@ -92,6 +92,18 @@ public final class DuplexType<T> implements CustomType<T> {
         return createCustomPrimitive(type, serializer, deserializer, Integer.class);
     }
 
+    public static <T> DuplexType<T> longBasedCustomPrimitive(final Class<T> type,
+                                                             final CustomCustomPrimitiveSerializer<T, Long> serializer,
+                                                             final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
+        return longBasedCustomPrimitive(genericType(type), serializer, deserializer);
+    }
+
+    public static <T> DuplexType<T> longBasedCustomPrimitive(final GenericType<T> type,
+                                                             final CustomCustomPrimitiveSerializer<T, Long> serializer,
+                                                             final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
+        return createCustomPrimitive(type, serializer, deserializer, Long.class);
+    }
+
     public static <T> DuplexType<T> floatBasedCustomPrimitive(final Class<T> type,
                                                               final CustomCustomPrimitiveSerializer<T, Float> serializer,
                                                               final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {

@@ -32,7 +32,7 @@ import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
+import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructure.wrongInputStructureException;
 
 public interface TypeDeserializer {
     List<TypeIdentifier> requiredTypes();

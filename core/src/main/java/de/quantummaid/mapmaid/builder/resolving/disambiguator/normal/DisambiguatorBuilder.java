@@ -141,9 +141,13 @@ public final class DisambiguatorBuilder {
 
     private TieBreaker buildTieBreaker() {
         return tieBreaker(
+                List.of(
+                        CommonTieBreakers.primitiveSerializationMethodNamed(this.preferredCustomPrimitiveSerializationMethodName)
+                ),
                 List.of(),
-                List.of(),
-                List.of(),
+                List.of(
+                        CommonTieBreakers.primitiveFactoryNamed(this.preferredCustomPrimitiveFactoryName)
+                ),
                 List.of(
                         CommonTieBreakers.serializedObjectFactoryNamed(this.preferredSerializedObjectFactoryName)
                 )

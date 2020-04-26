@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.specs;
 
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType;
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexTypeWithParameterizedUnusedMethods;
-import de.quantummaid.mapmaid.testsupport.domain.repositories.RepositoryWithTypeVariableReference;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import org.junit.jupiter.api.Test;
@@ -31,8 +31,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
@@ -51,7 +49,7 @@ public final class TypeVariableSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(AComplexParameterizedType.deserialize(AString.fromStringValue("foo")), genericType(AComplexParameterizedType.class, AString.class))
-                .withMarshallingType(json())
+                .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -70,7 +68,7 @@ public final class TypeVariableSpecs {
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"value\": \"foo\"\n" +
-                "}").from(json()).toTheType(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(AString.class)))
+                "}").from(MarshallingType.JSON).toTheType(unresolvedType(AComplexParameterizedType.class).resolve(fromClassWithoutGenerics(AString.class)))
                 .noExceptionHasBeenThrown();
     }
 
@@ -84,28 +82,11 @@ public final class TypeVariableSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(AComplexParameterizedType.deserialize(ANumber.fromInt(42)), genericType(AComplexParameterizedType.class, ANumber.class))
-                .withMarshallingType(json())
+                .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
                         "  \"value\": \"42\"\n" +
-                        "}");
-    }
-
-    @Test
-    public void aSerializedObjectWithTypeVariableCanBeFoundAsAReferenceOfAScannedClass() {
-        given(
-                aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(RepositoryWithTypeVariableReference.class))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .build()
-        )
-                .when().mapMaidSerializes(AComplexParameterizedType.deserialize(AString.fromStringValue("foo")), genericType(AComplexParameterizedType.class, AString.class))
-                .withMarshallingType(json())
-                .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"value\": \"foo\"\n" +
                         "}");
     }
 
@@ -118,7 +99,7 @@ public final class TypeVariableSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(AComplexParameterizedType.deserialize(List.of(AString.fromStringValue("foo"))), genericType(AComplexParameterizedType.class, genericType(List.class, AString.class)))
-                .withMarshallingType(json())
+                .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -137,7 +118,7 @@ public final class TypeVariableSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(AComplexParameterizedType.deserialize(new AString[]{AString.fromStringValue("foo")}), genericType(AComplexParameterizedType.class, AString[].class))
-                .withMarshallingType(json())
+                .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -161,7 +142,7 @@ public final class TypeVariableSpecs {
                         AString.fromStringValue("bar"),
                         ANumber.fromInt(42),
                         ANumber.fromInt(21)))
-                .withMarshallingType(json())
+                .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +

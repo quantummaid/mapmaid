@@ -25,4 +25,5 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
     <suppress checks="MagicNumber" files="AutoloadingSpecs"/>
+    <suppress checks="ParameterNumber" files="SerializedObjectWithPrimitives"/>
 </suppressions>

@@ -28,8 +28,8 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public final class AComplexTypeWithSetters {
-    public AString stringA;
-    public AString stringB;
+    public AString stringA; // NOSONAR
+    public AString stringB; // NOSONAR
 
     public AComplexTypeWithSetters() {
     }

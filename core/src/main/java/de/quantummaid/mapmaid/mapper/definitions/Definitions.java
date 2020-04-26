@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.mapper.definitions;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -97,12 +98,13 @@ public final class Definitions {
                     candidateInformation, reasonInformation);
         });
 
-        if (definition.deserializer().isEmpty()) {
+        final Optional<TypeDeserializer> deserializer = definition.deserializer();
+        if (deserializer.isEmpty()) {
             throw new UnsupportedOperationException(
                     format("'%s' is not deserializable but needs to be in order to support deserialization of '%s'",
                             candidate.description(), reason.description()));
         } else {
-            definition.deserializer().get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited, debugInformation));
+            deserializer.get().requiredTypes().forEach(type -> validateDeserialization(type, reason, alreadyVisited, debugInformation));
         }
     }
 
@@ -116,12 +118,10 @@ public final class Definitions {
                         format("Type '%s' is not registered but needs to be in order to support serialization of '%s'",
                                 candidate.description(), reason.description())));
 
-        if (definition.serializer().isEmpty()) {
-            throw new UnsupportedOperationException(
-                    format("'%s' is not serializable but needs to be in order to support serialization of '%s'",
-                            candidate.description(), reason.description()));
-        } else {
-            definition.serializer().get().requiredTypes().forEach(type -> validateSerialization(type, reason, alreadyVisited));
-        }
+        definition.serializer()
+                .orElseThrow(() -> new UnsupportedOperationException(format(
+                        "'%s' is not serializable but needs to be in order to support serialization of '%s'",
+                        candidate.description(), reason.description())))
+                .requiredTypes().forEach(type -> validateSerialization(type, reason, alreadyVisited));
     }
 }

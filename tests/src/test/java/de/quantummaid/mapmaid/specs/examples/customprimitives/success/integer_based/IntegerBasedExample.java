@@ -21,6 +21,9 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.integer_based;
 
+import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
+import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -33,6 +36,13 @@ public final class IntegerBasedExample {
                 .withSerializedForm("1.0")
                 .withDeserializedForm(Age.fromStringValue(1))
                 .withAllScenariosSuccessful()
+                .withManualSerialization(mapMaidBuilder ->
+                        mapMaidBuilder.serializing(SerializationOnlyType.intBasedCustomPrimitive(Age.class, Age::stringValue)))
+                .withManualDeserialization(mapMaidBuilder ->
+                        mapMaidBuilder.deserializing(DeserializationOnlyType.intBasedCustomPrimitive(Age.class, Age::fromStringValue)))
+                .withManualDuplex(mapMaidBuilder ->
+                        mapMaidBuilder.serializingAndDeserializing(DuplexType.intBasedCustomPrimitive(
+                                Age.class, Age::stringValue, Age::fromStringValue)))
                 .run();
     }
 }

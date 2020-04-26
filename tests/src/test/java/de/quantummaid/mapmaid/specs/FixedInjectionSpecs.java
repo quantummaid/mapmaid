@@ -22,13 +22,13 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
@@ -50,7 +50,7 @@ public final class FixedInjectionSpecs {
                 "   \"number1\": \"1\",\n" +
                 "   \"number2\": \"1\"\n" +
                 "}")
-                .from(json()).toTheType(AComplexType.class)
+                .from(MarshallingType.JSON).toTheType(AComplexType.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexType.deserialize(
                         AString.fromStringValue("a"),
@@ -74,7 +74,7 @@ public final class FixedInjectionSpecs {
                 "   \"stringA\": \"a\",\n" +
                 "   \"stringB\": \"b\"\n" +
                 "}")
-                .from(json()).toTheType(AComplexType.class)
+                .from(MarshallingType.JSON).toTheType(AComplexType.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(
                         AComplexType.deserialize(

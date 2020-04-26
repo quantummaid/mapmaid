@@ -31,6 +31,7 @@ import lombok.ToString;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @ToString
@@ -49,7 +50,7 @@ public final class GetterFieldQuery implements SerializationFieldQuery {
         try {
             return this.method.invoke(object);
         } catch (final InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(format("Unable to call '%s' on object '%s'", this.method.getName(), object), e);
+            throw mapMaidException(format("Unable to call '%s' on object '%s'", this.method.getName(), object), e);
         }
     }
 

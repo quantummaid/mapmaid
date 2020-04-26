@@ -22,5 +22,5 @@
 package de.quantummaid.mapmaid.mapper.marshalling;
 
 public interface Unmarshaller {
-    Object unmarshal(String input) throws Exception;
+    Object unmarshal(String input) throws Exception; // NOSONAR
 }

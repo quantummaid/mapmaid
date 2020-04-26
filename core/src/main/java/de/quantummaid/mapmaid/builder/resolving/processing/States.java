@@ -34,6 +34,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories.defaultStateFactories;
@@ -72,13 +73,14 @@ public final class States {
     }
 
     public States apply(final Signal signal, final Processor processor) {
-        if (signal.target().isEmpty()) {
+        final Optional<TypeIdentifier> optionalTarget = signal.target();
+        if (optionalTarget.isEmpty()) {
             final List<StatefulDefinition> newStates = this.states.stream()
                     .map(signal::handleState)
                     .collect(toList());
             return new States(this.stateFactories, newStates);
         } else {
-            final TypeIdentifier target = signal.target().get();
+            final TypeIdentifier target = optionalTarget.get();
             final List<StatefulDefinition> newStates = new ArrayList<>(this.states);
 
             if (!contains(target, newStates)) {
@@ -89,8 +91,7 @@ public final class States {
 
             newStates.replaceAll(statefulDefinition -> {
                 if (statefulDefinition.context.type().equals(target)) {
-                    final StatefulDefinition replacement = signal.handleState(statefulDefinition);
-                    return replacement;
+                    return signal.handleState(statefulDefinition);
                 } else {
                     return statefulDefinition;
                 }

@@ -51,15 +51,20 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
                     type.description()
             );
         }
-        if (serializationMethod.parameters().size() > 0) {
+        if (!serializationMethod.parameters().isEmpty()) {
             throw incompatibleCustomPrimitiveException(
                     "The serialization method %s configured for the custom primitive of type %s must " +
                             "not accept any parameters",
-                    serializationMethod,
+                    serializationMethod.describe(),
                     type.description()
             );
         }
-        final ResolvedType baseType = serializationMethod.returnType().get();
+        final ResolvedType baseType = serializationMethod.returnType()
+                .orElseThrow(() -> incompatibleCustomPrimitiveException(
+                        "The serialization method %s configured for the custom primitive of type %s must not be void",
+                        serializationMethod,
+                        type.description()
+                ));
         return new MethodCustomPrimitiveSerializer(baseType, serializationMethod);
     }
 

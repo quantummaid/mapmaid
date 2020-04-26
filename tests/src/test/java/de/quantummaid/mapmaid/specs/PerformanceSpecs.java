@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
 import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
@@ -30,8 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.MapMaidInstances.theExampleMapMaidWithAllMarshallers;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static java.lang.System.out;
 
 public final class PerformanceSpecs {
@@ -40,7 +41,10 @@ public final class PerformanceSpecs {
     public void aLotOfSerializationsDoNotCauseProblems() {
         final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
         if (runThisTest) {
-            final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
+            final MapMaid mapMaid = MapMaid.aMapMaid()
+                    .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                    .serializingAndDeserializing(AComplexType.class)
+                    .build();
 
             for (int i = 0; i < 10_000_000; ++i) {
                 Given.given(mapMaid)
@@ -50,7 +54,7 @@ public final class PerformanceSpecs {
                                 AString.fromStringValue("qwer"),
                                 ANumber.fromInt(1),
                                 ANumber.fromInt(5)))
-                        .withMarshallingType(json())
+                        .withMarshallingType(MarshallingType.JSON)
                         .theSerializationResultWas("" +
                                 "{\n" +
                                 "  \"number1\": \"1\",\n" +
@@ -68,7 +72,10 @@ public final class PerformanceSpecs {
     public void aLotOfDeserializationsDoNotCauseProblems() {
         final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
         if (runThisTest) {
-            final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
+            final MapMaid mapMaid = MapMaid.aMapMaid()
+                    .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                    .serializingAndDeserializing(AComplexType.class)
+                    .build();
             for (int i = 0; i < 10_000_000; ++i) {
                 Given.given(mapMaid)
                         .when().mapMaidDeserializes("" +
@@ -78,7 +85,7 @@ public final class PerformanceSpecs {
                         "  \"stringA\": \"asdf\",\n" +
                         "  \"stringB\": \"qwer\"\n" +
                         "}")
-                        .from(json()).toTheType(AComplexType.class)
+                        .from(MarshallingType.JSON).toTheType(AComplexType.class)
                         .noExceptionHasBeenThrown()
                         .theDeserializedObjectIs(AComplexType.deserialize(
                                 AString.fromStringValue("asdf"),

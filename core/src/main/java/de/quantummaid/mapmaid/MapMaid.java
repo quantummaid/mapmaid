@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
@@ -83,7 +83,7 @@ public final class MapMaid {
     }
 
     public String serializeToJson(final Object object, final TypeIdentifier type) {
-        return serializeTo(object, json(), type);
+        return serializeTo(object, JSON, type);
     }
 
     public String serializeToYaml(final Object object) {
@@ -103,7 +103,7 @@ public final class MapMaid {
     }
 
     public String serializeToYaml(final Object object, final TypeIdentifier type) {
-        return serializeTo(object, MarshallingType.yaml(), type);
+        return serializeTo(object, MarshallingType.YAML, type);
     }
 
     public String serializeToXml(final Object object) {
@@ -123,7 +123,7 @@ public final class MapMaid {
     }
 
     public String serializeToXml(final Object object, final TypeIdentifier type) {
-        return serializeTo(object, MarshallingType.xml(), type);
+        return serializeTo(object, MarshallingType.XML, type);
     }
 
     public String serializeTo(final Object object, final MarshallingType marshallingType) {
@@ -172,7 +172,7 @@ public final class MapMaid {
 
     @SuppressWarnings("unchecked")
     public <T> T deserializeJson(final String json, final TypeIdentifier targetType, final InjectorLambda injector) {
-        return (T) this.deserialize(json, targetType, json(), injector);
+        return (T) this.deserialize(json, targetType, JSON, injector);
     }
 
     public <T> T deserializeYaml(final String yaml, final Class<T> targetType) {
@@ -201,7 +201,7 @@ public final class MapMaid {
 
     @SuppressWarnings("unchecked")
     public <T> T deserializeYaml(final String yaml, final TypeIdentifier targetType, final InjectorLambda injector) {
-        return (T) this.deserialize(yaml, targetType, MarshallingType.yaml(), injector);
+        return (T) this.deserialize(yaml, targetType, MarshallingType.YAML, injector);
     }
 
     public <T> T deserializeXml(final String xml, final Class<T> targetType) {
@@ -230,7 +230,7 @@ public final class MapMaid {
 
     @SuppressWarnings("unchecked")
     public <T> T deserializeXml(final String xml, final TypeIdentifier targetType, final InjectorLambda injector) {
-        return (T) this.deserialize(xml, targetType, MarshallingType.xml(), injector);
+        return (T) this.deserialize(xml, targetType, MarshallingType.XML, injector);
     }
 
     public <T> T deserialize(final String input, final Class<T> targetType, final MarshallingType marshallingType) {

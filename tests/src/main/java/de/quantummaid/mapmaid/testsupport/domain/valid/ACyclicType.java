@@ -31,10 +31,10 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ACyclicType {
     public final AString aString;
-    public ACyclicType aCyclicType;
+    public ACyclicType aCyclicType; // NOSONAR
 
     public static ACyclicType deserialize(final AString aString,
-                                          final ACyclicType aCyclicType) {
+                                          final ACyclicType aCyclicType) { // NOSONAR
         return new ACyclicType(aString);
     }
 }

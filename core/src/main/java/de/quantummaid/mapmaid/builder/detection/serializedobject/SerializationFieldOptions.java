@@ -109,9 +109,9 @@ public final class SerializationFieldOptions {
                 problems.add(format("No field under the name '%s'", name));
                 continue;
             }
-            final List<SerializationField> options = this.options.get(name);
+            final List<SerializationField> fieldsByName = this.options.get(name);
             final TypeIdentifier type = entry.getValue();
-            final List<SerializationField> mirroredFields = mirroredFields(type, options);
+            final List<SerializationField> mirroredFields = mirroredFields(type, fieldsByName);
             if (mirroredFields.isEmpty()) {
                 problems.add(format("No field under name '%s' of a type similar to '%s'", name, type.description()));
             }
