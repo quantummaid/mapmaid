@@ -10,7 +10,8 @@ MapMaid will not consider to use for serialization and deserialization:
 - Fields declared `transient`
 
 ## Primitive inlining
-MapMaid supports [primitive inlining of classes](06_PrimitiveInlining.md), i.e. mapping a class to a (JSON/XML/etc.) primitive
+MapMaid supports <!---[Link] ( 06_PrimitiveInlining.md "primitive inlining of classes") -->
+[primitive inlining of classes](06_PrimitiveInlining.md), i.e. mapping a class to a (JSON/XML/etc.) primitive
 instead of a (JSON/XML/etc.) object.
 A class is primitive inlined if at least one of the following holds true:
 - It has exactly one field of one of the following types:
@@ -20,10 +21,10 @@ A class is primitive inlined if at least one of the following holds true:
     - `float` or `Float`
     - `double` or `Double`
     - `boolean` or `Boolean`
-- It features a [preferred factory method for primitive objects]()
-- It features a [preferred serialization method for primitive objects]()
+- It features a preferred factory method for primitive objects
+- It features a preferred serialization method for primitive objects
 A class is not primitive inlined if at least one of the following holds true:
-- It features a [preferred factory method for composite objects]()
+- It features a preferred factory method for composite objects
 
 If none of the rules hold true, the class will be not inlined.
 If the decision is ambiguous, MapMaid will throw a detailed exception with information on how to resolve the conflict.
@@ -31,7 +32,8 @@ If the decision is ambiguous, MapMaid will throw a detailed exception with infor
 ### Preferred factory method for composite objects
 If a class has a `public` and `static` factory method that is named `deserialize`, MapMaid will always
 use this method to deserialize the class.
-The presence of this method will ensure that the class is not [primitive inlined](06_PrimitiveInlining.md).
+The presence of this method will ensure that the class is not <!---[Link] ( 06_PrimitiveInlining.md "primitive inlined") -->
+[primitive inlined](06_PrimitiveInlining.md).
 You can change the preferred name like this:
 
 <!---[CodeSnippet](preferredSerializedObjectFactoryName)-->
@@ -47,7 +49,8 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 ### Preferred factory method for primitive objects
 If a class has a `public` and `static` factory method that is named `fromStringValue`, MapMaid
 will always use this method to deserialize the class. The presence of this method will ensure
-that the class is [primitive inlined](06_PrimitiveInlining.md).
+that the class is <!---[Link] ( 06_PrimitiveInlining.md "primitive inlined") -->
+[primitive inlined](06_PrimitiveInlining.md).
 You can change the preferred name like this:
 
 <!---[CodeSnippet](preferredCustomPrimitiveFactoryName)-->
@@ -64,7 +67,8 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 If a class has a `public` method that is named `toStringValue`, MapMaid
 will always use this method to serialize the class.
 The presence of this method will ensure
-that the class is [primitive inlined](06_PrimitiveInlining.md).
+that the class is <!---[Link] ( 06_PrimitiveInlining.md "primitive inlined") -->
+[primitive inlined](06_PrimitiveInlining.md).
 You can change the preferred name like this:
 
 <!---[CodeSnippet](preferredCustomPrimitiveSerializationMethodName)-->
