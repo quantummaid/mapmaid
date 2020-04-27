@@ -77,7 +77,8 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 ```
 
 ### Custom primitives
-MapMaid supports [primitive inlining of classes](06_PrimitiveInlining.md), i.e. mapping a class to a (JSON/XML/etc.) primitive
+MapMaid supports <!---[Link] ( 06_PrimitiveInlining.md "primitive inlining of classes") -->
+[primitive inlining of classes](06_PrimitiveInlining.md), i.e. mapping a class to a (JSON/XML/etc.) primitive
 instead of a (JSON/XML/etc.) object.
 You can register a custom type as an inlined primitive like this:
 
