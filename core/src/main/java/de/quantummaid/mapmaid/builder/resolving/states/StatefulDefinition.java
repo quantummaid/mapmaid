@@ -23,12 +23,13 @@ package de.quantummaid.mapmaid.builder.resolving.states;
 
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class StatefulDefinition {
     public final Context context;
@@ -53,7 +54,7 @@ public abstract class StatefulDefinition {
         return false;
     }
 
-    public StatefulDefinition detect(final SimpleDetector detector,
+    public StatefulDefinition detect(final SimpleDetector detector, // NOSONAR
                                      final Disambiguators disambiguators,
                                      final List<TypeIdentifier> injectedTypes) {
         return this;
@@ -63,7 +64,7 @@ public abstract class StatefulDefinition {
         return this;
     }
 
-    public Report getDefinition() {
+    public Optional<Report> getDefinition() {
         throw new UnsupportedOperationException(this.getClass() + " " + this.context.toString());
     }
 }

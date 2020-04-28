@@ -32,7 +32,7 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ThenData {
     private Object deserializationResult;
-    private String serializationResult;
+    private Object serializationResult;
     private Exception exception;
     private DebugInformation debugInformation;
 
@@ -49,12 +49,12 @@ public final class ThenData {
         return this.deserializationResult;
     }
 
-    public ThenData withSerializationResult(final String serializationResult) {
+    public ThenData withSerializationResult(final Object serializationResult) {
         this.serializationResult = serializationResult;
         return this;
     }
 
-    public String getSerializationResult() {
+    public Object getSerializationResult() {
         return this.serializationResult;
     }
 

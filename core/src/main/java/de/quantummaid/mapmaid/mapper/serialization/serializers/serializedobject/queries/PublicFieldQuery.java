@@ -27,6 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @ToString
@@ -44,7 +45,7 @@ public final class PublicFieldQuery implements SerializationFieldQuery {
         try {
             return this.field.field().get(object);
         } catch (final IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw mapMaidException(format("Failed to query field '%s'", this.field.describe()), e);
         }
     }
 

@@ -64,15 +64,6 @@ public final class ClassScannerRecipe implements Recipe {
         return new ClassScannerRecipe(asList(classes), emptyList(), emptyList());
     }
 
-    public static ClassScannerRecipe addAllReferencedClassesIn(final Collection<Class<?>> classes,
-                                                               final Collection<Class<?>> serializationExclusions,
-                                                               final Collection<Class<?>> deserializationExclusions) {
-        validateNotNull(classes, "classes");
-        validateNotNull(serializationExclusions, "serializationExclusions");
-        validateNotNull(deserializationExclusions, "deserializationExclusions");
-        return new ClassScannerRecipe(classes, serializationExclusions, deserializationExclusions);
-    }
-
     @Override
     public void cook(final MapMaidBuilder mapMaidBuilder) {
         this.classes.forEach(clazz -> addReferencesIn(clazz, mapMaidBuilder));

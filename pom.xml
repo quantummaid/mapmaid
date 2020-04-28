@@ -31,13 +31,13 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.47</version>
+    <version>0.9.48</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
     <description>
         MapMaid is a modern mapping framework in the scope of mapping data in
-        Json, XML, or YAML format into DTOs composed and vice versa.
+        JSON, XML, or YAML format into DTOs composed and vice versa.
     </description>
     <url>https://github.com/quantummaid/mapmaid</url>
     <licenses>

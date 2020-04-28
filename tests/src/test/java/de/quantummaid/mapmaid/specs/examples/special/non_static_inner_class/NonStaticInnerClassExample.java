@@ -41,7 +41,7 @@ public final class NonStaticInnerClassExample {
                         "cannot be detected because it is a non-static inner class (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.non_static_inner_class.OuterClass$NonStaticInnerClass' " +
                         "cannot be detected because it is a non-static inner class (you can still register it manually)")
-                .withFixedScenarios((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
+                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
                         .withCustomType(requiredCapabilities, customPrimitive(NonStaticInnerClass.class, object -> "foo", value -> outerClass.new NonStaticInnerClass(value))))
                 .run();
     }

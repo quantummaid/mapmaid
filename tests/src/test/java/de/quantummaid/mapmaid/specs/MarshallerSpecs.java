@@ -21,20 +21,32 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
-import de.quantummaid.mapmaid.testsupport.instances.Instances;
+import de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe;
+import de.quantummaid.mapmaid.domain.AComplexNestedType;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithArray;
+import de.quantummaid.mapmaid.domain.Instances;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.recipes.marshallers.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
-import static de.quantummaid.mapmaid.testsupport.instances.Instances.theFullyInitializedExampleDto;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
+import static de.quantummaid.mapmaid.domain.Instances.theFullyInitializedExampleDto;
 
 public final class MarshallerSpecs {
 
     @Test
     public void testJsonMarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(json())
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(JSON)
                 .theSerializationResultWas("" +
                         "{\n" +
                         "  \"number1\": \"1\",\n" +
@@ -46,8 +58,13 @@ public final class MarshallerSpecs {
 
     @Test
     public void testJsonMarshallingWithCollectionsIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidSerializes(Instances.theFullyInitializedExampleDtoWithCollections()).withMarshallingType(json())
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithArray.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(Instances.theFullyInitializedExampleDtoWithCollections()).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -60,8 +77,13 @@ public final class MarshallerSpecs {
 
     @Test
     public void testXmlMarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(xml())
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingXmlMarshaller(xmlMarshaller(), xmlUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(XML)
                 .theSerializationResultWas("" +
                         "<HashMap>\n" +
                         "  <number1>1</number1>\n" +
@@ -73,8 +95,13 @@ public final class MarshallerSpecs {
 
     @Test
     public void testYamlMarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(yaml())
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(YAML)
                 .theSerializationResultWas("" +
                         "number1: '1'\n" +
                         "number2: '5'\n" +
@@ -84,21 +111,36 @@ public final class MarshallerSpecs {
 
     @Test
     public void testUrlEncodedMarshallingIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(urlEncoded())
                 .theSerializationResultWas("number1=1&number2=5&stringA=asdf&stringB=qwer");
     }
 
     @Test
     public void testUrlEncodedMarshallingWithCollectionsIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexTypeWithArray.class)
+                        .build()
+        )
                 .when().mapMaidSerializes(Instances.theFullyInitializedExampleDtoWithCollections()).withMarshallingType(urlEncoded())
                 .theSerializationResultWas("array[0]=1&array[1]=2");
     }
 
     @Test
     public void testUrlEncodedMarshallingWithMapsIsPossible() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .build()
+        )
                 .when().mapMaidSerializes(Instances.theFullyInitializedNestedExampleDto()).withMarshallingType(urlEncoded())
                 .theSerializationResultWas("" +
                         "complexType2[number1]=3&" +
@@ -113,7 +155,16 @@ public final class MarshallerSpecs {
 
     @Test
     public void testUnknownMarshallerThrowsAnException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller())
+                                .usingXmlMarshaller(xmlMarshaller(), xmlUnmarshaller())
+                                .usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(marshallingType("unknown"))
                 .anExceptionIsThrownWithAMessageContaining("Unsupported marshalling type 'unknown', known marshalling types are:")
                 .anExceptionIsThrownWithAMessageContaining("'urlencoded'")

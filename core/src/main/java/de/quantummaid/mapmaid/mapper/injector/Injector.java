@@ -39,6 +39,7 @@ import static de.quantummaid.mapmaid.mapper.injector.NamedDirectInjection.namedD
 import static de.quantummaid.mapmaid.mapper.injector.PropertyName.propertyName;
 import static de.quantummaid.mapmaid.mapper.injector.TypedDirectInjection.typedDirectInjection;
 import static de.quantummaid.mapmaid.mapper.injector.UniversalInjection.universalInjection;
+import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 
 @ToString
 @EqualsAndHashCode
@@ -63,7 +64,8 @@ public final class Injector {
     }
 
     public Injector put(final Object instance) {
-        return put(ClassType.typeOfObject(instance), instance);
+        final ResolvedType type = resolvedType(instance.getClass());
+        return put(type, instance);
     }
 
     public Injector put(final Class<?> type, final Object instance) {

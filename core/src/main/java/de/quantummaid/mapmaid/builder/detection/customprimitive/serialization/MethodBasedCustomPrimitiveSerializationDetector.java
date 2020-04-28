@@ -54,13 +54,12 @@ public final class MethodBasedCustomPrimitiveSerializationDetector implements Cu
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        final List<TypeSerializer> serializers = ((ClassType) type).methods().stream()
+        return ((ClassType) type).methods().stream()
                 .filter(method -> !isStatic(method.method().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> this.mappings.isPrimitiveType(method.returnType().get().assignableType()))
-                .filter(method -> method.parameters().size() == 0)
+                .filter(method -> method.parameters().isEmpty())
                 .map(method -> createSerializer(type, method))
                 .collect(toList());
-        return serializers;
     }
 }

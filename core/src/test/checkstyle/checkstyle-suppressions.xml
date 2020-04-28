@@ -53,8 +53,10 @@
               files="PackageScannerExample|MarshallingExamples|DocExample1|DetectorExample|ExceptionExamples"/>
 
     <suppress checks="CommentsIndentation" files="UsageExamples" />
-    <suppress checks="MagicNumber|ParameterNumber" files="Deserializer[0-9]*" />
+    <suppress checks="MagicNumber|ParameterNumber|TrailingComment" files="Deserializer[0-9]*" />
     <suppress checks="ParameterNumber" files="ActualScanInformation" />
     <suppress checks="ClassFanOutComplexity" files="Deserializer" />
     <suppress checks="MethodCount" files="MapMaid" />
+    <suppress checks="TrailingComment" files="CustomPrimitiveDeserializer|SerializedObjectDeserializer|Marshaller|CollectionInformation" />
+    <suppress checks="TrailingComment" files="ConventionalDefinitionFactories|Unmarshaller|CustomType|StatefulDefinition|MapMaid|TieBreaker" />
 </suppressions>

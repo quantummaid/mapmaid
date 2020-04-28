@@ -26,7 +26,8 @@ import de.quantummaid.mapmaid.mapper.universal.UniversalNumber;
 import de.quantummaid.mapmaid.mapper.universal.UniversalString;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
-import static de.quantummaid.mapmaid.mapper.universal.UniversalNumber.universalNumber;
+import java.util.function.Function;
+
 import static de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings.customPrimitiveMappings;
 import static de.quantummaid.mapmaid.shared.mapping.UniversalTypeMapper.universalTypeMapper;
 
@@ -39,17 +40,23 @@ public final class ConventionalDefinitionFactories {
             universalTypeMapper(boolean.class, UniversalBoolean.class),
             universalTypeMapper(Boolean.class, UniversalBoolean.class),
             universalTypeMapper(int.class, UniversalNumber.class,
-                    integer -> universalNumber(Double.valueOf(integer)),
+                    (Function<Integer, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
                     universalNumber -> ((Double) universalNumber.toNativeJava()).intValue()),
             universalTypeMapper(Integer.class, UniversalNumber.class,
-                    integer -> universalNumber(Double.valueOf(integer)),
+                    (Function<Integer, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
                     universalNumber -> ((Double) universalNumber.toNativeJava()).intValue()),
             universalTypeMapper(long.class, UniversalNumber.class,
-                    l -> universalNumber(Double.valueOf(l)),
+                    (Function<Long, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
                     universalNumber -> ((Double) universalNumber.toNativeJava()).longValue()),
             universalTypeMapper(Long.class, UniversalNumber.class,
-                    l -> universalNumber(Double.valueOf(l)),
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).longValue())
+                    (Function<Long, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
+                    universalNumber -> ((Double) universalNumber.toNativeJava()).longValue()),
+            universalTypeMapper(float.class, UniversalNumber.class,
+                    (Function<Float, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
+                    universalNumber -> ((Double) universalNumber.toNativeJava()).floatValue()),
+            universalTypeMapper(Float.class, UniversalNumber.class,
+                    (Function<Float, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
+                    universalNumber -> ((Double) universalNumber.toNativeJava()).floatValue())
     );
 
     private ConventionalDefinitionFactories() {

@@ -35,10 +35,11 @@ import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.IncompatibleSerializedObjectException.incompatibleSerializedObjectException;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -89,14 +90,12 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
     private static void validateDeserializerModifiers(final ClassType type, final ResolvedConstructor deserializationConstructor) {
         final int deserializationMethodModifiers = deserializationConstructor.constructor().getModifiers();
         if (isAbstract(deserializationMethodModifiers)) {
-            throw incompatibleSerializedObjectException(
-                    "The deserialization constructor %s configured for the SerializedObject of type %s must not be abstract",
-                    deserializationConstructor, type);
+            throw mapMaidException(format("The deserialization constructor %s configured for the SerializedObject " +
+                            "of type %s must not be abstract", deserializationConstructor, type));
         }
         if (deserializationConstructor.constructor().getDeclaringClass() != type.assignableType()) {
-            throw incompatibleSerializedObjectException(
-                    "The deserialization constructor %s configured for the SerializedObject of type %s must return the DTO",
-                    deserializationConstructor, type);
+            throw mapMaidException(format("The deserialization constructor %s configured for the SerializedObject " +
+                            "of type %s must return the DTO", deserializationConstructor, type));
         }
     }
 

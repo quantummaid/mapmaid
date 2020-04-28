@@ -35,7 +35,7 @@ import static de.quantummaid.reflectmaid.GenericType.genericType;
 public interface SerializationOnlyType<T> extends CustomType<T> {
 
     static <T> SerializationOnlySerializedObject<T> serializedObject(final Class<T> type) {
-        return serializationOnlySerializedObject(genericType(type));
+        return serializedObject(genericType(type));
     }
 
     static <T> SerializationOnlySerializedObject<T> serializedObject(final GenericType<T> type) {
@@ -72,6 +72,16 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
         return createCustomPrimitive(type, serializer, Integer.class);
     }
 
+    static <T> SerializationOnlyType<T> longBasedCustomPrimitive(final Class<T> type,
+                                                                 final CustomCustomPrimitiveSerializer<T, Long> serializer) {
+        return longBasedCustomPrimitive(genericType(type), serializer);
+    }
+
+    static <T> SerializationOnlyType<T> longBasedCustomPrimitive(final GenericType<T> type,
+                                                                 final CustomCustomPrimitiveSerializer<T, Long> serializer) {
+        return createCustomPrimitive(type, serializer, Long.class);
+    }
+
     static <T> SerializationOnlyType<T> floatBasedCustomPrimitive(final Class<T> type,
                                                                   final CustomCustomPrimitiveSerializer<T, Float> serializer) {
         return floatBasedCustomPrimitive(genericType(type), serializer);
@@ -84,7 +94,7 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
 
     static <T> SerializationOnlyType<T> doubleBasedCustomPrimitive(final Class<T> type,
                                                                    final CustomCustomPrimitiveSerializer<T, Double> serializer) {
-        return createCustomPrimitive(genericType(type), serializer, Double.class);
+        return doubleBasedCustomPrimitive(genericType(type), serializer);
     }
 
     static <T> SerializationOnlyType<T> doubleBasedCustomPrimitive(final GenericType<T> type,
@@ -94,7 +104,7 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
 
     static <T> SerializationOnlyType<T> booleanBasedCustomPrimitive(final Class<T> type,
                                                                     final CustomCustomPrimitiveSerializer<T, Boolean> serializer) {
-        return createCustomPrimitive(genericType(type), serializer, Boolean.class);
+        return booleanBasedCustomPrimitive(genericType(type), serializer);
     }
 
     static <T> SerializationOnlyType<T> booleanBasedCustomPrimitive(final GenericType<T> type,

@@ -40,7 +40,7 @@ public final class TypeVariableWithDifferentNameExample {
                 .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
+                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
                         customPrimitive(genericType, Street::stringValue, Street::street)))
                 .run();
     }

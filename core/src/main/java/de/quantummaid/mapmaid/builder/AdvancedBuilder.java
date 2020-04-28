@@ -117,26 +117,25 @@ public final class AdvancedBuilder {
     public AdvancedBuilder usingJsonMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
         validateNotNull(marshaller, "jsonMarshaller");
         validateNotNull(unmarshaller, "jsonUnmarshaller");
-        return usingMarshaller(MarshallingType.json(), marshaller, unmarshaller);
+        return usingMarshaller(MarshallingType.JSON, marshaller, unmarshaller);
     }
 
     public AdvancedBuilder usingYamlMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
         validateNotNull(marshaller, "yamlMarshaller");
         validateNotNull(unmarshaller, "yamlUnmarshaller");
-        return usingMarshaller(MarshallingType.yaml(), marshaller, unmarshaller);
+        return usingMarshaller(MarshallingType.YAML, marshaller, unmarshaller);
     }
 
     public AdvancedBuilder usingXmlMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
         validateNotNull(marshaller, "xmlMarshaller");
         validateNotNull(unmarshaller, "xmlUnmarshaller");
-        return usingMarshaller(MarshallingType.xml(), marshaller, unmarshaller);
+        return usingMarshaller(MarshallingType.XML, marshaller, unmarshaller);
     }
 
     Disambiguators buildDisambiguators() {
         final NormalDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
         final Map<ResolvedType, Disambiguator> specialDisambiguators = smallMap();
-        final Disambiguators disambiguators = disambiguators(defaultDisambiguator, specialDisambiguators);
-        return disambiguators;
+        return disambiguators(defaultDisambiguator, specialDisambiguators);
     }
 
     MarshallerRegistry<Marshaller> buildMarshallerRegistry() {

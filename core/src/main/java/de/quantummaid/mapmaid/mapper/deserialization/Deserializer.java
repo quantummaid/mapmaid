@@ -36,8 +36,6 @@ import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +46,7 @@ import java.util.Set;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer.internalDeserializer;
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
-import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 
@@ -80,35 +76,6 @@ public final class Deserializer {
         final Unmarshallers unmarshallers = unmarshallers(unmarshallerRegistry);
         final InternalDeserializer internalDeserializer = internalDeserializer(definitions, customPrimitiveMappings, onValidationErrors);
         return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, debugInformation);
-    }
-
-    public <T> T deserializeFromUniversalObject(final Object input,
-                                                final Class<T> targetType) {
-        return deserializeFromUniversalObject(input, targetType, noop());
-    }
-
-    public <T> T deserializeFromUniversalObject(final Object input,
-                                                final ResolvedType targetType) {
-        final TypeIdentifier typeIdentifier = realTypeIdentifier(targetType);
-        return deserializeFromUniversalObject(input, typeIdentifier);
-    }
-
-    public <T> T deserializeFromUniversalObject(final Object input,
-                                                final TypeIdentifier targetType) {
-        return deserializeFromUniversalObject(input, targetType, noop());
-    }
-
-    public <T> T deserializeFromUniversalObject(final Object input,
-                                                final Class<T> targetType,
-                                                final InjectorLambda injectorProducer) {
-        return deserializeFromUniversalObject(input, ClassType.fromClassWithoutGenerics(targetType), injectorProducer);
-    }
-
-    public <T> T deserializeFromUniversalObject(final Object input,
-                                                final ResolvedType targetType,
-                                                final InjectorLambda injectorProducer) {
-        final TypeIdentifier typeIdentifier = realTypeIdentifier(targetType);
-        return deserializeFromUniversalObject(input, typeIdentifier, injectorProducer);
     }
 
     public <T> T deserializeFromUniversalObject(final Object input,

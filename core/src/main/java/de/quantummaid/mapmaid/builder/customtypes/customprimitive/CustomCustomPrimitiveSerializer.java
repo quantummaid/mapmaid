@@ -28,7 +28,7 @@ public interface CustomCustomPrimitiveSerializer<T, B> {
     B serialize(T object);
 
     default TypeSerializer toTypeSerializer(final Class<B> baseType) {
-        final TypeSerializer customPrimitiveSerializer = new CustomPrimitiveSerializer() {
+        return new CustomPrimitiveSerializer() {
             @SuppressWarnings("unchecked")
             @Override
             public Object serialize(final Object object) {
@@ -45,6 +45,5 @@ public interface CustomCustomPrimitiveSerializer<T, B> {
                 return "custom provided";
             }
         };
-        return customPrimitiveSerializer;
     }
 }

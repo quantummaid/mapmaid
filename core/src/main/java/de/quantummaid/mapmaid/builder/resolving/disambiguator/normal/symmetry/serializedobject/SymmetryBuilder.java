@@ -47,6 +47,8 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SymmetryBuilder {
+    private static final String SEPARATOR = "\n-------------\n";
+
     private final Map<EquivalenceSignature, EquivalenceClass> equivalenceClasses;
 
     public static SymmetryBuilder symmetryBuilder() {
@@ -70,10 +72,9 @@ public final class SymmetryBuilder {
     }
 
     public void addSerializer(final SerializationFieldOptions serializer) {
-        for (final EquivalenceSignature signature : this.equivalenceClasses.keySet()) {
-            signature.match(serializer).ifPresent(specializedSerializer ->
-                    this.equivalenceClasses.get(signature).setSerializationFields(specializedSerializer));
-        }
+        this.equivalenceClasses.forEach((signature, equivalenceClass) -> signature.match(serializer)
+                .ifPresent(specializedSerializer ->
+                        this.equivalenceClasses.get(signature).setSerializationFields(specializedSerializer)));
     }
 
     public DetectionResult<EquivalenceClass> determineGreatestCommonFields() {
@@ -98,7 +99,7 @@ public final class SymmetryBuilder {
                 .collect(toList());
 
         if (maxClasses.size() != 1) {
-            final StringJoiner joiner = new StringJoiner("\n-------------\n", "\n-------------\n", "\n-------------\n");
+            final StringJoiner joiner = new StringJoiner(SEPARATOR, SEPARATOR, SEPARATOR);
             maxClasses.stream()
                     .map(EquivalenceClass::describe)
                     .forEach(joiner::add);

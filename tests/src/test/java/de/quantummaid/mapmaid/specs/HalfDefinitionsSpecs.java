@@ -22,8 +22,6 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.testsupport.domain.half.*;
-import de.quantummaid.mapmaid.testsupport.domain.repositories.RepositoryWithDeserializationOnlyType;
-import de.quantummaid.mapmaid.testsupport.domain.repositories.RepositoryWithSerializationOnlyType;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
@@ -31,8 +29,7 @@ import org.junit.jupiter.api.Test;
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class HalfDefinitionsSpecs {
@@ -46,7 +43,7 @@ public final class HalfDefinitionsSpecs {
                                 advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidSerializes(ASerializationOnlyString.init()).withMarshallingType(json())
+                .when().mapMaidSerializes(ASerializationOnlyString.init()).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("\"theValue\"");
     }
@@ -60,7 +57,7 @@ public final class HalfDefinitionsSpecs {
                                 advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("\"foo\"").from(json()).toTheType(ADeserializationOnlyString.class)
+                .when().mapMaidDeserializes("\"foo\"").from(JSON).toTheType(ADeserializationOnlyString.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(ADeserializationOnlyString.fromStringValue("foo"));
     }
@@ -74,7 +71,7 @@ public final class HalfDefinitionsSpecs {
                                 advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(json())
+                .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -95,7 +92,7 @@ public final class HalfDefinitionsSpecs {
                 "{\n" +
                 "  \"string\": \"foo\"\n" +
                 "}")
-                .from(json()).toTheType(ADeserializationOnlyComplexType.class)
+                .from(JSON).toTheType(ADeserializationOnlyComplexType.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(ADeserializationOnlyComplexType.deserialize(ADeserializationOnlyString.fromStringValue("foo")));
     }
@@ -122,39 +119,5 @@ public final class HalfDefinitionsSpecs {
         )
                 .when().mapMaidIsInstantiated()
                 .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString: unable to detect deserializer");
-    }
-
-    @Test
-    public void classScannerRecipeRegistersReturnTypesAsSerializationOnly() {
-        given(aMapMaid()
-                .usingRecipe(addAllReferencedClassesIn(RepositoryWithSerializationOnlyType.class))
-                .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
-                .build()
-        )
-                .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(json())
-                .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"string\": \"theValue\"\n" +
-                        "}");
-    }
-
-    @Test
-    public void classScannerRecipeRegistersParametersAsDeserializationOnly() {
-        given(
-                aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(RepositoryWithDeserializationOnlyType.class))
-                        .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
-                        .build()
-        )
-                .when().mapMaidDeserializes("" +
-                "{\n" +
-                "  \"string\": \"foo\"\n" +
-                "}")
-                .from(json()).toTheType(ADeserializationOnlyComplexType.class)
-                .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(ADeserializationOnlyComplexType.deserialize(ADeserializationOnlyString.fromStringValue("foo")));
     }
 }

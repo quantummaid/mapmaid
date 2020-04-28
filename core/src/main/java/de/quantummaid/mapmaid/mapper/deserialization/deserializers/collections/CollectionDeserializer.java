@@ -62,7 +62,7 @@ public interface CollectionDeserializer extends TypeDeserializer {
             return null;
         }
         final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker, typeIdentifier, debugInformation);
-        final List deserializedList = new ArrayList(10);
+        final List<Object> deserializedList = new ArrayList<>(10);
         final TypeIdentifier contentType = contentType();
         int index = 0;
         for (final Universal element : universalCollection.content()) {

@@ -21,6 +21,9 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.boolean_based;
 
+import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
+import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.specs.examples.customprimitives.success.boolean_based.LoggedIn.fromStringValue;
@@ -34,6 +37,17 @@ public final class BooleanBasedExample {
                 .withSerializedForm("true")
                 .withDeserializedForm(fromStringValue(true))
                 .withAllScenariosSuccessful()
+                .withManualDeserialization(mapMaidBuilder ->
+                        mapMaidBuilder.deserializing(DeserializationOnlyType.booleanBasedCustomPrimitive(
+                                LoggedIn.class, LoggedIn::fromStringValue)))
+                .withManualSerialization(mapMaidBuilder ->
+                        mapMaidBuilder.serializing(SerializationOnlyType.booleanBasedCustomPrimitive(
+                                LoggedIn.class, LoggedIn::stringValue
+                        )))
+                .withManualDuplex(mapMaidBuilder ->
+                        mapMaidBuilder.serializingAndDeserializing(DuplexType.booleanBasedCustomPrimitive(
+                                LoggedIn.class, LoggedIn::stringValue, LoggedIn::fromStringValue
+                        )))
                 .run();
     }
 }

@@ -21,11 +21,14 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
+import de.quantummaid.mapmaid.domain.*;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class CyclicReferencesSpecs {
 
@@ -36,10 +39,15 @@ public final class CyclicReferencesSpecs {
         given1.aCyclicType = given2;
         given2.aCyclicType = given1;
 
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidSerializes(given1).withMarshallingType(json())
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(ACyclicType.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(given1).withMarshallingType(MarshallingType.JSON)
                 .anExceptionIsThrownWithAMessageContaining("a circular reference has been detected for objects " +
-                        "of type de.quantummaid.mapmaid.testsupport.domain.valid.ACyclicType");
+                        "of type de.quantummaid.mapmaid.domain.ACyclicType");
     }
 
     @Test
@@ -51,8 +59,13 @@ public final class CyclicReferencesSpecs {
                 ANumber.fromInt(21));
         final AComplexNestedType nonCyclicType = AComplexNestedType.deserialize(complexType, complexType);
 
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidSerializes(nonCyclicType).withMarshallingType(json())
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(nonCyclicType).withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +

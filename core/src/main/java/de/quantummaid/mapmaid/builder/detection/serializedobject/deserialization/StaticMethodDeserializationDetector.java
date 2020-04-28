@@ -66,7 +66,7 @@ public final class StaticMethodDeserializationDetector implements SerializedObje
                     final Optional<Boolean> optional = resolvedType.map(type::equals);
                     return optional.orElse(false);
                 })
-                .filter(resolvedMethod -> resolvedMethod.parameters().size() > 0)
+                .filter(resolvedMethod -> !resolvedMethod.parameters().isEmpty())
                 .collect(toList());
     }
 

@@ -55,7 +55,7 @@ public final class LocalClassExample {
                         "cannot be detected because it is a local class (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.local_class.LocalClassExample$1LocalClass' " +
                         "cannot be detected because it is a local class (you can still register it manually)")
-                .withFixedScenarios((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
+                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
                         .withCustomType(requiredCapabilities, customPrimitive(LocalClass.class, object -> "foo", LocalClass::new)))
                 .run();
     }

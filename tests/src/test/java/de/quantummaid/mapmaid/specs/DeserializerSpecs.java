@@ -21,36 +21,52 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
+import de.quantummaid.mapmaid.domain.*;
+import de.quantummaid.mapmaid.domain.exceptions.AnException;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.MapMaidInstances.theExampleMapMaidWithAllMarshallers;
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class DeserializerSpecs {
 
     @Test
     public void givenStringJson_whenDeserializing_thenReturnAStringObject() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidDeserializes("\"string with special symbols like \' \"").from(json()).toTheType(AString.class)
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("\"string with special symbols like \' \"").from(JSON).toTheType(AString.class)
                 .theDeserializedObjectIs(AString.fromStringValue("string with special symbols like ' "));
     }
 
     @Test
     public void givenNumberJson_whenDeserializing_thenReturnANumberObject() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidDeserializes("49").from(json()).toTheType(ANumber.class)
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("49").from(JSON).toTheType(ANumber.class)
                 .theDeserializedObjectIs(ANumber.fromInt(49));
     }
 
     @Test
     public void givenComplexTypeJson_whenDeserializing_thenReturnAComplexObject() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"number1\":\"1\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}")
-                .from(json()).toTheType(AComplexType.class)
+                .from(JSON).toTheType(AComplexType.class)
                 .theDeserializedObjectIs(AComplexType.deserialize(
                         AString.fromStringValue("a"),
                         AString.fromStringValue("b"),
@@ -61,9 +77,14 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenComplexTypeWithArray_whenDeserializing_thenReturnObject() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithArray.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"array\":[\"1\", \"2\", \"3\"]}")
-                .from(json()).toTheType(AComplexTypeWithArray.class)
+                .from(JSON).toTheType(AComplexTypeWithArray.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexTypeWithArray.deserialize(
                         new ANumber[]{ANumber.fromInt(1), ANumber.fromInt(2), ANumber.fromInt(3)})
@@ -72,15 +93,26 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenComplexTypeWithInvalidArray_whenDeserializing_thenThrowCorrectException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithArray.class)
+                        .withExceptionIndicatingValidationError(AnException.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"array\":[\"1\", \"51\", \"53\"]}")
-                .from(json()).toTheType(AComplexTypeWithArray.class)
+                .from(JSON).toTheType(AComplexTypeWithArray.class)
                 .anAggregatedExceptionHasBeenThrownWithNumberOfErrors(2);
     }
 
     @Test
     public void givenComplexNestedTypeJson_whenDeserializing_thenReturnAComplexObject() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{" +
                 "\"complexType1\":" +
@@ -88,7 +120,7 @@ public final class DeserializerSpecs {
                 "\"complexType2\":" +
                 "{\"number1\":\"3\",\"number2\":\"4\",\"stringA\":\"c\",\"stringB\":\"d\"}" +
                 "}")
-                .from(json()).toTheType(AComplexNestedType.class)
+                .from(JSON).toTheType(AComplexNestedType.class)
                 .theDeserializedObjectIs(AComplexNestedType.deserialize(
                         AComplexType.deserialize(
                                 AString.fromStringValue("a"),
@@ -107,25 +139,36 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenNull_whenDeserializing_thenThrowsError() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidDeserializes(null).from(json()).toTheType(AComplexType.class)
+        given(
+                aMapMaid().build()
+        )
+                .when().mapMaidDeserializes(null).from(JSON).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("input must not be null");
     }
 
     @Test
     public void givenEmpty_whenDeserializing_thenReturnsNull() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidDeserializes("").from(json()).toTheType(AComplexType.class)
+        given(
+                aMapMaid()
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("").from(JSON).toTheType(AComplexType.class)
                 .theDeserializedObjectIs(null)
                 .noExceptionHasBeenThrown();
     }
 
     @Test
     public void givenInvalidJson_whenDeserializing_thenThrowsError() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"number1\";\"1\",\"number2\":\"2\",\"stringA\"=\"a\",\"stringB\":\"b\"}")
-                .from(json()).toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Error during unmarshalling for type 'de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType' with input '{" +
+                .from(JSON).toTheType(AComplexType.class)
+                .anExceptionIsThrownWithAMessageContaining("Error during unmarshalling for type 'de.quantummaid.mapmaid.domain.AComplexType' with input '{" +
                         "\"number1\";\"1\"," +
                         "\"number2\":\"2\"," +
                         "\"stringA\"=\"a\"," +
@@ -134,9 +177,14 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenIncompleteJson_whenDeserializing_thenFillsWithNull() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"number1\":\"1\",\"stringA\":\"a\"}")
-                .from(json()).toTheType(AComplexType.class)
+                .from(JSON).toTheType(AComplexType.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexType.deserialize(
                         AString.fromStringValue("a"),
@@ -148,12 +196,14 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenJsonWithValidValues_whenDeserializing_thenReturnsObject() {
-        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
-        final ScanInformation scanInformation = mapMaid.debugInformation().scanInformationFor(AComplexTypeWithValidations.class);
-        System.out.println(scanInformation.render());
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithValidations.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"number1\":\"21\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}")
-                .from(json()).toTheType(AComplexTypeWithValidations.class)
+                .from(JSON).toTheType(AComplexTypeWithValidations.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexTypeWithValidations.deserialize(
                         AString.fromStringValue("a"),
@@ -165,30 +215,39 @@ public final class DeserializerSpecs {
 
     @Test
     public void givenJsonWithNestedValidationExceptions_whenDeserializing_thenReturnsOnlyOneValidationException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexNestedValidatedType.class)
+                        .withExceptionIndicatingValidationError(AnException.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("{\"node\": {\"leaf\":\"1234\"}}")
-                .from(json()).toTheType(AComplexNestedValidatedType.class)
+                .from(JSON).toTheType(AComplexNestedValidatedType.class)
                 .anAggregatedExceptionHasBeenThrownWithNumberOfErrors(1);
     }
 
     @Test
     public void deserializerCanFindFactoryMethodsWithArrays() {
-        final MapMaid mapMaid = theExampleMapMaidWithAllMarshallers();
-        final String render = mapMaid.debugInformation().scanInformationFor(AComplexTypeWithListButArrayConstructor.class).render();
-        System.out.println(render);
-
-        final String render1 = mapMaid.debugInformation().scanInformationFor(ANumber[].class).render();
-        System.out.println(render1);
-
-        Given.givenTheExampleMapMaidWithAllMarshallers()
-                .when().mapMaidDeserializes("{list: [\"1\"]}").from(json()).toTheType(AComplexTypeWithListButArrayConstructor.class)
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithListButArrayConstructor.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("{list: [\"1\"]}").from(JSON).toTheType(AComplexTypeWithListButArrayConstructor.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexTypeWithListButArrayConstructor.deserialize(new ANumber[]{ANumber.fromInt(1)}));
     }
 
     @Test
     public void nestedCollectionsCanBeDeserialized() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexTypeWithNestedCollections.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"nestedList\": [\n" +
@@ -227,7 +286,7 @@ public final class DeserializerSpecs {
                 "      ]\n" +
                 "    ]\n" +
                 "  ]\n" +
-                "}").from(json()).toTheType(AComplexTypeWithNestedCollections.class)
+                "}").from(JSON).toTheType(AComplexTypeWithNestedCollections.class)
                 .noExceptionHasBeenThrown()
                 .theDeserialiedObjectHas(AComplexTypeWithNestedCollections.class, result -> result.nestedArray[0][0][0][0].equals(AString.fromStringValue("arrays")))
                 .theDeserialiedObjectHas(AComplexTypeWithNestedCollections.class, result -> result.nestedList.get(0).get(0).get(0).get(0).equals(ANumber.fromInt(42)))

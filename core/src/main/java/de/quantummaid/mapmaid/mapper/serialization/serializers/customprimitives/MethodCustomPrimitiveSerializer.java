@@ -31,7 +31,7 @@ import lombok.ToString;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
-import static de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.IncompatibleCustomPrimitiveException.incompatibleCustomPrimitiveException;
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @ToString
@@ -45,21 +45,17 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
                                                              final ResolvedMethod serializationMethod) {
         final int serializationMethodModifiers = serializationMethod.method().getModifiers();
         if (Modifier.isStatic(serializationMethodModifiers)) {
-            throw incompatibleCustomPrimitiveException(
-                    "The serialization method %s configured for the custom primitive of type %s must not be static",
-                    serializationMethod,
-                    type.description()
-            );
+            throw mapMaidException(format("The serialization method %s configured for the custom primitive of type %s must not be static",
+                    serializationMethod, type.description()));
         }
-        if (serializationMethod.parameters().size() > 0) {
-            throw incompatibleCustomPrimitiveException(
+        if (!serializationMethod.parameters().isEmpty()) {
+            throw mapMaidException(format(
                     "The serialization method %s configured for the custom primitive of type %s must " +
-                            "not accept any parameters",
-                    serializationMethod,
-                    type.description()
-            );
+                            "not accept any parameters", serializationMethod.describe(), type.description()));
         }
-        final ResolvedType baseType = serializationMethod.returnType().get();
+        final ResolvedType baseType = serializationMethod.returnType()
+                .orElseThrow(() -> mapMaidException(format("The serialization method %s configured for the custom primitive " +
+                        "of type %s must not be void", serializationMethod, type.description())));
         return new MethodCustomPrimitiveSerializer(baseType, serializationMethod);
     }
 
@@ -68,12 +64,10 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
         try {
             return this.serializationMethod.method().invoke(object);
         } catch (final IllegalAccessException e) {
-            throw CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException(format(
-                    "This should never happen. Called serialization method %s for custom type %s on instance %s",
+            throw mapMaidException(format("This should never happen. Called serialization method %s for custom type %s on instance %s",
                     this.serializationMethod, object.getClass(), object), e);
         } catch (final InvocationTargetException e) {
-            throw CustomPrimitiveSerializationMethodCallException.customPrimitiveSerializationMethodCallException(format(
-                    "Got exception calling serialization method %s for custom type %s on instance %s",
+            throw mapMaidException(format("Got exception calling serialization method %s for custom type %s on instance %s",
                     this.serializationMethod, object.getClass(), object), e);
         }
     }

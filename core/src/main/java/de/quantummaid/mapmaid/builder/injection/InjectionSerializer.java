@@ -62,8 +62,7 @@ public final class InjectionSerializer implements TypeSerializer {
                                final CustomPrimitiveMappings customPrimitiveMappings,
                                final DebugInformation debugInformation) {
         final ScanInformation scanInformation = debugInformation.scanInformationFor(this.typeIdentifier);
-        throw mapMaidException(format(
-                "Tried to serialize type '%s' that is marked as injection-only (input was '%s')",
+        throw mapMaidException(format("Tried to serialize type '%s' that is marked as injection-only (input was '%s')",
                 this.typeIdentifier.description(), object), scanInformation);
     }
 

@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.mapper.injector;
 
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +34,6 @@ public final class InjectorFactory {
 
     public static InjectorFactory emptyInjectorFactory() {
         return new InjectorFactory(InjectorLambda.noop());
-    }
-
-    public static InjectorFactory injectorFactory(final InjectorLambda initializer) {
-        NotNullValidator.validateNotNull(initializer, "initializer");
-        return new InjectorFactory(initializer);
     }
 
     public Injector create() {

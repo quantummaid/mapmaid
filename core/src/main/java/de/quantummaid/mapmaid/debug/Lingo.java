@@ -31,12 +31,12 @@ public final class Lingo {
     }
 
     public static String mode(final boolean serializer, final boolean deserializer) {
-        if (deserializer && !serializer) {
-            return DESERIALIZATION_ONLY;
-        } else if (serializer && !deserializer) {
-            return SERIALIZATION_ONLY;
-        } else if (serializer && deserializer) {
+        if (serializer && deserializer) {
             return DUPLEX;
+        } else if (deserializer) {
+            return DESERIALIZATION_ONLY;
+        } else if (serializer) {
+            return SERIALIZATION_ONLY;
         } else {
             throw new UnsupportedOperationException("This should never happen. " +
                     "There is no mode that has neither serialization and deserialization.");

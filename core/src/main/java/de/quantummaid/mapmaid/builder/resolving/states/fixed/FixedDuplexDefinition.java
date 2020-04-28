@@ -22,8 +22,10 @@
 package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.Reason;
+
+import java.util.function.Supplier;
 
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingDeserializer.fixedResolvingDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving.FixedResolvingSerializer.fixedResolvingSerializer;
@@ -43,11 +45,7 @@ public abstract class FixedDuplexDefinition extends StatefulDefinition {
     @Override
     public StatefulDefinition removeSerialization(final Reason reason) {
         final boolean empty = this.context.removeSerializationReasonAndReturnIfEmpty(reason);
-        if (empty) {
-            return fixedResolvingSerializer(this.context);
-        } else {
-            return this;
-        }
+        return thisOr(empty, () -> fixedResolvingSerializer(this.context));
     }
 
     @Override
@@ -59,8 +57,12 @@ public abstract class FixedDuplexDefinition extends StatefulDefinition {
     @Override
     public StatefulDefinition removeDeserialization(final Reason reason) {
         final boolean empty = this.context.removeDeserializationReasonAndReturnIfEmpty(reason);
+        return thisOr(empty, () -> fixedResolvingDeserializer(this.context));
+    }
+
+    private StatefulDefinition thisOr(final boolean empty, final Supplier<StatefulDefinition> alternative) {
         if (empty) {
-            return fixedResolvingDeserializer(this.context);
+            return alternative.get();
         } else {
             return this;
         }

@@ -31,27 +31,15 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MarshallingType {
-    public static final MarshallingType JSON = json();
-    public static final MarshallingType XML = xml();
-    public static final MarshallingType YAML = yaml();
+    public static final MarshallingType JSON = marshallingType("json");
+    public static final MarshallingType XML = marshallingType("xml");
+    public static final MarshallingType YAML = marshallingType("yaml");
 
     private final String type;
 
     public static MarshallingType marshallingType(final String type) {
         RequiredStringValidator.validateNotNullNorEmpty(type, "type");
         return new MarshallingType(type);
-    }
-
-    public static MarshallingType json() {
-        return marshallingType("json");
-    }
-
-    public static MarshallingType xml() {
-        return marshallingType("xml");
-    }
-
-    public static MarshallingType yaml() {
-        return marshallingType("yaml");
     }
 
     public String internalValueForMapping() {

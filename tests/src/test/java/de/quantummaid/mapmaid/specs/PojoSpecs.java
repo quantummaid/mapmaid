@@ -22,15 +22,14 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.testsupport.domain.pojos.AComplexTypeWithGetters;
-import de.quantummaid.mapmaid.testsupport.domain.pojos.AComplexTypeWithSetters;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithGetters;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithSetters;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
-
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 
 public final class PojoSpecs {
 
@@ -46,7 +45,7 @@ public final class PojoSpecs {
                 AComplexTypeWithGetters.deserialize(
                         AString.fromStringValue("foo"),
                         AString.fromStringValue("bar")
-                )).withMarshallingType(json())
+                )).withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -67,7 +66,7 @@ public final class PojoSpecs {
                 "{\n" +
                 "  \"stringA\": \"foo\",\n" +
                 "  \"stringB\": \"bar\"\n" +
-                "}").from(json()).toTheType(AComplexTypeWithSetters.class)
+                "}").from(MarshallingType.JSON).toTheType(AComplexTypeWithSetters.class)
                 .noExceptionHasBeenThrown();
     }
 }

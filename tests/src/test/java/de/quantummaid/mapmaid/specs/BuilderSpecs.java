@@ -21,13 +21,14 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.domain.repositories.MyRepository;
-import de.quantummaid.mapmaid.testsupport.domain.valid.*;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.AComplexTypeWithDifferentCollections;
+import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 
 public final class BuilderSpecs {
 
@@ -63,17 +64,5 @@ public final class BuilderSpecs {
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheSerializedObjects(AComplexTypeWithDifferentCollections.class)
                 .theDefinitionsContainExactlyTheCustomPrimitives(ANumber.class);
-    }
-
-    @Test
-    public void referencesInClassesCanBeScanned() {
-        Given.given(
-                aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(MyRepository.class))
-                        .build()
-        )
-                .when().theDefinitionsAreQueried()
-                .theDefinitionsContainExactlyTheSerializedObjects()
-                .theDefinitionsContainExactlyTheCustomPrimitives(APrimitiveBoolean.class, APrimitiveInteger.class);
     }
 }

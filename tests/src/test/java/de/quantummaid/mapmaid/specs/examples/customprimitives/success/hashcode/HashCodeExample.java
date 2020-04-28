@@ -34,7 +34,7 @@ public final class HashCodeExample {
                 .withSerializedForm("7.0")
                 .withDeserializedForm(HashCodeCustomPrimitive.hashCodeCustomPrimitive(7))
                 .withDeserializationOnly()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> {
+                .withManual((mapMaidBuilder, capabilities) -> {
                     mapMaidBuilder.withCustomType(capabilities, intBasedCustomPrimitive(
                             HashCodeCustomPrimitive.class,
                             HashCodeCustomPrimitive::hashCode,

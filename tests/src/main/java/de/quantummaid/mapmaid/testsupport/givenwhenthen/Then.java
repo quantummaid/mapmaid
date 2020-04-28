@@ -34,7 +34,6 @@ import java.util.function.Predicate;
 import static de.quantummaid.mapmaid.debug.scaninformation.Classification.CUSTOM_PRIMITIVE;
 import static de.quantummaid.mapmaid.debug.scaninformation.Classification.SERIALIZED_OBJECT;
 import static java.util.Arrays.stream;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,9 +68,6 @@ public final class Then {
     }
 
     public Then noExceptionHasBeenThrown() {
-        if (nonNull(this.thenData.getException())) {
-            this.thenData.getException().printStackTrace();
-        }
         assertThat(this.thenData.getException(), is(nullValue()));
         return this;
     }
@@ -107,7 +103,7 @@ public final class Then {
         return this;
     }
 
-    public Then theSerializationResultWas(final String serialized) {
+    public Then theSerializationResultWas(final Object serialized) {
         assertThat(this.thenData.getSerializationResult(), is(serialized));
         return this;
     }

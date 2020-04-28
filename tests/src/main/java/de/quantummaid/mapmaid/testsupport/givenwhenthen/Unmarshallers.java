@@ -27,8 +27,6 @@ import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
-
 public final class Unmarshallers {
 
     private Unmarshallers() {
@@ -41,13 +39,7 @@ public final class Unmarshallers {
 
     public static Unmarshaller xmlUnmarshaller() {
         final XmlMapper xmlMapper = new XmlMapper();
-        return input -> {
-            try {
-                return xmlMapper.readValue(input, Object.class);
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
-        };
+        return input -> xmlMapper.readValue(input, Object.class);
     }
 
     public static Unmarshaller yamlUnmarshaller() {

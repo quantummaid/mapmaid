@@ -56,7 +56,7 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
 
     public static <T> DeserializationOnlyType<T> customPrimitive(final Class<T> type,
                                                                  final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
-        return stringBasedCustomPrimitive(genericType(type), deserializer);
+        return customPrimitive(genericType(type), deserializer);
     }
 
     public static <T> DeserializationOnlyType<T> customPrimitive(final GenericType<T> type,
@@ -76,12 +76,22 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
 
     public static <T> DeserializationOnlyType<T> intBasedCustomPrimitive(final Class<T> type,
                                                                          final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
-        return createCustomPrimitive(genericType(type), deserializer, Integer.class);
+        return intBasedCustomPrimitive(genericType(type), deserializer);
     }
 
     public static <T> DeserializationOnlyType<T> intBasedCustomPrimitive(final GenericType<T> type,
                                                                          final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
         return createCustomPrimitive(type, deserializer, Integer.class);
+    }
+
+    public static <T> DeserializationOnlyType<T> longBasedCustomPrimitive(final Class<T> type,
+                                                                          final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
+        return longBasedCustomPrimitive(genericType(type), deserializer);
+    }
+
+    public static <T> DeserializationOnlyType<T> longBasedCustomPrimitive(final GenericType<T> type,
+                                                                          final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
+        return createCustomPrimitive(type, deserializer, Long.class);
     }
 
     public static <T> DeserializationOnlyType<T> floatBasedCustomPrimitive(final Class<T> type,
@@ -96,7 +106,7 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
 
     public static <T> DeserializationOnlyType<T> doubleBasedCustomPrimitive(final Class<T> type,
                                                                             final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
-        return createCustomPrimitive(genericType(type), deserializer, Double.class);
+        return doubleBasedCustomPrimitive(genericType(type), deserializer);
     }
 
     public static <T> DeserializationOnlyType<T> doubleBasedCustomPrimitive(final GenericType<T> type,
@@ -112,19 +122,6 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
     public static <T> DeserializationOnlyType<T> booleanBasedCustomPrimitive(final GenericType<T> type,
                                                                              final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
         return createCustomPrimitive(type, deserializer, Boolean.class);
-    }
-
-    public static <T> DeserializationOnlyType<T> deserializationOnlyType(final Class<T> type,
-                                                                         final TypeDeserializer deserializer) {
-        return deserializationOnlyType(genericType(type), deserializer);
-    }
-
-    public static <T> DeserializationOnlyType<T> deserializationOnlyType(final GenericType<T> type,
-                                                                         final TypeDeserializer deserializer) {
-        validateNotNull(type, "type");
-        validateNotNull(deserializer, "deserializer");
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
-        return deserializationOnlyType(typeIdentifier, deserializer);
     }
 
     public static <T> DeserializationOnlyType<T> deserializationOnlyType(final TypeIdentifier type,

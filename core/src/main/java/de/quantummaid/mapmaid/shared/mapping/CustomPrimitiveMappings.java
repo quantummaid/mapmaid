@@ -32,14 +32,12 @@ import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.shared.mapping.BooleanFormatException.booleanFormatException;
 import static de.quantummaid.mapmaid.shared.mapping.TypeMappings.typeMappings;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.Double.parseDouble;
 import static java.lang.String.format;
-import static java.util.Optional.empty;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -81,14 +79,6 @@ public final class CustomPrimitiveMappings {
     public boolean isPrimitiveType(final Class<?> type) {
         validateNotNull(type, "type");
         return this.mappings.containsKey(type);
-    }
-
-    public Optional<UniversalTypeMapper> byType(final Class<?> type) {
-        validateNotNull(type, "type");
-        if (!this.mappings.containsKey(type)) {
-            return empty();
-        }
-        return Optional.of(this.mappings.get(type));
     }
 
     public UniversalPrimitive toUniversal(final Object object) {

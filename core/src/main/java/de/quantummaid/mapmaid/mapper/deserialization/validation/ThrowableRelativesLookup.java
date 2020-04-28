@@ -21,24 +21,27 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.validation;
 
-import java.util.ArrayList;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-final class ThrowableRelativesLookup {
+import static de.quantummaid.mapmaid.Collection.smallList;
 
-    private final Class<? extends Throwable> clazz;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+final class ThrowableRelativesLookup {
     private final List<Class<? extends Throwable>> relatives;
 
-    private ThrowableRelativesLookup(final Class<? extends Throwable> clazz) {
-        this.clazz = clazz;
-        this.relatives = new ArrayList<>(0);
-        this.traverseRelatives(clazz);
-    }
-
     static ThrowableRelativesLookup fromThrowable(final Class<? extends Throwable> clazz) {
-        return new ThrowableRelativesLookup(clazz);
+        final List<Class<? extends Throwable>> relatives = smallList();
+        traverseRelatives(clazz, relatives);
+        return new ThrowableRelativesLookup(relatives);
     }
 
     Class<? extends Throwable> closestRelativeFrom(final Collection<Class<? extends Throwable>> assignableClasses) {
@@ -52,16 +55,16 @@ final class ThrowableRelativesLookup {
     }
 
     @SuppressWarnings("unchecked")
-    private void traverseRelatives(final Class<?> clazz) {
+    private static void traverseRelatives(final Class<?> clazz, final List<Class<? extends Throwable>> relatives) {
         if (Throwable.class.isAssignableFrom(clazz)) {
-            this.relatives.add((Class<? extends Throwable>) clazz);
+            relatives.add((Class<? extends Throwable>) clazz);
             final Class<?> superclass = clazz.getSuperclass();
             final Class<?>[] interfaces = clazz.getInterfaces();
 
-            Arrays.stream(interfaces).forEach(this::traverseRelatives);
+            Arrays.stream(interfaces).forEach(interFace -> traverseRelatives(interFace, relatives));
 
             if (superclass != null) {
-                traverseRelatives(superclass);
+                traverseRelatives(superclass, relatives);
             }
         }
     }

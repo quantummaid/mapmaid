@@ -22,10 +22,13 @@
 package de.quantummaid.mapmaid.builder.resolving.states.unreasoned;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.states.undetected.UndetectedDeserializer.undetectedDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.undetected.UndetectedSerializer.undetectedSerializer;
@@ -62,5 +65,10 @@ public final class Unreasoned extends StatefulDefinition {
     @Override
     public StatefulDefinition removeDeserialization(final Reason reason) {
         return this;
+    }
+
+    @Override
+    public Optional<Report> getDefinition() {
+        return Optional.empty();
     }
 }

@@ -29,7 +29,7 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 
 public final class SpecialCustomPrimitivesSpecs {
 
@@ -41,7 +41,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"doubleA\": 1, \"doubleB\": 2}").from(json()).toTheType(AComplexTypeWithDoublesDto.class)
+                .when().mapMaidDeserializes("{\"doubleA\": 1, \"doubleB\": 2}").from(JSON).toTheType(AComplexTypeWithDoublesDto.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(new AComplexTypeWithDoublesDto(new APrimitiveDouble(1.0), new AWrapperDouble(2.0)));
     }
@@ -54,7 +54,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"doubleA\": \"1\", \"doubleB\": \"2\"}").from(json()).toTheType(AComplexTypeWithDoublesDto.class)
+                .when().mapMaidDeserializes("{\"doubleA\": \"1\", \"doubleB\": \"2\"}").from(JSON).toTheType(AComplexTypeWithDoublesDto.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(new AComplexTypeWithDoublesDto(new APrimitiveDouble(1.0), new AWrapperDouble(2.0)));
     }
@@ -68,7 +68,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withExceptionIndicatingValidationError(NumberFormatException.class)
                         .build()
         )
-                .when().mapMaidDeserializes("{\"doubleA\": \"foo\", \"doubleB\": \"bar\"}").from(json()).toTheType(AComplexTypeWithDoublesDto.class)
+                .when().mapMaidDeserializes("{\"doubleA\": \"foo\", \"doubleB\": \"bar\"}").from(JSON).toTheType(AComplexTypeWithDoublesDto.class)
                 .anAggregatedExceptionHasBeenThrownWithNumberOfErrors(2);
     }
 
@@ -81,7 +81,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(new AComplexTypeWithDoublesDto(new APrimitiveDouble(1.0), new AWrapperDouble(2.0)))
-                .withMarshallingType(json())
+                .withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -98,7 +98,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"booleanA\": true, \"booleanB\": false}").from(json()).toTheType(AComplexTypeWithBooleansDto.class)
+                .when().mapMaidDeserializes("{\"booleanA\": true, \"booleanB\": false}").from(JSON).toTheType(AComplexTypeWithBooleansDto.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(new AComplexTypeWithBooleansDto(new APrimitiveBoolean(true), new AWrapperBoolean(false)));
     }
@@ -111,7 +111,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"booleanA\": \"true\", \"booleanB\": \"false\"}").from(json()).toTheType(AComplexTypeWithBooleansDto.class)
+                .when().mapMaidDeserializes("{\"booleanA\": \"true\", \"booleanB\": \"false\"}").from(JSON).toTheType(AComplexTypeWithBooleansDto.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(new AComplexTypeWithBooleansDto(new APrimitiveBoolean(true), new AWrapperBoolean(false)));
     }
@@ -125,7 +125,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withExceptionIndicatingValidationError(BooleanFormatException.class)
                         .build()
         )
-                .when().mapMaidDeserializes("{\"booleanA\": \"foo\", \"booleanB\": \"bar\"}").from(json()).toTheType(AComplexTypeWithBooleansDto.class)
+                .when().mapMaidDeserializes("{\"booleanA\": \"foo\", \"booleanB\": \"bar\"}").from(JSON).toTheType(AComplexTypeWithBooleansDto.class)
                 .anAggregatedExceptionHasBeenThrownWithNumberOfErrors(2);
     }
 
@@ -138,7 +138,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(new AComplexTypeWithBooleansDto(new APrimitiveBoolean(true), new AWrapperBoolean(false)))
-                .withMarshallingType(json())
+                .withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +
@@ -155,7 +155,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"intA\": 1, \"intB\": 2}").from(json()).toTheType(AComplexTypeWithIntegersDto.class)
+                .when().mapMaidDeserializes("{\"intA\": 1, \"intB\": 2}").from(JSON).toTheType(AComplexTypeWithIntegersDto.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(new AComplexTypeWithIntegersDto(new APrimitiveInteger(1), new AWrapperInteger(2)));
     }
@@ -168,7 +168,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"intA\": \"1\", \"intB\": \"2\"}").from(json()).toTheType(AComplexTypeWithIntegersDto.class)
+                .when().mapMaidDeserializes("{\"intA\": \"1\", \"intB\": \"2\"}").from(JSON).toTheType(AComplexTypeWithIntegersDto.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(new AComplexTypeWithIntegersDto(new APrimitiveInteger(1), new AWrapperInteger(2)));
     }
@@ -182,7 +182,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .build()
         )
                 .when().mapMaidSerializes(new AComplexTypeWithIntegersDto(new APrimitiveInteger(1), new AWrapperInteger(2)))
-                .withMarshallingType(json())
+                .withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
                         "{\n" +

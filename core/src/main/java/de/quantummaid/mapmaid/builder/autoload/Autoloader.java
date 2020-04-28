@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.autoload.AutoloadingException.autoloadingException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
@@ -77,7 +78,7 @@ public final class Autoloader {
         try {
             return (MarshallerAndUnmarshaller) staticInitializer.invoke(null);
         } catch (final IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw autoloadingException(e);
         }
     }
 }

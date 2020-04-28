@@ -21,45 +21,68 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.domain.exceptions.AnException;
+import de.quantummaid.mapmaid.domain.AComplexType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
+import java.util.List;
+
+import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError.fromExceptionMessageAndPropertyPath;
+import static de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError.fromStringMessageAndPropertyPath;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class ExceptionTrackingSpecs {
 
     @Test
     public void testUnmappedException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"number1\": \"x\",\n" +
                 "  \"number2\": \"5\",\n" +
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
-                "}").from(json()).toTheType(AComplexType.class)
+                "}").from(MarshallingType.JSON).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("Unrecognized exception deserializing field 'number1': " +
                         "Exception calling deserialize(input: x)");
     }
 
     @Test
     public void testMappedException() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .withExceptionIndicatingValidationError(AnException.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"number1\": \"4\",\n" +
                 "  \"number2\": \"5000\",\n" +
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
-                "}").from(json()).toTheType(AComplexType.class)
+                "}").from(MarshallingType.JSON).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("deserialization encountered validation errors." +
                         " Validation error at 'number2', value cannot be over 50; ");
     }
 
     @Test
     public void testUnmappedExceptionWithoutMarshalling() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
                 .when().mapMaidDeserializesTheMap("" +
                 "{\n" +
                 "  \"number1\": \"x\",\n" +
@@ -73,7 +96,13 @@ public final class ExceptionTrackingSpecs {
 
     @Test
     public void testMappedExceptionWithoutMarshalling() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .withExceptionIndicatingValidationError(AnException.class)
+                        .build()
+        )
                 .when().mapMaidDeserializesTheMap("" +
                 "{\n" +
                 "  \"number1\": \"4\",\n" +
@@ -87,16 +116,49 @@ public final class ExceptionTrackingSpecs {
 
     @Test
     public void testMultipleExceptionsCanBeMapped() {
-        Given.givenTheExampleMapMaidWithAllMarshallers()
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .withExceptionIndicatingValidationError(AnException.class)
+                        .build()
+        )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
                 "  \"number1\": \"4000\",\n" +
                 "  \"number2\": \"5000\",\n" +
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
-                "}").from(json()).toTheType(AComplexType.class)
+                "}").from(MarshallingType.JSON).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("deserialization encountered validation errors." +
                         " Validation error at 'number1', value cannot be over 50;" +
                         " Validation error at 'number2', value cannot be over 50; ");
+    }
+
+    @Test
+    public void exceptionIndicatingMultipleValidationErrors() {
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexType.class)
+                        .withExceptionIndicatingMultipleValidationErrors(AnException.class,
+                                (exception, propertyPath) -> List.of(
+                                        fromExceptionMessageAndPropertyPath(exception, "a"),
+                                        fromStringMessageAndPropertyPath("foo", "a.b")
+                                ))
+                        .build()
+        )
+                .when().mapMaidDeserializes("" +
+                "{\n" +
+                "  \"number1\": \"4000\",\n" +
+                "  \"number2\": \"5000\",\n" +
+                "  \"stringA\": \"asdf\",\n" +
+                "  \"stringB\": \"qwer\"\n" +
+                "}").from(MarshallingType.JSON).toTheType(AComplexType.class)
+                .anExceptionIsThrownWithAMessageContaining("deserialization encountered validation errors. " +
+                        "Validation error at 'a', value cannot be over 50; " +
+                        "Validation error at 'a.b', foo; " +
+                        "Validation error at 'a', value cannot be over 50; " +
+                        "Validation error at 'a.b', foo; ");
     }
 }

@@ -33,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializationField.deserializationField;
@@ -43,6 +42,7 @@ import static de.quantummaid.mapmaid.mapper.serialization.serializers.serialized
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -92,8 +92,8 @@ public final class Builder {
     public TypeSerializer createSerializer() {
         final List<SerializationField> serializationFieldList = this.serializationFields.stream()
                 .map(field -> serializationField(field.type(), field.name(), field::query))
-                .collect(Collectors.toList());
-        final SerializationFields serializationFields = serializationFields(serializationFieldList);
-        return serializedObjectSerializer(serializationFields);
+                .collect(toList());
+        final SerializationFields fields = serializationFields(serializationFieldList);
+        return serializedObjectSerializer(fields);
     }
 }

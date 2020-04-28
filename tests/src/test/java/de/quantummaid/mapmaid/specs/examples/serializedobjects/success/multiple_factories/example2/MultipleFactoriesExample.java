@@ -34,7 +34,7 @@ public final class MultipleFactoriesExample {
                 .withSerializedForm("\"qwer\"")
                 .withDeserializedForm(HashCode.fromString("qwer"))
                 .withSerializationOnly()
-                .withFixedScenarios((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
+                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
                         customPrimitive(HashCode.class, HashCode::internalValueForMapping, HashCode::fromString)))
                 .run();
     }

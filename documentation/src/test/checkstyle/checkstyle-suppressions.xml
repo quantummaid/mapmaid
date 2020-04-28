@@ -25,8 +25,8 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
     <suppress checks="TrailingComment|Regex|MethodLength"
-              files="PackageScannerExample|MarshallingExamples|DocExample1|DetectorExample|ExceptionExamples"/>
-    <suppress checks="CommentsIndentation|Regex" files="UsageExamples"/>
-    <suppress checks="MagicNumber" files="OrderAmountTest|PlayerTests"/>
+              files="MarshallingDocumentationTests|DocExample1|DetectorExample|ExceptionExamples"/>
+    <suppress checks="CommentsIndentation|Regex" files="UsageDocumentationTests"/>
+    <suppress checks="MagicNumber" files="OrderAmountDocumentationTests|PlayerTests"/>
     <suppress checks="MagicNumber|FinalParameters" files="Player"/>
 </suppressions>

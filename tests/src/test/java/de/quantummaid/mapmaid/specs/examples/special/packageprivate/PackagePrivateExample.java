@@ -40,7 +40,7 @@ public final class PackagePrivateExample {
                         "cannot be detected because it is not public (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.packageprivate.PackagePrivateClass' " +
                         "cannot be detected because it is not public (you can still register it manually)")
-                .withFixedScenarios((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
+                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
                         .withCustomType(requiredCapabilities, customPrimitive(PackagePrivateClass.class, object -> "foo", PackagePrivateClass::packagePrivateClass)))
                 .run();
     }

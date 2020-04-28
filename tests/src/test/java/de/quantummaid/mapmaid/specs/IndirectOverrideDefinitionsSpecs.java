@@ -22,10 +22,11 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexNestedType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AComplexType;
-import de.quantummaid.mapmaid.testsupport.domain.valid.ANumber;
-import de.quantummaid.mapmaid.testsupport.domain.valid.AString;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.domain.AComplexNestedType;
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
@@ -33,7 +34,6 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.json;
 
 public final class IndirectOverrideDefinitionsSpecs {
 
@@ -48,7 +48,7 @@ public final class IndirectOverrideDefinitionsSpecs {
                         })
                         .build()
         )
-                .when().mapMaidDeserializes("42").from(json()).toTheType(ANumber.class)
+                .when().mapMaidDeserializes("42").from(MarshallingType.JSON).toTheType(ANumber.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(ANumber.fromInt(23));
     }
@@ -70,7 +70,7 @@ public final class IndirectOverrideDefinitionsSpecs {
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("{\"foo\": \"qwer\"}").from(json()).toTheType(AComplexType.class)
+                .when().mapMaidDeserializes("{\"foo\": \"qwer\"}").from(MarshallingType.JSON).toTheType(AComplexType.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AComplexType.deserialize(AString.fromStringValue("custom1"), AString.fromStringValue("custom2"), ANumber.fromInt(100), ANumber.fromInt(200)));
     }

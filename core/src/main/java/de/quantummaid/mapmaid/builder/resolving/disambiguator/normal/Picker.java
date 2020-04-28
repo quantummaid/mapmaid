@@ -75,10 +75,9 @@ public final class Picker {
                 .mapToInt(deserializer -> ((SerializedObjectDeserializer) deserializer).fields().fields().size())
                 .max();
         if (max.isPresent()) {
-            final List<TypeDeserializer> maxDeserializers = serializedObjectDeserializers.stream()
+            return serializedObjectDeserializers.stream()
                     .filter(deserializer -> ((SerializedObjectDeserializer) deserializer).fields().fields().size() == max.getAsInt())
                     .collect(toList());
-            return maxDeserializers;
         } else {
             return emptyList();
         }

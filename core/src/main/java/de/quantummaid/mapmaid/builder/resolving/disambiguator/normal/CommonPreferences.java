@@ -95,6 +95,6 @@ final class CommonPreferences {
 
     private static boolean methodHasSameNameAsDeclaringClass(final Method method) {
         final String className = method.getDeclaringClass().getSimpleName().toLowerCase();
-        return method.getName().toLowerCase().equals(className);
+        return method.getName().equalsIgnoreCase(className);
     }
 }

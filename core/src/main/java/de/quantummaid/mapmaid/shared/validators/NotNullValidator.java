@@ -21,8 +21,6 @@
 
 package de.quantummaid.mapmaid.shared.validators;
 
-import java.util.Collection;
-
 import static de.quantummaid.mapmaid.shared.validators.CustomTypeValidationException.customTypeValidationException;
 
 public final class NotNullValidator {
@@ -32,13 +30,6 @@ public final class NotNullValidator {
     public static void validateNotNull(final Object value, final String name) {
         if (value == null) {
             throw customTypeValidationException(name + " must not be null");
-        }
-    }
-
-    public static void validateNotNullOrEmpty(final Collection<?> value, final String name) {
-        validateNotNull(value, name);
-        if (value.isEmpty()) {
-            throw customTypeValidationException(name + " must not be empty");
         }
     }
 }

@@ -26,7 +26,7 @@ import de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.conventional.NewDetectorBuilder.detectorBuilder;
+import static de.quantummaid.mapmaid.builder.conventional.DetectorBuilder.detectorBuilder;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.ConstructorBasedDeserializationDetector.constructorBased;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SetterBasedDeserializationDetector.setterBasedDeserializationDetector;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldDetector.getterFieldDetector;

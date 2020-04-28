@@ -31,15 +31,12 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories.defaultStateFactories;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
@@ -54,7 +51,7 @@ public final class States {
     }
 
     public States addState(final StatefulDefinition statefulDefinition) {
-        if(contains(statefulDefinition.type(), this.states)) {
+        if (contains(statefulDefinition.type(), this.states)) {
             throw new IllegalArgumentException(format(
                     "state for type '%s' is already registered",
                     statefulDefinition.type().description()));
@@ -72,13 +69,14 @@ public final class States {
     }
 
     public States apply(final Signal signal, final Processor processor) {
-        if (signal.target().isEmpty()) {
+        final Optional<TypeIdentifier> optionalTarget = signal.target();
+        if (optionalTarget.isEmpty()) {
             final List<StatefulDefinition> newStates = this.states.stream()
                     .map(signal::handleState)
                     .collect(toList());
             return new States(this.stateFactories, newStates);
         } else {
-            final TypeIdentifier target = signal.target().get();
+            final TypeIdentifier target = optionalTarget.get();
             final List<StatefulDefinition> newStates = new ArrayList<>(this.states);
 
             if (!contains(target, newStates)) {
@@ -89,8 +87,7 @@ public final class States {
 
             newStates.replaceAll(statefulDefinition -> {
                 if (statefulDefinition.context.type().equals(target)) {
-                    final StatefulDefinition replacement = signal.handleState(statefulDefinition);
-                    return replacement;
+                    return signal.handleState(statefulDefinition);
                 } else {
                     return statefulDefinition;
                 }
@@ -100,13 +97,13 @@ public final class States {
     }
 
     public Map<TypeIdentifier, Report> collect() {
-        return this.states.stream().collect(toMap(
-                state -> state.context.type(), StatefulDefinition::getDefinition)
-        );
-    }
-
-    public int size() {
-        return this.states.size();
+        final Map<TypeIdentifier, Report> reports = new HashMap<>();
+        this.states.forEach(statefulDefinition ->
+                statefulDefinition.getDefinition().ifPresent(report -> {
+                    final TypeIdentifier type = statefulDefinition.context.type();
+                    reports.put(type, report);
+                }));
+        return reports;
     }
 
     private static boolean contains(final TypeIdentifier type,
