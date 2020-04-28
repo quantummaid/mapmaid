@@ -37,7 +37,7 @@
     <name>MapMaid</name>
     <description>
         MapMaid is a modern mapping framework in the scope of mapping data in
-        Json, XML, or YAML format into DTOs composed and vice versa.
+        JSON, XML, or YAML format into DTOs composed and vice versa.
     </description>
     <url>https://github.com/quantummaid/mapmaid</url>
     <licenses>
