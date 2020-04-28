@@ -58,5 +58,5 @@
     <suppress checks="ClassFanOutComplexity" files="Deserializer" />
     <suppress checks="MethodCount" files="MapMaid" />
     <suppress checks="TrailingComment"
-              files="CustomPrimitiveDeserializer|SerializedObjectDeserializer|Marshaller|CollectionInformation|ConventionalDefinitionFactories|Unmarshaller|CustomType|StatefulDefinition" />
+              files="CustomPrimitiveDeserializer|SerializedObjectDeserializer|Marshaller|CollectionInformation|ConventionalDefinitionFactories|Unmarshaller|CustomType|StatefulDefinition|MapMaid" />
 </suppressions>

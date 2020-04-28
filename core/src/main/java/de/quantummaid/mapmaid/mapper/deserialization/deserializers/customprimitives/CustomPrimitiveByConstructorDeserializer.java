@@ -49,16 +49,16 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
                                                       final ResolvedConstructor constructor) {
         final int modifiers = constructor.constructor().getModifiers();
         if (isAbstract(modifiers)) {
-            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " + // NOSONAR
                             "of type %s must not be abstract", constructor, type.description()));
         }
         final List<ResolvedParameter> parameterTypes = constructor.parameters();
         if (parameterTypes.size() != 1) {
-            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " + // NOSONAR
                             "of type %s must only have one parameter", constructor, type.description()));
         }
         if (constructor.constructor().getDeclaringClass() != type.assignableType()) {
-            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " + // NOSONAR
                     "of type %s must return the custom primitive", constructor, type.description()));
         }
 

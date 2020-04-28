@@ -67,7 +67,7 @@ public final class MapMaid {
     }
 
     public String serializeToJson(final Object object) {
-        validateNotNull(object, "object");
+        validateNotNull(object, "object"); // NOSONAR
         final Class<?> type = object.getClass();
         return serializeToJson(object, type);
     }
@@ -87,7 +87,7 @@ public final class MapMaid {
     }
 
     public String serializeToYaml(final Object object) {
-        validateNotNull(object, "object");
+        validateNotNull(object, "object"); // NOSONAR
         final Class<?> type = object.getClass();
         return serializeToYaml(object, type);
     }
@@ -107,7 +107,7 @@ public final class MapMaid {
     }
 
     public String serializeToXml(final Object object) {
-        validateNotNull(object, "object");
+        validateNotNull(object, "object"); // NOSONAR
         final Class<?> type = object.getClass();
         return serializeToXml(object, type);
     }
@@ -127,7 +127,7 @@ public final class MapMaid {
     }
 
     public String serializeTo(final Object object, final MarshallingType marshallingType) {
-        validateNotNull(object, "object");
+        validateNotNull(object, "object"); // NOSONAR
         final Class<?> type = object.getClass();
         return serializeTo(object, marshallingType, type);
     }

@@ -58,7 +58,7 @@ public final class CommonTieBreakers {
             }
             final String methodName = ((CustomPrimitiveByMethodDeserializer) element).method().method().getName();
             if (methodName.equals(name)) {
-                return aTieBreakingReason(format("factory method named '%s'", name));
+                return aTieBreakingReason(format("primitive factory method named '%s'", name));
             } else {
                 return notATieBreakingReason();
             }
@@ -72,7 +72,7 @@ public final class CommonTieBreakers {
             }
             final String methodName = ((MethodCustomPrimitiveSerializer) element).method().method().getName();
             if (methodName.equals(name)) {
-                return aTieBreakingReason(format("factory method named '%s'", name));
+                return aTieBreakingReason(format("primitive serialization method named '%s'", name));
             } else {
                 return notATieBreakingReason();
             }

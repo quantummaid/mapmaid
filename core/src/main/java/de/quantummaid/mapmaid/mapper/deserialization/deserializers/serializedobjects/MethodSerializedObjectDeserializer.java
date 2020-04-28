@@ -100,15 +100,15 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
 
         if (!isStatic(deserializationMethodModifiers)) {
-            throw mapMaidException(format("The deserialization method %s configured for the SerializedObject " +
+            throw mapMaidException(format("The deserialization method %s configured for the object " + // NOSONAR
                     "of type %s must be static", deserializationMethod, type));
         }
         if (isAbstract(deserializationMethodModifiers)) {
-            throw mapMaidException(format("The deserialization method %s configured for the SerializedObject " +
+            throw mapMaidException(format("The deserialization method %s configured for the object " + // NOSONAR
                     "of type %s must not be abstract", deserializationMethod, type));
         }
         if (!deserializationMethod.returnType().map(type::equals).orElse(false)) {
-            throw mapMaidException(format("The deserialization method %s configured for the SerializedObject " +
+            throw mapMaidException(format("The deserialization method %s configured for the object " + // NOSONAR
                     "of type %s must return the DTO", deserializationMethod, type));
         }
     }

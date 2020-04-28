@@ -49,23 +49,23 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
                                                       final ResolvedMethod deserializationMethod) {
         final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
         if (!Modifier.isStatic(deserializationMethodModifiers)) {
-            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " + // NOSONAR
                     "of type %s must be static", deserializationMethod.describe(), type.description()));
         }
         if (Modifier.isAbstract(deserializationMethodModifiers)) {
-            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " + // NOSONAR
                     "of type %s must not be abstract", deserializationMethod.describe(), type.description()));
         }
         final List<ResolvedParameter> parameters = deserializationMethod.parameters();
         if (parameters.size() != 1) {
-            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " + // NOSONAR
                     "of type %s must accept only one parameter", deserializationMethod.describe(), type.description()));
         }
         final boolean correctReturnType = deserializationMethod.returnType()
                 .map(type::equals)
                 .orElse(false);
         if (!correctReturnType) {
-            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " +
+            throw mapMaidException(format("The deserialization method %s configured for the custom primitive " + // NOSONAR
                     "of type %s must return the custom primitive", deserializationMethod.describe(), type.description()));
         }
 

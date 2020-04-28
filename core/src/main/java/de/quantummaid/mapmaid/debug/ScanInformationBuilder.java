@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.debug;
 
+import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -38,6 +39,7 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.debug.scaninformation.ActualScanInformation.actualScanInformation;
+import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 
 @ToString
 @EqualsAndHashCode
@@ -183,17 +185,19 @@ public final class ScanInformationBuilder {
         if (this.deserializer != null) {
             this.deserializers.remove(this.deserializer);
         }
-        return actualScanInformation(
-                this.type,
+        final Reasons reasons = reasons(
                 this.deserializationReasons,
                 this.serializationReasons,
+                serializationSubReasonProvider,
+                deserializationSubReasonProvider);
+        return actualScanInformation(
+                this.type,
+                reasons,
                 this.serializer,
                 this.deserializer,
                 this.serializers,
                 this.serializationFields,
-                this.deserializers,
-                serializationSubReasonProvider,
-                deserializationSubReasonProvider
+                this.deserializers
         );
     }
 }
