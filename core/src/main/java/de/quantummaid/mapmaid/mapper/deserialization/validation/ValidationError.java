@@ -26,10 +26,12 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
-public final class ValidationError {
+public final class ValidationError implements Serializable {
     public final String message;
     public final String propertyPath;
 

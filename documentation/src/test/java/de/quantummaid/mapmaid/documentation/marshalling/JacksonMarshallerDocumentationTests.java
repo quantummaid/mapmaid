@@ -24,14 +24,14 @@ package de.quantummaid.mapmaid.documentation.marshalling;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.AdvancedBuilder;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.*;
+import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.jacksonMarshallerJson;
+import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.jacksonMarshallerYaml;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -85,20 +85,6 @@ public final class JacksonMarshallerDocumentationTests {
         //Showcase end json
 
         final Object deserialized = mapMaid.deserializer().deserializeToUniversalObject(JSON, MarshallingType.JSON);
-        assertThat(deserialized, is(MAP));
-    }
-
-    @Disabled
-    @Test
-    public void xmlMarshallerExample() {
-        //Showcase start xml
-        final MapMaid mapMaid = aMapMaid()
-                .usingRecipe(jacksonMarshallerXml())
-                .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
-                .build();
-        //Showcase end xml
-
-        final Object deserialized = mapMaid.deserializer().deserializeToUniversalObject(XML, MarshallingType.XML);
         assertThat(deserialized, is(MAP));
     }
 

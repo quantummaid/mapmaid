@@ -54,7 +54,6 @@ public final class ExceptionDocumentationTests {
         try {
             mapMaid.deserializeJson(JSON, Email.class);
         } catch (final AggregatedValidationException e) {
-            e.printStackTrace();
             message = e.getMessage();
             assert message.equals("deserialization encountered validation errors. Validation error at 'receiver', " +
                     "Invalid email address: 'not-a-valid-receiver-value'; " +
@@ -78,7 +77,6 @@ public final class ExceptionDocumentationTests {
         try {
             mapMaid.deserializeJson(JSON, Email.class);
         } catch (final AggregatedValidationException e) {
-            e.printStackTrace();
             message = e.getMessage();
             assert message.equals("deserialization encountered validation errors. Validation error at 'receiver', " +
                     "This is a custom message we are reporting about Invalid email address: 'not-a-valid-receiver-value'; " +
