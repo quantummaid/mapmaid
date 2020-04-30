@@ -68,6 +68,6 @@ than an `int`.
 
 Developers that follow these principles typically run into problems when serializing or deserializing
 objects of classes that have been written in that fashion.
-Most frameworks that have effectively become industry standards rely on [JavaBeans style objects]( http://www.javapractices.com/topic/TopicAction.do?Id)
+Most frameworks that have effectively become industry standards rely on [JavaBeans style objects](http://www.javapractices.com/topic/TopicAction.do?Id=84)
 and offer therefore little to no support.
 MapMaid is aware of these concepts and treats value types the way they should be treated - as primitives.

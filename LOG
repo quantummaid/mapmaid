@@ -1,0 +1,1496 @@
+[INFO] Scanning for projects...
+[INFO] Inspecting build with total of 9 modules...
+[INFO] Installing Nexus Staging features:
+[INFO]   ... total of 9 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] MapMaid                                                            [pom]
+[INFO] MapMaid - BOM                                                      [pom]
+[INFO] MapMaid - Core Library                                             [jar]
+[INFO] MapMaid - Tests                                                    [jar]
+[INFO] MapMaid - integrations                                             [pom]
+[INFO] MapMaid - Integrations - Jackson                                   [jar]
+[INFO] MapMaid - Integrations - All                                       [jar]
+[INFO] MapMaid - Documentation                                            [jar]
+[INFO] MapMaid - Coverage                                                 [jar]
+[INFO] 
+[INFO] ---------------< de.quantummaid.mapmaid:mapmaid-parent >----------------
+[INFO] Building MapMaid 0.9.50                                            [1/9]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ mapmaid-parent ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-parent ---
+[INFO] 
+[INFO] --- documaid:0.9.24:generate (default) @ mapmaid-parent ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ mapmaid-parent ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-parent ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/target/jacoco.exec
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ mapmaid-parent ---
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ mapmaid-parent ---
+[INFO] artifact de.quantummaid:documaid: checking for updates from central
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: 3.3.9
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ mapmaid-parent ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ mapmaid-parent >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ mapmaid-parent ---
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ mapmaid-parent <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ mapmaid-parent ---
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ mapmaid-parent >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-parent ---
+[INFO] 
+[INFO] --- documaid:0.9.24:generate (default) @ mapmaid-parent ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ mapmaid-parent ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-parent ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ mapmaid-parent <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ mapmaid-parent ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ mapmaid-parent ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ mapmaid-parent ---
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ mapmaid-parent ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (1429 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (12 seconds)
+[INFO] Finished CPE Analyzer (13 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (14 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ mapmaid-parent ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/de/quantummaid/mapmaid/core/0.9.50/core-0.9.50.jar
+[WARNING] The following dependencies could not be resolved at this point of the build but seem to be part of the reactor:
+[WARNING] o de.quantummaid.mapmaid:core:jar:0.9.50 (compile)
+[WARNING] Try running the build up to the lifecycle phase "package"
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/de/quantummaid/mapmaid/tests/0.9.50/tests-0.9.50.jar
+[WARNING] The following dependencies could not be resolved at this point of the build but seem to be part of the reactor:
+[WARNING] o de.quantummaid.mapmaid:core:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid:tests:jar:0.9.50 (test)
+[WARNING] Try running the build up to the lifecycle phase "package"
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/de/quantummaid/mapmaid/integrations/mapmaid-jackson/0.9.50/mapmaid-jackson-0.9.50.jar
+[WARNING] The following dependencies could not be resolved at this point of the build but seem to be part of the reactor:
+[WARNING] o de.quantummaid.mapmaid:core:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid.integrations:mapmaid-jackson:jar:0.9.50 (compile)
+[WARNING] Try running the build up to the lifecycle phase "package"
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/de/quantummaid/mapmaid/integrations/mapmaid-all/0.9.50/mapmaid-all-0.9.50.jar
+[WARNING] The following dependencies could not be resolved at this point of the build but seem to be part of the reactor:
+[WARNING] o de.quantummaid.mapmaid.integrations:mapmaid-all:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid:core:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid.integrations:mapmaid-jackson:jar:0.9.50 (compile)
+[WARNING] Try running the build up to the lifecycle phase "package"
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/de/quantummaid/mapmaid/documentation/0.9.50/documentation-0.9.50.jar
+[WARNING] The following dependencies could not be resolved at this point of the build but seem to be part of the reactor:
+[WARNING] o de.quantummaid.mapmaid:core:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid:documentation:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid.integrations:mapmaid-all:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid.integrations:mapmaid-jackson:jar:0.9.50 (compile)
+[WARNING] o de.quantummaid.mapmaid:tests:jar:0.9.50 (compile)
+[WARNING] Try running the build up to the lifecycle phase "package"
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ mapmaid-parent ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] -----------------< de.quantummaid.mapmaid:mapmaid-bom >-----------------
+[INFO] Building MapMaid - BOM 0.9.50                                      [2/9]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ mapmaid-bom ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/bom/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-bom ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-bom ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/bom/target/jacoco.exec
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ mapmaid-bom ---
+[INFO] artifact de.quantummaid.mapmaid:core: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid.integrations:mapmaid-all: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid.integrations:mapmaid-jackson: checking for updates from central
+[INFO] No dependencies in Dependency Management have newer versions.
+[INFO] 
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ mapmaid-bom ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ mapmaid-bom ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ mapmaid-bom >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ mapmaid-bom ---
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ mapmaid-bom <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ mapmaid-bom ---
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ mapmaid-bom >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-bom ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-bom ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/bom/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ mapmaid-bom <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ mapmaid-bom ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ mapmaid-bom ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ mapmaid-bom ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ mapmaid-bom ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ mapmaid-bom ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (264 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (2 seconds)
+[INFO] Finished CPE Analyzer (2 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (2 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ mapmaid-bom ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ mapmaid-bom ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] --------------------< de.quantummaid.mapmaid:core >---------------------
+[INFO] Building MapMaid - Core Library 0.9.50                             [3/9]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ core ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/core/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ core ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ core ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/core/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ core ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/core/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ core ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 283 source files to /data/repositories/quantummaid/mapmaid/core/target/classes
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ core ---
+[INFO] artifact com.fasterxml.jackson.core:jackson-databind: checking for updates from central
+[INFO] artifact com.fasterxml.jackson.dataformat:jackson-dataformat-xml: checking for updates from central
+[INFO] artifact de.quantummaid.reflectmaid:reflectmaid-parent: checking for updates from central
+[INFO] artifact org.projectlombok:lombok: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ core ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ core ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/core/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ core ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ core ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ core ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ core >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ core ---
+[INFO] Fork Value is true
+[INFO] Done SpotBugs Analysis....
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ core <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ core ---
+[INFO] BugInstance size is 0
+[INFO] Error size is 0
+[INFO] No errors/warnings found
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ core ---
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/core/target/core-0.9.50.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ core >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ core ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ core ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/core/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ core <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ core ---
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/core/target/core-0.9.50-sources.jar
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ core ---
+[INFO] No previous run data found, generating javadoc.
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/core/target/core-0.9.50-javadoc.jar
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ core ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ core ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ core ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (532 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished Archive Analyzer (1 seconds)
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Jar Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (5 seconds)
+[INFO] Finished CPE Analyzer (7 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (10 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ core ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ core ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] --------------------< de.quantummaid.mapmaid:tests >--------------------
+[INFO] Building MapMaid - Tests 0.9.50                                    [4/9]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ tests ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/tests/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ tests ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ tests ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/tests/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/tests/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ tests ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 28 source files to /data/repositories/quantummaid/mapmaid/tests/target/classes
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ tests ---
+[INFO] artifact com.fasterxml.jackson.core:jackson-databind: checking for updates from central
+[INFO] artifact com.fasterxml.jackson.dataformat:jackson-dataformat-yaml: checking for updates from central
+[INFO] artifact com.fasterxml.jackson.dataformat:jackson-dataformat-xml: checking for updates from central
+[INFO] artifact com.google.inject:guice: checking for updates from central
+[INFO] artifact com.google.code.gson:gson: checking for updates from central
+[INFO] artifact com.sun.mail:javax.mail: checking for updates from central
+[INFO] artifact com.thoughtworks.xstream:xstream: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid:core: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] artifact org.hamcrest:hamcrest-all: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-engine: checking for updates from central
+[INFO] artifact org.projectlombok:lombok: checking for updates from central
+[INFO] artifact org.yaml:snakeyaml: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ tests ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/tests/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ tests ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 314 source files to /data/repositories/quantummaid/mapmaid/tests/target/test-classes
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ tests ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ tests ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running de.quantummaid.mapmaid.specs.PerformanceSpecs
+Skipping this test, since system property testMode is not set to RELEASE
+Skipping this test, since system property testMode is not set to RELEASE
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.134 s - in de.quantummaid.mapmaid.specs.PerformanceSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.MarshallerSpecs
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.468 s - in de.quantummaid.mapmaid.specs.MarshallerSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.usecasescanning.UseCaseScanningSpecs
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.105 s - in de.quantummaid.mapmaid.specs.usecasescanning.UseCaseScanningSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.IndirectInjectionSpecs
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.201 s - in de.quantummaid.mapmaid.specs.IndirectInjectionSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.IndirectOverrideDefinitionsSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.149 s - in de.quantummaid.mapmaid.specs.IndirectOverrideDefinitionsSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.UniversalTypeSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s - in de.quantummaid.mapmaid.specs.UniversalTypeSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.SchematicSpecs
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 s - in de.quantummaid.mapmaid.specs.SchematicSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.BuilderSpecs
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.16 s - in de.quantummaid.mapmaid.specs.BuilderSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.changing_structure.ChangingStructureSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.183 s - in de.quantummaid.mapmaid.specs.changing_structure.ChangingStructureSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.repositoryscanning.RepositoryScanningSpecs
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.106 s - in de.quantummaid.mapmaid.specs.repositoryscanning.RepositoryScanningSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.VirtualTypeSpecs
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s - in de.quantummaid.mapmaid.specs.VirtualTypeSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.SpecialCustomPrimitivesSpecs
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.231 s - in de.quantummaid.mapmaid.specs.SpecialCustomPrimitivesSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.CyclicReferencesSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 s - in de.quantummaid.mapmaid.specs.CyclicReferencesSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.ExceptionTrackingSpecs
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.118 s - in de.quantummaid.mapmaid.specs.ExceptionTrackingSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.DeserializerSpecs
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.229 s - in de.quantummaid.mapmaid.specs.DeserializerSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.PojoSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s - in de.quantummaid.mapmaid.specs.PojoSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.TypeWildcardSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s - in de.quantummaid.mapmaid.specs.TypeWildcardSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.UnmarshallerSpecs
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.567 s - in de.quantummaid.mapmaid.specs.UnmarshallerSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.FixedInjectionSpecs
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 s - in de.quantummaid.mapmaid.specs.FixedInjectionSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.SerializerSpecs
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.175 s - in de.quantummaid.mapmaid.specs.SerializerSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.HalfDefinitionsSpecs
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in de.quantummaid.mapmaid.specs.HalfDefinitionsSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.InjectionSpecs
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.144 s - in de.quantummaid.mapmaid.specs.InjectionSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.static_inner_class.StaticInnerClassExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.09 s - in de.quantummaid.mapmaid.specs.examples.special.static_inner_class.StaticInnerClassExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.annotation.AnnotationExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s - in de.quantummaid.mapmaid.specs.examples.special.annotation.AnnotationExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.abstract_class.AbstractClassExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s - in de.quantummaid.mapmaid.specs.examples.special.abstract_class.AbstractClassExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.as_interface.InterfaceExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s - in de.quantummaid.mapmaid.specs.examples.special.as_interface.InterfaceExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.local_class.LocalClassExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s - in de.quantummaid.mapmaid.specs.examples.special.local_class.LocalClassExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.packageprivate.PackagePrivateExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s - in de.quantummaid.mapmaid.specs.examples.special.packageprivate.PackagePrivateExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.anonymous_class.AnonymousClassExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.special.anonymous_class.AnonymousClassExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.special.non_static_inner_class.NonStaticInnerClassExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.special.non_static_inner_class.NonStaticInnerClassExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.non_static_factory.NonStaticFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.non_static_factory.NonStaticFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_only.example3.DeserializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_only.example3.DeserializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_only.example2.DeserializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.03 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_only.example2.DeserializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_only.example1.DeserializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_only.example1.DeserializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.factory_by_classname.example3.FactoryByClassnameExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.factory_by_classname.example3.FactoryByClassnameExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.factory_by_classname.example2.FactoryByClassnameExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.factory_by_classname.example2.FactoryByClassnameExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.factory_by_classname.example1.FactoryByClassnameExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.factory_by_classname.example1.FactoryByClassnameExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.multiple_static_factories.example2.MultipleStaticFactoriesExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.03 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.multiple_static_factories.example2.MultipleStaticFactoriesExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.multiple_static_factories.example1.MultipleStaticFactoriesExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.multiple_static_factories.example1.MultipleStaticFactoriesExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.long_based.LongBasedExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.058 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.long_based.LongBasedExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.primitive_with_serializedobject_factory.PrimitiveWithSerializedObjectFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.primitive_with_serializedobject_factory.PrimitiveWithSerializedObjectFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.integer_based.IntegerBasedExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.integer_based.IntegerBasedExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.constructor.ConstructorExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.constructor.ConstructorExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.boolean_based.BooleanBasedExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.boolean_based.BooleanBasedExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.real_enum.EnumExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.real_enum.EnumExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.private_factory.PrivateFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.private_factory.PrivateFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.unresolvable_tie.UnresolvableTieExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.unresolvable_tie.UnresolvableTieExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_method_with_generics.DeserializationMethodWithGenericsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_method_with_generics.DeserializationMethodWithGenericsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_serializer.custom_name.PreferredSerializerExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_serializer.custom_name.PreferredSerializerExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_serializer.default_name.PreferredSerializerExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_serializer.default_name.PreferredSerializerExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.private_factories.CustomPrimitiveWithPrivateSerializationMethodsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.private_factories.CustomPrimitiveWithPrivateSerializationMethodsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example2.NormalExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example2.NormalExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example1.NormalExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example1.NormalExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.double_based.DoubleBasedExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.double_based.DoubleBasedExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.whole.WholeExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.whole.WholeExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.hashcode.HashCodeExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.hashcode.HashCodeExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.float_based.FloatBasedExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.float_based.FloatBasedExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.tostring.ToStringExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.tostring.ToStringExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_factory.custom_name.PreferredFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_factory.custom_name.PreferredFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_factory.default_name.PreferredFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.preferred_factory.default_name.PreferredFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.string_based.StringBasedExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.string_based.StringBasedExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.custom_enum.CustomEnumExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.custom_enum.CustomEnumExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.success.serialization_only.SerializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.success.serialization_only.SerializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.multiple_factories.MultipleFactoriesExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.multiple_factories.MultipleFactoriesExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.type_variable_with_different_name.TypeVariableWithDifferentNameExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.type_variable_with_different_name.TypeVariableWithDifferentNameExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.constructor_and_factory.ConstructorAndFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.constructor_and_factory.ConstructorAndFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.void_serializer_method.VoidExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.void_serializer_method.VoidExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.deserialization_only.example1.DeserializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.deserialization_only.example1.DeserializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.multiple_factories.example2.MultipleFactoriesExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.multiple_factories.example2.MultipleFactoriesExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.multiple_factories.example1.MultipleFactoriesExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.multiple_factories.example1.MultipleFactoriesExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.transient_field.TransientFieldExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.transient_field.TransientFieldExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.single_factory.SingleFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.027 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.single_factory.SingleFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.array_to_list.ArrayToListExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.array_to_list.ArrayToListExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.set_to_array.SetToArrayExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.set_to_array.SetToArrayExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.array_to_set.ArrayToSetExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.array_to_set.ArrayToSetExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.list_to_array.ListToArrayExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symetric.list_to_array.ListToArrayExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.mixed_getter_constructor.MixedGetterConstructorExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.mixed_getter_constructor.MixedGetterConstructorExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symmetry_ignores_fields.SymmetryIgnoresFieldsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.symmetry_ignores_fields.SymmetryIgnoresFieldsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.transient_field_with_getter.TransientFieldWithGetterExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.transient_field_with_getter.TransientFieldWithGetterExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.nontransient.staticinjection.StaticInjectionExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.nontransient.staticinjection.StaticInjectionExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.nontransient.normalinjection.NormalInjectionExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.nontransient.normalinjection.NormalInjectionExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.transientfield.staticinjection.StaticInjectionExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.transientfield.staticinjection.StaticInjectionExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.transientfield.normalinjection.NormalInjectionExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.injection.transientfield.normalinjection.NormalInjectionExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.lots_of_fields.LotsOfFieldsDtoExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.094 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.lots_of_fields.LotsOfFieldsDtoExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.getter_and_public_fields.GetterAndPublicFieldsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.getter_and_public_fields.GetterAndPublicFieldsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.many_fields.ManyFieldsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.many_fields.ManyFieldsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.preferred_factory.custom_name.PreferredFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.preferred_factory.custom_name.PreferredFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.preferred_factory.default_name.PreferredFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.preferred_factory.default_name.PreferredFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.preferred_factory.class_name.PreferredFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.preferred_factory.class_name.PreferredFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.intermediate_collection.IntermediateCollectionExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.intermediate_collection.IntermediateCollectionExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.varargs.VarargsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.varargs.VarargsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.mixed_getter_factory.MixedGetterFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.mixed_getter_factory.MixedGetterFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.serialization_only.example2.SerializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.serialization_only.example2.SerializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.serialization_only.example1.SerializationOnlyExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.serialization_only.example1.SerializationOnlyExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.success.static_fields.StaticFieldsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.success.static_fields.StaticFieldsExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.packageprivate_factory.PackagePrivateFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.packageprivate_factory.PackagePrivateFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.multiple_factories.MultipleFactoriesExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.multiple_factories.MultipleFactoriesExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.ambiguous_symmetry.AmbiguousSymmetryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.ambiguous_symmetry.AmbiguousSymmetryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.array_to_map.ArrayToMapExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.array_to_map.ArrayToMapExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.transient_field.TransientFieldExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.transient_field.TransientFieldExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.map_to_array.MapToArrayExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.map_to_array.MapToArrayExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.getter_setter_mismatch.GetterSetterMismatchExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.getter_setter_mismatch.GetterSetterMismatchExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.different_name.DifferentNameExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.different_name.DifferentNameExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.simple.SimpleExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.simple.SimpleExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.constructor_and_factory.ConstructorAndFactoryExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.constructor_and_factory.ConstructorAndFactoryExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.all_private.AllPrivateExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.all_private.AllPrivateExample
+[INFO] Running de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.mixed_getter_fields.MixedGetterFieldsExample
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.mixed_getter_fields.MixedGetterFieldsExample
+[INFO] Running de.quantummaid.mapmaid.specs.TypeVariableSpecs
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s - in de.quantummaid.mapmaid.specs.TypeVariableSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.RecursionSpecs
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.03 s - in de.quantummaid.mapmaid.specs.RecursionSpecs
+[INFO] Running de.quantummaid.mapmaid.specs.rootcause.RootCauseSpecs
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in de.quantummaid.mapmaid.specs.rootcause.RootCauseSpecs
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 198, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ tests >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ tests ---
+[INFO] Fork Value is true
+[INFO] Done SpotBugs Analysis....
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ tests <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ tests ---
+[INFO] BugInstance size is 0
+[INFO] Error size is 0
+[INFO] No errors/warnings found
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ tests ---
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/tests/target/tests-0.9.50.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ tests >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ tests ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ tests ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/tests/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ tests <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ tests ---
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/tests/target/tests-0.9.50-sources.jar
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ tests ---
+[INFO] No previous run data found, generating javadoc.
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/tests/target/tests-0.9.50-javadoc.jar
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ tests ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ tests ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ tests ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (200 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished Archive Analyzer (0 seconds)
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Jar Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (1 seconds)
+[INFO] Finished CPE Analyzer (1 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (3 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ tests ---
+[INFO] Loading execution data file /data/repositories/quantummaid/mapmaid/tests/target/jacoco.exec
+[INFO] Analyzed bundle 'MapMaid - Tests' with 25 classes
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ tests ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] -------------< de.quantummaid.mapmaid:integrations-parent >-------------
+[INFO] Building MapMaid - integrations 0.9.50                             [5/9]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ integrations-parent ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/integrations/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ integrations-parent ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ integrations-parent ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/integrations/target/jacoco.exec
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ integrations-parent ---
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ integrations-parent ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ integrations-parent ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ integrations-parent >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ integrations-parent ---
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ integrations-parent <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ integrations-parent ---
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ integrations-parent >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ integrations-parent ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ integrations-parent ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/integrations/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ integrations-parent <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ integrations-parent ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ integrations-parent ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ integrations-parent ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ integrations-parent ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ integrations-parent ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (119 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (1 seconds)
+[INFO] Finished CPE Analyzer (1 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (2 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ integrations-parent ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ integrations-parent ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] --------< de.quantummaid.mapmaid.integrations:mapmaid-jackson >---------
+[INFO] Building MapMaid - Integrations - Jackson 0.9.50                   [6/9]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ mapmaid-jackson ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/integrations/jackson/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-jackson ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-jackson ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/integrations/jackson/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ mapmaid-jackson ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/integrations/jackson/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ mapmaid-jackson ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 9 source files to /data/repositories/quantummaid/mapmaid/integrations/jackson/target/classes
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ mapmaid-jackson ---
+[INFO] artifact com.fasterxml.jackson.core:jackson-databind: checking for updates from central
+[INFO] artifact com.fasterxml.jackson.dataformat:jackson-dataformat-yaml: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid:core: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid:tests: checking for updates from central
+[INFO] artifact com.fasterxml.jackson.dataformat:jackson-dataformat-xml: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-engine: checking for updates from central
+[INFO] artifact org.projectlombok:lombok: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ mapmaid-jackson ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ mapmaid-jackson ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/integrations/jackson/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ mapmaid-jackson ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 9 source files to /data/repositories/quantummaid/mapmaid/integrations/jackson/target/test-classes
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ mapmaid-jackson ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ mapmaid-jackson ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running de.quantummaid.mapmaid.json.JacksonSpecs
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.893 s - in de.quantummaid.mapmaid.json.JacksonSpecs
+[INFO] Running de.quantummaid.mapmaid.json.AutoloadingSpecs
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.339 s - in de.quantummaid.mapmaid.json.AutoloadingSpecs
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ mapmaid-jackson >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ mapmaid-jackson ---
+[INFO] Fork Value is true
+[INFO] Done SpotBugs Analysis....
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ mapmaid-jackson <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ mapmaid-jackson ---
+[INFO] BugInstance size is 0
+[INFO] Error size is 0
+[INFO] No errors/warnings found
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ mapmaid-jackson ---
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/integrations/jackson/target/mapmaid-jackson-0.9.50.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ mapmaid-jackson >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-jackson ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-jackson ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/integrations/jackson/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ mapmaid-jackson <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ mapmaid-jackson ---
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/integrations/jackson/target/mapmaid-jackson-0.9.50-sources.jar
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ mapmaid-jackson ---
+[INFO] No previous run data found, generating javadoc.
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/integrations/jackson/target/mapmaid-jackson-0.9.50-javadoc.jar
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ mapmaid-jackson ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ mapmaid-jackson ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ mapmaid-jackson ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (269 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished Archive Analyzer (0 seconds)
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Jar Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (3 seconds)
+[INFO] Finished CPE Analyzer (4 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (5 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ mapmaid-jackson ---
+[INFO] Loading execution data file /data/repositories/quantummaid/mapmaid/integrations/jackson/target/jacoco.exec
+[INFO] Analyzed bundle 'MapMaid - Integrations - Jackson' with 9 classes
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ mapmaid-jackson ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] ----------< de.quantummaid.mapmaid.integrations:mapmaid-all >-----------
+[INFO] Building MapMaid - Integrations - All 0.9.50                       [7/9]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ mapmaid-all ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/integrations/all/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-all ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-all ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/integrations/all/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ mapmaid-all ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/integrations/all/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ mapmaid-all ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ mapmaid-all ---
+[INFO] artifact de.quantummaid.mapmaid:core: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid.integrations:mapmaid-jackson: checking for updates from central
+[INFO] artifact org.projectlombok:lombok: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ mapmaid-all ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ mapmaid-all ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/integrations/all/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ mapmaid-all ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ mapmaid-all ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ mapmaid-all ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ mapmaid-all >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ mapmaid-all ---
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ mapmaid-all <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ mapmaid-all ---
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ mapmaid-all ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/integrations/all/target/mapmaid-all-0.9.50.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ mapmaid-all >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ mapmaid-all ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ mapmaid-all ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/integrations/all/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ mapmaid-all <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ mapmaid-all ---
+[INFO] No sources in project. Archive not created.
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ mapmaid-all ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ mapmaid-all ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ mapmaid-all ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ mapmaid-all ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (103 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished Archive Analyzer (0 seconds)
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Jar Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (1 seconds)
+[INFO] Finished CPE Analyzer (2 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (4 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ mapmaid-all ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ mapmaid-all ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] ----------------< de.quantummaid.mapmaid:documentation >----------------
+[INFO] Building MapMaid - Documentation 0.9.50                            [8/9]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ documentation ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/documentation/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ documentation ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ documentation ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/documentation/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ documentation ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/documentation/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ documentation ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ documentation ---
+[INFO] artifact com.google.code.gson:gson: checking for updates from central
+[INFO] artifact com.sun.mail:javax.mail: checking for updates from central
+[INFO] artifact com.thoughtworks.xstream:xstream: checking for updates from central
+[INFO] artifact javax.validation:validation-api: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid.integrations:mapmaid-all: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] artifact org.hamcrest:hamcrest-all: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-engine: checking for updates from central
+[INFO] artifact org.projectlombok:lombok: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ documentation ---
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: null
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ documentation ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/documentation/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ documentation ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 49 source files to /data/repositories/quantummaid/mapmaid/documentation/target/test-classes
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ documentation ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ documentation ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running de.quantummaid.mapmaid.documentation.UsageDocumentationTests
+---
+receiver: "receiver@example.com"
+body: "Hello World!!!"
+sender: "sender@example.com"
+subject: "Hello"
+
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.31 s - in de.quantummaid.mapmaid.documentation.UsageDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.ExceptionDocumentationTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.123 s - in de.quantummaid.mapmaid.documentation.ExceptionDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.registration.registercustomtypes.RegisterCustomTypesDocumentationTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.374 s - in de.quantummaid.mapmaid.documentation.registration.registercustomtypes.RegisterCustomTypesDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.registration.registernormaltypes.RegisterNormalTypesDocumentationTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s - in de.quantummaid.mapmaid.documentation.registration.registernormaltypes.RegisterNormalTypesDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.registration.recipes.RecipeDocumentationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s - in de.quantummaid.mapmaid.documentation.registration.recipes.RecipeDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.registration.injection.RegisterInjectionDocumentationTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 s - in de.quantummaid.mapmaid.documentation.registration.injection.RegisterInjectionDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.quickstart.QuickStartDocumentationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.055 s - in de.quantummaid.mapmaid.documentation.quickstart.QuickStartDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.marshalling.JacksonMarshallerDocumentationTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in de.quantummaid.mapmaid.documentation.marshalling.JacksonMarshallerDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.marshalling.MarshallingDocumentationTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.437 s - in de.quantummaid.mapmaid.documentation.marshalling.MarshallingDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.marshalling.DeactivationDocumentationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s - in de.quantummaid.mapmaid.documentation.marshalling.DeactivationDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.detection.PreferredMethodsDocumentationTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.054 s - in de.quantummaid.mapmaid.documentation.detection.PreferredMethodsDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.detection.DetectionDocumentationTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.117 s - in de.quantummaid.mapmaid.documentation.detection.DetectionDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.domaindrivensecurity.player.PlayerDocumentationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in de.quantummaid.mapmaid.documentation.domaindrivensecurity.player.PlayerDocumentationTests
+[INFO] Running de.quantummaid.mapmaid.documentation.domaindrivensecurity.bookstore.OrderAmountDocumentationTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s - in de.quantummaid.mapmaid.documentation.domaindrivensecurity.bookstore.OrderAmountDocumentationTests
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 38, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ documentation >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ documentation ---
+[INFO] Fork Value is true
+[INFO] Done SpotBugs Analysis....
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ documentation <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ documentation ---
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ documentation ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/documentation/target/documentation-0.9.50.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ documentation >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ documentation ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ documentation ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/documentation/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ documentation <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ documentation ---
+[INFO] No sources in project. Archive not created.
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ documentation ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ documentation ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ documentation ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ documentation ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (207 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished Archive Analyzer (0 seconds)
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Jar Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (2 seconds)
+[INFO] Finished CPE Analyzer (2 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (4 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ documentation ---
+[INFO] Skipping JaCoCo execution due to missing classes directory.
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ documentation ---
+[INFO] Delaying SonarQube Scanner to the end of multi-module project
+[INFO] 
+[INFO] ------------------< de.quantummaid.mapmaid:coverage >-------------------
+[INFO] Building MapMaid - Coverage 0.9.50                                 [9/9]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ coverage ---
+[INFO] Deleting /data/repositories/quantummaid/mapmaid/coverage/target
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ coverage ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ coverage ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/coverage/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ coverage ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/coverage/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ coverage ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-dependency-updates (WriteDependencyUpdatesIntoFile) @ coverage ---
+[INFO] artifact de.quantummaid.mapmaid:core: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid:tests: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid.integrations:mapmaid-jackson: checking for updates from central
+[INFO] artifact org.junit.jupiter:junit-jupiter-api: checking for updates from central
+[INFO] artifact de.quantummaid.mapmaid:documentation: checking for updates from central
+[INFO] No dependencies in Dependencies have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in pluginManagement of plugins have newer versions.
+[INFO] 
+[INFO] artifact com.github.spotbugs:spotbugs: checking for updates from central
+[INFO] artifact com.puppycrawl.tools:checkstyle: checking for updates from central
+[INFO] No dependencies in Plugin Dependencies have newer versions.
+[INFO] 
+[INFO] 
+[INFO] --- versions-maven-plugin:2.7:display-plugin-updates (WritePluginUpdatesIntoFile) @ coverage ---
+[INFO] artifact org.jacoco:jacoco-maven-plugin: checking for updates from central
+[INFO] 
+[INFO] All plugins with a version specified are using the latest versions.
+[INFO] 
+[INFO] All plugins have a version specified.
+[INFO] 
+[INFO] Project inherits minimum Maven version as: 3.6
+[INFO] Plugins require minimum Maven version of: 3.3.9
+[INFO] 
+[INFO] No plugins require a newer version of Maven than specified by the pom.
+[INFO] 
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ coverage ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /data/repositories/quantummaid/mapmaid/coverage/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ coverage ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (checkCodeStyle) @ coverage ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ coverage ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] >>> spotbugs-maven-plugin:4.0.0:check (default) > :spotbugs @ coverage >>>
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:spotbugs (spotbugs) @ coverage ---
+[INFO] 
+[INFO] <<< spotbugs-maven-plugin:4.0.0:check (default) < :spotbugs @ coverage <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs-maven-plugin:4.0.0:check (default) @ coverage ---
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ coverage ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /data/repositories/quantummaid/mapmaid/coverage/target/coverage-0.9.50.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.2.1:jar (attach-sources) > generate-sources @ coverage >>>
+[INFO] 
+[INFO] --- tidy-maven-plugin:1.1.0:check (validate) @ coverage ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:prepare-agent (prepare-agent) @ coverage ---
+[INFO] argLine set to -javaagent:/home/marco/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/data/repositories/quantummaid/mapmaid/coverage/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.2.1:jar (attach-sources) < generate-sources @ coverage <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.2.1:jar (attach-sources) @ coverage ---
+[INFO] No sources in project. Archive not created.
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.2.0:jar (attach-javadocs) @ coverage ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-checksum) @ coverage ---
+[INFO] 
+[INFO] --- documaid:0.9.24:validate (default) @ coverage ---
+[INFO] DocuMaid started
+[INFO] DocuMaid finished successful
+[INFO] 
+[INFO] --- dependency-check-maven:5.3.2:check (default) @ coverage ---
+[INFO] Checking for updates
+[INFO] Skipping NVD check since last check was within 4 hours.
+[INFO] Skipping RetireJS update since last update was within 24 hours.
+[INFO] Check for updates complete (118 ms)
+[INFO] 
+
+Dependency-Check is an open source tool performing a best effort analysis of 3rd party dependencies; false positives and false negatives may exist in the analysis performed by the tool. Use of the tool and the reporting provided constitutes acceptance for use in an AS IS condition, and there are NO warranties, implied or otherwise, with regard to the analysis or its use. Any use of the tool and the reporting provided is at the user’s risk. In no event shall the copyright holder or OWASP be held liable for any damages whatsoever arising out of or in connection with the use of this tool, the analysis performed, or the resulting report.
+
+
+[INFO] Analysis Started
+[INFO] Finished Archive Analyzer (0 seconds)
+[INFO] Finished File Name Analyzer (0 seconds)
+[INFO] Finished Jar Analyzer (0 seconds)
+[INFO] Finished Dependency Merging Analyzer (0 seconds)
+[INFO] Finished Version Filter Analyzer (0 seconds)
+[INFO] Finished Hint Analyzer (0 seconds)
+[INFO] Created CPE Index (1 seconds)
+[INFO] Finished CPE Analyzer (1 seconds)
+[INFO] Finished False Positive Analyzer (0 seconds)
+[INFO] Finished NVD CVE Analyzer (0 seconds)
+[INFO] Finished Sonatype OSS Index Analyzer (0 seconds)
+[INFO] Finished Vulnerability Suppression Analyzer (0 seconds)
+[INFO] Finished Dependency Bundling Analyzer (0 seconds)
+[INFO] Analysis Complete (3 seconds)
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report (report) @ coverage ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.5:report-aggregate (report-aggregate2) @ coverage ---
+[INFO] Loading execution data file /data/repositories/quantummaid/mapmaid/documentation/target/jacoco.exec
+[INFO] Loading execution data file /data/repositories/quantummaid/mapmaid/integrations/jackson/target/jacoco.exec
+[INFO] Loading execution data file /data/repositories/quantummaid/mapmaid/tests/target/jacoco.exec
+[INFO] Analyzed bundle 'core' with 256 classes
+[INFO] Analyzed bundle 'documentation' with 0 classes
+[INFO] Analyzed bundle 'mapmaid-jackson' with 9 classes
+[INFO] Analyzed bundle 'tests' with 25 classes
+[INFO] 
+[INFO] --- sonar-maven-plugin:3.7.0.1746:sonar (default) @ coverage ---
+[INFO] sonar.skip = true: Skipping analysis
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for MapMaid 0.9.50:
+[INFO] 
+[INFO] MapMaid ............................................ SUCCESS [01:20 min]
+[INFO] MapMaid - BOM ...................................... SUCCESS [  5.669 s]
+[INFO] MapMaid - Core Library ............................. SUCCESS [01:26 min]
+[INFO] MapMaid - Tests .................................... SUCCESS [01:08 min]
+[INFO] MapMaid - integrations ............................. SUCCESS [  3.919 s]
+[INFO] MapMaid - Integrations - Jackson ................... SUCCESS [ 35.983 s]
+[INFO] MapMaid - Integrations - All ....................... SUCCESS [  6.911 s]
+[INFO] MapMaid - Documentation ............................ SUCCESS [ 42.745 s]
+[INFO] MapMaid - Coverage ................................. SUCCESS [  8.396 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:43 min
+[INFO] Finished at: 2020-04-30T16:12:08+02:00
+[INFO] ------------------------------------------------------------------------
