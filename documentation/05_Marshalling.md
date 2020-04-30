@@ -44,16 +44,7 @@ final MapMaid mapMaid = aMapMaid()
         .build();
 ```
 
-Respectively, to only support XML:
-<!---[CodeSnippet](xml)-->
-```java
-final MapMaid mapMaid = aMapMaid()
-        .usingRecipe(jacksonMarshallerXml())
-        .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
-        .build();
-```
-
-And to only support YAML:
+To only support YAML:
 <!---[CodeSnippet](yaml)-->
 ```java
 final MapMaid mapMaid = aMapMaid()

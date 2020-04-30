@@ -226,7 +226,6 @@ public final class ScenarioBuilder {
         try {
             mapMaid = mode.provideMapMaid(this.type);
         } catch (final Throwable throwable) {
-            throwable.printStackTrace();
             result.withInitializationException(throwable);
             return result;
         }
@@ -236,7 +235,6 @@ public final class ScenarioBuilder {
             final String serialized = mapMaid.serializeTo(this.deserializedForm, MarshallingType.JSON, typeIdentifier);
             result.withSerializationResult(serialized);
         } catch (final Throwable throwable) {
-            throwable.printStackTrace();
             result.withSerializationException(throwable);
         }
 
@@ -244,7 +242,6 @@ public final class ScenarioBuilder {
             final Object deserialized = mapMaid.deserialize(this.serializedForm, typeIdentifier, MarshallingType.JSON, this.injectorLambda);
             result.withDeserializationResult(deserialized);
         } catch (final Throwable throwable) {
-            throwable.printStackTrace();
             result.withDeserializationException(throwable);
         }
 

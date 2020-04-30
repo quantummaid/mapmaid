@@ -35,7 +35,6 @@ public interface Expectation {
         return result -> {
             assertThat("exception occurred during initialization", result.initializationException().isPresent(), is(true));
             final Throwable exception = result.initializationException().get();
-            exception.printStackTrace();
             assertThat(exception.getMessage(), containsString(message));
         };
     }
