@@ -36,6 +36,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public final class UsageDocumentationTests {
 
     private static final Email EMAIL = Email.deserialize(
@@ -58,12 +61,12 @@ public final class UsageDocumentationTests {
         //Showcase start serializeToJson
         final String json = mapMaid.serializeToJson(EMAIL);
         //Showcase end serializeToJson
-        assert json.equals("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}");
+        assertThat(json, is("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}"));
 
         //Showcase start deserializeJson
         final Email deserializedEmail = mapMaid.deserializeJson(json, Email.class);
         //Showcase end deserializeJson
-        assert deserializedEmail.equals(EMAIL);
+        assertThat(deserializedEmail, is(EMAIL));
     }
 
     @Test
@@ -81,16 +84,16 @@ public final class UsageDocumentationTests {
         final String yaml = mapMaid.serializeToYaml(EMAIL);
         System.out.println(yaml);
         //Showcase end serializeToYaml
-        assert yaml.equals("---\n" +
+        assertThat(yaml, is("---\n" +
                 "receiver: \"receiver@example.com\"\n" +
                 "body: \"Hello World!!!\"\n" +
                 "sender: \"sender@example.com\"\n" +
-                "subject: \"Hello\"\n");
+                "subject: \"Hello\"\n"));
 
         //Showcase start deserializeYaml
         final Email deserializedEmail = mapMaid.deserializeYaml(yaml, Email.class);
         //Showcase end deserializeYaml
-        assert deserializedEmail.equals(EMAIL);
+        assertThat(deserializedEmail, is(EMAIL));
     }
 
     @Test
@@ -108,7 +111,7 @@ public final class UsageDocumentationTests {
         //Showcase start serializeToXml
         final String xml = mapMaid.serializeToXml(EMAIL);
         //Showcase end serializeToXml
-        assert xml.equals("" +
+        assertThat(xml, is("" +
                 "<root>\n" +
                 "  <entry>\n" +
                 "    <string>receiver</string>\n" +
@@ -126,12 +129,12 @@ public final class UsageDocumentationTests {
                 "    <string>subject</string>\n" +
                 "    <string>Hello</string>\n" +
                 "  </entry>\n" +
-                "</root>");
+                "</root>"));
 
         //Showcase start deserializeXml
         final Email deserializedEmail = mapMaid.deserializeXml(xml, Email.class);
         //Showcase end deserializeXml
-        assert deserializedEmail.equals(EMAIL);
+        assertThat(deserializedEmail, is(EMAIL));
     }
 
     @Test
@@ -150,12 +153,12 @@ public final class UsageDocumentationTests {
         //Showcase start serializeToCustomFormat
         final String customFormat = mapMaid.serializeTo(EMAIL, MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"));
         //Showcase end serializeToCustomFormat
-        assert customFormat.equals("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}");
+        assertThat(customFormat, is("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}"));
 
         //Showcase start deserializeCustomFormat
         final Email deserializedEmail = mapMaid.deserialize(customFormat, Email.class, MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"));
         //Showcase end deserializeCustomFormat
-        assert deserializedEmail.equals(EMAIL);
+        assertThat(deserializedEmail, is(EMAIL));
     }
 
     @Test

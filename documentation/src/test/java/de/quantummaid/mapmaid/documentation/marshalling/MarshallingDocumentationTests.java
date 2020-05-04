@@ -36,6 +36,7 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
@@ -74,9 +75,9 @@ public final class MarshallingDocumentationTests {
         final String urlEncoded = mapMaid.serializeTo(object, urlEncoded());
         //Showcase end urlencodedusage
 
-        assert urlEncoded.equals("addresses[0][houseNumber]=7a&addresses[0][zipCode]=423423&addresses[0][country]=USA&" +
+        assertThat(urlEncoded, is("addresses[0][houseNumber]=7a&addresses[0][zipCode]=423423&addresses[0][country]=USA&" +
                 "addresses[0][streetName]=Nulla+Street&addresses[0][region]=Mississippi&addresses[0][city]=Mankato&" +
-                "firstNames[0]=Aaron&firstNames[1]=Adam");
+                "firstNames[0]=Aaron&firstNames[1]=Adam"));
     }
 
     @Test
@@ -99,8 +100,8 @@ public final class MarshallingDocumentationTests {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
-                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
+        assertThat(json, is("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
+                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}"));
     }
 
     @Test
@@ -123,8 +124,8 @@ public final class MarshallingDocumentationTests {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert json.equals("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
-                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}");
+        assertThat(json, is("{\"addresses\":[{\"houseNumber\":\"7a\",\"zipCode\":\"423423\",\"country\":\"USA\"," +
+                "\"streetName\":\"Nulla Street\",\"region\":\"Mississippi\",\"city\":\"Mankato\"}],\"firstNames\":[\"Aaron\",\"Adam\"]}"));
     }
 
     @Test
@@ -149,7 +150,7 @@ public final class MarshallingDocumentationTests {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert xml.equals("" +
+        assertThat(xml, is("" +
                 "<root>\n" +
                 "  <entry>\n" +
                 "    <string>addresses</string>\n" +
@@ -189,7 +190,7 @@ public final class MarshallingDocumentationTests {
                 "      <string>Adam</string>\n" +
                 "    </list>\n" +
                 "  </entry>\n" +
-                "</root>");
+                "</root>"));
     }
 
     @Test
@@ -215,7 +216,7 @@ public final class MarshallingDocumentationTests {
                         Region.fromStringValue("Mississippi"),
                         Country.fromStringValue("USA")
                 ))));
-        assert yaml.equals("" +
+        assertThat(yaml, is("" +
                 "---\n" +
                 "addresses:\n" +
                 "- houseNumber: \"7a\"\n" +
@@ -226,6 +227,6 @@ public final class MarshallingDocumentationTests {
                 "  city: \"Mankato\"\n" +
                 "firstNames:\n" +
                 "- \"Aaron\"\n" +
-                "- \"Adam\"\n");
+                "- \"Adam\"\n"));
     }
 }

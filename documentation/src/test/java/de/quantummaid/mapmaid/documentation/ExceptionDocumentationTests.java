@@ -29,7 +29,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.AggregatedValida
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError;
 import org.junit.jupiter.api.Test;
 
-import static java.util.Objects.nonNull;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -55,9 +55,9 @@ public final class ExceptionDocumentationTests {
             mapMaid.deserializeJson(JSON, Email.class);
         } catch (final AggregatedValidationException e) {
             message = e.getMessage();
-            assert message.equals("deserialization encountered validation errors. Validation error at 'receiver', " +
+            assertThat(message, is("deserialization encountered validation errors. Validation error at 'receiver', " +
                     "Invalid email address: 'not-a-valid-receiver-value'; " +
-                    "Validation error at 'sender', Invalid email address: 'not-a-valid-sender-value'; ");
+                    "Validation error at 'sender', Invalid email address: 'not-a-valid-sender-value'; "));
         }
         assertThat(message, notNullValue());
     }
@@ -78,10 +78,10 @@ public final class ExceptionDocumentationTests {
             mapMaid.deserializeJson(JSON, Email.class);
         } catch (final AggregatedValidationException e) {
             message = e.getMessage();
-            assert message.equals("deserialization encountered validation errors. Validation error at 'receiver', " +
+            assertThat(message, is("deserialization encountered validation errors. Validation error at 'receiver', " +
                     "This is a custom message we are reporting about Invalid email address: 'not-a-valid-receiver-value'; " +
-                    "Validation error at 'sender', This is a custom message we are reporting about Invalid email address: 'not-a-valid-sender-value'; ");
+                    "Validation error at 'sender', This is a custom message we are reporting about Invalid email address: 'not-a-valid-sender-value'; "));
         }
-        assert nonNull(message);
+        assertThat(message, notNullValue());
     }
 }
