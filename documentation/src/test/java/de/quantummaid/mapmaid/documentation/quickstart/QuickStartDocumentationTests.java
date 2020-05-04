@@ -28,6 +28,9 @@ import de.quantummaid.mapmaid.documentation.quickstart.domain.EmailAddress;
 import de.quantummaid.mapmaid.documentation.quickstart.domain.Subject;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public final class QuickStartDocumentationTests {
 
     @Test
@@ -49,12 +52,12 @@ public final class QuickStartDocumentationTests {
         final String json = mapMaid.serializeToJson(email);
         //Showcase end serialization
 
-        assert json.equals("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}");
+        assertThat(json, is("{\"receiver\":\"receiver@example.com\",\"body\":\"Hello World!!!\",\"sender\":\"sender@example.com\",\"subject\":\"Hello\"}"));
 
         //Showcase start deserialization
         final Email deserializedEmail = mapMaid.deserializeJson(json, Email.class);
         //Showcase end deserialization
 
-        assert deserializedEmail.equals(email);
+        assertThat(deserializedEmail, is(email));
     }
 }
