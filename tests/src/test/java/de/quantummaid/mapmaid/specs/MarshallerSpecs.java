@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.domain.AComplexNestedType;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithArray;
@@ -30,11 +29,12 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
+import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncodedMarshaller;
+import static de.quantummaid.mapmaid.domain.Instances.theFullyInitializedExampleDto;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
-import static de.quantummaid.mapmaid.domain.Instances.theFullyInitializedExampleDto;
 
 public final class MarshallerSpecs {
 
@@ -113,7 +113,7 @@ public final class MarshallerSpecs {
     public void testUrlEncodedMarshallingIsPossible() {
         given(
                 aMapMaid()
-                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .usingRecipe(urlEncodedMarshaller())
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -125,7 +125,7 @@ public final class MarshallerSpecs {
     public void testUrlEncodedMarshallingWithCollectionsIsPossible() {
         given(
                 aMapMaid()
-                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .usingRecipe(urlEncodedMarshaller())
                         .serializingAndDeserializing(AComplexTypeWithArray.class)
                         .build()
         )
@@ -137,7 +137,7 @@ public final class MarshallerSpecs {
     public void testUrlEncodedMarshallingWithMapsIsPossible() {
         given(
                 aMapMaid()
-                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .usingRecipe(urlEncodedMarshaller())
                         .serializingAndDeserializing(AComplexNestedType.class)
                         .build()
         )
@@ -154,6 +154,17 @@ public final class MarshallerSpecs {
     }
 
     @Test
+    public void urlEncodedCanUnmarshallEmptyString() {
+        given(
+                aMapMaid()
+                        .usingRecipe(urlEncodedMarshaller())
+                        .build()
+        )
+                .when().mapMaidUnmarshalsToUniversalObject("", urlEncoded())
+                .theDeserializedObjectIs(null);
+    }
+
+    @Test
     public void testUnknownMarshallerThrowsAnException() {
         given(
                 aMapMaid()
@@ -161,7 +172,7 @@ public final class MarshallerSpecs {
                                 .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller())
                                 .usingXmlMarshaller(xmlMarshaller(), xmlUnmarshaller())
                                 .usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
-                        .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
+                        .usingRecipe(urlEncodedMarshaller())
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )

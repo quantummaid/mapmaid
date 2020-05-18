@@ -42,6 +42,7 @@ final class ParsedUrlEncoded {
     static ParsedUrlEncoded parse(final String string) {
         NotNullValidator.validateNotNull(string, "string");
         final List<KeyValue> keyValues = stream(string.split("&"))
+                .filter(s -> !s.isEmpty())
                 .map(KeyValue::parse)
                 .collect(toList());
         return new ParsedUrlEncoded(keyValues);
