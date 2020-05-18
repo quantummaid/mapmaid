@@ -116,6 +116,12 @@ public final class When {
         return then(this.thenData.withSerializationResult(serialized));
     }
 
+    public Then mapMaidUnmarshalsToUniversalObject(final String input,
+                                                   final MarshallingType marshallingType) {
+        final Object deserialized = this.mapMaid.deserializer().deserializeToUniversalObject(input, marshallingType);
+        return then(this.thenData.withDeserializationResult(deserialized));
+    }
+
     public WithMarshallingType mapMaidSerializesWithInjector(final Object object,
                                                              final UnaryOperator<Map<String, Object>> injector) {
         return marshallingType -> {
