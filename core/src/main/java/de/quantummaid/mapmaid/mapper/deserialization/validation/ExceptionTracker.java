@@ -26,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
+@Slf4j
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -67,7 +69,9 @@ public final class ExceptionTracker {
         final ExceptionMappingList<Throwable> exceptionMapping = this.validationMappings.get(resolvedThrowable.getClass())
                 .orElseThrow(() -> UnrecognizedExceptionOccurredException.fromException(
                         messageProvidingDebugInformation, this.position, resolvedThrowable, this.originalInput.toNativeJava()));
-        final List<ValidationError> mapped = exceptionMapping.map(resolvedThrowable, this.position.render());
+        final String propertyPath = this.position.render();
+        log.debug("Aggregating deserialization exception at {}", propertyPath, e);
+        final List<ValidationError> mapped = exceptionMapping.map(resolvedThrowable, propertyPath);
         this.validationErrors.addAll(mapped);
     }
 
