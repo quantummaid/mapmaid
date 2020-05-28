@@ -19,46 +19,44 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.serialization.serializers.collections;
+package de.quantummaid.mapmaid.builder.customcollection;
 
+import de.quantummaid.mapmaid.mapper.serialization.serializers.collections.CollectionSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-import static java.lang.String.format;
+import static lombok.AccessLevel.PRIVATE;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ListCollectionSerializer implements CollectionSerializer {
-    private final ResolvedType type;
+@RequiredArgsConstructor(access = PRIVATE)
+public final class InlinedCollectionSerializer implements CollectionSerializer {
+    private final TypeIdentifier contentType;
+    private final InlinedCollectionListExtractor<Object, Object> listExtractor;
 
-    public static CollectionSerializer listSerializer(final ResolvedType type) {
-        return new ListCollectionSerializer(type);
+    public static InlinedCollectionSerializer inlinedCollectionSerializer(
+            final TypeIdentifier contentTypeIdentifier,
+            final InlinedCollectionListExtractor<Object, Object> listExtractor) {
+        return new InlinedCollectionSerializer(contentTypeIdentifier, listExtractor);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Object> collectionAsList(final Object collection) {
-        final Collection<Object> realCollection = (Collection<Object>) collection;
-        return new ArrayList<>(realCollection);
+        return this.listExtractor.extract(collection);
     }
 
     @Override
     public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.type);
+        return this.contentType;
     }
 
     @Override
     public String description() {
-        return format("serializing a collection with content type '%s'", this.type.description());
+        return "custom collection";
     }
+
 }

@@ -21,6 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.customtypes;
 
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionFactory;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionListExtractor;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionSerializer;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder00;
@@ -35,6 +39,8 @@ import lombok.ToString;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer.inlinedCollectionDeserializer;
+import static de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionSerializer.inlinedCollectionSerializer;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -189,6 +195,36 @@ public final class DuplexType<T> implements CustomType<T> {
         final TypeSerializer typeSerializer = serializer.toTypeSerializer(baseType);
         final TypeDeserializer typeDeserializer = deserializer.toTypeDeserializer(baseType);
         return duplexType(type, typeSerializer, typeDeserializer);
+    }
+
+    public static <C, T> DuplexType<C> inlinedCollection(final Class<C> collectionType,
+                                                         final Class<T> contentType,
+                                                         final InlinedCollectionListExtractor<C, T> listExtractor,
+                                                         final InlinedCollectionFactory<C, T> collectionFactory) {
+        final GenericType<C> collectionTypeIdentifier = genericType(collectionType);
+        final GenericType<T> contentTypeIdentifier = genericType(contentType);
+        return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, listExtractor, collectionFactory);
+    }
+
+    public static <C, T> DuplexType<C> inlinedCollection(final GenericType<C> collectionType,
+                                                         final GenericType<T> contentType,
+                                                         final InlinedCollectionListExtractor<C, T> listExtractor,
+                                                         final InlinedCollectionFactory<C, T> collectionFactory) {
+        final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(collectionType);
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
+        return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, listExtractor, collectionFactory);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <C> DuplexType<C> inlinedCollection(final TypeIdentifier collectionType,
+                                                      final TypeIdentifier contentType,
+                                                      final InlinedCollectionListExtractor<?, ?> listExtractor,
+                                                      final InlinedCollectionFactory<?, ?> collectionFactory) {
+        final InlinedCollectionSerializer serializer =
+                inlinedCollectionSerializer(contentType, (InlinedCollectionListExtractor<Object, Object>) listExtractor);
+        final InlinedCollectionDeserializer deserializer =
+                inlinedCollectionDeserializer(contentType, (InlinedCollectionFactory<Object, Object>) collectionFactory);
+        return duplexType(collectionType, serializer, deserializer);
     }
 
     public static <T> DuplexType<T> duplexType(final TypeIdentifier type,

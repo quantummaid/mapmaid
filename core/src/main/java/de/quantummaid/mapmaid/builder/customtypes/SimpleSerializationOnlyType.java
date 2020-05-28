@@ -41,9 +41,14 @@ public final class SimpleSerializationOnlyType<T> implements SerializationOnlyTy
 
     static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final GenericType<T> type,
                                                                           final TypeSerializer serializer) {
-        validateNotNull(type, "type");
-        validateNotNull(serializer, "serializer");
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return simpleSerializationOnlyType(typeIdentifier, serializer);
+    }
+
+    static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final TypeIdentifier typeIdentifier,
+                                                                          final TypeSerializer serializer) {
+        validateNotNull(typeIdentifier, "typeIdentifier");
+        validateNotNull(serializer, "serializer");
         return new SimpleSerializationOnlyType<>(typeIdentifier, serializer);
     }
 

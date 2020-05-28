@@ -44,7 +44,7 @@ public final class ArrayCollectionSerializer implements CollectionSerializer {
     }
 
     @Override
-    public List<Object> serialize(final Object collection) {
+    public List<Object> collectionAsList(final Object collection) {
         final Object[] array = (Object[]) collection;
         return asList(array);
     }

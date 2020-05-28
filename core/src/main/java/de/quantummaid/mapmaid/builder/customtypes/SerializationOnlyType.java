@@ -21,15 +21,22 @@
 
 package de.quantummaid.mapmaid.builder.customtypes;
 
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionListExtractor;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionSerializer;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionSerializer.inlinedCollectionSerializer;
+import static de.quantummaid.mapmaid.builder.customtypes.SimpleSerializationOnlyType.simpleSerializationOnlyType;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 public interface SerializationOnlyType<T> extends CustomType<T> {
@@ -112,11 +119,43 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
         return createCustomPrimitive(type, serializer, Boolean.class);
     }
 
+    static <C, T> SerializationOnlyType<C> inlinedCollection(final Class<C> collectionType,
+                                                             final Class<T> contentType,
+                                                             final InlinedCollectionListExtractor<C, T> listExtractor) {
+        final GenericType<C> collectionTypeIdentifier = genericType(collectionType);
+        final GenericType<T> contentTypeIdentifier = genericType(contentType);
+        return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, listExtractor);
+    }
+
+    static <C, T> SerializationOnlyType<C> inlinedCollection(final GenericType<C> collectionType,
+                                                             final GenericType<T> contentType,
+                                                             final InlinedCollectionListExtractor<C, T> listExtractor) {
+        final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(collectionType);
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
+        return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, listExtractor);
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T, C> SerializationOnlyType<T> inlinedCollection(final TypeIdentifier collectionType,
+                                                             final TypeIdentifier contentType,
+                                                             final InlinedCollectionListExtractor<?, ?> listExtractor) {
+        final InlinedCollectionSerializer serializer =
+                inlinedCollectionSerializer(contentType, (InlinedCollectionListExtractor<Object, Object>) listExtractor);
+        return serializationOnlyType(collectionType, serializer);
+    }
+
     private static <T, B> SerializationOnlyType<T> createCustomPrimitive(final GenericType<T> type,
                                                                          final CustomCustomPrimitiveSerializer<T, B> serializer,
                                                                          final Class<B> baseType) {
         final TypeSerializer typeSerializer = serializer.toTypeSerializer(baseType);
-        return SimpleSerializationOnlyType.simpleSerializationOnlyType(type, typeSerializer);
+        return simpleSerializationOnlyType(type, typeSerializer);
+    }
+
+    static <T> SerializationOnlyType<T> serializationOnlyType(final TypeIdentifier type,
+                                                              final TypeSerializer serializer) {
+        validateNotNull(type, "type");
+        validateNotNull(serializer, "serializer");
+        return simpleSerializationOnlyType(type, serializer);
     }
 
     TypeSerializer createSerializer();
