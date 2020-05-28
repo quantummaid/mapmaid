@@ -48,7 +48,7 @@ public interface CollectionDeserializer extends TypeDeserializer {
         return singletonList(contentType());
     }
 
-    Object deserialize(List<Object> deserializedElements);
+    Object listToCollection(List<Object> deserializedElements);
 
     @Override
     default <T> T deserialize(final Universal input,
@@ -70,6 +70,6 @@ public interface CollectionDeserializer extends TypeDeserializer {
             deserializedList.add(deserialized);
             index = index + 1;
         }
-        return (T) deserialize(deserializedList);
+        return (T) listToCollection(deserializedList);
     }
 }

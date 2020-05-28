@@ -51,7 +51,7 @@ public final class ListCollectionDeserializer implements CollectionDeserializer 
     }
 
     @Override
-    public Object deserialize(final List<Object> deserializedElements) {
+    public Object listToCollection(final List<Object> deserializedElements) {
         return this.mapper.apply(deserializedElements);
     }
 

@@ -36,7 +36,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 public interface CollectionSerializer extends TypeSerializer {
-    List<Object> serialize(Object collection);
+    List<Object> collectionAsList(Object collection);
 
     @Override
     default Universal serialize(final Object object,
@@ -45,7 +45,7 @@ public interface CollectionSerializer extends TypeSerializer {
                                 final CustomPrimitiveMappings customPrimitiveMappings,
                                 final DebugInformation debugInformation) {
         final TypeIdentifier contentType = contentType();
-        final List<Universal> list = serialize(object)
+        final List<Universal> list = collectionAsList(object)
                 .stream()
                 .map(element -> callback.serializeDefinition(contentType, element, tracker))
                 .collect(toList());

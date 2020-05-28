@@ -19,46 +19,48 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.serialization.serializers.collections;
+package de.quantummaid.mapmaid.builder.customcollection;
 
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.CollectionDeserializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-import static java.lang.String.format;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ListCollectionSerializer implements CollectionSerializer {
-    private final ResolvedType type;
+public final class InlinedCollectionDeserializer<T, C> implements CollectionDeserializer {
+    private final TypeIdentifier contentType;
+    private final Function<List<C>, T> collectionFactory;
 
-    public static CollectionSerializer listSerializer(final ResolvedType type) {
-        return new ListCollectionSerializer(type);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Object> collectionAsList(final Object collection) {
-        final Collection<Object> realCollection = (Collection<Object>) collection;
-        return new ArrayList<>(realCollection);
+    public static <T, C> InlinedCollectionDeserializer<T, C> inlinedCollectionDeserializer(
+            final Class<T> customCollectionType,
+            final Class<C> contentType,
+            final Function<List<C>, T> collectionFactory) {
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
+        return new InlinedCollectionDeserializer<>(contentTypeIdentifier, collectionFactory);
     }
 
     @Override
     public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.type);
+        return contentType;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object listToCollection(final List<Object> deserializedElements) {
+        return collectionFactory.apply((List<C>) deserializedElements);
     }
 
     @Override
     public String description() {
-        return format("serializing a collection with content type '%s'", this.type.description());
+        return "custom collection";
     }
 }

@@ -49,7 +49,7 @@ public final class ArrayCollectionDeserializer implements CollectionDeserializer
     }
 
     @Override
-    public Object deserialize(final List<Object> deserializedElements) {
+    public Object listToCollection(final List<Object> deserializedElements) {
         final int size = deserializedElements.size();
         final Object[] array = (Object[]) Array.newInstance(this.componentType.assignableType(), size);
         for (int i = 0; i < size; ++i) {
