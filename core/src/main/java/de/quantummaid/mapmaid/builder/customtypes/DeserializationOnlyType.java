@@ -144,7 +144,7 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <C, T> DeserializationOnlyType<C> inlinedCollection(final TypeIdentifier collectionType,
+    public static <C> DeserializationOnlyType<C> inlinedCollection(final TypeIdentifier collectionType,
                                                                       final TypeIdentifier contentType,
                                                                       final InlinedCollectionFactory<?, ?> collectionFactory) {
         final InlinedCollectionDeserializer deserializer =

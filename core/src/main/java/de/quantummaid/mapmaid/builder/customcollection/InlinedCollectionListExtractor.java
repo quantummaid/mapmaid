@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.builder.customcollection;
 
 import java.util.List;
-import java.util.function.Function;
 
 @FunctionalInterface
 public interface InlinedCollectionListExtractor<C, T> {

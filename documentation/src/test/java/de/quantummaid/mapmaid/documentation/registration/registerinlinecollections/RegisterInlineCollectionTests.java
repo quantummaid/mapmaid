@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
-import de.quantummaid.mapmaid.documentation.registration.registercustomtypes.MyCustomPrimitive;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

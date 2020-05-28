@@ -22,10 +22,9 @@
 package de.quantummaid.mapmaid.builder.customcollection;
 
 import java.util.List;
-import java.util.function.Function;
 
 @FunctionalInterface
-public interface InlinedCollectionFactory<C,T> {
+public interface InlinedCollectionFactory<C, T> {
 
     C create(List<T> list);
 }

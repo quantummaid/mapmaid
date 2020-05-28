@@ -136,7 +136,7 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
     }
 
     @SuppressWarnings("unchecked")
-    static <T, C> SerializationOnlyType<T> inlinedCollection(final TypeIdentifier collectionType,
+    static <C> SerializationOnlyType<C> inlinedCollection(final TypeIdentifier collectionType,
                                                              final TypeIdentifier contentType,
                                                              final InlinedCollectionListExtractor<?, ?> listExtractor) {
         final InlinedCollectionSerializer serializer =

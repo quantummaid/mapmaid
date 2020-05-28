@@ -21,19 +21,15 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer;
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.domain.ACustomCollection;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.inlinedCollection;
 import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.inlinedCollection;
 import static de.quantummaid.mapmaid.domain.ACustomCollection.aCustomCollection;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
@@ -100,7 +96,7 @@ public class CustomCollectionSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .deserializing(inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::aCustomCollection))
+                        .deserializing(DeserializationOnlyType.inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::aCustomCollection))
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")
