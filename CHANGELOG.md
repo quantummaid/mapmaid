@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.56](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.56/jar) - 2020-05-28
+### Changed
+- Fixed bug [#53](https://github.com/quantummaid/mapmaid/issues/53).
+
 ## [0.9.55](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.55/jar) - 2020-05-21
 ### Changed
 - Fixed bug [#47](https://github.com/quantummaid/mapmaid/issues/47).
