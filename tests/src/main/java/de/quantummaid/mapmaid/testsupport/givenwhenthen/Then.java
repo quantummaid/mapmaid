@@ -35,10 +35,8 @@ import static de.quantummaid.mapmaid.debug.scaninformation.Classification.CUSTOM
 import static de.quantummaid.mapmaid.debug.scaninformation.Classification.SERIALIZED_OBJECT;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
-import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public final class Then {
@@ -46,6 +44,26 @@ public final class Then {
 
     public static Then then(final ThenData thenData) {
         return new Then(thenData);
+    }
+
+    private static int countCustomPrimitives(final DebugInformation debugInformation) {
+        return (int) debugInformation.allScanInformations().stream()
+                .filter(Then::isCustomPrimitive)
+                .count();
+    }
+
+    private static int countSerializedObjects(final DebugInformation debugInformation) {
+        return (int) debugInformation.allScanInformations().stream()
+                .filter(Then::isSerializedObject)
+                .count();
+    }
+
+    private static boolean isCustomPrimitive(final ScanInformation scanInformation) {
+        return scanInformation.classification().equals(CUSTOM_PRIMITIVE);
+    }
+
+    private static boolean isSerializedObject(final ScanInformation scanInformation) {
+        return scanInformation.classification().equals(SERIALIZED_OBJECT);
     }
 
     public Then theDeserializedObjectIs(final Object expected) {
@@ -64,6 +82,16 @@ public final class Then {
     public Then anExceptionIsThrownWithAMessageContaining(final String message) {
         assertThat(this.thenData.getException(), not(is(nullValue())));
         assertThat(this.thenData.getException().getMessage(), StringContains.containsString(message));
+        return this;
+    }
+
+    public Then anExceptionIsThrownWithAMessageContainingLine(final String expectedMessage) {
+        assertThat(this.thenData.getException(), not(is(nullValue())));
+        final String message = this.thenData.getException().getMessage();
+        final List<String> lines = message.lines()
+                .map(String::trim)
+                .collect(toList());
+        assertThat(lines, hasItem(expectedMessage));
         return this;
     }
 
@@ -106,25 +134,5 @@ public final class Then {
     public Then theSerializationResultWas(final Object serialized) {
         assertThat(this.thenData.getSerializationResult(), is(serialized));
         return this;
-    }
-
-    private static int countCustomPrimitives(final DebugInformation debugInformation) {
-        return (int) debugInformation.allScanInformations().stream()
-                .filter(Then::isCustomPrimitive)
-                .count();
-    }
-
-    private static int countSerializedObjects(final DebugInformation debugInformation) {
-        return (int) debugInformation.allScanInformations().stream()
-                .filter(Then::isSerializedObject)
-                .count();
-    }
-
-    private static boolean isCustomPrimitive(final ScanInformation scanInformation) {
-        return scanInformation.classification().equals(CUSTOM_PRIMITIVE);
-    }
-
-    private static boolean isSerializedObject(final ScanInformation scanInformation) {
-        return scanInformation.classification().equals(SERIALIZED_OBJECT);
     }
 }

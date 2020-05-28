@@ -48,7 +48,7 @@ public final class RootCauseSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.specs.rootcause.normal.Level2 -> de.quantummaid.mapmaid.specs.rootcause.normal.Level1 -> manually added");
+                .anExceptionIsThrownWithAMessageContainingLine("- de.quantummaid.mapmaid.specs.rootcause.normal.Level2 -> de.quantummaid.mapmaid.specs.rootcause.normal.Level1 -> manually added");
     }
 
     @Test
@@ -59,9 +59,9 @@ public final class RootCauseSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelB -> de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA -> manually added")
-                .anExceptionIsThrownWithAMessageContaining(
-                        "de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelB -> de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA -> de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelB...");
+                .anExceptionIsThrownWithAMessageContainingLine("- de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelB -> de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA -> manually added")
+                .anExceptionIsThrownWithAMessageContainingLine(
+                        "- de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelB -> de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA -> de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelB...");
     }
 
     @SuppressWarnings("rawtypes")
@@ -74,7 +74,7 @@ public final class RootCauseSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("java.util.LinkedList<?> -> java.util.ArrayList<java.util.LinkedList<?>> -> java.util.List<java.util.ArrayList<java.util.LinkedList<?>>> -> manually added");
+                .anExceptionIsThrownWithAMessageContainingLine("- java.util.LinkedList<?> -> java.util.ArrayList<java.util.LinkedList<?>> -> java.util.List<java.util.ArrayList<java.util.LinkedList<?>>> -> manually added");
     }
 
     @Test
@@ -85,7 +85,7 @@ public final class RootCauseSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("java.util.List<?> -> because return type of method 'List method()' " +
+                .anExceptionIsThrownWithAMessageContainingLine("- java.util.List<?> -> because return type of method 'List method()' " +
                         "[public java.util.List<?> de.quantummaid.mapmaid.specs.rootcause.wildcardusecase.UseCaseWithWildcardInReturnType.method()]");
     }
 }

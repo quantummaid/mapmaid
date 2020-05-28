@@ -56,7 +56,7 @@ public final class Reasons {
                 .map(reason -> reason.render(this.serializationSubReasonProvider))
                 .flatMap(Collection::stream)
                 .map(reason -> format("\t- %s", reason))
-                .collect(joining("\n"));
+                .collect(joining("\n", "", "\n"));
     }
 
     public String dumpDerializationReasons() {
@@ -64,7 +64,7 @@ public final class Reasons {
                 .map(reason -> reason.render(this.deserializationSubReasonProvider))
                 .flatMap(Collection::stream)
                 .map(reason -> format("\t- %s", reason))
-                .collect(joining("\n"));
+                .collect(joining("\n", "", "\n"));
     }
 
     public boolean hasSerializationReasons() {
