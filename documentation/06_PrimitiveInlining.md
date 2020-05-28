@@ -57,6 +57,36 @@ But instead, MapMaid will return this:
 Because the class `MyOtherJsonModel` consists of only one field of type `String`, MapMaid will inline
 the value and treat the entire class as a primitive object.
 
+## Inlining classes to collections
+Analogously, if the class only contains one single collection it can be inlined to a JSON (or XML, YAML etc) collection.
+Given the following example:
+
+<!---[CodeSnippet](myCollectionJsonModel)-->
+```java
+public final class MyCollectionJsonModel {
+    public final List<String> values;
+
+    public MyCollectionJsonModel(final List<String> values) {
+        this.values = values;
+    }
+}
+```
+Without inlining, the JSON would look like this:
+```json
+{
+   "values": ["a", "b", "c"]
+}
+```
+
+With inlining, the JSON can be shortened to this:
+
+```json
+["a", "b", "c"]
+```
+
+Currently, collection inlining needs to be enabled on a per-type basis. See <!---[Link] ( 02_RegisteringTypes.md "custom collections") -->
+[custom collections](02_RegisteringTypes.md).
+
 ## Why is this important?
 Popular approaches to software development like Domain-Driven Design discourage the direct use of language primitives
 such as `int`, `boolean` and the quasi-primitive `String` (see [*Primitive Obsession*](https://blog.ploeh.dk/2011/05/25/DesignSmellPrimitiveObsession/)).

@@ -29,34 +29,28 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.function.Function;
-
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class InlinedCollectionDeserializer<T, C> implements CollectionDeserializer {
+public final class InlinedCollectionDeserializer implements CollectionDeserializer {
     private final TypeIdentifier contentType;
-    private final Function<List<C>, T> collectionFactory;
+    private final InlinedCollectionFactory<Object, Object> collectionFactory;
 
-    public static <T, C> InlinedCollectionDeserializer<T, C> inlinedCollectionDeserializer(
-            final Class<T> customCollectionType,
-            final Class<C> contentType,
-            final Function<List<C>, T> collectionFactory) {
-        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
-        return new InlinedCollectionDeserializer<>(contentTypeIdentifier, collectionFactory);
+    public static InlinedCollectionDeserializer inlinedCollectionDeserializer(
+            final TypeIdentifier contentTypeIdentifier,
+            final InlinedCollectionFactory<Object, Object> collectionFactory) {
+        return new InlinedCollectionDeserializer(contentTypeIdentifier, collectionFactory);
     }
 
     @Override
     public TypeIdentifier contentType() {
-        return contentType;
+        return this.contentType;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Object listToCollection(final List<Object> deserializedElements) {
-        return collectionFactory.apply((List<C>) deserializedElements);
+        return this.collectionFactory.create(deserializedElements);
     }
 
     @Override

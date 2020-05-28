@@ -28,35 +28,30 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.function.Function;
 
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static lombok.AccessLevel.PRIVATE;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = PRIVATE)
-public final class InlinedCollectionSerializer<T, C> implements CollectionSerializer {
+public final class InlinedCollectionSerializer implements CollectionSerializer {
     private final TypeIdentifier contentType;
-    private final Function<T, List<C>> listExtractor;
+    private final InlinedCollectionListExtractor<Object, Object> listExtractor;
 
-    public static <T, C> InlinedCollectionSerializer<T, C> inlinedCollectionSerializer(final Class<T> customCollectionType,
-                                                                                       final Class<C> contentType,
-                                                                                       final Function<T, List<C>> listExtractor) {
-        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
-        return new InlinedCollectionSerializer<>(contentTypeIdentifier, listExtractor);
+    public static InlinedCollectionSerializer inlinedCollectionSerializer(
+            final TypeIdentifier contentTypeIdentifier,
+            final InlinedCollectionListExtractor<Object, Object> listExtractor) {
+        return new InlinedCollectionSerializer(contentTypeIdentifier, listExtractor);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Object> collectionAsList(final Object collection) {
-        final T customCollection = (T) collection;
-        return (List<Object>) listExtractor.apply(customCollection);
+        return this.listExtractor.extract(collection);
     }
 
     @Override
     public TypeIdentifier contentType() {
-        return contentType;
+        return this.contentType;
     }
 
     @Override

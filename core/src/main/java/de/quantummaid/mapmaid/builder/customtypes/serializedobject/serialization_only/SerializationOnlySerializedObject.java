@@ -44,6 +44,9 @@ public final class SerializationOnlySerializedObject<T> implements Serialization
 
     public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(final GenericType<T> type) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return serializationOnlySerializedObject(typeIdentifier);
+    }
+    public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(final TypeIdentifier typeIdentifier) {
         final Builder builder = emptyBuilder(typeIdentifier);
         return new SerializationOnlySerializedObject<>(builder);
     }

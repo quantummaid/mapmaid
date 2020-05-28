@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.customtypes;
 
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionFactory;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder00;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -34,6 +36,7 @@ import lombok.ToString;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer.inlinedCollectionDeserializer;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -122,6 +125,31 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
     public static <T> DeserializationOnlyType<T> booleanBasedCustomPrimitive(final GenericType<T> type,
                                                                              final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
         return createCustomPrimitive(type, deserializer, Boolean.class);
+    }
+
+    public static <C, T> DeserializationOnlyType<C> inlinedCollection(final Class<C> collectionType,
+                                                                      final Class<T> contentType,
+                                                                      final InlinedCollectionFactory<C, T> collectionFactory) {
+        final GenericType<C> collectionTypeIdentifier = genericType(collectionType);
+        final GenericType<T> contentTypeIdentifier = genericType(contentType);
+        return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, collectionFactory);
+    }
+
+    public static <C, T> DeserializationOnlyType<C> inlinedCollection(final GenericType<C> collectionType,
+                                                                      final GenericType<T> contentType,
+                                                                      final InlinedCollectionFactory<C, T> collectionFactory) {
+        final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(collectionType);
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
+        return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, collectionFactory);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <C, T> DeserializationOnlyType<C> inlinedCollection(final TypeIdentifier collectionType,
+                                                                      final TypeIdentifier contentType,
+                                                                      final InlinedCollectionFactory<?, ?> collectionFactory) {
+        final InlinedCollectionDeserializer deserializer =
+                inlinedCollectionDeserializer(contentType, (InlinedCollectionFactory<Object, Object>) collectionFactory);
+        return deserializationOnlyType(collectionType, deserializer);
     }
 
     public static <T> DeserializationOnlyType<T> deserializationOnlyType(final TypeIdentifier type,

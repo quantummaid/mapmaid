@@ -119,6 +119,66 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
         .build();
 ```
 
+### Custom collections
+Collections inlining as in <!---[Link] ( 06_PrimitiveInlining.md "primitive inlining of classes") -->
+[primitive inlining of classes](06_PrimitiveInlining.md)works analogously. 
+
+The following code examples inline the `MyCustomCollection` class as custom collection:
+
+<!---[CodeSnippet](myCustomCollection)-->
+```java
+public final class MyCustomCollection {
+    public final List<String> values;
+
+    public MyCustomCollection(final List<String> values) {
+        this.values = values;
+    }
+
+    public List<String> getValues() {
+        return this.values;
+    }
+}
+```
+
+
+<!---[CodeSnippet](inlineCollectionDuplexConfig)-->
+```java
+final MapMaid mapMaid = aMapMaid()
+        .serializingAndDeserializing(
+                DuplexType.inlinedCollection(
+                        MyCustomCollection.class,
+                        String.class,
+                        MyCustomCollection::getValues,
+                        MyCustomCollection::new)
+        )
+        .build();
+```
+
+
+<!---[CodeSnippet](inlineCollectionSerializingConfig)-->
+```java
+final MapMaid mapMaid = aMapMaid()
+        .serializing(
+                SerializationOnlyType.inlinedCollection(
+                        MyCustomCollection.class,
+                        String.class,
+                        MyCustomCollection::getValues)
+        )
+        .build();
+```
+
+
+<!---[CodeSnippet](inlineCollectionDeserializingConfig)-->
+```java
+final MapMaid mapMaid = aMapMaid()
+        .deserializing(
+                DeserializationOnlyType.inlinedCollection(
+                        MyCustomCollection.class,
+                        String.class,
+                        MyCustomCollection::new)
+        )
+        .build();
+```
 
 ## Registering injection-only types
 

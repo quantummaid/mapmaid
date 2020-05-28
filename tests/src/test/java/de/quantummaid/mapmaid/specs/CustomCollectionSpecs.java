@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer;
-import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionSerializer;
+import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import de.quantummaid.mapmaid.domain.ACustomCollection;
@@ -33,6 +33,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.inlinedCollection;
+import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.inlinedCollection;
+import static de.quantummaid.mapmaid.domain.ACustomCollection.aCustomCollection;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
@@ -44,12 +47,10 @@ public class CustomCollectionSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .serializingAndDeserializing(DuplexType.duplexType(TypeIdentifier.typeIdentifierFor(ACustomCollection.class),
-                                InlinedCollectionSerializer.inlinedCollectionSerializer(ACustomCollection.class, String.class, ACustomCollection::getValues),
-                                InlinedCollectionDeserializer.inlinedCollectionDeserializer(ACustomCollection.class, String.class, ACustomCollection::aCustomCollection)))
+                        .serializingAndDeserializing(DuplexType.inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
                         .build()
         )
-                .when().mapMaidSerializes(ACustomCollection.aCustomCollection(List.of("a", "b", "c")))
+                .when().mapMaidSerializes(aCustomCollection(List.of("a", "b", "c")))
                 .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
@@ -65,21 +66,33 @@ public class CustomCollectionSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .serializingAndDeserializing(DuplexType.duplexType(TypeIdentifier.typeIdentifierFor(ACustomCollection.class),
-                                InlinedCollectionSerializer.inlinedCollectionSerializer(ACustomCollection.class, String.class, ACustomCollection::getValues),
-                                InlinedCollectionDeserializer.inlinedCollectionDeserializer(ACustomCollection.class, String.class, ACustomCollection::aCustomCollection)))
+                        .serializingAndDeserializing(DuplexType.inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")
                 .from(MarshallingType.JSON)
                 .toTheType(ACustomCollection.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(ACustomCollection.aCustomCollection(List.of("a", "b", "c")));
+                .theDeserializedObjectIs(aCustomCollection(List.of("a", "b", "c")));
     }
 
     @Test
     public void customCollectionCanBeRegisteredSerializingOnly() {
-
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializing(inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues))
+                        .build()
+        )
+                .when().mapMaidSerializes(aCustomCollection(List.of("a", "b", "c")))
+                .withMarshallingType(MarshallingType.JSON)
+                .noExceptionHasBeenThrown()
+                .theSerializationResultWas("" +
+                        "[\n" +
+                        "  \"a\",\n" +
+                        "  \"b\",\n" +
+                        "  \"c\"\n" +
+                        "]");
     }
 
     @Test
@@ -87,15 +100,13 @@ public class CustomCollectionSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .deserializing(SerializationOnlyType.serializedObject(TypeIdentifier.typeIdentifierFor(ACustomCollection.class),
-                                InlinedCollectionSerializer.inlinedCollectionSerializer(ACustomCollection.class, String.class, ACustomCollection::getValues)))
+                        .deserializing(inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::aCustomCollection))
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")
                 .from(MarshallingType.JSON)
                 .toTheType(ACustomCollection.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(ACustomCollection.aCustomCollection(List.of("a", "b", "c")));
-    }
+                .theDeserializedObjectIs(aCustomCollection(List.of("a", "b", "c")));
     }
 }
