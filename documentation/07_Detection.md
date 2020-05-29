@@ -23,6 +23,7 @@ A class is primitive inlined if at least one of the following holds true:
     - `boolean` or `Boolean`
 - It features a preferred factory method for primitive objects
 - It features a preferred serialization method for primitive objects
+
 A class is not primitive inlined if at least one of the following holds true:
 - It features a preferred factory method for composite objects
 
