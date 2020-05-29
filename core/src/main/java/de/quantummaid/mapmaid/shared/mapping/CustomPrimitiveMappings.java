@@ -27,7 +27,9 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.shared.mapping.TypeMappings.typeMappings;
@@ -87,4 +89,9 @@ public final class CustomPrimitiveMappings {
         final UniversalPrimitive universalPrimitive = this.typeMappings.map(universal, requiredUniversalType).orElseThrow();
         return universalTypeMapper.fromUniversal(universalPrimitive);
     }
+
+    public List<Class<?>> registeredTypes() {
+        return new ArrayList<>(mappings.keySet());
+    }
+
 }

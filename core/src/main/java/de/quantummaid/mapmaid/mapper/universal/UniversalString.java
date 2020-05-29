@@ -69,4 +69,8 @@ public final class UniversalString implements UniversalPrimitive {
     public Object toNativeJava() {
         return this.value;
     }
+
+    public String toNativeStringValue(){
+        return this.value;
+    }
 }

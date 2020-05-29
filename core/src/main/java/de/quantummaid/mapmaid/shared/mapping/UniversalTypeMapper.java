@@ -24,10 +24,7 @@ package de.quantummaid.mapmaid.shared.mapping;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.function.Function;
 
@@ -35,7 +32,9 @@ import java.util.function.Function;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UniversalTypeMapper {
+    @Getter
     private final Class<?> normalType;
+    @Getter
     private final Class<? extends UniversalPrimitive> universalType;
     private final Function<Object, UniversalPrimitive> toUniversal;
     private final Function<UniversalPrimitive, Object> fromUniversal;

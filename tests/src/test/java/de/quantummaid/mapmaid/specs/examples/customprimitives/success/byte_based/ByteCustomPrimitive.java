@@ -19,47 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.universal;
+package de.quantummaid.mapmaid.specs.examples.customprimitives.success.byte_based;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.mapping.BooleanFormatException.booleanFormatException;
+import java.math.BigDecimal;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UniversalBoolean implements UniversalPrimitive {
-    private final boolean value;
+public final class ByteCustomPrimitive {
+    private final byte value;
 
-    public static UniversalBoolean universalBoolean(final boolean value) {
-        return new UniversalBoolean(value);
+    public static ByteCustomPrimitive fromStringValue(final byte value) {
+        return new ByteCustomPrimitive(value);
     }
 
-    public static UniversalBoolean universalBooleanFromUniversalString(final UniversalString universalString) {
-        final String stringValue = (String) universalString.toNativeJava();
-        return universalBooleanFromString(stringValue);
-    }
-
-    private static UniversalBoolean universalBooleanFromString(final String stringValue) {
-        switch (stringValue) {
-            case "true":
-                return universalBoolean(true);
-            case "false":
-                return universalBoolean(false);
-            default:
-                throw booleanFormatException(stringValue);
-        }
-    }
-
-    @Override
-    public Object toNativeJava() {
+    public byte stringValue() {
         return this.value;
     }
 
-    public Boolean toNativeBoolean() {
-        return this.value;
+    public BigDecimal asBigDecimal() {
+        return new BigDecimal(this.value);
     }
 }

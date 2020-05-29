@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.9.58](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.58/jar) - 2020-05-29
+### Added
+- Support for byte and short types.
 ### Changed
 - Fixed bug [#51](https://github.com/quantummaid/mapmaid/issues/51).
 

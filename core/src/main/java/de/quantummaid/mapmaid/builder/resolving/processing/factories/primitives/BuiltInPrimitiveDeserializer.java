@@ -31,19 +31,24 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BuiltInPrimitiveDeserializer implements CustomPrimitiveDeserializer {
-    private final PrimitiveInformation primitiveInformation;
+    private final Class<?> baseType;
 
-    public static CustomPrimitiveDeserializer builtInPrimitiveDeserializer(final PrimitiveInformation primitiveInformation) {
-        return new BuiltInPrimitiveDeserializer(primitiveInformation);
+    public static CustomPrimitiveDeserializer builtInPrimitiveDeserializer(final Class<?> baseType) {
+        return new BuiltInPrimitiveDeserializer(baseType);
+    }
+
+    @Override
+    public Class<?> baseType() {
+        return this.baseType;
     }
 
     @Override
     public Object deserialize(final Object value) throws Exception {
-        return this.primitiveInformation.deserializer.apply((String) value);
+        return value;
     }
 
     @Override
     public String description() {
-        return this.primitiveInformation.description;
+        return "does not require deserialization";
     }
 }

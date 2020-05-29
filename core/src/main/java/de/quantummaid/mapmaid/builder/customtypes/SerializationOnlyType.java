@@ -69,6 +69,16 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
         return createCustomPrimitive(type, serializer, String.class);
     }
 
+    static <T> SerializationOnlyType<T> longBasedCustomPrimitive(final Class<T> type,
+                                                                 final CustomCustomPrimitiveSerializer<T, Long> serializer) {
+        return longBasedCustomPrimitive(genericType(type), serializer);
+    }
+
+    static <T> SerializationOnlyType<T> longBasedCustomPrimitive(final GenericType<T> type,
+                                                                 final CustomCustomPrimitiveSerializer<T, Long> serializer) {
+        return createCustomPrimitive(type, serializer, Long.class);
+    }
+
     static <T> SerializationOnlyType<T> intBasedCustomPrimitive(final Class<T> type,
                                                                 final CustomCustomPrimitiveSerializer<T, Integer> serializer) {
         return intBasedCustomPrimitive(genericType(type), serializer);
@@ -79,14 +89,24 @@ public interface SerializationOnlyType<T> extends CustomType<T> {
         return createCustomPrimitive(type, serializer, Integer.class);
     }
 
-    static <T> SerializationOnlyType<T> longBasedCustomPrimitive(final Class<T> type,
-                                                                 final CustomCustomPrimitiveSerializer<T, Long> serializer) {
-        return longBasedCustomPrimitive(genericType(type), serializer);
+    static <T> SerializationOnlyType<T> shortBasedCustomPrimitive(final Class<T> type,
+                                                                final CustomCustomPrimitiveSerializer<T, Short> serializer) {
+        return shortBasedCustomPrimitive(genericType(type), serializer);
     }
 
-    static <T> SerializationOnlyType<T> longBasedCustomPrimitive(final GenericType<T> type,
-                                                                 final CustomCustomPrimitiveSerializer<T, Long> serializer) {
-        return createCustomPrimitive(type, serializer, Long.class);
+    static <T> SerializationOnlyType<T> shortBasedCustomPrimitive(final GenericType<T> type,
+                                                                final CustomCustomPrimitiveSerializer<T, Short> serializer) {
+        return createCustomPrimitive(type, serializer, Short.class);
+    }
+
+    static <T> SerializationOnlyType<T> byteBasedCustomPrimitive(final Class<T> type,
+                                                                final CustomCustomPrimitiveSerializer<T, Byte> serializer) {
+        return byteBasedCustomPrimitive(genericType(type), serializer);
+    }
+
+    static <T> SerializationOnlyType<T> byteBasedCustomPrimitive(final GenericType<T> type,
+                                                                final CustomCustomPrimitiveSerializer<T, Byte> serializer) {
+        return createCustomPrimitive(type, serializer, Byte.class);
     }
 
     static <T> SerializationOnlyType<T> floatBasedCustomPrimitive(final Class<T> type,

@@ -37,7 +37,7 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.Collection.smallMap;
-import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES;
+import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -51,7 +51,13 @@ public final class CustomPrimitiveSymmetryBuilder {
     private final Map<Class<?>, List<TypeDeserializer>> deserializers;
 
     public static CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder() {
-        return new CustomPrimitiveSymmetryBuilder(DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES, smallMap(), smallMap());
+        return new CustomPrimitiveSymmetryBuilder(CUSTOM_PRIMITIVE_MAPPINGS.registeredTypes(), smallMap(), smallMap());
+    }
+
+    private static <T> void ensureKeyIsPresent(final Class<?> type, final Map<Class<?>, List<T>> map) {
+        if (!map.containsKey(type)) {
+            map.put(type, smallList());
+        }
     }
 
     public void addDeserializer(final CustomPrimitiveDeserializer deserializer) {
@@ -77,11 +83,5 @@ public final class CustomPrimitiveSymmetryBuilder {
             }
         }
         return empty();
-    }
-
-    private static <T> void ensureKeyIsPresent(final Class<?> type, final Map<Class<?>, List<T>> map) {
-        if (!map.containsKey(type)) {
-            map.put(type, smallList());
-        }
     }
 }

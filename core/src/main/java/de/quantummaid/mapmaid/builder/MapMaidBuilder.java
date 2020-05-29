@@ -183,12 +183,6 @@ public final class MapMaidBuilder {
         return this;
     }
 
-    public MapMaidBuilder withManuallyAddedTypes(final Class<?>... type) {
-        validateNotNull(type, "type");
-        stream(type).forEach(this::serializingAndDeserializing);
-        return this;
-    }
-
     public MapMaidBuilder withType(final Class<?> type,
                                    final RequiredCapabilities capabilities) {
         return withType(genericType(type), capabilities);

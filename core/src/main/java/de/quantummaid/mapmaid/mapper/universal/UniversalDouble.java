@@ -66,10 +66,19 @@ public final class UniversalDouble implements UniversalPrimitive {
     }
 
     public float toNativeFloatExact() {
-        if ((float) this.value != this.value) {
+        final float floatValue = (float) this.value;
+        final Float wrappedFloat = floatValue;
+        final Double wrappedDouble = this.value;
+        final String floatStringRepresentation = wrappedFloat.toString();
+        final String doubleStringRepresentation = wrappedDouble.toString();
+        if (!floatStringRepresentation.equals(doubleStringRepresentation)) {
             final String message = format("Overflow when converting double '%f' to float.", this.value);
             throw mapMaidException(message);
         }
-        return (float) this.value;
+        return floatValue;
+    }
+
+    public double toNativeDouble() {
+        return this.value;
     }
 }

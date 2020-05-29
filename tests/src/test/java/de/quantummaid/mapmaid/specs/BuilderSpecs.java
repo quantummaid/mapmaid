@@ -29,14 +29,15 @@ import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class BuilderSpecs {
 
     @Test
     public void givenValidDataTransferObject_whenBuildingWithDataTransferObject_thenReturnsCorrectDeserializer() {
-        Given.given(
+        given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexType.class, AString.class, ANumber.class)
+                        .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
                 .when().theDefinitionsAreQueried()
@@ -46,7 +47,7 @@ public final class BuilderSpecs {
 
     @Test
     public void givenValidCustomPrimitive_whenBuildingWithCustomPrimitive_thenReturnsCorrectDeserializer() {
-        Given.given(
+        given(
                 aMapMaid().serializingAndDeserializing(AString.class).build()
         )
                 .when().theDefinitionsAreQueried()
@@ -56,7 +57,7 @@ public final class BuilderSpecs {
 
     @Test
     public void allKnownCollectionsAreSupported() {
-        Given.given(
+        given(
                 aMapMaid()
                         .serializingAndDeserializing(AComplexTypeWithDifferentCollections.class)
                         .build()
