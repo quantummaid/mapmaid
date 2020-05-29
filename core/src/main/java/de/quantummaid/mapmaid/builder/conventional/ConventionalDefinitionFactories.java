@@ -21,13 +21,13 @@
 
 package de.quantummaid.mapmaid.builder.conventional;
 
-import de.quantummaid.mapmaid.mapper.universal.UniversalBoolean;
-import de.quantummaid.mapmaid.mapper.universal.UniversalNumber;
-import de.quantummaid.mapmaid.mapper.universal.UniversalString;
+import de.quantummaid.mapmaid.mapper.universal.*;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
+import java.util.List;
 import java.util.function.Function;
 
+import static de.quantummaid.mapmaid.mapper.universal.UniversalPrimitiveMapping.universalPrimitiveMapping;
 import static de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings.customPrimitiveMappings;
 import static de.quantummaid.mapmaid.shared.mapping.UniversalTypeMapper.universalTypeMapper;
 
@@ -35,28 +35,57 @@ public final class ConventionalDefinitionFactories {
 
     public static final CustomPrimitiveMappings CUSTOM_PRIMITIVE_MAPPINGS = customPrimitiveMappings(
             universalTypeMapper(String.class, UniversalString.class),
-            universalTypeMapper(double.class, UniversalNumber.class),
-            universalTypeMapper(Double.class, UniversalNumber.class),
+            universalTypeMapper(double.class, UniversalDouble.class),
+            universalTypeMapper(Double.class, UniversalDouble.class),
             universalTypeMapper(boolean.class, UniversalBoolean.class),
             universalTypeMapper(Boolean.class, UniversalBoolean.class),
-            universalTypeMapper(int.class, UniversalNumber.class,
-                    (Function<Integer, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).intValue()),
-            universalTypeMapper(Integer.class, UniversalNumber.class,
-                    (Function<Integer, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).intValue()),
-            universalTypeMapper(long.class, UniversalNumber.class,
-                    (Function<Long, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).longValue()),
-            universalTypeMapper(Long.class, UniversalNumber.class,
-                    (Function<Long, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).longValue()),
-            universalTypeMapper(float.class, UniversalNumber.class,
-                    (Function<Float, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).floatValue()),
-            universalTypeMapper(Float.class, UniversalNumber.class,
-                    (Function<Float, UniversalNumber>) UniversalNumber::universalNumber, // NOSONAR
-                    universalNumber -> ((Double) universalNumber.toNativeJava()).floatValue())
+            universalTypeMapper(byte.class, UniversalLong.class,
+                    (Function<Byte, UniversalLong>) UniversalLong::universalLong,
+                    UniversalLong::toNativeByteExact),
+            universalTypeMapper(Byte.class, UniversalLong.class,
+                    (Function<Byte, UniversalLong>) UniversalLong::universalLong,
+                    UniversalLong::toNativeByteExact),
+            universalTypeMapper(short.class, UniversalLong.class,
+                    (Function<Short, UniversalLong>) UniversalLong::universalLong,
+                    UniversalLong::toNativeShortExact),
+            universalTypeMapper(Short.class, UniversalLong.class,
+                    (Function<Short, UniversalLong>) UniversalLong::universalLong,
+                    UniversalLong::toNativeShortExact),
+            universalTypeMapper(int.class, UniversalLong.class,
+                    (Function<Integer, UniversalLong>) UniversalLong::universalLong,
+                    UniversalLong::toNativeIntExact),
+            universalTypeMapper(Integer.class, UniversalLong.class,
+                    (Function<Integer, UniversalLong>) UniversalLong::universalLong,
+                    UniversalLong::toNativeIntExact),
+            universalTypeMapper(long.class, UniversalLong.class),
+            universalTypeMapper(Long.class, UniversalLong.class),
+            universalTypeMapper(float.class, UniversalDouble.class,
+                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble, // NOSONAR
+                    UniversalDouble::toNativeFloatExact),
+            universalTypeMapper(Float.class, UniversalDouble.class,
+                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble, // NOSONAR
+                    UniversalDouble::toNativeFloatExact)
+    );
+
+    public static final UniversalPrimitiveMapping UNIVERSAL_PRIMITIVE_MAPPING = universalPrimitiveMapping()
+            .with(String.class, UniversalString::universalString)
+            .with(Double.class, UniversalDouble::universalDouble)
+            .with(Float.class, (Function<Float, UniversalPrimitive>) UniversalDouble::universalDouble)
+            .with(Long.class, UniversalLong::universalLong)
+            .with(Integer.class, (Function<Integer, UniversalPrimitive>) UniversalLong::universalLong)
+            .with(Short.class, (Function<Short, UniversalPrimitive>) UniversalLong::universalLong)
+            .with(Byte.class, (Function<Byte, UniversalPrimitive>) UniversalLong::universalLong)
+            .with(Boolean.class, UniversalBoolean::universalBoolean);
+
+    public static final List<Class<?>> DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES = List.of(
+            String.class,
+            byte.class, Byte.class,
+            short.class, Short.class,
+            int.class, Integer.class,
+            long.class, Long.class,
+            float.class, Float.class,
+            double.class, Double.class,
+            boolean.class, Boolean.class
     );
 
     private ConventionalDefinitionFactories() {

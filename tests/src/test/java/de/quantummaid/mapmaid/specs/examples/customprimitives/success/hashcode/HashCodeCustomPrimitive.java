@@ -34,10 +34,12 @@ public final class HashCodeCustomPrimitive {
         return new HashCodeCustomPrimitive(value);
     }
 
+    @Override
     public int hashCode() {
         return this.value;
     }
 
+    @Override
     public boolean equals(final Object o) {
         if (o == this) {
             return true;

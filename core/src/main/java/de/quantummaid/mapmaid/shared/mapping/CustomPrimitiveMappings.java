@@ -21,10 +21,7 @@
 
 package de.quantummaid.mapmaid.shared.mapping;
 
-import de.quantummaid.mapmaid.mapper.universal.UniversalBoolean;
-import de.quantummaid.mapmaid.mapper.universal.UniversalNumber;
-import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
-import de.quantummaid.mapmaid.mapper.universal.UniversalString;
+import de.quantummaid.mapmaid.mapper.universal.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +30,8 @@ import lombok.ToString;
 import java.util.Arrays;
 import java.util.Map;
 
-import static de.quantummaid.mapmaid.shared.mapping.BooleanFormatException.booleanFormatException;
 import static de.quantummaid.mapmaid.shared.mapping.TypeMappings.typeMappings;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.Double.parseDouble;
 import static java.lang.String.format;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -47,27 +42,18 @@ import static java.util.stream.Collectors.toMap;
 public final class CustomPrimitiveMappings {
     private final Map<Class<?>, UniversalTypeMapper> mappings;
     private final TypeMappings typeMappings = typeMappings(
-            Mapping.mapping(UniversalNumber.class, UniversalNumber.class, identity()),
+            Mapping.mapping(UniversalDouble.class, UniversalDouble.class, identity()),
+            Mapping.mapping(UniversalDouble.class, UniversalLong.class, UniversalLong::universalLongFromUniversalDouble),
+            Mapping.mapping(UniversalDouble.class, UniversalString.class, UniversalString::universalStringFromUniversalDouble),
+            Mapping.mapping(UniversalLong.class, UniversalLong.class, identity()),
+            Mapping.mapping(UniversalLong.class, UniversalDouble.class, UniversalDouble::universalDoubleFromUniversalLong),
+            Mapping.mapping(UniversalLong.class, UniversalString.class, UniversalString::universalStringFromUniversalLong),
             Mapping.mapping(UniversalString.class, UniversalString.class, identity()),
+            Mapping.mapping(UniversalString.class, UniversalDouble.class, UniversalDouble::universalDoubleFromUniversalString),
+            Mapping.mapping(UniversalString.class, UniversalLong.class, UniversalLong::universalLongFromUniversalString),
+            Mapping.mapping(UniversalString.class, UniversalBoolean.class, UniversalBoolean::universalBooleanFromUniversalString),
             Mapping.mapping(UniversalBoolean.class, UniversalBoolean.class, identity()),
-            Mapping.mapping(UniversalString.class, UniversalNumber.class, universalString -> {
-                final String stringValue = (String) universalString.toNativeJava();
-                final Double doubleValue = parseDouble(stringValue);
-                return UniversalNumber.universalNumber(doubleValue);
-            }),
-            Mapping.mapping(UniversalNumber.class, UniversalString.class, universalNumber -> {
-                final Double doubleValue = (Double) universalNumber.toNativeJava();
-                return UniversalString.universalString(doubleValue.toString());
-            }),
-            Mapping.mapping(UniversalString.class, UniversalBoolean.class, universalString -> {
-                final String stringValue = (String) universalString.toNativeJava();
-                switch (stringValue) {
-                    case "true": return UniversalBoolean.universalBoolean(true);
-                    case "false": return UniversalBoolean.universalBoolean(false);
-                    default: throw booleanFormatException(stringValue);
-                }
-            })
-    );
+            Mapping.mapping(UniversalBoolean.class, UniversalString.class, UniversalString::universalStringFromUniversalBoolean));
 
     public static CustomPrimitiveMappings customPrimitiveMappings(final UniversalTypeMapper... mappings) {
         validateNotNull(mappings, "mappings");

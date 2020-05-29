@@ -19,18 +19,19 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.universal;
+package de.quantummaid.mapmaid.testsupport.domain.valid;
 
-import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.UNIVERSAL_PRIMITIVE_MAPPING;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-public interface UniversalPrimitive extends Universal {
+@ToString
+@EqualsAndHashCode
+public final class AComplexTypeWithShortsDto {
+    public final APrimitiveShort shortA;
+    public final AWrapperShort shortB;
 
-    static UniversalPrimitive universalPrimitive(final Object value) {
-        return UNIVERSAL_PRIMITIVE_MAPPING.map(value.getClass(), value);
-    }
-
-    static boolean isUniversalPrimitive(final Object object) {
-        final Class<?> type = object.getClass();
-        return UNIVERSAL_PRIMITIVE_MAPPING.canMap(type);
+    public AComplexTypeWithShortsDto(final APrimitiveShort shortA, final AWrapperShort shortB) {
+        this.shortA = shortA;
+        this.shortB = shortB;
     }
 }

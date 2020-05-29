@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.Collection.smallList;
 import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -45,14 +46,6 @@ import static java.util.Optional.of;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomPrimitiveSymmetryBuilder {
-    private static final List<Class<?>> DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES = List.of(
-            String.class,
-            int.class, Integer.class,
-            long.class, Long.class,
-            float.class, Float.class,
-            double.class, Double.class,
-            boolean.class, Boolean.class
-    );
     private final List<Class<?>> customPrimitiveBaseTypes;
     private final Map<Class<?>, List<TypeSerializer>> serializers;
     private final Map<Class<?>, List<TypeDeserializer>> deserializers;

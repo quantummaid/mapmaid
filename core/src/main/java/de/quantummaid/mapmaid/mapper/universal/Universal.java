@@ -24,8 +24,12 @@ package de.quantummaid.mapmaid.mapper.universal;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.mapper.universal.UniversalCollection.universalCollectionFromNativeList;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalInjection.universalInjection;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObjectFromNativeMap;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive.isUniversalPrimitive;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive.universalPrimitive;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -52,20 +56,14 @@ public interface Universal {
         if (isNull(object)) {
             return universalNull();
         }
-        if (object instanceof String) {
-            return UniversalPrimitive.universalPrimitive(object);
-        }
-        if (object instanceof Double) {
-            return UniversalPrimitive.universalPrimitive(object);
-        }
-        if(object instanceof Boolean) {
-            return UniversalPrimitive.universalPrimitive(object);
+        if (isUniversalPrimitive(object)) {
+            return universalPrimitive(object);
         }
         if (object instanceof List) {
-            return UniversalCollection.universalCollectionFromNativeList((List<Object>) object);
+            return universalCollectionFromNativeList((List<Object>) object);
         }
         if (object instanceof Map) {
-            return UniversalObject.universalObjectFromNativeMap((Map<String, Object>) object);
+            return universalObjectFromNativeMap((Map<String, Object>) object);
         }
         return universalInjection(object);
     }

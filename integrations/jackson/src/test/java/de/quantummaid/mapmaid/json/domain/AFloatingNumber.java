@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.universal;
+package de.quantummaid.mapmaid.json.domain;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -29,15 +29,23 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UniversalNumber implements UniversalPrimitive {
+public final class AFloatingNumber {
     private final double value;
 
-    public static UniversalNumber universalNumber(final double value) {
-        return new UniversalNumber(value);
+    public static AFloatingNumber fromDouble(final double value) {
+        return new AFloatingNumber(value);
     }
 
-    @Override
-    public Object toNativeJava() {
-        return value;
+    public static AFloatingNumber fromStringValue(final String value) {
+        final Double number = Double.valueOf(value);
+        return new AFloatingNumber(number);
+    }
+
+    public String stringValue() {
+        return String.valueOf(this.value);
+    }
+
+    public boolean isLowerThen(final int value) {
+        return this.value < value;
     }
 }

@@ -38,6 +38,33 @@ public final class UniversalString implements UniversalPrimitive {
         return new UniversalString(value);
     }
 
+    public static UniversalString universalStringFromUniversalDouble(final UniversalDouble universalDouble) {
+        final Double doubleValue = (Double) universalDouble.toNativeJava();
+        return universalStringFromDouble(doubleValue);
+    }
+
+    public static UniversalString universalStringFromDouble(final Double doubleValue) {
+        return universalString(doubleValue.toString());
+    }
+
+    public static UniversalString universalStringFromUniversalLong(final UniversalLong universalLong) {
+        final Long longValue = (Long) universalLong.toNativeJava();
+        return universalStringFromLong(longValue);
+    }
+
+    public static UniversalString universalStringFromLong(final Long longValue) {
+        return universalString(longValue.toString());
+    }
+
+    public static UniversalString universalStringFromUniversalBoolean(final UniversalBoolean universalBoolean) {
+        final Boolean booleanValue = (Boolean) universalBoolean.toNativeJava();
+        return universalStringFromBoolean(booleanValue);
+    }
+
+    public static UniversalString universalStringFromBoolean(final Boolean booleanValue) {
+        return universalString(booleanValue.toString());
+    }
+
     @Override
     public Object toNativeJava() {
         return this.value;
