@@ -33,6 +33,7 @@ import static de.quantummaid.mapmaid.shared.mapping.UniversalTypeMapper.universa
 
 public final class ConventionalDefinitionFactories {
 
+    @SuppressWarnings("java:S1905")
     public static final CustomPrimitiveMappings CUSTOM_PRIMITIVE_MAPPINGS = customPrimitiveMappings(
             universalTypeMapper(String.class, UniversalString.class),
             universalTypeMapper(double.class, UniversalDouble.class),
@@ -60,10 +61,10 @@ public final class ConventionalDefinitionFactories {
             universalTypeMapper(long.class, UniversalLong.class),
             universalTypeMapper(Long.class, UniversalLong.class),
             universalTypeMapper(float.class, UniversalDouble.class,
-                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble, // NOSONAR
+                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble,
                     UniversalDouble::toNativeFloatExact),
             universalTypeMapper(Float.class, UniversalDouble.class,
-                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble, // NOSONAR
+                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble,
                     UniversalDouble::toNativeFloatExact)
     );
 
