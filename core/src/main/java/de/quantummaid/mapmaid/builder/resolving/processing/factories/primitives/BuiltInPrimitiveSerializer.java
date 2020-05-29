@@ -38,11 +38,7 @@ public final class BuiltInPrimitiveSerializer implements CustomPrimitiveSerializ
 
     @Override
     public Object serialize(final Object object) {
-        if (object != null) {
-            return String.valueOf(object);
-        } else {
-            return null;
-        }
+        return object;
     }
 
     @Override

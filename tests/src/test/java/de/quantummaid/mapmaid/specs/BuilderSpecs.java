@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithDifferentCollections;
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.domain.AString;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;

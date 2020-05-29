@@ -86,7 +86,6 @@ import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdenti
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 
 @ToString
 @EqualsAndHashCode

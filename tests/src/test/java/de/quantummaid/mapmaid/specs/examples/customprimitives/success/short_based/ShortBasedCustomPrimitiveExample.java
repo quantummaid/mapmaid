@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.byteBasedCustomPrimitive;
 import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.shortBasedCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 

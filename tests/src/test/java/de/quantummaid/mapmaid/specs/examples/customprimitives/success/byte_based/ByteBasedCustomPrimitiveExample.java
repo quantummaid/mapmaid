@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.specs.examples.customprimitives.success.byte_base
 
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
-import de.quantummaid.mapmaid.specs.examples.customprimitives.success.long_based.Quantity;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.byteBasedCustomPrimitive;

@@ -70,7 +70,7 @@ public final class UniversalString implements UniversalPrimitive {
         return this.value;
     }
 
-    public String toNativeStringValue(){
+    public String toNativeStringValue() {
         return this.value;
     }
 }

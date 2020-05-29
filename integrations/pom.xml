@@ -32,7 +32,7 @@
     <artifactId>integrations-parent</artifactId>
     <packaging>pom</packaging>
 
-    <name>MapMaid - integrations</name>
+    <name>MapMaid - Integrations</name>
 
     <modules>
         <module>all</module>

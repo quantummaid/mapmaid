@@ -27,7 +27,6 @@ import de.quantummaid.mapmaid.mapper.universal.UniversalLong;
 import de.quantummaid.mapmaid.mapper.universal.UniversalString;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
-import java.util.List;
 import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings.customPrimitiveMappings;

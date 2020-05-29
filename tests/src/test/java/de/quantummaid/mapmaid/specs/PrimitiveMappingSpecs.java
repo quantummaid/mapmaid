@@ -29,109 +29,122 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
-public class DirectPrimitivesSpecs {
+public class PrimitiveMappingSpecs {
 
     @Test
-    public void doubleCanBeRegisteredDirectly() {
+    public void doubleCanBeMappedToString() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(double.class)
+                        .deserializing(String.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("2.2").from(JSON).toTheType(double.class)
+                .when().mapMaidDeserializes("2.2").from(JSON).toTheType(String.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(2.2);
+                .theDeserializedObjectIs("2.2");
     }
 
     @Test
-    public void floatCanBeRegisteredDirectly() {
+    public void doubleWithoutDecimalsCanBeMappedToLong() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(float.class)
+                        .deserializing(long.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1.23").from(JSON).toTheType(float.class)
+                .when().mapMaidDeserializes("2.0").from(JSON).toTheType(long.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(1.23F);
+                .theDeserializedObjectIs(2L);
     }
 
     @Test
-    public void floatWithExponentsCanBeRegisteredDirectly() {
+    public void doubleWithoutDecimalsCanBeMappedToInt() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(float.class)
+                        .deserializing(int.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1.23E-5").from(JSON).toTheType(float.class)
+                .when().mapMaidDeserializes("2.0").from(JSON).toTheType(int.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(1.23E-5F);
+                .theDeserializedObjectIs(2);
     }
 
     @Test
-    public void longCanBeRegisteredDirectly() {
+    public void doubleWithoutDecimalsCanBeMappedToShort() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(long.class)
+                        .deserializing(short.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1").from(JSON).toTheType(long.class)
+                .when().mapMaidDeserializes("2.0").from(JSON).toTheType(short.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(1L);
+                .theDeserializedObjectIs((short)2);
     }
 
     @Test
-    public void longWrittenAsDoubleCanBeRegisteredDirectly() {
+    public void doubleWithoutDecimalsCanBeMappedToByte() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(long.class)
+                        .deserializing(byte.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1E12").from(JSON).toTheType(long.class)
+                .when().mapMaidDeserializes("2.0").from(JSON).toTheType(byte.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(1_000_000_000_000L);
+                .theDeserializedObjectIs((byte)2);
     }
 
     @Test
-    public void intCanBeRegisteredDirectly() {
+    public void longCanBeMappedToString_butRepresentedAsDoubleBecauseOfGson() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(int.class)
+                        .deserializing(String.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1").from(JSON).toTheType(int.class)
+                .when().mapMaidDeserializes("1").from(JSON).toTheType(String.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs(1);
+                .theDeserializedObjectIs("1.0");
     }
 
     @Test
-    public void shortCanBeRegisteredDirectly() {
+    public void longCanBeMappedToDouble() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(short.class)
+                        .deserializing(double.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1").from(JSON).toTheType(short.class)
+                .when().mapMaidDeserializes("1").from(JSON).toTheType(double.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs((short) 1);
+                .theDeserializedObjectIs(1.0);
     }
 
     @Test
-    public void byteCanBeRegisteredDirectly() {
+    public void longCanBeMappedToFloat() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(byte.class)
+                        .deserializing(float.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("1").from(JSON).toTheType(byte.class)
+                .when().mapMaidDeserializes("1").from(JSON).toTheType(float.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs((byte) 1);
+                .theDeserializedObjectIs(1.0F);
+    }
+
+    @Test
+    public void booleanCanBeMappedToString() {
+        given(
+                aMapMaid()
+                        .deserializing(String.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidDeserializes("true").from(JSON).toTheType(String.class)
+                .noExceptionHasBeenThrown()
+                .theDeserializedObjectIs("true");
     }
 }
