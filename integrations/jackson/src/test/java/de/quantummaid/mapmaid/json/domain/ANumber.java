@@ -30,7 +30,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ANumber {
-    private static final int MAX_VALUE = 50;
     private final int value;
 
     public static ANumber fromInt(final int value) {

@@ -34,11 +34,15 @@ public final class AComplexType {
     public final AString stringB;
     public final ANumber number1;
     public final ANumber number2;
+    public final AFloatingNumber number3;
+    public final AFloatingNumber number4;
 
     public static AComplexType deserialize(final AString stringA,
                                            final AString stringB,
                                            final ANumber number1,
-                                           final ANumber number2) {
-        return new AComplexType(stringA, stringB, number1, number2);
+                                           final ANumber number2,
+                                           final AFloatingNumber number3,
+                                           final AFloatingNumber number4) {
+        return new AComplexType(stringA, stringB, number1, number2, number3, number4);
     }
 }

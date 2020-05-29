@@ -26,6 +26,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.shared.mapping.BooleanFormatException.booleanFormatException;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,6 +36,22 @@ public final class UniversalBoolean implements UniversalPrimitive {
 
     public static UniversalBoolean universalBoolean(final boolean value) {
         return new UniversalBoolean(value);
+    }
+
+    public static UniversalBoolean universalBooleanFromUniversalString(final UniversalString universalString) {
+        final String stringValue = (String) universalString.toNativeJava();
+        return universalBooleanFromString(stringValue);
+    }
+
+    private static UniversalBoolean universalBooleanFromString(final String stringValue) {
+        switch (stringValue) {
+            case "true":
+                return universalBoolean(true);
+            case "false":
+                return universalBoolean(false);
+            default:
+                throw booleanFormatException(stringValue);
+        }
     }
 
     @Override

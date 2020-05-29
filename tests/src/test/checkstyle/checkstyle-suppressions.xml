@@ -61,4 +61,5 @@
     <suppress checks="ParameterNumber" files="LotsOfFieldsDto" />
     <suppress checks="MethodCount" files="ScenarioBuilder" />
     <suppress checks="TrailingComment" files="AComplexTypeWithDifferentCollections|ACyclicType|AComplexTypeWithSetters" />
+    <suppress checks="MethodCount" files="SpecialCustomPrimitivesSpecs" />
 </suppressions>

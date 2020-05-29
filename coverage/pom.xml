@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.57</version>
+        <version>0.9.58</version>
     </parent>
 
     <artifactId>coverage</artifactId>
@@ -41,22 +41,22 @@
         <dependency>
             <groupId>de.quantummaid.mapmaid</groupId>
             <artifactId>core</artifactId>
-            <version>0.9.57</version>
+            <version>0.9.58</version>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.mapmaid</groupId>
             <artifactId>documentation</artifactId>
-            <version>0.9.57</version>
+            <version>0.9.58</version>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
             <artifactId>mapmaid-jackson</artifactId>
-            <version>0.9.57</version>
+            <version>0.9.58</version>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.mapmaid</groupId>
             <artifactId>tests</artifactId>
-            <version>0.9.57</version>
+            <version>0.9.58</version>
         </dependency>
     </dependencies>
 

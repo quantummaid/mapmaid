@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.json;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.AdvancedBuilder;
 import de.quantummaid.mapmaid.json.domain.AComplexType;
+import de.quantummaid.mapmaid.json.domain.AFloatingNumber;
 import de.quantummaid.mapmaid.json.domain.ANumber;
 import de.quantummaid.mapmaid.json.domain.AString;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,10 @@ public final class JacksonSpecs {
                 .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         final String json = mapMaid.serializeToJson(AComplexType.deserialize(
-                AString.fromStringValue("a"), AString.fromStringValue("b"), ANumber.fromInt(1), ANumber.fromInt(2)
+                AString.fromStringValue("a"), AString.fromStringValue("b"),
+                ANumber.fromInt(1), ANumber.fromInt(2),
+                AFloatingNumber.fromDouble(3.3), AFloatingNumber.fromDouble(4.4)
         ));
-        assertThat(json, isJson("{\"number1\":\"1\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}"));
+        assertThat(json, isJson("{\"number3\":\"3.3\",\"number4\":\"4.4\",\"number1\":\"1\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}"));
     }
 }

@@ -33,7 +33,7 @@ public final class LongBasedExample {
     @Test
     public void longBasedExample() {
         scenarioBuilderFor(Quantity.class)
-                .withSerializedForm("1.0")
+                .withSerializedForm("1")
                 .withDeserializedForm(Quantity.fromStringValue(1L))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->

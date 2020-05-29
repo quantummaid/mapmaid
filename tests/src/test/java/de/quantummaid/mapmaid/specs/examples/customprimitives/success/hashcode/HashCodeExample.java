@@ -31,7 +31,7 @@ public final class HashCodeExample {
     @Test
     public void hashCodeExample() {
         scenarioBuilderFor(HashCodeCustomPrimitive.class)
-                .withSerializedForm("7.0")
+                .withSerializedForm("7")
                 .withDeserializedForm(HashCodeCustomPrimitive.hashCodeCustomPrimitive(7))
                 .withDeserializationOnly()
                 .withManual((mapMaidBuilder, capabilities) -> {

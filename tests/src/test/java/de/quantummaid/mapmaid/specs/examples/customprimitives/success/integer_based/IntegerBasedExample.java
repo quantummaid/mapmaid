@@ -33,7 +33,7 @@ public final class IntegerBasedExample {
     @Test
     public void integerBased() {
         scenarioBuilderFor(Age.class)
-                .withSerializedForm("1.0")
+                .withSerializedForm("1")
                 .withDeserializedForm(Age.fromStringValue(1))
                 .withAllScenariosSuccessful()
                 .withManualSerialization(mapMaidBuilder ->

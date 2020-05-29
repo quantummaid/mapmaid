@@ -37,6 +37,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public final class Then {
@@ -85,6 +86,14 @@ public final class Then {
         return this;
     }
 
+    public Then anExceptionIsThrownWithAUnderlyingCause(final String message) {
+        final Exception exception = this.thenData.getException();
+        assertThat(exception, not(is(nullValue())));
+        final Throwable cause = exception.getCause();
+        assertThat(cause.getMessage(), StringContains.containsString(message));
+        return this;
+    }
+
     public Then anExceptionIsThrownWithAMessageContainingLine(final String expectedMessage) {
         assertThat(this.thenData.getException(), not(is(nullValue())));
         final String message = this.thenData.getException().getMessage();
@@ -96,7 +105,11 @@ public final class Then {
     }
 
     public Then noExceptionHasBeenThrown() {
-        assertThat(this.thenData.getException(), is(nullValue()));
+        final Exception exception = this.thenData.getException();
+        if (exception != null) {
+            final IllegalStateException illegalStateException = new IllegalStateException("Unexpected exception thrown", exception);
+            fail(illegalStateException);
+        }
         return this;
     }
 
