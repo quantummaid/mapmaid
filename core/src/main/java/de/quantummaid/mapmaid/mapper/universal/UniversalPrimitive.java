@@ -21,16 +21,20 @@
 
 package de.quantummaid.mapmaid.mapper.universal;
 
-import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.UNIVERSAL_PRIMITIVE_MAPPING;
+import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 
 public interface UniversalPrimitive extends Universal {
 
     static UniversalPrimitive universalPrimitive(final Object value) {
-        return UNIVERSAL_PRIMITIVE_MAPPING.map(value.getClass(), value);
+        return CUSTOM_PRIMITIVE_MAPPINGS.toUniversal(value);
     }
 
     static boolean isUniversalPrimitive(final Object object) {
         final Class<?> type = object.getClass();
-        return UNIVERSAL_PRIMITIVE_MAPPING.canMap(type);
+        return isUniversalPrimitive(type);
+    }
+
+    static boolean isUniversalPrimitive(final Class<?> clazz) {
+        return CUSTOM_PRIMITIVE_MAPPINGS.isPrimitiveType(clazz);
     }
 }

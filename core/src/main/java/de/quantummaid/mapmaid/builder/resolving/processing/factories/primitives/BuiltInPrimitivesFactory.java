@@ -33,12 +33,11 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Map;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.PrimitiveInformation.primitiveInformations;
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static java.util.Optional.empty;
 
@@ -46,26 +45,25 @@ import static java.util.Optional.empty;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BuiltInPrimitivesFactory implements StateFactory {
-    private final Map<ResolvedType, PrimitiveInformation> definitions = primitiveInformations();
 
     public static BuiltInPrimitivesFactory builtInPrimitivesFactory() {
         return new BuiltInPrimitivesFactory();
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier, final Context context) {
-        if (typeIdentifier.isVirtual()) {
+    public Optional<StatefulDefinition> create(final TypeIdentifier type, final Context context) {
+        if (type.isVirtual()) {
             return empty();
         }
-        final ResolvedType type = typeIdentifier.getRealType();
 
-        if (!this.definitions.containsKey(type)) {
+        final ResolvedType realType = type.getRealType();
+        final Class<?> assignableType = realType.assignableType();
+        if (!CUSTOM_PRIMITIVE_MAPPINGS.isPrimitiveType(assignableType)) {
             return empty();
         }
-        final PrimitiveInformation primitiveInformation = this.definitions.get(type);
         final CustomPrimitiveSerializer customPrimitiveSerializer = builtInPrimitiveSerializer();
         context.setSerializer(customPrimitiveSerializer);
-        final CustomPrimitiveDeserializer customPrimitiveDeserializer = builtInPrimitiveDeserializer(primitiveInformation);
+        final CustomPrimitiveDeserializer customPrimitiveDeserializer = builtInPrimitiveDeserializer(assignableType);
         context.setDeserializer(customPrimitiveDeserializer);
 
         return Optional.of(fixedUnreasoned(context));

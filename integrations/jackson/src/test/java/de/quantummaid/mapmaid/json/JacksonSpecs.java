@@ -49,4 +49,15 @@ public final class JacksonSpecs {
         ));
         assertThat(json, isJson("{\"number3\":\"3.3\",\"number4\":\"4.4\",\"number1\":\"1\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}"));
     }
+
+    @Test
+    public void jacksonCanUnmarshalIntsCorrectly() {
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .serializingAndDeserializing(Integer.class)
+                .usingRecipe(jacksonMarshallerJson())
+                .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
+                .build();
+        final String json = mapMaid.serializeToJson(1);
+        assertThat(json, isJson("1"));
+    }
 }

@@ -86,7 +86,6 @@ import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdenti
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 
 @ToString
 @EqualsAndHashCode
@@ -180,12 +179,6 @@ public final class MapMaidBuilder {
         this.processor.addState(statefulDefinition);
         this.processor.dispatch(addSerialization(typeIdentifier, manuallyAdded()));
         this.processor.dispatch(addDeserialization(typeIdentifier, manuallyAdded()));
-        return this;
-    }
-
-    public MapMaidBuilder withManuallyAddedTypes(final Class<?>... type) {
-        validateNotNull(type, "type");
-        stream(type).forEach(this::serializingAndDeserializing);
         return this;
     }
 

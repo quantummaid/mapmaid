@@ -21,13 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.conventional;
 
-import de.quantummaid.mapmaid.mapper.universal.*;
+import de.quantummaid.mapmaid.mapper.universal.UniversalBoolean;
+import de.quantummaid.mapmaid.mapper.universal.UniversalDouble;
+import de.quantummaid.mapmaid.mapper.universal.UniversalLong;
+import de.quantummaid.mapmaid.mapper.universal.UniversalString;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
-import java.util.List;
 import java.util.function.Function;
 
-import static de.quantummaid.mapmaid.mapper.universal.UniversalPrimitiveMapping.universalPrimitiveMapping;
 import static de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings.customPrimitiveMappings;
 import static de.quantummaid.mapmaid.shared.mapping.UniversalTypeMapper.universalTypeMapper;
 
@@ -35,11 +36,21 @@ public final class ConventionalDefinitionFactories {
 
     @SuppressWarnings("java:S1905")
     public static final CustomPrimitiveMappings CUSTOM_PRIMITIVE_MAPPINGS = customPrimitiveMappings(
-            universalTypeMapper(String.class, UniversalString.class),
-            universalTypeMapper(double.class, UniversalDouble.class),
-            universalTypeMapper(Double.class, UniversalDouble.class),
-            universalTypeMapper(boolean.class, UniversalBoolean.class),
-            universalTypeMapper(Boolean.class, UniversalBoolean.class),
+            universalTypeMapper(String.class, UniversalString.class,
+                    UniversalString::universalString,
+                    UniversalString::toNativeStringValue),
+            universalTypeMapper(double.class, UniversalDouble.class,
+                    UniversalDouble::universalDouble,
+                    UniversalDouble::toNativeDouble),
+            universalTypeMapper(Double.class, UniversalDouble.class,
+                    UniversalDouble::universalDouble,
+                    UniversalDouble::toNativeDouble),
+            universalTypeMapper(boolean.class, UniversalBoolean.class,
+                    UniversalBoolean::universalBoolean,
+                    UniversalBoolean::toNativeBoolean),
+            universalTypeMapper(Boolean.class, UniversalBoolean.class,
+                    UniversalBoolean::universalBoolean,
+                    UniversalBoolean::toNativeBoolean),
             universalTypeMapper(byte.class, UniversalLong.class,
                     (Function<Byte, UniversalLong>) UniversalLong::universalLong,
                     UniversalLong::toNativeByteExact),
@@ -58,35 +69,18 @@ public final class ConventionalDefinitionFactories {
             universalTypeMapper(Integer.class, UniversalLong.class,
                     (Function<Integer, UniversalLong>) UniversalLong::universalLong,
                     UniversalLong::toNativeIntExact),
-            universalTypeMapper(long.class, UniversalLong.class),
-            universalTypeMapper(Long.class, UniversalLong.class),
+            universalTypeMapper(long.class, UniversalLong.class,
+                    UniversalLong::universalLong,
+                    UniversalLong::toNativeLong),
+            universalTypeMapper(Long.class, UniversalLong.class,
+                    UniversalLong::universalLong,
+                    UniversalLong::toNativeLong),
             universalTypeMapper(float.class, UniversalDouble.class,
                     (Function<Float, UniversalDouble>) UniversalDouble::universalDouble,
                     UniversalDouble::toNativeFloatExact),
             universalTypeMapper(Float.class, UniversalDouble.class,
                     (Function<Float, UniversalDouble>) UniversalDouble::universalDouble,
                     UniversalDouble::toNativeFloatExact)
-    );
-
-    public static final UniversalPrimitiveMapping UNIVERSAL_PRIMITIVE_MAPPING = universalPrimitiveMapping()
-            .with(String.class, UniversalString::universalString)
-            .with(Double.class, UniversalDouble::universalDouble)
-            .with(Float.class, (Function<Float, UniversalPrimitive>) UniversalDouble::universalDouble)
-            .with(Long.class, UniversalLong::universalLong)
-            .with(Integer.class, (Function<Integer, UniversalPrimitive>) UniversalLong::universalLong)
-            .with(Short.class, (Function<Short, UniversalPrimitive>) UniversalLong::universalLong)
-            .with(Byte.class, (Function<Byte, UniversalPrimitive>) UniversalLong::universalLong)
-            .with(Boolean.class, UniversalBoolean::universalBoolean);
-
-    public static final List<Class<?>> DEFAULT_CUSTOM_PRIMITIVE_BASE_TYPES = List.of(
-            String.class,
-            byte.class, Byte.class,
-            short.class, Short.class,
-            int.class, Integer.class,
-            long.class, Long.class,
-            float.class, Float.class,
-            double.class, Double.class,
-            boolean.class, Boolean.class
     );
 
     private ConventionalDefinitionFactories() {

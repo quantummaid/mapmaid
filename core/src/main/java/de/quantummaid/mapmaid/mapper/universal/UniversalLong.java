@@ -73,6 +73,10 @@ public final class UniversalLong implements UniversalPrimitive {
         return this.value;
     }
 
+    public long toNativeLong() {
+        return this.value;
+    }
+
     public int toNativeIntExact() {
         //directly taken from the Math.integerExactInt method
         if ((int) this.value != this.value) {

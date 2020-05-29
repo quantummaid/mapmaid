@@ -37,7 +37,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void doubleBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithDoublesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithDoublesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -50,7 +50,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void doubleBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithDoublesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithDoublesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -63,7 +63,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void doubleBasedCustomPrimitivesCanNotBeDeserializedWithWrongStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithDoublesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithDoublesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .withExceptionIndicatingValidationError(NumberFormatException.class)
                         .build()
@@ -76,7 +76,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void doubleBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithDoublesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithDoublesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -94,7 +94,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void floatBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithFloatsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithFloatsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -107,7 +107,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void floatBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithFloatsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithFloatsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -120,7 +120,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void floatBasedCustomPrimitivesCanNotBeDeserializedWithWrongStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithFloatsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithFloatsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .withExceptionIndicatingValidationError(NumberFormatException.class)
                         .build()
@@ -133,7 +133,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void floatBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithFloatsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithFloatsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -151,7 +151,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void booleanBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBooleansDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBooleansDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -164,7 +164,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void booleanBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBooleansDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBooleansDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -177,7 +177,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void booleanBasedCustomPrimitivesCanNotBeDeserializedWithWrongStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBooleansDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBooleansDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .withExceptionIndicatingValidationError(BooleanFormatException.class)
                         .build()
@@ -190,7 +190,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void booleanBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBooleansDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBooleansDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -208,7 +208,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void longBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithLongsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithLongsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -221,7 +221,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void longBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithLongsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithLongsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -234,7 +234,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void longBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithLongsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithLongsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -252,7 +252,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void integerBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithIntegersDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithIntegersDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -265,7 +265,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void integerBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithIntegersDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithIntegersDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -278,7 +278,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void integerBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithIntegersDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithIntegersDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -296,7 +296,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void shortBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithShortsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithShortsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -309,7 +309,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void shortBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithShortsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithShortsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -322,7 +322,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void shortBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithShortsDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithShortsDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -340,7 +340,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void byteBasedCustomPrimitivesCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBytesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBytesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -353,7 +353,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void byteBasedCustomPrimitivesCanBeDeserializedWithStrings() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBytesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBytesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -366,7 +366,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void byteBasedCustomPrimitivesCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(AComplexTypeWithBytesDto.class)
+                        .serializingAndDeserializing(AComplexTypeWithBytesDto.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -384,7 +384,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void tooLargeDoubleValueCastedToFloatThrowsOverflowException() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(APrimitiveFloat.class)
+                        .serializingAndDeserializing(APrimitiveFloat.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -396,7 +396,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void tooLargeLongValueCastedToIntegerThrowsOverflowException() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(APrimitiveInteger.class)
+                        .serializingAndDeserializing(APrimitiveInteger.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -408,7 +408,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void tooLargeIntegerValueCastedToShortThrowsOverflowException() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(APrimitiveShort.class)
+                        .serializingAndDeserializing(APrimitiveShort.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
@@ -420,7 +420,7 @@ public final class SpecialCustomPrimitivesSpecs {
     public void tooLargeShortValueCastedToByteThrowsOverflowException() {
         given(
                 aMapMaid()
-                        .withManuallyAddedTypes(APrimitiveByte.class)
+                        .serializingAndDeserializing(APrimitiveByte.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
