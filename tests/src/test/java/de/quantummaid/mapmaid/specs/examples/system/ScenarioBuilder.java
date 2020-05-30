@@ -24,11 +24,11 @@ package de.quantummaid.mapmaid.specs.examples.system;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
+import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.specs.examples.system.expectation.Expectation;
 import de.quantummaid.mapmaid.specs.examples.system.mode.ExampleMode;
-import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -41,13 +41,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.specs.examples.system.Result.emptyResult;
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.DeserializationSuccessfulExpectation.deserializationWas;
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.Expectation.*;
+import static de.quantummaid.mapmaid.specs.examples.system.expectation.InitializationWasSuccessfulExpectation.initializationWasSuccessfulExpectation;
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.SerializationSuccessfulExpectation.serializationWas;
 import static de.quantummaid.mapmaid.specs.examples.system.mode.FixedExampleMode.fixed;
 import static de.quantummaid.mapmaid.specs.examples.system.mode.NormalExampleMode.*;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 import static java.lang.String.format;
@@ -173,12 +174,18 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withDuplexSuccessful(final String serializedForm, final Object deserializedForm) {
-        withScenario(withAllCapabilities(), deserializationWas(deserializedForm), serializationWas(serializedForm));
+        withScenario(withAllCapabilities(),
+                initializationWasSuccessfulExpectation(),
+                deserializationWas(deserializedForm),
+                serializationWas(serializedForm));
         return this;
     }
 
     public ScenarioBuilder withSerializationSuccessful(final String serializedForm) {
-        withScenario(serializationOnly(), serializationWas(serializedForm), deserializationFailedForNotSupported(this.type));
+        withScenario(serializationOnly(),
+                initializationWasSuccessfulExpectation(),
+                serializationWas(serializedForm),
+                deserializationFailedForNotSupported(this.type));
         return this;
     }
 
@@ -187,24 +194,36 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withDeserializationSuccessful() {
-        withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        withScenario(deserializationOnly(),
+                initializationWasSuccessfulExpectation(),
+                deserializationWas(this.deserializedForm),
+                serializationFailedForNotSupported(this.type));
         return this;
     }
 
     public ScenarioBuilder withDeserializationSuccessful(final Object deserializedForm) {
-        withScenario(deserializationOnly(), deserializationWas(deserializedForm), serializationFailedForNotSupported(this.type));
+        withScenario(deserializationOnly(),
+                initializationWasSuccessfulExpectation(),
+                deserializationWas(deserializedForm),
+                serializationFailedForNotSupported(this.type));
         return this;
     }
 
     public ScenarioBuilder withDeserializationOnly() {
-        withScenario(deserializationOnly(), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        withScenario(deserializationOnly(),
+                initializationWasSuccessfulExpectation(),
+                deserializationWas(this.deserializedForm),
+                serializationFailedForNotSupported(this.type));
         withSerializationFailing();
         withDuplexFailing();
         return this;
     }
 
     public ScenarioBuilder withSerializationOnly() {
-        withScenario(serializationOnly(), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        withScenario(serializationOnly(),
+                initializationWasSuccessfulExpectation(),
+                serializationWas(this.serializedForm),
+                deserializationFailedForNotSupported(this.type));
         withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserializer", this.type.description())));
         withDuplexFailing();
         return this;

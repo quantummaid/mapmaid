@@ -29,6 +29,7 @@ import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,8 @@ public final class SerializedObjectOptions {
         return this.serializationFieldOptions;
     }
 
-    public DetectionResult<TypeSerializer> determineSerializer(final Preferences<SerializationField, DisambiguationContext> preferences,
+    public DetectionResult<TypeSerializer> determineSerializer(final ResolvedType containingType,
+                                                               final Preferences<SerializationField, DisambiguationContext> preferences,
                                                                final ScanInformationBuilder scanInformationBuilder,
                                                                final DisambiguationContext context) {
         if (this.serializationFieldOptions == null) {
@@ -68,6 +70,6 @@ public final class SerializedObjectOptions {
             return failure("No serialization fields");
         }
         return this.serializationFieldOptions.instantiateAll()
-                .flatMap(instantiation -> instantiation.instantiate(preferences, scanInformationBuilder, context));
+                .flatMap(instantiation -> instantiation.instantiate(containingType, preferences, scanInformationBuilder, context));
     }
 }

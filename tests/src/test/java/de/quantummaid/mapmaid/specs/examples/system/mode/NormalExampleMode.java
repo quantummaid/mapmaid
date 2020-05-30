@@ -54,9 +54,10 @@ public final class NormalExampleMode implements ExampleMode {
 
     @Override
     public MapMaid provideMapMaid(final ResolvedType type) {
-        return aMapMaid()
+        final MapMaid mapMaid = aMapMaid()
                 .withType(fromResolvedType(type), this.capabilities)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build();
+        return mapMaid;
     }
 }
