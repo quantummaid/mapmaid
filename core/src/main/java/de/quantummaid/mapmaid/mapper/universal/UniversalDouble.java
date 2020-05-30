@@ -72,7 +72,7 @@ public final class UniversalDouble implements UniversalPrimitive {
         final String floatStringRepresentation = wrappedFloat.toString();
         final String doubleStringRepresentation = wrappedDouble.toString();
         if (!floatStringRepresentation.equals(doubleStringRepresentation)) {
-            final String message = format("Overflow when converting double '%f' to float.", this.value);
+            final String message = format("Overflow when converting double '%s' to float.", this.value);
             throw mapMaidException(message);
         }
         return floatValue;

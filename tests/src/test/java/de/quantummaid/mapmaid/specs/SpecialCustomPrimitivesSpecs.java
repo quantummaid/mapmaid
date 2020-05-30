@@ -389,7 +389,7 @@ public final class SpecialCustomPrimitivesSpecs {
                         .build()
         )
                 .when().mapMaidDeserializes("\"" + largestFloatPlusOne() + "\"").from(JSON).toTheType(APrimitiveFloat.class)
-                .anExceptionIsThrownWithAUnderlyingCause("Overflow when converting double '340282346638528900000000000000000000000.000000' to float.");
+                .anExceptionIsThrownWithAUnderlyingCause("Overflow when converting double '3.402823466385289E38' to float.");
     }
 
     @Test
