@@ -21,14 +21,21 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.kotlin_based
 
-import java.util.*
+typealias Validator<T> = (T) -> T
 
-data class KotlinCustomPrimitive(val value: String) {
+abstract class Primitive<T>(value: T, validator: Validator<T>) {
     init {
-        if (value.length > 10) {
-            throw IllegalArgumentException();
-        }
+        validator.invoke(value)
     }
-
-    constructor() : this(UUID.randomUUID().toString())
 }
+
+fun StringLengthValidator(maxLength: Int): (String) -> String = {
+    if (it.length > maxLength) {
+        throw IllegalArgumentException();
+    }
+    it
+}
+
+data class KotlinCustomPrimitive(val value: String) : Primitive<String>(value, StringLengthValidator(10))
+
+data class KotlinDto(val field1: KotlinCustomPrimitive, val field2: String, val field3: Int, val field4: KotlinCustomPrimitive)
