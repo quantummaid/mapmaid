@@ -19,39 +19,28 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
+package de.quantummaid.mapmaid.specs.examples.system.expectation;
 
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.mapmaid.specs.examples.system.Result;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.combined;
-import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Filters<T, C> {
-    private final List<Filter<T, C>> filters;
+public final class InitializationWasSuccessfulExpectation implements Expectation {
 
-    public static <T, C> Filters<T, C> filters(final List<Filter<T, C>> filters) {
-        return new Filters<>(filters);
+    public static InitializationWasSuccessfulExpectation initializationWasSuccessfulExpectation() {
+        return new InitializationWasSuccessfulExpectation();
     }
 
-    public boolean isAllowed(final T t, final C context, final ResolvedType containingType, final Striker<T> striker) {
-        final List<FilterResult> filterResults = this.filters.stream()
-                .map(filter -> filter.filter(t, context, containingType))
-                .collect(toList());
-        final FilterResult combinedResult = combined(filterResults);
-        if (combinedResult.isAllowed()) {
-            return true;
-        } else {
-            striker.strike(t, combinedResult.reasonsForDenial());
-            return false;
-        }
+    @Override
+    public void ensure(final Result result) {
+        result.initializationException().ifPresent(throwable ->
+                fail(new RuntimeException("Unexpected exception during initialization of MapMaid", throwable)));
     }
 }

@@ -36,19 +36,24 @@ import de.quantummaid.reflectmaid.resolver.ResolvedField;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.ThirdPartyAnnotation.thirdPartyAnnotation;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Filter.filterOfType;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.allowed;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.denied;
 import static java.lang.String.format;
 
 final class CommonFilters {
+    private static final ThirdPartyAnnotation KOTLIN_METADATA = thirdPartyAnnotation("kotlin.Metadata");
+    private static final Pattern KOTLIN_COMPONENT_PATTERN = Pattern.compile("component[0-9]+");
 
     private CommonFilters() {
     }
 
     static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicMethodsForCustomPrimitiveDeserialization() {
-        return filterOfType(CustomPrimitiveByMethodDeserializer.class, (deserializer, context) -> {
+        return filterOfType(CustomPrimitiveByMethodDeserializer.class, (deserializer, context, containingType) -> {
             if (deserializer.method().isPublic()) {
                 return allowed();
             } else {
@@ -57,8 +62,8 @@ final class CommonFilters {
         });
     }
 
-    static Filter<TypeSerializer, DisambiguationContext> ignoreNonPublicConstructorsForCustomPrimitiveSerialization() {
-        return filterOfType(MethodCustomPrimitiveSerializer.class, (serializer, context) -> {
+    static Filter<TypeSerializer, DisambiguationContext> ignoreNonPublicMethodsForCustomPrimitiveSerialization() {
+        return filterOfType(MethodCustomPrimitiveSerializer.class, (serializer, context, containingType) -> {
             if (serializer.method().isPublic()) {
                 return allowed();
             } else {
@@ -67,8 +72,24 @@ final class CommonFilters {
         });
     }
 
+    static Filter<TypeSerializer, DisambiguationContext> ignoreComponentMethodsForKotlinCustomPrimitiveSerialization() {
+        return filterOfType(MethodCustomPrimitiveSerializer.class, (serializer, context, containingType) -> {
+            if (!KOTLIN_METADATA.isAnnotatedWith(containingType)) {
+                return allowed();
+            }
+            final ResolvedMethod method = serializer.method();
+            final String methodName = method.name();
+            final Matcher matcher = KOTLIN_COMPONENT_PATTERN.matcher(methodName);
+            if (matcher.matches()) {
+                return denied("Kotlin generated component methods are not used for serialization");
+            } else {
+                return allowed();
+            }
+        });
+    }
+
     static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicConstructorsForCustomPrimitiveDeserialization() {
-        return filterOfType(CustomPrimitiveByConstructorDeserializer.class, (deserializer, context) -> {
+        return filterOfType(CustomPrimitiveByConstructorDeserializer.class, (deserializer, context, containingType) -> {
             if (deserializer.constructor().isPublic()) {
                 return allowed();
             } else {
@@ -78,7 +99,7 @@ final class CommonFilters {
     }
 
     static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicMethodsForSerializedObjectDeserialization() {
-        return filterOfType(MethodSerializedObjectDeserializer.class, (deserializer, context) -> {
+        return filterOfType(MethodSerializedObjectDeserializer.class, (deserializer, context, containingType) -> {
             if (deserializer.method().isPublic()) {
                 return allowed();
             } else {
@@ -88,7 +109,7 @@ final class CommonFilters {
     }
 
     static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicConstructorsForSerializedObjectDeserialization() {
-        return filterOfType(ConstructorSerializedObjectDeserializer.class, (deserializer, context) -> {
+        return filterOfType(ConstructorSerializedObjectDeserializer.class, (deserializer, context, containingType) -> {
             if (deserializer.constructor().isPublic()) {
                 return allowed();
             } else {
@@ -98,7 +119,7 @@ final class CommonFilters {
     }
 
     static Filter<TypeSerializer, DisambiguationContext> nameOfSerializerMethodIsNot(final String name) {
-        return (serializer, context) -> {
+        return (serializer, context, containingType) -> {
             if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
                 return allowed();
             }
@@ -113,7 +134,7 @@ final class CommonFilters {
     }
 
     static Filter<SerializationField, DisambiguationContext> ignoreInjectedFields() {
-        return (serializationField, context) -> {
+        return (serializationField, context, containingType) -> {
             final TypeIdentifier type = serializationField.type();
             if (context.isInjected(type)) {
                 return denied("fields whose type is registered as injection-only are not serialized");
@@ -137,7 +158,7 @@ final class CommonFilters {
 
     private static Filter<SerializationField, DisambiguationContext> ignoreFieldsThat(final Predicate<ResolvedField> fieldPredicate,
                                                                                       final String message) {
-        return (field, context) -> {
+        return (field, context, containingType) -> {
             if (!(field.getQuery() instanceof PublicFieldQuery)) {
                 return allowed();
             }

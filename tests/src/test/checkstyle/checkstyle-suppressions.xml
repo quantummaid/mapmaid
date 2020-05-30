@@ -62,4 +62,5 @@
     <suppress checks="MethodCount" files="ScenarioBuilder" />
     <suppress checks="TrailingComment" files="AComplexTypeWithDifferentCollections|ACyclicType|AComplexTypeWithSetters" />
     <suppress checks="MethodCount" files="SpecialCustomPrimitivesSpecs" />
+    <suppress checks="MagicNumber" files="KotlinBasedDtoExample" />
 </suppressions>

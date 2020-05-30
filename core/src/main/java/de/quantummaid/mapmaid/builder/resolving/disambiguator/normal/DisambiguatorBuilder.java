@@ -107,7 +107,8 @@ public final class DisambiguatorBuilder {
     private Preferences<TypeSerializer, DisambiguationContext> buildCustomPrimitiveSerializerPreferences() {
         return preferences(
                 List.of(
-                        ignoreNonPublicConstructorsForCustomPrimitiveSerialization(),
+                        ignoreNonPublicMethodsForCustomPrimitiveSerialization(),
+                        ignoreComponentMethodsForKotlinCustomPrimitiveSerialization(),
                         nameOfSerializerMethodIsNot("toString"),
                         nameOfSerializerMethodIsNot("hashCode")
                 ),

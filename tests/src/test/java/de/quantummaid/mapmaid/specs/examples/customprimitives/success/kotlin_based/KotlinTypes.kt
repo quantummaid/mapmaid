@@ -19,25 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
+package de.quantummaid.mapmaid.specs.examples.customprimitives.success.kotlin_based
 
-import de.quantummaid.reflectmaid.ResolvedType;
+typealias Validator<T> = (T) -> T
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.allowed;
-
-public interface Filter<T, C> {
-
-    @SuppressWarnings("unchecked")
-    static <T, V extends T, C> Filter<T, C> filterOfType(final Class<V> type,
-                                                         final Filter<V, C> filter) {
-        return (t, context, containingType) -> {
-            if(!type.isInstance(t)) {
-                return allowed();
-            } else {
-                return filter.filter((V) t, context, containingType);
-            }
-        };
+abstract class Primitive<T>(value: T, validator: Validator<T>) {
+    init {
+        validator.invoke(value)
     }
-
-    FilterResult filter(T t, C context, ResolvedType containingType);
 }
+
+fun maxLength(maxLength: Int): (String) -> String = {
+    if (it.length > maxLength) {
+        throw IllegalArgumentException();
+    }
+    it
+}
+
+data class KotlinCustomPrimitive(val value: String) : Primitive<String>(value, maxLength(10))
+
+data class KotlinDto(val field1: KotlinCustomPrimitive,
+                     val field2: String,
+                     val field3: Int,
+                     val field4: KotlinCustomPrimitive)
