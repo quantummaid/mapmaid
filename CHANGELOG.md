@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.59](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.59/jar) - 2020-05-30
 ### Changed
 - Fixed bug [#61](https://github.com/quantummaid/mapmaid/issues/61).
+- Fixed bug [#59](https://github.com/quantummaid/mapmaid/issues/59).
 
 ## [0.9.58](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.58/jar) - 2020-05-29
 ### Added
