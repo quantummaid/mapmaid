@@ -32,46 +32,42 @@ public final class KotlinBasedDtoExample {
 
     @Test
     public void kotlinBasedDtoExample() {
-        try {
-            scenarioBuilderFor(KotlinDto.class)
-                    .withSerializedForm("" +
-                            "{" +
-                            "\"field1\":\"foo\"," +
-                            "\"field3\":42," +
-                            "\"field2\":\"test\"," +
-                            "\"field4\":\"bar\"" +
-                            "}")
-                    .withDeserializedForm(new KotlinDto(
-                            new KotlinCustomPrimitive("foo"),
-                            "test",
-                            42,
-                            new KotlinCustomPrimitive("bar")
-                    ))
-                    .withAllScenariosSuccessful()
-                    .withManualDeserialization(mapMaidBuilder ->
-                            mapMaidBuilder.deserializing(DeserializationOnlyType.serializedObject(KotlinDto.class)
-                                    .withField("field1", KotlinCustomPrimitive.class)
-                                    .withField("field2", String.class)
-                                    .withField("field3", int.class)
-                                    .withField("field4", KotlinCustomPrimitive.class)
-                                    .deserializedUsing(KotlinDto::new)))
-                    .withManualSerialization(mapMaidBuilder ->
-                            mapMaidBuilder.serializing(SerializationOnlyType.serializedObject(KotlinDto.class)
-                                    .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
-                                    .withField("field2", String.class, KotlinDto::getField2)
-                                    .withField("field3", int.class, KotlinDto::getField3)
-                                    .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)))
-                    .withManualDuplex(mapMaidBuilder ->
-                            mapMaidBuilder.serializingAndDeserializing(
-                                    DuplexType.serializedObject(KotlinDto.class)
-                                            .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
-                                            .withField("field2", String.class, KotlinDto::getField2)
-                                            .withField("field3", int.class, KotlinDto::getField3)
-                                            .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)
-                                            .deserializedUsing(KotlinDto::new)))
-                    .run();
-        } catch (final Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        scenarioBuilderFor(KotlinDto.class)
+                .withSerializedForm("" +
+                        "{" +
+                        "\"field1\":\"foo\"," +
+                        "\"field3\":42," +
+                        "\"field2\":\"test\"," +
+                        "\"field4\":\"bar\"" +
+                        "}")
+                .withDeserializedForm(new KotlinDto(
+                        new KotlinCustomPrimitive("foo"),
+                        "test",
+                        42,
+                        new KotlinCustomPrimitive("bar")
+                ))
+                .withAllScenariosSuccessful()
+                .withManualDeserialization(mapMaidBuilder ->
+                        mapMaidBuilder.deserializing(DeserializationOnlyType.serializedObject(KotlinDto.class)
+                                .withField("field1", KotlinCustomPrimitive.class)
+                                .withField("field2", String.class)
+                                .withField("field3", int.class)
+                                .withField("field4", KotlinCustomPrimitive.class)
+                                .deserializedUsing(KotlinDto::new)))
+                .withManualSerialization(mapMaidBuilder ->
+                        mapMaidBuilder.serializing(SerializationOnlyType.serializedObject(KotlinDto.class)
+                                .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
+                                .withField("field2", String.class, KotlinDto::getField2)
+                                .withField("field3", int.class, KotlinDto::getField3)
+                                .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)))
+                .withManualDuplex(mapMaidBuilder ->
+                        mapMaidBuilder.serializingAndDeserializing(
+                                DuplexType.serializedObject(KotlinDto.class)
+                                        .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
+                                        .withField("field2", String.class, KotlinDto::getField2)
+                                        .withField("field3", int.class, KotlinDto::getField3)
+                                        .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)
+                                        .deserializedUsing(KotlinDto::new)))
+                .run();
     }
 }

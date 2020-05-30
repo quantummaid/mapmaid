@@ -29,13 +29,16 @@ abstract class Primitive<T>(value: T, validator: Validator<T>) {
     }
 }
 
-fun StringLengthValidator(maxLength: Int): (String) -> String = {
+fun maxLength(maxLength: Int): (String) -> String = {
     if (it.length > maxLength) {
         throw IllegalArgumentException();
     }
     it
 }
 
-data class KotlinCustomPrimitive(val value: String) : Primitive<String>(value, StringLengthValidator(10))
+data class KotlinCustomPrimitive(val value: String) : Primitive<String>(value, maxLength(10))
 
-data class KotlinDto(val field1: KotlinCustomPrimitive, val field2: String, val field3: Int, val field4: KotlinCustomPrimitive)
+data class KotlinDto(val field1: KotlinCustomPrimitive,
+                     val field2: String,
+                     val field3: Int,
+                     val field4: KotlinCustomPrimitive)
