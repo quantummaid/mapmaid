@@ -22,8 +22,6 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
 import de.quantummaid.reflectmaid.ResolvedType;
-import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +29,6 @@ import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +39,6 @@ import static java.util.Arrays.stream;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ThirdPartyAnnotation {
-
     private final List<String> fullyQualifiedNames;
 
     public static ThirdPartyAnnotation thirdPartyAnnotation(final String... fullyQualifiedNames) {
@@ -51,18 +46,8 @@ public final class ThirdPartyAnnotation {
     }
 
     public String describe() {
-        return fullyQualifiedNames.stream()
+        return this.fullyQualifiedNames.stream()
                 .collect(Collectors.joining(", ", "[", "]"));
-    }
-
-    public boolean isAnnotatedWith(final ResolvedConstructor constructor) {
-        final Constructor<?> rawConstructor = constructor.constructor();
-        return isAnnotated(rawConstructor);
-    }
-
-    public boolean isAnnotatedWith(final ResolvedMethod method) {
-        final Method rawMethod = method.method();
-        return isAnnotated(rawMethod);
     }
 
     public boolean isAnnotatedWith(final ResolvedType type) {
@@ -75,6 +60,6 @@ public final class ThirdPartyAnnotation {
         return stream(annotations)
                 .map(Annotation::annotationType)
                 .map(Class::getName)
-                .anyMatch(fullyQualifiedNames::contains);
+                .anyMatch(this.fullyQualifiedNames::contains);
     }
 }
