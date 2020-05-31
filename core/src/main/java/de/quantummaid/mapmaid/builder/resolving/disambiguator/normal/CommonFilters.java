@@ -32,6 +32,7 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ThirdPartyAnnotation;
 import de.quantummaid.reflectmaid.resolver.ResolvedField;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 
@@ -39,10 +40,10 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.ThirdPartyAnnotation.thirdPartyAnnotation;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Filter.filterOfType;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.allowed;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult.denied;
+import static de.quantummaid.reflectmaid.ThirdPartyAnnotation.thirdPartyAnnotation;
 import static java.lang.String.format;
 
 final class CommonFilters {
