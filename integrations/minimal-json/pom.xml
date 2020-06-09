@@ -25,22 +25,41 @@
 
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
-        <artifactId>mapmaid-parent</artifactId>
+        <artifactId>integrations-parent</artifactId>
         <version>0.9.61</version>
     </parent>
 
-    <artifactId>integrations-parent</artifactId>
-    <packaging>pom</packaging>
+    <groupId>de.quantummaid.mapmaid.integrations</groupId>
+    <artifactId>mapmaid-minimal-json</artifactId>
 
-    <name>MapMaid - Integrations</name>
-
-    <modules>
-        <module>all</module>
-        <module>jackson</module>
-        <module>minimal-json</module>
-    </modules>
+    <name>MapMaid - Integrations - Minimal JSON</name>
 
     <properties>
-        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
+        <checkstyle.suppressions.location>
+            ${project.basedir}/src/test/checkstyle/checkstyle-suppressions.xml
+        </checkstyle.suppressions.location>
+        <spotbugs.excludeFilterFile>
+            ${project.basedir}/src/test/spotbugs/spotbugs-exclude.xml
+        </spotbugs.excludeFilterFile>
+        <sonar.coverage.jacoco.xmlReportPaths>../../coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.quantummaid.mapmaid</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.minimal-json</groupId>
+            <artifactId>minimal-json</artifactId>
+            <version>0.9.5</version>
+        </dependency>
+    </dependencies>
 </project>
