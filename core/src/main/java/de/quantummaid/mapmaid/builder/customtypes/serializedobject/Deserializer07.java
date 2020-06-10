@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
 public interface Deserializer07<X, A, B, C, D, E, F, G> extends InvocableDeserializer<X> {
-    X deserialize(A field1, B field2, C field3, D field4, E field5, F field6, G field7);
+    X deserialize(A a, B b, C c, D d, E e, F f, G g);
 
     @SuppressWarnings("unchecked")
     @Override
