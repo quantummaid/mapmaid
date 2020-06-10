@@ -19,30 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.autoload;
+package de.quantummaid.mapmaid.minimaljson;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import de.quantummaid.mapmaid.builder.MarshallerAndUnmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 
-import java.util.Optional;
-
-import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ActualAutoloadable<T> implements Autoloadable<T> {
-    private final String fullyQualifiedDomainName;
-
-    public static <T> Autoloadable<T> autoloadIfClassPresent(final String fullyQualifiedClassName) {
-        validateNotNull(fullyQualifiedClassName, "fullyQualifiedDomainName");
-        return new ActualAutoloadable<>(fullyQualifiedClassName);
+public class MinimalJsonMarshallerAndUnmarshaller implements MarshallerAndUnmarshaller {
+    public static MinimalJsonMarshallerAndUnmarshaller minimalJsonMarshallerAndUnmarshaller() {
+        return new MinimalJsonMarshallerAndUnmarshaller();
     }
 
     @Override
-    public Optional<T> autoload() {
-        return Autoloader.autoload(this.fullyQualifiedDomainName);
+    public MarshallingType marshallingType() {
+        return MarshallingType.JSON;
+    }
+
+    @Override
+    public Marshaller marshaller() {
+        return MinimalJsonMarshaller.minimalJsonMarshaller();
+    }
+
+    @Override
+    public Unmarshaller unmarshaller() {
+        return MinimalJsonUnmarshaller.minimalJsonUnmarshaller();
     }
 }

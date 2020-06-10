@@ -22,10 +22,13 @@
 package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.Set;
 
 @ToString
 @EqualsAndHashCode
@@ -35,6 +38,9 @@ public final class ThenData {
     private Object serializationResult;
     private Exception exception;
     private DebugInformation debugInformation;
+
+    private Set<MarshallingType> supportedMarshallingTypes;
+    private Set<MarshallingType> supportedUnmarshallingTypes;
 
     public static ThenData thenData() {
         return new ThenData();
@@ -74,5 +80,20 @@ public final class ThenData {
 
     public DebugInformation getDebugInformation() {
         return this.debugInformation;
+    }
+
+    public ThenData withSupportedMarshallingTypes(
+            final Set<MarshallingType> marshallingTypes, final Set<MarshallingType> unmarshallingTypes) {
+        this.supportedMarshallingTypes = marshallingTypes;
+        this.supportedUnmarshallingTypes = unmarshallingTypes;
+        return this;
+    }
+
+    public Set<MarshallingType> getSupportedMarshallingTypes() {
+        return this.supportedMarshallingTypes;
+    }
+
+    public Set<MarshallingType> getSupportedUnmarshallingTypes() {
+        return this.supportedUnmarshallingTypes;
     }
 }

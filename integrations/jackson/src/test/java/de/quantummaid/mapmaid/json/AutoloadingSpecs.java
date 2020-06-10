@@ -21,10 +21,15 @@
 
 package de.quantummaid.mapmaid.json;
 
+import de.quantummaid.mapmaid.MapMaid;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Supplier;
+
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class AutoloadingSpecs {
@@ -38,5 +43,17 @@ public final class AutoloadingSpecs {
                 .when().mapMaidSerializes(new MySerializedObject("a", "b", "c")).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("{\"field3\":\"c\",\"field2\":\"b\",\"field1\":\"a\"}");
+    }
+
+    @Test
+    public void autoloadingFindsAllAvailableJacksonMarshallers() {
+        given(mapMaidWillBeInstiantedUsing(() -> aMapMaid().build()))
+                .when().theSupportedMarshallingTypesAreQueried()
+                .mapMaidKnowsAboutMarshallingTypes(JSON, YAML, XML)
+                .mapMaidKnowsAboutUnmarshallingTypes(JSON, YAML, XML);
+    }
+
+    final Supplier<MapMaid> mapMaidWillBeInstiantedUsing(Supplier<MapMaid> supplier) {
+        return supplier;
     }
 }

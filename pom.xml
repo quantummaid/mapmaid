@@ -57,6 +57,10 @@
         </developer>
     </developers>
 
+    <modules>
+        <module>autoload-tests</module>
+    </modules>
+
     <properties>
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     </properties>
@@ -98,6 +102,7 @@
                 <module>documentation</module>
                 <module>integrations</module>
                 <module>tests</module>
+                <module>autoload-tests</module>
             </modules>
         </profile>
         <profile>

@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.AggregatedValidationException;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.core.StringContains;
@@ -83,6 +84,12 @@ public final class Then {
     public Then anExceptionIsThrownWithAMessageContaining(final String message) {
         assertThat(this.thenData.getException(), not(is(nullValue())));
         assertThat(this.thenData.getException().getMessage(), StringContains.containsString(message));
+        return this;
+    }
+
+    public Then anExceptionIsThrownWithType(final Class<?> aClass) {
+        final Exception cause = this.thenData.getException();
+        assertThat(cause, instanceOf(aClass));
         return this;
     }
 
@@ -146,6 +153,16 @@ public final class Then {
 
     public Then theSerializationResultWas(final Object serialized) {
         assertThat(this.thenData.getSerializationResult(), is(serialized));
+        return this;
+    }
+
+    public Then mapMaidKnowsAboutMarshallingTypes(final MarshallingType... types) {
+        assertThat(this.thenData.getSupportedMarshallingTypes(), hasItems(types));
+        return this;
+    }
+
+    public Then mapMaidKnowsAboutUnmarshallingTypes(final MarshallingType... types) {
+        assertThat(this.thenData.getSupportedUnmarshallingTypes(), hasItems(types));
         return this;
     }
 }

@@ -32,6 +32,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -134,6 +135,12 @@ public final class When {
     public Then theDefinitionsAreQueried() {
         final DebugInformation debugInformation = this.mapMaid.debugInformation();
         return then(this.thenData.withDebugInformation(debugInformation));
+    }
+
+    public Then theSupportedMarshallingTypesAreQueried() {
+        final Set<MarshallingType> marshallingTypes = this.mapMaid.serializer().supportedMarshallingTypes();
+        final Set<MarshallingType> unmarshallingTypes = this.mapMaid.deserializer().supportedMarshallingTypes();
+        return then(this.thenData.withSupportedMarshallingTypes(marshallingTypes, unmarshallingTypes));
     }
 
     public Then mapMaidIsInstantiated() {
