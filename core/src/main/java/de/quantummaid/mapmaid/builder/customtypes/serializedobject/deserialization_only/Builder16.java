@@ -24,14 +24,10 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserializat
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer16;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor
 public final class Builder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> {
     private final Builder builder;

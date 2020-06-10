@@ -24,13 +24,9 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserializat
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer07;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-@ToString
-@EqualsAndHashCode
 public final class Builder07<X, A, B, C, D, E, F, G> extends AbstractBuilder<X, Deserializer07<X, A, B, C, D, E, F, G>> {
 
     public Builder07(final Builder builder) {
