@@ -23,7 +23,8 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserializat
 
 import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer12;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer13;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer14;
 import de.quantummaid.reflectmaid.GenericType;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,23 +35,21 @@ import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor
-public final class SerializedObjectBuilder12<X, A, B, C, D, E, F, G, H, I, J, K, L> {
-    private final Builder builder;
+public final class Builder14<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N>
+        extends AbstractBuilder<X, Deserializer14<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N>> {
 
-    public <M> SerializedObjectBuilder13<X, A, B, C, D, E, F, G, H, I, J, K, L, M> withField(final String name,
-                                                                                             final Class<M> type) {
+    public Builder14(final Builder builder) {
+        super(builder);
+    }
+
+    public <O> Builder15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> withField(final String name,
+                                                                                   final Class<O> type) {
         return withField(name, genericType(type));
     }
 
-    public <M> SerializedObjectBuilder13<X, A, B, C, D, E, F, G, H, I, J, K, L, M> withField(final String name,
-                                                                                             final GenericType<M> type) {
+    public <O> Builder15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> withField(final String name,
+                                                                                   final GenericType<O> type) {
         this.builder.addDeserializationField(type, name);
-        return new SerializedObjectBuilder13<>(this.builder);
-    }
-
-    public DeserializationOnlyType<X> deserializedUsing(final Deserializer12<X, A, B, C, D, E, F, G, H, I, J, K, L> deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDeserializationOnlyType(this.builder);
+        return new Builder15<>(this.builder);
     }
 }
