@@ -24,26 +24,16 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex;
 import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer16;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Common.createDuplexType;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> {
     private final Builder builder;
 
-    public static <X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>
-    SerializedObjectBuilder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> serializedObjectBuilder16(final Builder builder) {
-        return new SerializedObjectBuilder16<>(builder);
-    }
-
     public DuplexType<X> deserializedUsing(final Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDuplexType(this.builder);
+        builder.setDeserializer(deserializer);
+        return createDuplexType(builder);
     }
 }

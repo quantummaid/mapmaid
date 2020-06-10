@@ -28,18 +28,13 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Common.createDuplexType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder01.serializedObjectBuilder01;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SerializedObjectBuilder00<X> {
     private final Builder builder;
@@ -60,12 +55,12 @@ public final class SerializedObjectBuilder00<X> {
     public <A> SerializedObjectBuilder01<X, A> withField(final String name,
                                                          final GenericType<A> type,
                                                          final Query<X, A> query) {
-        this.builder.addDuplexField(type, name, (Query<Object, Object>) query);
-        return serializedObjectBuilder01(this.builder);
+        builder.addDuplexField(type, name, (Query<Object, Object>) query);
+        return new SerializedObjectBuilder01<>(builder);
     }
 
     public DuplexType<X> deserializedUsing(final Deserializer00<X> deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDuplexType(this.builder);
+        builder.setDeserializer(deserializer);
+        return createDuplexType(builder);
     }
 }

@@ -33,7 +33,7 @@ public final class Builder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> 
     private final Builder builder;
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDeserializationOnlyType(this.builder);
+        builder.setDeserializer(deserializer);
+        return createDeserializationOnlyType(builder);
     }
 }

@@ -41,7 +41,7 @@ public final class Builder11<X, A, B, C, D, E, F, G, H, I, J, K>
 
     public <L> Builder12<X, A, B, C, D, E, F, G, H, I, J, K, L> withField(final String name,
                                                                           final GenericType<L> type) {
-        this.builder.addDeserializationField(type, name);
-        return new Builder12<>(this.builder);
+        builder.with(type, name);
+        return new Builder12<>(builder);
     }
 }

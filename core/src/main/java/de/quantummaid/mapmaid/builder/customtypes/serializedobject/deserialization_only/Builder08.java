@@ -40,7 +40,7 @@ public final class Builder08<X, A, B, C, D, E, F, G, H> extends AbstractBuilder<
 
     public <I> Builder09<X, A, B, C, D, E, F, G, H, I> withField(final String name,
                                                                  final GenericType<I> type) {
-        this.builder.addDeserializationField(type, name);
-        return new Builder09<>(this.builder);
+        builder.with(type, name);
+        return new Builder09<>(builder);
     }
 }

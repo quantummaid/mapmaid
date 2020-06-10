@@ -26,24 +26,14 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer01;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Common.createDuplexType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder02.serializedObjectBuilder02;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder01<X, A> {
     private final Builder builder;
-
-    public static <A, X> SerializedObjectBuilder01<X, A> serializedObjectBuilder01(final Builder builder) {
-        return new SerializedObjectBuilder01<>(builder);
-    }
 
     public <B> SerializedObjectBuilder02<X, A, B> withField(final String name,
                                                             final Class<B> type,
@@ -55,12 +45,12 @@ public final class SerializedObjectBuilder01<X, A> {
     public <B> SerializedObjectBuilder02<X, A, B> withField(final String name,
                                                             final GenericType<B> type,
                                                             final Query<X, B> query) {
-        this.builder.addDuplexField(type, name, (Query<Object, Object>) query);
-        return serializedObjectBuilder02(this.builder);
+        builder.addDuplexField(type, name, (Query<Object, Object>) query);
+        return new SerializedObjectBuilder02<>(builder);
     }
 
     public DuplexType<X> deserializedUsing(final Deserializer01<X, A> deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDuplexType(this.builder);
+        builder.setDeserializer(deserializer);
+        return createDuplexType(builder);
     }
 }

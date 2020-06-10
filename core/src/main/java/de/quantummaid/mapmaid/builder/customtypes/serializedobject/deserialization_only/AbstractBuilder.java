@@ -37,7 +37,7 @@ public class AbstractBuilder<X, T extends InvocableDeserializer<X>> {
     protected final Builder builder;
 
     public DeserializationOnlyType<X> deserializedUsing(final T deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDeserializationOnlyType(this.builder);
+        builder.setDeserializer(deserializer);
+        return createDeserializationOnlyType(builder);
     }
 }

@@ -26,25 +26,14 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer12;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Common.createDuplexType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.SerializedObjectBuilder13.serializedObjectBuilder13;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder12<X, A, B, C, D, E, F, G, H, I, J, K, L> {
     private final Builder builder;
-
-    public static <X, A, B, C, D, E, F, G, H, I, J, K, L>
-    SerializedObjectBuilder12<X, A, B, C, D, E, F, G, H, I, J, K, L> serializedObjectBuilder12(final Builder builder) {
-        return new SerializedObjectBuilder12<>(builder);
-    }
 
     public <M> SerializedObjectBuilder13<X, A, B, C, D, E, F, G, H, I, J, K, L, M> withField(final String name,
                                                                                              final Class<M> type,
@@ -56,12 +45,12 @@ public final class SerializedObjectBuilder12<X, A, B, C, D, E, F, G, H, I, J, K,
     public <M> SerializedObjectBuilder13<X, A, B, C, D, E, F, G, H, I, J, K, L, M> withField(final String name,
                                                                                              final GenericType<M> type,
                                                                                              final Query<X, M> query) {
-        this.builder.addDuplexField(type, name, (Query<Object, Object>) query);
-        return serializedObjectBuilder13(this.builder);
+        builder.addDuplexField(type, name, (Query<Object, Object>) query);
+        return new SerializedObjectBuilder13<>(builder);
     }
 
     public DuplexType<X> deserializedUsing(final Deserializer12<X, A, B, C, D, E, F, G, H, I, J, K, L> deserializer) {
-        this.builder.setDeserializer(deserializer);
-        return createDuplexType(this.builder);
+        builder.setDeserializer(deserializer);
+        return createDuplexType(builder);
     }
 }

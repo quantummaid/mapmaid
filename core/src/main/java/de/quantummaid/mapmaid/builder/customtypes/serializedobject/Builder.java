@@ -58,11 +58,11 @@ public final class Builder {
     }
 
     public void addDuplexField(final GenericType<?> type, final String name, final Query<Object, Object> query) {
-        addDeserializationField(type, name);
+        with(type, name);
         addSerializationField(type, name, query);
     }
 
-    public void addDeserializationField(final GenericType<?> type, final String name) {
+    public void with(final GenericType<?> type, final String name) {
         validateNotNull(type, "type");
         validateNotNull(name, "name");
         final CustomDeserializationField deserializationField = deserializationField(type, name);
