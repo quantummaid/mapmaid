@@ -25,24 +25,18 @@ import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer09;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder10.serializedObjectBuilder10;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder09<X, A, B, C, D, E, F, G, H, I> {
     private final Builder builder;
-
-    public static <X, A, B, C, D, E, F, G, H, I> SerializedObjectBuilder09<X, A, B, C, D, E, F, G, H, I> serializedObjectBuilder09(final Builder builder) {
-        return new SerializedObjectBuilder09<>(builder);
-    }
 
     public <J> SerializedObjectBuilder10<X, A, B, C, D, E, F, G, H, I, J> withField(final String name,
                                                                                     final Class<J> type) {
@@ -52,7 +46,7 @@ public final class SerializedObjectBuilder09<X, A, B, C, D, E, F, G, H, I> {
     public <J> SerializedObjectBuilder10<X, A, B, C, D, E, F, G, H, I, J> withField(final String name,
                                                                                     final GenericType<J> type) {
         this.builder.addDeserializationField(type, name);
-        return serializedObjectBuilder10(this.builder);
+        return new SerializedObjectBuilder10<>(this.builder);
     }
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer09<X, A, B, C, D, E, F, G, H, I> deserializer) {

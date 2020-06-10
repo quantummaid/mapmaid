@@ -25,24 +25,18 @@ import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer11;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder12.serializedObjectBuilder12;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder11<X, A, B, C, D, E, F, G, H, I, J, K> {
     private final Builder builder;
-
-    public static <X, A, B, C, D, E, F, G, H, I, J, K> SerializedObjectBuilder11<X, A, B, C, D, E, F, G, H, I, J, K> serializedObjectBuilder11(final Builder builder) {
-        return new SerializedObjectBuilder11<>(builder);
-    }
 
     public <L> SerializedObjectBuilder12<X, A, B, C, D, E, F, G, H, I, J, K, L> withField(final String name,
                                                                                           final Class<L> type) {
@@ -52,7 +46,7 @@ public final class SerializedObjectBuilder11<X, A, B, C, D, E, F, G, H, I, J, K>
     public <L> SerializedObjectBuilder12<X, A, B, C, D, E, F, G, H, I, J, K, L> withField(final String name,
                                                                                           final GenericType<L> type) {
         this.builder.addDeserializationField(type, name);
-        return serializedObjectBuilder12(this.builder);
+        return new SerializedObjectBuilder12<>(this.builder);
     }
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer11<X, A, B, C, D, E, F, G, H, I, J, K> deserializer) {

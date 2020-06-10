@@ -25,25 +25,18 @@ import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer15;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder16.serializedObjectBuilder16;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> {
     private final Builder builder;
-
-    public static <X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>
-    SerializedObjectBuilder15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> serializedObjectBuilder15(final Builder builder) {
-        return new SerializedObjectBuilder15<>(builder);
-    }
 
     public <P> SerializedObjectBuilder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> withField(final String name,
                                                                                                       final Class<P> type) {
@@ -53,7 +46,7 @@ public final class SerializedObjectBuilder15<X, A, B, C, D, E, F, G, H, I, J, K,
     public <P> SerializedObjectBuilder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> withField(final String name,
                                                                                                       final GenericType<P> type) {
         this.builder.addDeserializationField(type, name);
-        return serializedObjectBuilder16(this.builder);
+        return new SerializedObjectBuilder16<>(this.builder);
     }
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> deserializer) {

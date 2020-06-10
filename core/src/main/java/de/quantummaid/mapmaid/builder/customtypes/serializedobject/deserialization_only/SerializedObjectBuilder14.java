@@ -25,25 +25,18 @@ import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer14;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder15.serializedObjectBuilder15;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder14<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
     private final Builder builder;
-
-    public static <X, A, B, C, D, E, F, G, H, I, J, K, L, M, N>
-    SerializedObjectBuilder14<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N> serializedObjectBuilder14(final Builder builder) {
-        return new SerializedObjectBuilder14<>(builder);
-    }
 
     public <O> SerializedObjectBuilder15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> withField(final String name,
                                                                                                    final Class<O> type) {
@@ -53,7 +46,7 @@ public final class SerializedObjectBuilder14<X, A, B, C, D, E, F, G, H, I, J, K,
     public <O> SerializedObjectBuilder15<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> withField(final String name,
                                                                                                    final GenericType<O> type) {
         this.builder.addDeserializationField(type, name);
-        return serializedObjectBuilder15(this.builder);
+        return new SerializedObjectBuilder15<>(this.builder);
     }
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer14<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N> deserializer) {

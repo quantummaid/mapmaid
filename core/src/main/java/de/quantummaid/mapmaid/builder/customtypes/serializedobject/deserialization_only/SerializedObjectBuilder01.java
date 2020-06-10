@@ -25,24 +25,18 @@ import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer01;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder02.serializedObjectBuilder02;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public final class SerializedObjectBuilder01<X, A> {
     private final Builder builder;
-
-    public static <A, X> SerializedObjectBuilder01<X, A> serializedObjectBuilder01(final Builder builder) {
-        return new SerializedObjectBuilder01<>(builder);
-    }
 
     public <B> SerializedObjectBuilder02<X, A, B> withField(final String name,
                                                             final Class<B> type) {
@@ -52,7 +46,7 @@ public final class SerializedObjectBuilder01<X, A> {
     public <B> SerializedObjectBuilder02<X, A, B> withField(final String name,
                                                             final GenericType<B> type) {
         this.builder.addDeserializationField(type, name);
-        return serializedObjectBuilder02(this.builder);
+        return new SerializedObjectBuilder02<>(this.builder);
     }
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer01<X, A> deserializer) {

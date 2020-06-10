@@ -33,7 +33,6 @@ import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder01.serializedObjectBuilder01;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
@@ -56,7 +55,7 @@ public final class SerializedObjectBuilder00<X> {
     public <A> SerializedObjectBuilder01<X, A> withField(final String name,
                                                          final GenericType<A> type) {
         this.builder.addDeserializationField(type, name);
-        return serializedObjectBuilder01(this.builder);
+        return new SerializedObjectBuilder01<>(this.builder);
     }
 
     public DeserializationOnlyType<X> deserializedUsing(final Deserializer00<X> deserializer) {
