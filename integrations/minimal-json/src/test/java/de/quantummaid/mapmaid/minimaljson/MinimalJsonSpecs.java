@@ -32,70 +32,66 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-/**
- * can unmarshall
- * true | false *
- * null *
- * map *
- * list *
- * string *
- * integer |  double *
- *  scientific notation
- */
 public class MinimalJsonSpecs {
     @Test
-    public void canUnmarshallNull() {
-        unmarshallTest("null", null);
+    public void canMarshalAndUnmarshalNull() {
+        marshalAndUnmarshalTest("null", null);
     }
 
     @Test
-    public void canUnmarshallIntegerValue() {
-        unmarshallTest("1", 1l);
+    public void canMarshalAndUnmarshalIntegerValue() {
+        marshalAndUnmarshalTest("1", 1l);
     }
 
     @Test
-    public void canUnmarshallDecimalValue() {
-        unmarshallTest("1.1", 1.1d);
+    public void canMarshalAndUnmarshalDecimalValue() {
+        marshalAndUnmarshalTest("1.1", 1.1d);
     }
 
     @Test
-    public void canUnmarshallStringValue() {
-        unmarshallTest("\"s\"", "s");
+    public void canUnmarshalScientificNotation() {
+        marshalAndUnmarshalTest("1.3E-6", 1.3e-6);
     }
 
     @Test
-    public void canUnmarshallTrueBooleanValue() {
-        unmarshallTest("true", true);
+    public void canMarshalAndUnmarshalStringValue() {
+        marshalAndUnmarshalTest("\"s\"", "s");
     }
 
     @Test
-    public void canUnmarshallFalseBooleanValue() {
-        unmarshallTest("false", false);
+    public void canMarshalAndUnmarshalTrueBooleanValue() {
+        marshalAndUnmarshalTest("true", true);
     }
 
     @Test
-    public void canUnmarshallEmptyListValue() {
-        unmarshallTest("[]", emptyList());
+    public void canMarshalAndUnmarshalFalseBooleanValue() {
+        marshalAndUnmarshalTest("false", false);
     }
 
     @Test
-    public void canUnmarshallListValue() {
-        unmarshallTest("[null,2,2.2,true,false,\"s\"]", asList(null, 2l, 2.2d, true, false, "s"));
+    public void canMarshalAndUnmarshalEmptyListValue() {
+        marshalAndUnmarshalTest("[]", emptyList());
     }
 
     @Test
-    public void canUnmarshallEmptyJsonObjectValue() {
-        unmarshallTest("{}", emptyMap());
+    public void canMarshalAndUnmarshalListValue() {
+        marshalAndUnmarshalTest("[null,2,2.2,true,false,\"s\"]", asList(null, 2l, 2.2d, true, false, "s"));
     }
 
     @Test
-    public void canUnmarshallJsonObjectValue() {
-        unmarshallTest("{\"k\":[null,2,2.2,true,false,\"s\"]}", Map.of("k", asList(null, 2l, 2.2d, true, false, "s")));
+    public void canMarshalAndUnmarshalEmptyJsonObjectValue() {
+        marshalAndUnmarshalTest("{}", emptyMap());
     }
 
-    private void unmarshallTest(String json, Object object) {
-        assertEquals(object, minimalJsonUnmarshaller().unmarshal(json), "unmarshalling from string to object");
-        assertEquals(json, minimalJsonMarshaller().marshal(object), "marshalling from object to string");
+    @Test
+    public void canMarshalAndUnmarshalJsonObjectValue() {
+        marshalAndUnmarshalTest("{\"k\":[null,2,2.2,true,false,\"s\"]}", Map.of("k", asList(null, 2l, 2.2d, true, false, "s")));
+    }
+
+    private void marshalAndUnmarshalTest(final String json, final Object object) {
+        final MinimalJsonUnmarshaller unmarshaller = minimalJsonUnmarshaller();
+        assertEquals(object, unmarshaller.unmarshal(json), "unmarshalling from string to object");
+        final MinimalJsonMarshaller marshaller = minimalJsonMarshaller();
+        assertEquals(json, marshaller.marshal(object), "marshalling from object to string");
     }
 }

@@ -22,22 +22,22 @@
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
 public interface Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> extends InvocableDeserializer<X> {
-    X deserialize(A field1, // NOSONAR
-                  B field2,
-                  C field3,
-                  D field4,
-                  E field5,
-                  F field6,
-                  G field7,
-                  H field8,
-                  I field9,
-                  J field10,
-                  K field11,
-                  L field12,
-                  M field13,
-                  N field14,
-                  O field15,
-                  P field16
+    X deserialize(A a, // NOSONAR
+                  B b,
+                  C c,
+                  D d,
+                  E e,
+                  F f,
+                  G g,
+                  H h,
+                  I i,
+                  J j,
+                  K k,
+                  L l,
+                  M m,
+                  N n,
+                  O o,
+                  P p
     );
 
     @SuppressWarnings("unchecked")

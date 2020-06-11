@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 
 public class AutoloadingSpecs {
+
     @Test
     public void throwsAnErrorWhenMultipleJsonImplementationsAreFoundWithoutHint() {
         Given.given(
@@ -59,7 +60,6 @@ public class AutoloadingSpecs {
     private <T> T unsupported() {
         throw new UnsupportedOperationException();
     }
-
 
     // Can I add multiple lines in the services
 

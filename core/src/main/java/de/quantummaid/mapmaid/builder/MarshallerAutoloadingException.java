@@ -26,7 +26,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MarshallerAutoloadingException extends RuntimeException {
+public final class MarshallerAutoloadingException extends RuntimeException {
     private MarshallerAutoloadingException(final String message) {
         super(message);
     }

@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.builder.customtypes;
 import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer;
 import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionFactory;
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveDeserializer;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder00;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Builder00;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -37,7 +37,7 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionDeserializer.inlinedCollectionDeserializer;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.SerializedObjectBuilder00.serializedObjectBuilder00;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Builder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
@@ -49,11 +49,11 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
     private final TypeIdentifier type;
     private final TypeDeserializer deserializer;
 
-    public static <T> SerializedObjectBuilder00<T> serializedObject(final Class<T> type) {
+    public static <T> Builder00<T> serializedObject(final Class<T> type) {
         return serializedObject(genericType(type));
     }
 
-    public static <T> SerializedObjectBuilder00<T> serializedObject(final GenericType<T> type) {
+    public static <T> Builder00<T> serializedObject(final GenericType<T> type) {
         return serializedObjectBuilder00(type);
     }
 

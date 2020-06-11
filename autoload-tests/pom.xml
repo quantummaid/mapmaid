@@ -26,13 +26,17 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.61</version>
+        <version>0.9.62</version>
     </parent>
 
     <artifactId>autoloading-tests</artifactId>
     <packaging>jar</packaging>
 
     <name>MapMaid - Tests - Autoloading</name>
+
+    <properties>
+        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
+    </properties>
 
     <dependencies>
         <dependency>
