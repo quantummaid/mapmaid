@@ -19,28 +19,32 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only;
+package de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex;
 
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer05;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer06;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.reflectmaid.GenericType;
 
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-public final class Builder05<X, A, B, C, D, E> extends AbstractBuilder<X, Deserializer05<X, A, B, C, D, E>> {
+public final class Builder06<X, A, B, C, D, E, F> extends AbstractBuilder<X, Deserializer06<X, A, B, C, D, E, F>> {
 
-    public Builder05(final Builder builder) {
+    public Builder06(final Builder builder) {
         super(builder);
     }
 
-    public <F> Builder06<X, A, B, C, D, E, F> withField(final String name,
-                                                        final Class<F> type) {
-        return withField(name, genericType(type));
+    public <G> Builder07<X, A, B, C, D, E, F, G> withField(final String name,
+                                                           final Class<G> type,
+                                                           final Query<X, G> query) {
+        return withField(name, genericType(type), query);
     }
 
-    public <F> Builder06<X, A, B, C, D, E, F> withField(final String name,
-                                                        final GenericType<F> type) {
-        builder.with(type, name);
-        return new Builder06<>(builder);
+    @SuppressWarnings("unchecked")
+    public <G> Builder07<X, A, B, C, D, E, F, G> withField(final String name,
+                                                           final GenericType<G> type,
+                                                           final Query<X, G> query) {
+        builder.addDuplexField(type, name, (Query<Object, Object>) query);
+        return new Builder07<>(builder);
     }
 }

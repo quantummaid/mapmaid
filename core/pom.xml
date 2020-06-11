@@ -55,7 +55,7 @@
         <dependency>
             <groupId>de.quantummaid.reflectmaid</groupId>
             <artifactId>reflectmaid-parent</artifactId>
-            <version>0.1.22</version>
+            <version>0.1.23</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -34,6 +34,10 @@
 
     <name>MapMaid - Tests - Autoloading</name>
 
+    <properties>
+        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>

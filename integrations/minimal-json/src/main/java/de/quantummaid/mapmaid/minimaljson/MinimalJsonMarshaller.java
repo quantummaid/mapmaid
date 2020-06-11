@@ -47,12 +47,12 @@ public final class MinimalJsonMarshaller implements Marshaller {
         return json;
     }
 
-    private JsonValue marshallRec(Object object) {
+    private JsonValue marshallRec(final Object object) {
         if (object instanceof String) {
             return Json.value((String) object);
         } else if (object instanceof Map) {
             final JsonObject jsonObject = Json.object();
-            final Map<String, ?> inputMap = (Map<String, ?>) object;
+            @SuppressWarnings("unchecked") final Map<String, ?> inputMap = (Map<String, ?>) object;
             inputMap.forEach((k, v) -> {
                 final JsonValue jsonValue = marshallRec(v);
                 jsonObject.add(k, jsonValue);

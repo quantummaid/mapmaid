@@ -21,36 +21,30 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex;
 
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer08;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer02;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.reflectmaid.GenericType;
-import lombok.RequiredArgsConstructor;
 
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Common.createDuplexType;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-@RequiredArgsConstructor
-public final class SerializedObjectBuilder08<X, A, B, C, D, E, F, G, H> {
-    private final Builder builder;
+public final class Builder02<X, A, B> extends AbstractBuilder<X, Deserializer02<X, A, B>> {
 
-    public <I> SerializedObjectBuilder09<X, A, B, C, D, E, F, G, H, I> withField(final String name,
-                                                                                 final Class<I> type,
-                                                                                 final Query<X, I> query) {
+    public Builder02(final Builder builder) {
+        super(builder);
+    }
+
+    public <C> Builder03<X, A, B, C> withField(final String name,
+                                               final Class<C> type,
+                                               final Query<X, C> query) {
         return withField(name, genericType(type), query);
     }
 
     @SuppressWarnings("unchecked")
-    public <I> SerializedObjectBuilder09<X, A, B, C, D, E, F, G, H, I> withField(final String name,
-                                                                                 final GenericType<I> type,
-                                                                                 final Query<X, I> query) {
+    public <C> Builder03<X, A, B, C> withField(final String name,
+                                               final GenericType<C> type,
+                                               final Query<X, C> query) {
         builder.addDuplexField(type, name, (Query<Object, Object>) query);
-        return new SerializedObjectBuilder09<>(builder);
-    }
-
-    public DuplexType<X> deserializedUsing(final Deserializer08<X, A, B, C, D, E, F, G, H> deserializer) {
-        builder.setDeserializer(deserializer);
-        return createDuplexType(builder);
+        return new Builder03<>(builder);
     }
 }

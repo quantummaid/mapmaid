@@ -19,28 +19,32 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only;
+package de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex;
 
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
-import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer05;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer01;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.reflectmaid.GenericType;
 
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-public final class Builder05<X, A, B, C, D, E> extends AbstractBuilder<X, Deserializer05<X, A, B, C, D, E>> {
+public final class Builder01<X, A> extends AbstractBuilder<X, Deserializer01<X, A>> {
 
-    public Builder05(final Builder builder) {
+    public Builder01(final Builder builder) {
         super(builder);
     }
 
-    public <F> Builder06<X, A, B, C, D, E, F> withField(final String name,
-                                                        final Class<F> type) {
-        return withField(name, genericType(type));
+    public <B> Builder02<X, A, B> withField(final String name,
+                                            final Class<B> type,
+                                            final Query<X, B> query) {
+        return withField(name, genericType(type), query);
     }
 
-    public <F> Builder06<X, A, B, C, D, E, F> withField(final String name,
-                                                        final GenericType<F> type) {
-        builder.with(type, name);
-        return new Builder06<>(builder);
+    @SuppressWarnings("unchecked")
+    public <B> Builder02<X, A, B> withField(final String name,
+                                            final GenericType<B> type,
+                                            final Query<X, B> query) {
+        builder.addDuplexField(type, name, (Query<Object, Object>) query);
+        return new Builder02<>(builder);
     }
 }

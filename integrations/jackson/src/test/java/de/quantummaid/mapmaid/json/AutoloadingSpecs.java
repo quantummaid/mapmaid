@@ -22,8 +22,6 @@
 package de.quantummaid.mapmaid.json;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
@@ -53,7 +51,7 @@ public final class AutoloadingSpecs {
                 .mapMaidKnowsAboutUnmarshallingTypes(JSON, YAML, XML);
     }
 
-    final Supplier<MapMaid> mapMaidWillBeInstiantedUsing(Supplier<MapMaid> supplier) {
+    private Supplier<MapMaid> mapMaidWillBeInstiantedUsing(final Supplier<MapMaid> supplier) {
         return supplier;
     }
 }

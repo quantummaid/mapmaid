@@ -75,8 +75,8 @@ public final class MinimalJsonUnmarshaller implements Unmarshaller {
         }
     }
 
-    private Object unmarshalNumber(JsonValue json) {
-        BigDecimal number = new BigDecimal(json.toString());
+    private Object unmarshalNumber(final JsonValue json) {
+        final BigDecimal number = new BigDecimal(json.toString());
         if (asIntegerValue(number)) {
             return number.longValue();
         } else {
@@ -88,7 +88,7 @@ public final class MinimalJsonUnmarshaller implements Unmarshaller {
         return null;
     }
 
-    private boolean asIntegerValue(BigDecimal bd) {
+    private boolean asIntegerValue(final BigDecimal bd) {
         return bd.stripTrailingZeros().scale() <= 0;
     }
 }
