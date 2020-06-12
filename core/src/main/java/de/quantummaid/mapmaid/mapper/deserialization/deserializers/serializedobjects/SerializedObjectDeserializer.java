@@ -27,18 +27,23 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
+import de.quantummaid.mapmaid.mapper.universal.UniversalString;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
 import static java.lang.String.format;
 
 public interface SerializedObjectDeserializer extends TypeDeserializer {
@@ -97,5 +102,21 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
                 return null;
             }
         }
+    }
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+
+        final Map<String, TypeIdentifier> fields = fields().fields();
+        final Map<String, Universal> properties = new LinkedHashMap<>(fields.size());
+        fields.forEach((key, typeIdentifier) -> {
+            final Universal childSchema = schemaCallback.schema(typeIdentifier);
+            properties.put(key, childSchema);
+        });
+
+        final Map<String, Universal> map = new HashMap<>();
+        map.put("type", UniversalString.universalString("object"));
+        map.put("properties", universalObject(properties));
+        return universalObject(map);
     }
 }

@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
@@ -33,9 +34,13 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
 import static java.util.Collections.singletonList;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -71,5 +76,15 @@ public interface CollectionDeserializer extends TypeDeserializer {
             index = index + 1;
         }
         return (T) listToCollection(deserializedList);
+    }
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+        final Map<String, Universal> map = new LinkedHashMap<>();
+        map.put("type", universalString("array"));
+        final TypeIdentifier contentType = contentType();
+        final Universal contentTypeSchema = schemaCallback.schema(contentType);
+        map.put("items", contentTypeSchema);
+        return universalObject(map);
     }
 }

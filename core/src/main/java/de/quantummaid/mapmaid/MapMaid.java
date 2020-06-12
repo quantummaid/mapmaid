@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
@@ -264,5 +265,20 @@ public final class MapMaid {
 
     public DebugInformation debugInformation() {
         return this.debugInformation;
+    }
+
+    public String deserializationSchemaFor(final Class<?> type, final MarshallingType marshallingType) {
+        final GenericType<?> genericType = genericType(type);
+        return deserializationSchemaFor(genericType, marshallingType);
+    }
+
+    public String deserializationSchemaFor(final GenericType<?> type, final MarshallingType marshallingType) {
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return deserializationSchemaFor(typeIdentifier, marshallingType);
+    }
+
+    public String deserializationSchemaFor(final TypeIdentifier type, final MarshallingType marshallingType) {
+        final Universal schema = this.deserializer.schema(type);
+        return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
     }
 }

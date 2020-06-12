@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
@@ -33,6 +34,7 @@ import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructure.wrongInputStructureException;
+import static java.lang.String.format;
 
 public interface TypeDeserializer {
     List<TypeIdentifier> requiredTypes();
@@ -46,6 +48,10 @@ public interface TypeDeserializer {
                       DebugInformation debugInformation);
 
     String description();
+
+    default Universal schema(final SchemaCallback schemaCallback) {
+        throw new UnsupportedOperationException(format("Schema generation not supported for '%s'", description()));
+    }
 
     static <T extends Universal> T castSafely(final Universal universalType,
                                               final Class<T> type,
