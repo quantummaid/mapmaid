@@ -29,6 +29,11 @@ import java.util.Map;
 import static java.lang.String.format;
 
 public final class PrimitiveSchemaMappings {
+    private static final String STRING = "string";
+    private static final String INTEGER = "integer";
+    private static final String NUMBER = "number";
+    private static final String BOOLEAN = "boolean";
+
     private static final Map<Class<?>, PrimitiveSchema> SCHEMATA = schemata();
 
     private PrimitiveSchemaMappings() {
@@ -44,21 +49,21 @@ public final class PrimitiveSchemaMappings {
 
     private static Map<Class<?>, PrimitiveSchema> schemata() {
         final Map<Class<?>, PrimitiveSchema> schemata = new LinkedHashMap<>();
-        schemata.put(String.class, PrimitiveSchema.primitiveSchema("string"));
-        schemata.put(int.class, PrimitiveSchema.primitiveSchema("integer", "int32"));
-        schemata.put(Integer.class, PrimitiveSchema.primitiveSchema("integer", "int32"));
-        schemata.put(long.class, PrimitiveSchema.primitiveSchema("integer", "int64"));
-        schemata.put(Long.class, PrimitiveSchema.primitiveSchema("integer", "int64"));
-        schemata.put(short.class, PrimitiveSchema.primitiveSchema("integer"));
-        schemata.put(Short.class, PrimitiveSchema.primitiveSchema("integer"));
-        schemata.put(byte.class, PrimitiveSchema.primitiveSchema("integer"));
-        schemata.put(Byte.class, PrimitiveSchema.primitiveSchema("integer"));
-        schemata.put(double.class, PrimitiveSchema.primitiveSchema("number", "double"));
-        schemata.put(Double.class, PrimitiveSchema.primitiveSchema("number", "double"));
-        schemata.put(float.class, PrimitiveSchema.primitiveSchema("number", "float"));
-        schemata.put(Float.class, PrimitiveSchema.primitiveSchema("number", "float"));
-        schemata.put(boolean.class, PrimitiveSchema.primitiveSchema("boolean"));
-        schemata.put(Boolean.class, PrimitiveSchema.primitiveSchema("boolean"));
+        schemata.put(String.class, PrimitiveSchema.primitiveSchema(STRING));
+        schemata.put(int.class, PrimitiveSchema.primitiveSchema(INTEGER, "int32"));
+        schemata.put(Integer.class, PrimitiveSchema.primitiveSchema(INTEGER, "int32"));
+        schemata.put(long.class, PrimitiveSchema.primitiveSchema(INTEGER, "int64"));
+        schemata.put(Long.class, PrimitiveSchema.primitiveSchema(INTEGER, "int64"));
+        schemata.put(short.class, PrimitiveSchema.primitiveSchema(INTEGER));
+        schemata.put(Short.class, PrimitiveSchema.primitiveSchema(INTEGER));
+        schemata.put(byte.class, PrimitiveSchema.primitiveSchema(INTEGER));
+        schemata.put(Byte.class, PrimitiveSchema.primitiveSchema(INTEGER));
+        schemata.put(double.class, PrimitiveSchema.primitiveSchema(NUMBER, "double"));
+        schemata.put(Double.class, PrimitiveSchema.primitiveSchema(NUMBER, "double"));
+        schemata.put(float.class, PrimitiveSchema.primitiveSchema(NUMBER, "float"));
+        schemata.put(Float.class, PrimitiveSchema.primitiveSchema(NUMBER, "float"));
+        schemata.put(boolean.class, PrimitiveSchema.primitiveSchema(BOOLEAN));
+        schemata.put(Boolean.class, PrimitiveSchema.primitiveSchema(BOOLEAN));
         return schemata;
     }
 
