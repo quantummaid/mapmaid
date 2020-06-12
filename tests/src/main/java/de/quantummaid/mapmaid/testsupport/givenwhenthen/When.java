@@ -138,6 +138,11 @@ public final class When {
         return then(this.thenData.withSchema(schema));
     }
 
+    public Then theSerializationSchemaIsQueriedFor(final Class<?> type) {
+        final String schema = mapMaid.serializationSchemaFor(type, YAML);
+        return then(this.thenData.withSchema(schema));
+    }
+
     public Then theDefinitionsAreQueried() {
         final DebugInformation debugInformation = this.mapMaid.debugInformation();
         return then(this.thenData.withDebugInformation(debugInformation));

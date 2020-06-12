@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers.collections;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -31,6 +32,7 @@ import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForCollection;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalCollection.universalCollection;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -58,4 +60,10 @@ public interface CollectionSerializer extends TypeSerializer {
     }
 
     TypeIdentifier contentType();
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+        final TypeIdentifier contentType = contentType();
+        return schemaForCollection(contentType, schemaCallback);
+    }
 }

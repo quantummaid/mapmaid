@@ -31,19 +31,17 @@ import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
-import de.quantummaid.mapmaid.mapper.universal.UniversalString;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
+import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
-import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
 import static java.lang.String.format;
 
 public interface SerializedObjectDeserializer extends TypeDeserializer {
@@ -76,7 +74,7 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
         final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker, typeIdentifier, debugInformation);
         final DeserializationFields deserializationFields = fields();
         final Map<String, Object> elements = smallMap();
-        for (final Map.Entry<String, TypeIdentifier> entry : deserializationFields.fields().entrySet()) {
+        for (final Entry<String, TypeIdentifier> entry : deserializationFields.fields().entrySet()) {
             final String elementName = entry.getKey();
             final TypeIdentifier elementType = entry.getValue();
 
@@ -106,17 +104,7 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
 
     @Override
     default Universal schema(final SchemaCallback schemaCallback) {
-
         final Map<String, TypeIdentifier> fields = fields().fields();
-        final Map<String, Universal> properties = new LinkedHashMap<>(fields.size());
-        fields.forEach((key, typeIdentifier) -> {
-            final Universal childSchema = schemaCallback.schema(typeIdentifier);
-            properties.put(key, childSchema);
-        });
-
-        final Map<String, Universal> map = new HashMap<>();
-        map.put("type", UniversalString.universalString("object"));
-        map.put("properties", universalObject(properties));
-        return universalObject(map);
+        return schemaForObject(fields, schemaCallback);
     }
 }

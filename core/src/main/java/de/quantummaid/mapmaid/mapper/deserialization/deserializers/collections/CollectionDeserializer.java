@@ -34,13 +34,10 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
-import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
-import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
+import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForCollection;
 import static java.util.Collections.singletonList;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -80,11 +77,7 @@ public interface CollectionDeserializer extends TypeDeserializer {
 
     @Override
     default Universal schema(final SchemaCallback schemaCallback) {
-        final Map<String, Universal> map = new LinkedHashMap<>();
-        map.put("type", universalString("array"));
         final TypeIdentifier contentType = contentType();
-        final Universal contentTypeSchema = schemaCallback.schema(contentType);
-        map.put("items", contentTypeSchema);
-        return universalObject(map);
+        return schemaForCollection(contentType, schemaCallback);
     }
 }

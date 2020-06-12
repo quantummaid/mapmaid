@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -31,6 +32,7 @@ import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.schema.PrimitiveSchemaMappings.mapPrimitiveToSchema;
 import static java.util.Collections.emptyList;
 
 public interface CustomPrimitiveSerializer extends TypeSerializer {
@@ -54,5 +56,11 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
 
     default Class<?> baseType() {
         return String.class;
+    }
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+        final Class<?> baseType = baseType();
+        return mapPrimitiveToSchema(baseType);
     }
 }

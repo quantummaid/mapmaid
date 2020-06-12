@@ -281,4 +281,19 @@ public final class MapMaid {
         final Universal schema = this.deserializer.schema(type);
         return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
     }
+
+    public String serializationSchemaFor(final Class<?> type, final MarshallingType marshallingType) {
+        final GenericType<?> genericType = genericType(type);
+        return serializationSchemaFor(genericType, marshallingType);
+    }
+
+    public String serializationSchemaFor(final GenericType<?> type, final MarshallingType marshallingType) {
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        return serializationSchemaFor(typeIdentifier, marshallingType);
+    }
+
+    public String serializationSchemaFor(final TypeIdentifier type, final MarshallingType marshallingType) {
+        final Universal schema = this.serializer.schema(type);
+        return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
+    }
 }

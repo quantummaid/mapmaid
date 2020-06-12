@@ -61,7 +61,7 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
         if (!CUSTOM_PRIMITIVE_MAPPINGS.isPrimitiveType(assignableType)) {
             return empty();
         }
-        final CustomPrimitiveSerializer customPrimitiveSerializer = builtInPrimitiveSerializer();
+        final CustomPrimitiveSerializer customPrimitiveSerializer = builtInPrimitiveSerializer(assignableType);
         context.setSerializer(customPrimitiveSerializer);
         final CustomPrimitiveDeserializer customPrimitiveDeserializer = builtInPrimitiveDeserializer(assignableType);
         context.setDeserializer(customPrimitiveDeserializer);

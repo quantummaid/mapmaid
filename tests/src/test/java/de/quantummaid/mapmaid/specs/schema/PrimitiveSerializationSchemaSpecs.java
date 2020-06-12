@@ -28,201 +28,201 @@ import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.yamlMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.yamlUnmarshaller;
 
-public final class PrimitiveSchemaSpecs {
+public final class PrimitiveSerializationSchemaSpecs {
 
     @Test
     public void mapMaidCanGenerateDeserializationSchemaForStringPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(String.class)
+                        .serializing(String.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(String.class)
+                .when().theSerializationSchemaIsQueriedFor(String.class)
                 .theSchemaWas("type: string\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForIntPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForIntPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(int.class)
+                        .serializing(int.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(int.class)
+                .when().theSerializationSchemaIsQueriedFor(int.class)
                 .theSchemaWas("" +
                         "type: integer\n" +
                         "format: int32\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedIntegerPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedIntegerPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(Integer.class)
+                        .serializing(Integer.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(Integer.class)
+                .when().theSerializationSchemaIsQueriedFor(Integer.class)
                 .theSchemaWas("" +
                         "type: integer\n" +
                         "format: int32\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForLongPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForLongPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(long.class)
+                        .serializing(long.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(long.class)
+                .when().theSerializationSchemaIsQueriedFor(long.class)
                 .theSchemaWas("" +
                         "type: integer\n" +
                         "format: int64\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedLongPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedLongPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(Long.class)
+                        .serializing(Long.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(Long.class)
+                .when().theSerializationSchemaIsQueriedFor(Long.class)
                 .theSchemaWas("" +
                         "type: integer\n" +
                         "format: int64\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForShortPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForShortPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(short.class)
+                        .serializing(short.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(short.class)
+                .when().theSerializationSchemaIsQueriedFor(short.class)
                 .theSchemaWas("type: integer\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedShortPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedShortPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(Short.class)
+                        .serializing(Short.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(Short.class)
+                .when().theSerializationSchemaIsQueriedFor(Short.class)
                 .theSchemaWas("type: integer\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBytePrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBytePrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(byte.class)
+                        .serializing(byte.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(byte.class)
+                .when().theSerializationSchemaIsQueriedFor(byte.class)
                 .theSchemaWas("type: integer\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedBytePrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedBytePrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(Byte.class)
+                        .serializing(Byte.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(Byte.class)
+                .when().theSerializationSchemaIsQueriedFor(Byte.class)
                 .theSchemaWas("type: integer\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForDoublePrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForDoublePrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(double.class)
+                        .serializing(double.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(double.class)
+                .when().theSerializationSchemaIsQueriedFor(double.class)
                 .theSchemaWas("" +
                         "type: number\n" +
                         "format: double\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedDoublePrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedDoublePrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(Double.class)
+                        .serializing(Double.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(Double.class)
+                .when().theSerializationSchemaIsQueriedFor(Double.class)
                 .theSchemaWas("" +
                         "type: number\n" +
                         "format: double\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForFloatPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForFloatPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(float.class)
+                        .serializing(float.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(float.class)
+                .when().theSerializationSchemaIsQueriedFor(float.class)
                 .theSchemaWas("" +
                         "type: number\n" +
                         "format: float\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedFloatPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedFloatPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(Float.class)
+                        .serializing(Float.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(Float.class)
+                .when().theSerializationSchemaIsQueriedFor(Float.class)
                 .theSchemaWas("" +
                         "type: number\n" +
                         "format: float\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBooleanPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBooleanPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(boolean.class)
+                        .serializing(boolean.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(boolean.class)
+                .when().theSerializationSchemaIsQueriedFor(boolean.class)
                 .theSchemaWas("type: boolean\n");
     }
 
     @Test
-    public void mapMaidCanGenerateDeserializationSchemaForBoxedBooleanPrimitives() {
+    public void mapMaidCanGenerateSerializationSchemaForBoxedBooleanPrimitives() {
         given(
                 aMapMaid()
-                        .deserializing(boolean.class)
+                        .serializing(boolean.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
                         .build()
         )
-                .when().theDeserializationSchemaIsQueriedFor(boolean.class)
+                .when().theSerializationSchemaIsQueriedFor(boolean.class)
                 .theSchemaWas("type: boolean\n");
     }
 }

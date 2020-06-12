@@ -55,6 +55,28 @@ public final class SchemaSpecs {
     }
 
     @Test
+    public void mapMaidCanGenerateSerializationSchemaForObjects() {
+        given(
+                aMapMaid()
+                        .serializing(AComplexType.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .build()
+        )
+                .when().theSerializationSchemaIsQueriedFor(AComplexType.class)
+                .theSchemaWas("" +
+                        "type: object\n" +
+                        "properties:\n" +
+                        "  number1:\n" +
+                        "    type: string\n" +
+                        "  number2:\n" +
+                        "    type: string\n" +
+                        "  stringA:\n" +
+                        "    type: string\n" +
+                        "  stringB:\n" +
+                        "    type: string\n");
+    }
+
+    @Test
     public void mapMaidCanGenerateDeserializationSchemaForCollections() {
         given(
                 aMapMaid()
@@ -63,6 +85,28 @@ public final class SchemaSpecs {
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(AComplexTypeWithCollections.class)
+                .theSchemaWas("" +
+                        "type: object\n" +
+                        "properties:\n" +
+                        "  array:\n" +
+                        "    type: array\n" +
+                        "    items:\n" +
+                        "      type: string\n" +
+                        "  arrayList:\n" +
+                        "    type: array\n" +
+                        "    items:\n" +
+                        "      type: string\n");
+    }
+
+    @Test
+    public void mapMaidCanGenerateSerializationSchemaForCollections() {
+        given(
+                aMapMaid()
+                        .serializing(AComplexTypeWithCollections.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .build()
+        )
+                .when().theSerializationSchemaIsQueriedFor(AComplexTypeWithCollections.class)
                 .theSchemaWas("" +
                         "type: object\n" +
                         "properties:\n" +

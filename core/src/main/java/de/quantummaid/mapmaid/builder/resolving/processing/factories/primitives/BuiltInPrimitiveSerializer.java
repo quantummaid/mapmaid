@@ -31,9 +31,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BuiltInPrimitiveSerializer implements CustomPrimitiveSerializer {
+    private final Class<?> baseType;
 
-    public static CustomPrimitiveSerializer builtInPrimitiveSerializer() {
-        return new BuiltInPrimitiveSerializer();
+    public static CustomPrimitiveSerializer builtInPrimitiveSerializer(final Class<?> baseType) {
+        return new BuiltInPrimitiveSerializer(baseType);
     }
 
     @Override
@@ -44,5 +45,10 @@ public final class BuiltInPrimitiveSerializer implements CustomPrimitiveSerializ
     @Override
     public String description() {
         return "toString()";
+    }
+
+    @Override
+    public Class<?> baseType() {
+        return baseType;
     }
 }
