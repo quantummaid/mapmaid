@@ -91,8 +91,8 @@ public final class SerializedObjectSerializer implements TypeSerializer {
 
     @Override
     public Universal schema(final SchemaCallback schemaCallback) {
-        final Map<String, TypeIdentifier> fields = this.fields.fields().stream()
+        final Map<String, TypeIdentifier> fieldsMap = this.fields.fields().stream()
                 .collect(toMap(SerializationField::name, SerializationField::type));
-        return schemaForObject(fields, schemaCallback);
+        return schemaForObject(fieldsMap, schemaCallback);
     }
 }
