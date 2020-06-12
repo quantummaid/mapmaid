@@ -187,9 +187,8 @@ public final class AdvancedBuilder {
             throw conflictingMarshallersForTypes(firstConflict, foundByMarshallingTypes.get(firstConflict));
         }
 
-        final List<MarshallerAndUnmarshaller> found = foundByMarshallingTypes.values().stream()
-                .flatMap(marshallerAndUnmarshallers -> marshallerAndUnmarshallers.stream())
+        return foundByMarshallingTypes.values().stream()
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        return found;
     }
 }

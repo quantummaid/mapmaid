@@ -60,12 +60,4 @@ public class AutoloadingSpecs {
     private <T> T unsupported() {
         throw new UnsupportedOperationException();
     }
-
-    // Can I add multiple lines in the services
-
-    //     public void complainsWhenNoJsonImplementationsIsFound() {
-    //     public void autoloadsSingleJsonImplementation() {
-    // non-json
-    //     public void autoloadsSingleYamlImplementation() {
-    //     public void autoloadsSingleXmlImplementation() {
 }
