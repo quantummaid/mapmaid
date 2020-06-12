@@ -28,6 +28,7 @@ import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
@@ -130,5 +131,12 @@ public final class Serializer implements SerializationCallback {
 
     public Definitions getDefinitions() {
         return this.definitions;
+    }
+
+    public Universal schema(final TypeIdentifier typeIdentifier) {
+        validateNotNull(typeIdentifier, "typeIdentifier");
+        final Definition definition = definitions.getDefinitionForType(typeIdentifier);
+        final TypeSerializer serializer = definition.serializer().orElseThrow();
+        return serializer.schema(this::schema);
     }
 }

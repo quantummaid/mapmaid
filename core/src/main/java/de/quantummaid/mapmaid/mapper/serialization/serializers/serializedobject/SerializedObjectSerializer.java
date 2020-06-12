@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -37,9 +38,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
@@ -84,5 +87,12 @@ public final class SerializedObjectSerializer implements TypeSerializer {
         stringBuilder.append("as serialized object with fields:\n");
         stringBuilder.append(this.fields.describe());
         return stringBuilder.toString();
+    }
+
+    @Override
+    public Universal schema(final SchemaCallback schemaCallback) {
+        final Map<String, TypeIdentifier> fields = this.fields.fields().stream()
+                .collect(toMap(SerializationField::name, SerializationField::type));
+        return schemaForObject(fields, schemaCallback);
     }
 }

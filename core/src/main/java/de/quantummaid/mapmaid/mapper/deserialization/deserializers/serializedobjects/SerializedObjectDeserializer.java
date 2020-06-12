@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
@@ -35,9 +36,11 @@ import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import static de.quantummaid.mapmaid.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
+import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static java.lang.String.format;
 
@@ -71,7 +74,7 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
         final UniversalObject universalObject = castSafely(input, UniversalObject.class, exceptionTracker, typeIdentifier, debugInformation);
         final DeserializationFields deserializationFields = fields();
         final Map<String, Object> elements = smallMap();
-        for (final Map.Entry<String, TypeIdentifier> entry : deserializationFields.fields().entrySet()) {
+        for (final Entry<String, TypeIdentifier> entry : deserializationFields.fields().entrySet()) {
             final String elementName = entry.getKey();
             final TypeIdentifier elementType = entry.getValue();
 
@@ -97,5 +100,11 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
                 return null;
             }
         }
+    }
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+        final Map<String, TypeIdentifier> fields = fields().fields();
+        return schemaForObject(fields, schemaCallback);
     }
 }

@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.YAML;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Then.then;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.ThenData.thenData;
@@ -130,6 +131,16 @@ public final class When {
             final String serialized = this.mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
             return then(this.thenData.withSerializationResult(serialized));
         };
+    }
+
+    public Then theDeserializationSchemaIsQueriedFor(final Class<?> type) {
+        final String schema = mapMaid.deserializationSchemaFor(type, YAML);
+        return then(this.thenData.withSchema(schema));
+    }
+
+    public Then theSerializationSchemaIsQueriedFor(final Class<?> type) {
+        final String schema = mapMaid.serializationSchemaFor(type, YAML);
+        return then(this.thenData.withSchema(schema));
     }
 
     public Then theDefinitionsAreQueried() {

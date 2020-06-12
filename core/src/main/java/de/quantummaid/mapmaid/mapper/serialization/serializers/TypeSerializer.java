@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
@@ -29,6 +30,8 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.List;
+
+import static java.lang.String.format;
 
 public interface TypeSerializer {
     List<TypeIdentifier> requiredTypes();
@@ -40,4 +43,8 @@ public interface TypeSerializer {
                         DebugInformation debugInformation);
 
     String description();
+
+    default Universal schema(final SchemaCallback schemaCallback) {
+        throw new UnsupportedOperationException(format("Schema generation not supported for '%s'", description()));
+    }
 }

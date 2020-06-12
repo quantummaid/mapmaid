@@ -23,7 +23,9 @@ package de.quantummaid.mapmaid.mapper.deserialization;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationErrorsMapping;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationMappings;
@@ -116,6 +118,13 @@ public final class Deserializer {
         final Injector injector = this.injectorFactory.create();
         injectorProducer.setupInjector(injector);
         return this.internalDeserializer.deserialize(input, targetType, exceptionTracker, injector, this.debugInformation);
+    }
+
+    public Universal schema(final TypeIdentifier typeIdentifier) {
+        validateNotNull(typeIdentifier, "typeIdentifier");
+        final Definition definition = definitions.getDefinitionForType(typeIdentifier);
+        final TypeDeserializer deserializer = definition.deserializer().orElseThrow();
+        return deserializer.schema(this::schema);
     }
 
     public Set<MarshallingType> supportedMarshallingTypes() {

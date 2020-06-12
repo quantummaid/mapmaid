@@ -165,4 +165,9 @@ public final class Then {
         assertThat(this.thenData.getSupportedUnmarshallingTypes(), hasItems(types));
         return this;
     }
+
+    public Then theSchemaWas(final String schema) {
+        assertThat(this.thenData.getSchema(), is(schema));
+        return this;
+    }
 }

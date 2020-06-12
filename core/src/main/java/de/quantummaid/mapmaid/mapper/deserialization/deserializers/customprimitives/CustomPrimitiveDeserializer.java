@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
@@ -35,6 +36,7 @@ import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
+import static de.quantummaid.mapmaid.mapper.schema.PrimitiveSchemaMappings.mapPrimitiveToSchema;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
@@ -79,5 +81,11 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
             exceptionTracker.track(e, message);
             return null;
         }
+    }
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+        final Class<?> baseType = baseType();
+        return mapPrimitiveToSchema(baseType);
     }
 }

@@ -38,6 +38,7 @@ public final class ThenData {
     private Object serializationResult;
     private Exception exception;
     private DebugInformation debugInformation;
+    private String schema;
 
     private Set<MarshallingType> supportedMarshallingTypes;
     private Set<MarshallingType> supportedUnmarshallingTypes;
@@ -80,6 +81,15 @@ public final class ThenData {
 
     public DebugInformation getDebugInformation() {
         return this.debugInformation;
+    }
+
+    public ThenData withSchema(final String schema) {
+        this.schema = schema;
+        return this;
+    }
+
+    public String getSchema() {
+        return schema;
     }
 
     public ThenData withSupportedMarshallingTypes(

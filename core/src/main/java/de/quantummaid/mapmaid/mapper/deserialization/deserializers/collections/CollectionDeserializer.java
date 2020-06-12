@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
+import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
+import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForCollection;
 import static java.util.Collections.singletonList;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -71,5 +73,11 @@ public interface CollectionDeserializer extends TypeDeserializer {
             index = index + 1;
         }
         return (T) listToCollection(deserializedList);
+    }
+
+    @Override
+    default Universal schema(final SchemaCallback schemaCallback) {
+        final TypeIdentifier contentType = contentType();
+        return schemaForCollection(contentType, schemaCallback);
     }
 }

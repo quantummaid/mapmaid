@@ -19,36 +19,37 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
+package de.quantummaid.mapmaid.mapper.schema;
 
-import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.mapper.universal.Universal;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BuiltInPrimitiveSerializer implements CustomPrimitiveSerializer {
-    private final Class<?> baseType;
+public final class PrimitiveSchema {
+    public final Universal schema;
 
-    public static CustomPrimitiveSerializer builtInPrimitiveSerializer(final Class<?> baseType) {
-        return new BuiltInPrimitiveSerializer(baseType);
+    public static PrimitiveSchema primitiveSchema(final String type) {
+        return primitiveSchema(type, null);
     }
 
-    @Override
-    public Object serialize(final Object object) {
-        return object;
-    }
-
-    @Override
-    public String description() {
-        return "toString()";
-    }
-
-    @Override
-    public Class<?> baseType() {
-        return baseType;
+    public static PrimitiveSchema primitiveSchema(final String type, final String format) {
+        final Map<String, Universal> map = new LinkedHashMap<>();
+        map.put("type", universalString(type));
+        if (format != null) {
+            map.put("format", universalString(format));
+        }
+        final Universal schema = universalObject(map);
+        return new PrimitiveSchema(schema);
     }
 }
