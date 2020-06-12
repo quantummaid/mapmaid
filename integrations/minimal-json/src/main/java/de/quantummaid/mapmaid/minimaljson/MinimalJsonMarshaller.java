@@ -43,8 +43,8 @@ public final class MinimalJsonMarshaller implements Marshaller {
 
     @Override
     public String marshal(final Object object) {
-        final String json = marshallRec(object).toString(WriterConfig.MINIMAL);
-        return json;
+        final JsonValue jsonValue = marshallRec(object);
+        return jsonValue.toString(WriterConfig.MINIMAL);
     }
 
     private JsonValue marshallRec(final Object object) {
