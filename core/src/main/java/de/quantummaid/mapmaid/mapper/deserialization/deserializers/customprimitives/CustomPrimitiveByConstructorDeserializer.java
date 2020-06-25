@@ -41,6 +41,7 @@ import static java.lang.reflect.Modifier.isAbstract;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1192")
 public final class CustomPrimitiveByConstructorDeserializer implements CustomPrimitiveDeserializer {
     private final ResolvedType baseType;
     private final ResolvedConstructor constructor;
@@ -49,16 +50,16 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
                                                       final ResolvedConstructor constructor) {
         final int modifiers = constructor.constructor().getModifiers();
         if (isAbstract(modifiers)) {
-            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " + // NOSONAR
+            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
                             "of type %s must not be abstract", constructor, type.description()));
         }
         final List<ResolvedParameter> parameterTypes = constructor.parameters();
         if (parameterTypes.size() != 1) {
-            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " + // NOSONAR
+            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
                             "of type %s must only have one parameter", constructor, type.description()));
         }
         if (constructor.constructor().getDeclaringClass() != type.assignableType()) {
-            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " + // NOSONAR
+            throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
                     "of type %s must return the custom primitive", constructor, type.description()));
         }
 

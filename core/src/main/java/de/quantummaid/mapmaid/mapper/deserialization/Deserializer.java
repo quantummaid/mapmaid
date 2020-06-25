@@ -76,7 +76,8 @@ public final class Deserializer {
         validateNotNull(onValidationErrors, "onValidationErrors");
         validateNotNull(debugInformation, "debugInformation");
         final Unmarshallers unmarshallers = unmarshallers(unmarshallerRegistry);
-        final InternalDeserializer internalDeserializer = internalDeserializer(definitions, customPrimitiveMappings, onValidationErrors);
+        final InternalDeserializer internalDeserializer = internalDeserializer(
+                definitions, customPrimitiveMappings, onValidationErrors);
         return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, debugInformation);
     }
 
@@ -117,7 +118,13 @@ public final class Deserializer {
         final ExceptionTracker exceptionTracker = ExceptionTracker.emptyTracker(input, this.validationMappings);
         final Injector injector = this.injectorFactory.create();
         injectorProducer.setupInjector(injector);
-        return this.internalDeserializer.deserialize(input, targetType, exceptionTracker, injector, this.debugInformation);
+        return this.internalDeserializer.deserialize(
+                input,
+                targetType,
+                exceptionTracker,
+                injector,
+                this.debugInformation
+        );
     }
 
     public Universal schema(final TypeIdentifier typeIdentifier) {

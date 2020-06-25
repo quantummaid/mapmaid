@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
+@FunctionalInterface
 public interface Query<X, T> {
     T query(X object);
 }

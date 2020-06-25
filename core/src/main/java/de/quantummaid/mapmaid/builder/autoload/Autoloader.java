@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder.autoload;
 
 import de.quantummaid.mapmaid.builder.MarshallerAndUnmarshaller;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,6 +38,8 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+@SuppressWarnings("java:S2658")
+@Slf4j
 public final class Autoloader {
 
     private Autoloader() {
@@ -57,6 +60,7 @@ public final class Autoloader {
             final Class<?> clazz = classLoader.loadClass(fullyQualifiedClassName);
             return of(clazz);
         } catch (final ClassNotFoundException e) {
+            log.trace("did not find class {} for autoloading", fullyQualifiedClassName, e);
             return empty();
         }
     }

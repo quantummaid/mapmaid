@@ -57,13 +57,14 @@ public final class ActualScanInformation implements ScanInformation {
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> ignoredDeserializers;
 
-    public static ScanInformation actualScanInformation(final TypeIdentifier type,
-                                                        final Reasons reasons,
-                                                        final TypeSerializer serializer,
-                                                        final TypeDeserializer deserializer,
-                                                        final Map<TypeSerializer, List<String>> ignoredSerializers,
-                                                        final Map<SerializationField, List<String>> serializationFields,
-                                                        final Map<TypeDeserializer, List<String>> ignoredDeserializers) {
+    public static ScanInformation actualScanInformation(
+            final TypeIdentifier type,
+            final Reasons reasons,
+            final TypeSerializer serializer,
+            final TypeDeserializer deserializer,
+            final Map<TypeSerializer, List<String>> ignoredSerializers,
+            final Map<SerializationField, List<String>> serializationFields,
+            final Map<TypeDeserializer, List<String>> ignoredDeserializers) {
         return new ActualScanInformation(
                 type,
                 reasons,
@@ -162,7 +163,7 @@ public final class ActualScanInformation implements ScanInformation {
         return stringBuilder.toString();
     }
 
-    private String renderIgnoreReasons(final List<String> reasons) {
+    private static String renderIgnoreReasons(final List<String> reasons) {
         if (reasons.isEmpty()) {
             return "\t\t- not known";
         }

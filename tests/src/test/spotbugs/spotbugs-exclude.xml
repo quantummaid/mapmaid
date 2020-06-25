@@ -25,6 +25,9 @@
         xmlns="https://github.com/spotbugs/filter/3.0.0"
         xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
     <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    </Match>
+    <Match>
         <Class name="de.quantummaid.mapmaid.filters.paths.ResourcesPath"/>
         <Method name="basenamesOfChildren"/>
         <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
@@ -63,11 +66,11 @@
         <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
-        <Class name="de.quantummaid.mapmaid.specs.examples.special.annotation.Annotation" />
-        <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE" />
+        <Class name="de.quantummaid.mapmaid.specs.examples.special.annotation.Annotation"/>
+        <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
     </Match>
     <Match>
-        <Class name="de.quantummaid.mapmaid.specs.examples.special.local_class.LocalClassExample$1LocalClass" />
-        <Bug pattern="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS" />
+        <Class name="de.quantummaid.mapmaid.specs.examples.special.local_class.LocalClassExample$1LocalClass"/>
+        <Bug pattern="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"/>
     </Match>
 </FindBugsFilter>

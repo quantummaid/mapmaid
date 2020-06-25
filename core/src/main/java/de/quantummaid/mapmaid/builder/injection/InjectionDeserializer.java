@@ -65,7 +65,8 @@ public final class InjectionDeserializer implements TypeDeserializer {
                              final TypeIdentifier typeIdentifier,
                              final DebugInformation debugInformation) {
         final ScanInformation scanInformation = debugInformation.scanInformationFor(this.typeIdentifier);
-        throw mapMaidException(format("Tried to deserialize type '%s' that is marked as injection-only (input was '%s')",
+        throw mapMaidException(format(
+                "Tried to deserialize type '%s' that is marked as injection-only (input was '%s')",
                 this.typeIdentifier.description(), input.toNativeJava()), scanInformation);
     }
 

@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.autoload;
 
 import java.util.Optional;
 
+@FunctionalInterface
 public interface Autoloadable<T> {
     Optional<T> autoload();
 }

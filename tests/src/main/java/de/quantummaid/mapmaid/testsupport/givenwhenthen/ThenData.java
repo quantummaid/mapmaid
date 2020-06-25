@@ -30,6 +30,8 @@ import lombok.ToString;
 
 import java.util.Set;
 
+import static java.util.Collections.unmodifiableSet;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -93,17 +95,18 @@ public final class ThenData {
     }
 
     public ThenData withSupportedMarshallingTypes(
-            final Set<MarshallingType> marshallingTypes, final Set<MarshallingType> unmarshallingTypes) {
-        this.supportedMarshallingTypes = marshallingTypes;
-        this.supportedUnmarshallingTypes = unmarshallingTypes;
+            final Set<MarshallingType> marshallingTypes,
+            final Set<MarshallingType> unmarshallingTypes) {
+        this.supportedMarshallingTypes = unmodifiableSet(marshallingTypes);
+        this.supportedUnmarshallingTypes = unmodifiableSet(unmarshallingTypes);
         return this;
     }
 
     public Set<MarshallingType> getSupportedMarshallingTypes() {
-        return this.supportedMarshallingTypes;
+        return unmodifiableSet(supportedMarshallingTypes);
     }
 
     public Set<MarshallingType> getSupportedUnmarshallingTypes() {
-        return this.supportedUnmarshallingTypes;
+        return unmodifiableSet(supportedUnmarshallingTypes);
     }
 }

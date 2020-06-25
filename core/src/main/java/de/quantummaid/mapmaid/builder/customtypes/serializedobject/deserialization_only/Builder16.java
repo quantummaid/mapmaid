@@ -29,10 +29,12 @@ import lombok.RequiredArgsConstructor;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
 
 @RequiredArgsConstructor
+@SuppressWarnings("java:S1200")
 public final class Builder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> {
     private final Builder builder;
 
-    public DeserializationOnlyType<X> deserializedUsing(final Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> deserializer) {
+    public DeserializationOnlyType<X> deserializedUsing(
+            final Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> deserializer) {
         builder.setDeserializer(deserializer);
         return createDeserializationOnlyType(builder);
     }

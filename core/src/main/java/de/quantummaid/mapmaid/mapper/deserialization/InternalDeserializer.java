@@ -82,7 +82,8 @@ final class InternalDeserializer implements DeserializerCallback {
                                        final ExceptionTracker exceptionTracker,
                                        final Injector injector,
                                        final DebugInformation debugInformation) {
-        final Optional<Object> namedDirectInjection = injector.getDirectInjectionForPropertyPath(exceptionTracker.getPosition());
+        final Optional<Object> namedDirectInjection = injector.getDirectInjectionForPropertyPath(
+                exceptionTracker.getPosition());
         if (namedDirectInjection.isPresent()) {
             return namedDirectInjection.get();
         }
@@ -97,14 +98,21 @@ final class InternalDeserializer implements DeserializerCallback {
                     "Please use injections to add pre-deserialized objects.", input.toNativeJava()), scanInformation);
         }
 
-        final Universal resolved = injector.getUniversalInjectionFor(exceptionTracker.getPosition()).orElse(input);
-
         final Definition definition = this.definitions.getDefinitionForType(targetType);
         final TypeDeserializer deserializer = definition.deserializer().orElseThrow(() -> {
             final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
             return mapMaidException(format("No deserializer configured for '%s'",
                     definition.type().description()), scanInformation);
         });
-        return deserializer.deserialize(resolved, exceptionTracker, injector, this, this.customPrimitiveMappings, targetType, debugInformation);
+        final Universal resolved = injector.getUniversalInjectionFor(exceptionTracker.getPosition()).orElse(input);
+        return deserializer.deserialize(
+                resolved,
+                exceptionTracker,
+                injector,
+                this,
+                this.customPrimitiveMappings,
+                targetType,
+                debugInformation
+        );
     }
 }

@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.customtypes.customprimitive;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 
+@FunctionalInterface
 public interface CustomCustomPrimitiveDeserializer<T, B> {
     T deserialize(B value);
 

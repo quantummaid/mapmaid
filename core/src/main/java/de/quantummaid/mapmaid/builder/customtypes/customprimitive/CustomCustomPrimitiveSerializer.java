@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.customtypes.customprimitive;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 
+@FunctionalInterface
 public interface CustomCustomPrimitiveSerializer<T, B> {
     B serialize(T object);
 

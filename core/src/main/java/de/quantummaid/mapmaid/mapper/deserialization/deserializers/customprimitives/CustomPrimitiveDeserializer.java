@@ -57,7 +57,8 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
         return String.class;
     }
 
-    Object deserialize(Object value) throws Exception; // NOSONAR
+    @SuppressWarnings("java:S112")
+    Object deserialize(Object value) throws Exception;
 
     @SuppressWarnings("unchecked")
     @Override

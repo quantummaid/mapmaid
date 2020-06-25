@@ -42,7 +42,8 @@ public final class ConventionalDetectors {
     public static SimpleDetector conventionalDetector() {
         return detectorBuilder()
                 .withFactoryAndConstructorBasedCustomPrimitiveFactory()
-                .withFieldDetector(getterFieldDetector()).withSerializedObjectDeserializer(setterBasedDeserializationDetector())
+                .withFieldDetector(getterFieldDetector())
+                .withSerializedObjectDeserializer(setterBasedDeserializationDetector())
                 .withFieldDetector(modifierBased())
                 .withSerializedObjectDeserializer(StaticMethodDeserializationDetector.staticMethodBased())
                 .withSerializedObjectDeserializer(constructorBased())

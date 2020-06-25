@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
+@FunctionalInterface
 public interface InvocableDeserializer<X> {
     X invoke(Object[] arguments);
 }

@@ -58,15 +58,18 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SimpleDetector {
+    private static final String HINT = "(you can still register it manually)";
+
     private final List<FieldDetector> fieldDetectors;
     private final List<SerializedObjectDeserializationDetector> serializedObjectDeserializationDetectors;
     private final List<CustomPrimitiveSerializationDetector> customPrimitiveSerializationDetectors;
     private final List<CustomPrimitiveDeserializationDetector> customPrimitiveDeserializationDetectors;
 
-    public static SimpleDetector detector(final List<FieldDetector> fieldDetectors,
-                                          final List<SerializedObjectDeserializationDetector> serializedObjectDeserializationDetectors,
-                                          final List<CustomPrimitiveSerializationDetector> customPrimitiveSerializationDetectors,
-                                          final List<CustomPrimitiveDeserializationDetector> customPrimitiveDeserializationDetectors) {
+    public static SimpleDetector detector(
+            final List<FieldDetector> fieldDetectors,
+            final List<SerializedObjectDeserializationDetector> serializedObjectDeserializationDetectors,
+            final List<CustomPrimitiveSerializationDetector> customPrimitiveSerializationDetectors,
+            final List<CustomPrimitiveDeserializationDetector> customPrimitiveDeserializationDetectors) {
         validateNotNull(fieldDetectors, "fieldDetectors");
         validateNotNull(serializedObjectDeserializationDetectors, "serializedObjectDeserializationDetectors");
         validateNotNull(customPrimitiveSerializationDetectors, "customPrimitiveSerializationDetectors");
@@ -92,7 +95,6 @@ public final class SimpleDetector {
         if (isNotSupported.isPresent()) {
             return isNotSupported.get();
         }
-
         scanInformationBuilder.resetScan();
         final List<TypeSerializer> customPrimitiveSerializers;
         final SerializationFieldOptions serializationFieldOptions;
@@ -105,7 +107,6 @@ public final class SimpleDetector {
             customPrimitiveSerializers = null;
             serializationFieldOptions = null;
         }
-
         final List<TypeDeserializer> serializedObjectDeserializers;
         final List<TypeDeserializer> customPrimitiveDeserializers;
         if (capabilities.hasDeserialization()) {
@@ -117,37 +118,46 @@ public final class SimpleDetector {
             serializedObjectDeserializers = null;
             customPrimitiveDeserializers = null;
         }
-
         final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
-        final SerializedObjectOptions serializedObjectOptions = serializedObjectOptions(serializationFieldOptions, serializedObjectDeserializers);
-        final SerializersAndDeserializers customPrimitiveOptions = serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
-        return disambiguator.disambiguate(type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder, injectedTypes);
+        final SerializedObjectOptions serializedObjectOptions =
+                serializedObjectOptions(serializationFieldOptions, serializedObjectDeserializers);
+        final SerializersAndDeserializers customPrimitiveOptions =
+                serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
+        return disambiguator.disambiguate(
+                type, serializedObjectOptions, customPrimitiveOptions, scanInformationBuilder, injectedTypes);
     }
 
-    private static Optional<DetectionResult<DisambiguationResult>> validateForSupportedFeatures(final ResolvedType type) {
+    private static Optional<DetectionResult<DisambiguationResult>> validateForSupportedFeatures(
+            final ResolvedType type) {
         if (!isSupported(type)) {
             return Optional.of(failure(
-                    format("type '%s' is not supported because it contains wildcard generics (\"?\")", type.description())));
+                    format("type '%s' is not supported because it contains wildcard generics (\"?\")",
+                            type.description())));
         }
         if (type.isAnnotation()) {
             return Optional.of(failure(
-                    format("type '%s' cannot be detected because it is an annotation (you can still register it manually)", type.description())));
+                    format("type '%s' cannot be detected because it is an annotation %s",
+                            type.description(), HINT)));
         }
         if (type.isAnonymousClass()) {
             return Optional.of(failure(
-                    format("type '%s' cannot be detected because it is an anonymous class (you can still register it manually)", type.description())));
+                    format("type '%s' cannot be detected because it is an anonymous class %s",
+                            type.description(), HINT)));
         }
         if (type.isLocalClass()) {
             return Optional.of(failure(
-                    format("type '%s' cannot be detected because it is a local class (you can still register it manually)", type.description())));
+                    format("type '%s' cannot be detected because it is a local class %s",
+                            type.description(), HINT)));
         }
         if (type.isInnerClass() && !type.isStatic()) {
             return Optional.of(failure(
-                    format("type '%s' cannot be detected because it is a non-static inner class (you can still register it manually)", type.description())));
+                    format("type '%s' cannot be detected because it is a non-static inner class %s",
+                            type.description(), HINT)));
         }
         if (!type.isPublic()) {
             return Optional.of(failure(
-                    format("type '%s' cannot be detected because it is not public (you can still register it manually)", type.description())));
+                    format("type '%s' cannot be detected because it is not public %s",
+                            type.description(), HINT)));
         }
         return Optional.empty();
     }

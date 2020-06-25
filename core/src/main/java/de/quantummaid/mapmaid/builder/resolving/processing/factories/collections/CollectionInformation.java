@@ -37,8 +37,9 @@ import static java.util.stream.Collectors.toMap;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1149")
 public final class CollectionInformation {
-    final Function<List<Object>, Collection<Object>> mapper;
+    private final Function<List<Object>, Collection<Object>> mapper;
     private final Class<?> type;
 
     public static Map<Class<?>, CollectionInformation> collectionInformations() {
@@ -58,7 +59,7 @@ public final class CollectionInformation {
                 collectionInformation(TreeSet.class, TreeSet::new),
                 collectionInformation(Vector.class, Vector::new),
                 collectionInformation(Stack.class, objects -> {
-                    final Stack<Object> stack = new Stack<>(); // NOSONAR
+                    final Stack<Object> stack = new Stack<>();
                     stack.addAll(objects);
                     return stack;
                 })
@@ -72,5 +73,9 @@ public final class CollectionInformation {
     public static CollectionInformation collectionInformation(final Class<?> type,
                                                               final Function<List<Object>, Collection<Object>> mapper) {
         return new CollectionInformation(mapper, type);
+    }
+
+    public Function<List<Object>, Collection<Object>> mapper() {
+        return this.mapper;
     }
 }

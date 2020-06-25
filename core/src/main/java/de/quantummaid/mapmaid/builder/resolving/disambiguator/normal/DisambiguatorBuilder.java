@@ -39,6 +39,7 @@ import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.CommonFilters.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.CommonPreferences.*;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.CommonTieBreakers.primitiveSerializationMethodNamed;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.NormalDisambiguator.normalDisambiguator;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Filters.filters;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences.preferences;
@@ -60,7 +61,8 @@ public final class DisambiguatorBuilder {
         this.preferredCustomPrimitiveFactoryName = preferredCustomPrimitiveFactoryName;
     }
 
-    public void setPreferredCustomPrimitiveSerializationMethodName(final String preferredCustomPrimitiveSerializationMethodName) {
+    public void setPreferredCustomPrimitiveSerializationMethodName(
+            final String preferredCustomPrimitiveSerializationMethodName) {
         this.preferredCustomPrimitiveSerializationMethodName = preferredCustomPrimitiveSerializationMethodName;
     }
 
@@ -69,15 +71,20 @@ public final class DisambiguatorBuilder {
     }
 
     public NormalDisambiguator build() {
-        final Preferences<TypeDeserializer, DisambiguationContext> customPrimitiveDeserializerPreferences = buildCustomPrimitiveDeserializerPreferences();
-        final Preferences<TypeSerializer, DisambiguationContext> customPrimitiveSerializerPreferences = buildCustomPrimitiveSerializerPreferences();
+        final Preferences<TypeDeserializer, DisambiguationContext> customPrimitiveDeserializerPreferences =
+                buildCustomPrimitiveDeserializerPreferences();
+        final Preferences<TypeSerializer, DisambiguationContext> customPrimitiveSerializerPreferences =
+                buildCustomPrimitiveSerializerPreferences();
 
-        final Preferences<TypeDeserializer, DisambiguationContext> serializedObjectPreferences = buildSerializedObjectPreferences();
-        final Filters<SerializationField, DisambiguationContext> serializationFieldFilters = buildSerializationFieldFilters();
+        final Preferences<TypeDeserializer, DisambiguationContext> serializedObjectPreferences =
+                buildSerializedObjectPreferences();
+        final Filters<SerializationField, DisambiguationContext> serializationFieldFilters =
+                buildSerializationFieldFilters();
 
-        final Preferences<SerializationField, DisambiguationContext> postSymmetrySerializationFieldPreferences = preferences(List.of(
-                publicFields()
-        ));
+        final Preferences<SerializationField, DisambiguationContext> postSymmetrySerializationFieldPreferences =
+                preferences(List.of(
+                        publicFields()
+                ));
 
         final TieBreaker tieBreaker = buildTieBreaker();
 
@@ -143,7 +150,7 @@ public final class DisambiguatorBuilder {
     private TieBreaker buildTieBreaker() {
         return tieBreaker(
                 List.of(
-                        CommonTieBreakers.primitiveSerializationMethodNamed(this.preferredCustomPrimitiveSerializationMethodName)
+                        primitiveSerializationMethodNamed(this.preferredCustomPrimitiveSerializationMethodName)
                 ),
                 List.of(),
                 List.of(

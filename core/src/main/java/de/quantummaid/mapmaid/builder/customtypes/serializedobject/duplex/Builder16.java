@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer16;
 
+@SuppressWarnings("java:S1200")
 public final class Builder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>
         extends AbstractBuilder<X, Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>> {
 

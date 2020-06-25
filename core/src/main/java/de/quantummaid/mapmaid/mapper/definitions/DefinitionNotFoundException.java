@@ -28,8 +28,11 @@ public final class DefinitionNotFoundException extends RuntimeException {
         super(msg);
     }
 
-    public static DefinitionNotFoundException definitionNotFound(final TypeIdentifier targetType, final String dump) {
-        final String msg = String.format("no definition found for type '%s'. Known definitions are: %n%s", targetType.description(), dump);
+    public static DefinitionNotFoundException definitionNotFound(
+            final TypeIdentifier targetType, final String dump) {
+        final String msg = String.format(
+                "no definition found for type '%s'. Known definitions are: %n%s",
+                targetType.description(), dump);
         return new DefinitionNotFoundException(msg);
     }
 }

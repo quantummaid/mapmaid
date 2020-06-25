@@ -126,8 +126,8 @@ public final class SerializationFieldOptions {
         return success(instantiation);
     }
 
-    private List<SerializationField> mirroredFields(final TypeIdentifier type,
-                                                    final List<SerializationField> options) {
+    private static List<SerializationField> mirroredFields(final TypeIdentifier type,
+                                                           final List<SerializationField> options) {
         validateNotNull(type, "type");
         validateNotNull(options, "options");
         return options.stream()

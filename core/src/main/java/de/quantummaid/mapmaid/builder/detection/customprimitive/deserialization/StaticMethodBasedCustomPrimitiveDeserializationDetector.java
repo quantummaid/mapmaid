@@ -42,7 +42,8 @@ import static java.util.stream.Collectors.toList;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StaticMethodBasedCustomPrimitiveDeserializationDetector implements CustomPrimitiveDeserializationDetector {
+public final class StaticMethodBasedCustomPrimitiveDeserializationDetector
+        implements CustomPrimitiveDeserializationDetector {
     private final CustomPrimitiveMappings mappings;
 
     public static CustomPrimitiveDeserializationDetector staticMethodBased(final CustomPrimitiveMappings mappings) {

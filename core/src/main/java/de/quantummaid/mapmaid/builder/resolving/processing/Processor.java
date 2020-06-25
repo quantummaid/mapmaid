@@ -95,7 +95,8 @@ public final class Processor {
                 final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
                 scanInformations.add(scanInformation);
             });
-            final String errorMessage = format("The following classes could not be detected properly:%n%n%s", errorMessageJoiner.toString());
+            final String errorMessage = format("The following classes could not be detected properly:%n%n%s",
+                    errorMessageJoiner.toString());
             throw mapMaidException(errorMessage, scanInformations);
         }
         return definitions;

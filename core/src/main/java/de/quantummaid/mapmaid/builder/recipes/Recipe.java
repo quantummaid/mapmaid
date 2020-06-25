@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.recipes;
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 
+@FunctionalInterface
 public interface Recipe {
     default void init() {
     }

@@ -48,7 +48,12 @@ public final class Reasons {
                                   final List<Reason> serializationReasons,
                                   final SubReasonProvider serializationSubReasonProvider,
                                   final SubReasonProvider deserializationSubReasonProvider) {
-        return new Reasons(deserializationReasons, serializationReasons, serializationSubReasonProvider, deserializationSubReasonProvider);
+        return new Reasons(
+                deserializationReasons,
+                serializationReasons,
+                serializationSubReasonProvider,
+                deserializationSubReasonProvider
+        );
     }
 
     public String dumpSerializationReasons() {
