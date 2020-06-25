@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.Optional;
 
+@FunctionalInterface
 public interface StateFactory {
-    Optional<StatefulDefinition> create(TypeIdentifier type,
-                                        Context context);
+    Optional<StatefulDefinition> create(TypeIdentifier type, Context context);
 }

@@ -42,7 +42,8 @@ import static java.util.stream.Collectors.toList;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ConstructorBasedCustomPrimitiveDeserializationDetector implements CustomPrimitiveDeserializationDetector {
+public final class ConstructorBasedCustomPrimitiveDeserializationDetector
+        implements CustomPrimitiveDeserializationDetector {
     private final CustomPrimitiveMappings mappings;
 
     public static CustomPrimitiveDeserializationDetector constructorBased(final CustomPrimitiveMappings mappings) {
@@ -52,7 +53,7 @@ public final class ConstructorBasedCustomPrimitiveDeserializationDetector implem
 
     @Override
     public List<TypeDeserializer> detect(final ResolvedType type) {
-        if(!(type instanceof ClassType)) {
+        if (!(type instanceof ClassType)) {
             return emptyList();
         }
         return fittingConstructors((ClassType) type).stream()

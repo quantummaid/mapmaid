@@ -61,7 +61,8 @@ public final class UndetectedSerializer extends StatefulSerializer {
                 this.context.type(), scanInformationBuilder, serialization(), disambiguators, injectedTypes
         );
         if (result.isFailure()) {
-            return undetectableSerializer(this.context, format("no serializer detected:%n%s", result.reasonForFailure()));
+            return undetectableSerializer(this.context, format("no serializer detected:%n%s",
+                    result.reasonForFailure()));
         }
         this.context.setSerializer(result.result().serializer());
         return resolvingSerializer(this.context);

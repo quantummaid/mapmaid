@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.injection;
 
+@FunctionalInterface
 public interface FixedInjector<T> {
     T getInstance();
 }

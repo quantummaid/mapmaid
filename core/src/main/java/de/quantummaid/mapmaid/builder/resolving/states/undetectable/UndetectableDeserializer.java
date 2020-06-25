@@ -33,6 +33,7 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
+import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -53,7 +54,7 @@ public final class UndetectableDeserializer extends StatefulDeserializer {
     @Override
     public Optional<Report> getDefinition() {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
-        final CollectionResult collectionResult = CollectionResult.collectionResult(null, scanInformationBuilder);
+        final CollectionResult collectionResult = collectionResult(null, scanInformationBuilder);
         return Optional.of(failure(collectionResult, "unable to detect deserializer:\n" + this.reason));
     }
 }

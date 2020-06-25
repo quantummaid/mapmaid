@@ -42,12 +42,16 @@ import static de.quantummaid.reflectmaid.GenericType.genericType;
 public final class SerializationOnlySerializedObject<T> implements SerializationOnlyType<T> {
     private final Builder builder;
 
-    public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(final GenericType<T> type) {
+    public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(
+            final GenericType<T> type
+    ) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return serializationOnlySerializedObject(typeIdentifier);
     }
 
-    public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(final TypeIdentifier typeIdentifier) {
+    public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(
+            final TypeIdentifier typeIdentifier
+    ) {
         final Builder builder = emptyBuilder(typeIdentifier);
         return new SerializationOnlySerializedObject<>(builder);
     }

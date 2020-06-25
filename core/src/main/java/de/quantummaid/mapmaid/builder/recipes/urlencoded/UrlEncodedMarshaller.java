@@ -94,9 +94,9 @@ public final class UrlEncodedMarshaller implements Marshaller {
         }
     }
 
-    private void marshalString(final Key key,
-                               final List<KeyValue> parts,
-                               final String string) {
+    private static void marshalString(final Key key,
+                                      final List<KeyValue> parts,
+                                      final String string) {
         parts.add(KeyValue.keyValue(key, string));
     }
 }

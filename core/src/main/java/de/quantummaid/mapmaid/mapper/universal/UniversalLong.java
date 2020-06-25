@@ -64,6 +64,7 @@ public final class UniversalLong implements UniversalPrimitive {
         return universalLong(longValue);
     }
 
+    @SuppressWarnings("java:S1244")
     private static boolean isNonFractionalDouble(final Double value) {
         return Math.rint(value) == value;
     }

@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
+@FunctionalInterface
 public interface DeserializerCallback {
 
     Object deserializeRecursive(Universal input,

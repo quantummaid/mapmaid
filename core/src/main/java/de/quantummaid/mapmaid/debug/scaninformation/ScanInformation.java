@@ -27,6 +27,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
+@FunctionalInterface
 public interface ScanInformation {
     String render();
 

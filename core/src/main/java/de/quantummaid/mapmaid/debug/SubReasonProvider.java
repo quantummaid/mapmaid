@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.List;
 
+@FunctionalInterface
 public interface SubReasonProvider {
     List<Reason> reasonsFor(TypeIdentifier typeIdentifier);
 }

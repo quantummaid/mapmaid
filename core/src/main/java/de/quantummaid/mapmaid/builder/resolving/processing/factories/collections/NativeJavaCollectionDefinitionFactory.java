@@ -48,7 +48,7 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
 
     @Override
     public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier, final Context context) {
-        if(typeIdentifier.isVirtual()) {
+        if (typeIdentifier.isVirtual()) {
             return empty();
         }
         final ResolvedType type = typeIdentifier.getRealType();
@@ -58,12 +58,13 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
         }
         if (type.typeParameters().size() != 1) {
             throw new UnsupportedOperationException(format(
-                    "This should never happen. A collection of type '%s' has more than one type parameter", type.description()));
+                    "This should never happen. A collection of type '%s' has more than one type parameter",
+                    type.description()));
         }
         final ResolvedType genericType = ((ClassType) type).typeParameter(typeVariableName("E"));
         final CollectionInformation collectionInformation = this.collectionInformations.get(type.assignableType());
         context.setSerializer(listSerializer(genericType));
-        context.setDeserializer(listDeserializer(genericType, collectionInformation.mapper));
+        context.setDeserializer(listDeserializer(genericType, collectionInformation.mapper()));
         return Optional.of(fixedUnreasoned(context));
     }
 }

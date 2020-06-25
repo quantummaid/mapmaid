@@ -176,7 +176,8 @@ public final class ScanInformationBuilder {
                                  final SubReasonProvider deserializationSubReasonProvider) {
         if (this.serializer != null) {
             if (this.serializer instanceof SerializedObjectSerializer) {
-                final SerializedObjectSerializer serializedObjectSerializer = (SerializedObjectSerializer) this.serializer;
+                final SerializedObjectSerializer serializedObjectSerializer =
+                        (SerializedObjectSerializer) this.serializer;
                 serializedObjectSerializer.fields().fields().forEach(this.serializationFields::remove);
             } else {
                 this.serializers.remove(this.serializer);

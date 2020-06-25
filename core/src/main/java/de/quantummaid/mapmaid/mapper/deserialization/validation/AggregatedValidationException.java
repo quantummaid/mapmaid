@@ -21,15 +21,16 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.validation;
 
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 
 public final class AggregatedValidationException extends RuntimeException {
     private final List<ValidationError> validationErrors;
 
     private AggregatedValidationException(final String msg, final List<ValidationError> validationErrors) {
         super(msg);
-        this.validationErrors = validationErrors;
+        this.validationErrors = unmodifiableList(validationErrors);
     }
 
     public static AggregatedValidationException fromList(final List<ValidationError> validationErrors) {
@@ -44,6 +45,6 @@ public final class AggregatedValidationException extends RuntimeException {
     }
 
     public List<ValidationError> getValidationErrors() {
-        return Collections.unmodifiableList(this.validationErrors);
+        return unmodifiableList(this.validationErrors);
     }
 }

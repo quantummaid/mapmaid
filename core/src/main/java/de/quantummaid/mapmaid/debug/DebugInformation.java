@@ -44,13 +44,17 @@ import static java.util.stream.Collectors.joining;
 public final class DebugInformation {
     private final Map<TypeIdentifier, ScanInformation> scanInformations;
 
-    public static DebugInformation debugInformation(final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders) {
+    public static DebugInformation debugInformation(final Map<TypeIdentifier,
+            ScanInformationBuilder> scanInformationBuilders) {
         final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(scanInformationBuilders.size());
-        final SubReasonProvider serializationSubReasonProvider = typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
-        final SubReasonProvider deserializationSubReasonProvider = typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
+        final SubReasonProvider serializationSubReasonProvider =
+                typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
+        final SubReasonProvider deserializationSubReasonProvider =
+                typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
         scanInformationBuilders.forEach(
                 (typeIdentifier, scanInformationBuilder) -> {
-                    final ScanInformation scanInformation = scanInformationBuilder.build(serializationSubReasonProvider, deserializationSubReasonProvider);
+                    final ScanInformation scanInformation =
+                            scanInformationBuilder.build(serializationSubReasonProvider, deserializationSubReasonProvider);
                     scanInformations.put(typeIdentifier, scanInformation);
                 }
         );

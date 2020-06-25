@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.mapper.deserialization;
 
 import java.util.Map;
 
+@FunctionalInterface
 public interface DeserializationContextInjector {
 
     Map<String, Object> inject(Map<String, Object> input);

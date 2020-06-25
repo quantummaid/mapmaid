@@ -53,14 +53,16 @@ import static java.util.stream.Collectors.joining;
 public final class SerializationFieldInstantiation {
     private final Map<String, List<SerializationField>> fields;
 
-    public static SerializationFieldInstantiation serializationFieldInstantiation(final Map<String, List<SerializationField>> fields) {
+    public static SerializationFieldInstantiation serializationFieldInstantiation(
+            final Map<String, List<SerializationField>> fields) {
         return new SerializationFieldInstantiation(fields);
     }
 
-    public DetectionResult<TypeSerializer> instantiate(final ResolvedType containingType,
-                                                       final Preferences<SerializationField, DisambiguationContext> preferences,
-                                                       final ScanInformationBuilder scanInformationBuilder,
-                                                       final DisambiguationContext context) {
+    public DetectionResult<TypeSerializer> instantiate(
+            final ResolvedType containingType,
+            final Preferences<SerializationField, DisambiguationContext> preferences,
+            final ScanInformationBuilder scanInformationBuilder,
+            final DisambiguationContext context) {
         final List<SerializationField> serializationFieldList = new ArrayList<>(this.fields.size());
         final List<String> problems = smallList();
         this.fields.forEach((name, fieldImplementations) -> {

@@ -28,7 +28,8 @@ import de.quantummaid.reflectmaid.GenericType;
 
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
-public final class Builder07<X, A, B, C, D, E, F, G> extends AbstractBuilder<X, Deserializer07<X, A, B, C, D, E, F, G>> {
+public final class Builder07<X, A, B, C, D, E, F, G>
+        extends AbstractBuilder<X, Deserializer07<X, A, B, C, D, E, F, G>> {
 
     public Builder07(final Builder builder) {
         super(builder);

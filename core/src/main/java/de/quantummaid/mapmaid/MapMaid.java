@@ -44,6 +44,7 @@ import static de.quantummaid.reflectmaid.GenericType.genericType;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings({"java:S1448", "java:S1192"})
 public final class MapMaid {
     private final Serializer serializer;
     private final Deserializer deserializer;
@@ -68,7 +69,7 @@ public final class MapMaid {
     }
 
     public String serializeToJson(final Object object) {
-        validateNotNull(object, "object"); // NOSONAR
+        validateNotNull(object, "object");
         final Class<?> type = object.getClass();
         return serializeToJson(object, type);
     }
@@ -88,7 +89,7 @@ public final class MapMaid {
     }
 
     public String serializeToYaml(final Object object) {
-        validateNotNull(object, "object"); // NOSONAR
+        validateNotNull(object, "object");
         final Class<?> type = object.getClass();
         return serializeToYaml(object, type);
     }
@@ -108,7 +109,7 @@ public final class MapMaid {
     }
 
     public String serializeToXml(final Object object) {
-        validateNotNull(object, "object"); // NOSONAR
+        validateNotNull(object, "object");
         final Class<?> type = object.getClass();
         return serializeToXml(object, type);
     }
@@ -128,7 +129,7 @@ public final class MapMaid {
     }
 
     public String serializeTo(final Object object, final MarshallingType marshallingType) {
-        validateNotNull(object, "object"); // NOSONAR
+        validateNotNull(object, "object");
         final Class<?> type = object.getClass();
         return serializeTo(object, marshallingType, type);
     }
@@ -239,27 +240,40 @@ public final class MapMaid {
         return this.deserialize(input, genericType, marshallingType);
     }
 
-    public <T> T deserialize(final String input, final GenericType<T> targetType, final MarshallingType marshallingType) {
+    public <T> T deserialize(final String input,
+                             final GenericType<T> targetType,
+                             final MarshallingType marshallingType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserialize(input, typeIdentifier, marshallingType);
     }
 
-    public <T> T deserialize(final String input, final TypeIdentifier targetType, final MarshallingType marshallingType) {
+    public <T> T deserialize(final String input,
+                             final TypeIdentifier targetType,
+                             final MarshallingType marshallingType) {
         return this.deserialize(input, targetType, marshallingType, noop());
     }
 
-    public <T> T deserialize(final String input, final Class<T> targetType, final MarshallingType marshallingType, final InjectorLambda injector) {
+    public <T> T deserialize(final String input,
+                             final Class<T> targetType,
+                             final MarshallingType marshallingType,
+                             final InjectorLambda injector) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserialize(input, genericType, marshallingType, injector);
     }
 
-    public <T> T deserialize(final String input, final GenericType<T> targetType, final MarshallingType marshallingType, final InjectorLambda injector) {
+    public <T> T deserialize(final String input,
+                             final GenericType<T> targetType,
+                             final MarshallingType marshallingType,
+                             final InjectorLambda injector) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserialize(input, typeIdentifier, marshallingType, injector);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T deserialize(final String input, final TypeIdentifier targetType, final MarshallingType marshallingType, final InjectorLambda injector) {
+    public <T> T deserialize(final String input,
+                             final TypeIdentifier targetType,
+                             final MarshallingType marshallingType,
+                             final InjectorLambda injector) {
         return (T) this.deserializer.deserialize(input, targetType, marshallingType, injector);
     }
 

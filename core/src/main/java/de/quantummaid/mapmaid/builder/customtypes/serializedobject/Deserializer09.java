@@ -21,8 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
+@SuppressWarnings({"java:S109", "java:S107"})
 public interface Deserializer09<X, A, B, C, D, E, F, G, H, I> extends InvocableDeserializer<X> {
-    X deserialize(A a, B b, C c, D d, E e, F f, G g, H h, I i);  // NOSONAR
+    X deserialize(A a, B b, C c, D d, E e, F f, G g, H h, I i);
 
     @SuppressWarnings("unchecked")
     @Override

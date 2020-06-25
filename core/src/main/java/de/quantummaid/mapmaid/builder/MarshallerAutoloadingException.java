@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 public final class MarshallerAutoloadingException extends RuntimeException {
@@ -32,7 +32,8 @@ public final class MarshallerAutoloadingException extends RuntimeException {
     }
 
     public static MarshallerAutoloadingException conflictingMarshallersForTypes(
-            final MarshallingType marshallingType, final List<MarshallerAndUnmarshaller> marshallerAndUnmarshallers) {
+            final MarshallingType marshallingType,
+            final Collection<MarshallerAndUnmarshaller> marshallerAndUnmarshallers) {
 
         final String conflictingMarshallers = marshallerAndUnmarshallers.stream()
                 .map(marshallerAndUnmarshaller -> marshallerAndUnmarshaller.getClass().getName())

@@ -26,6 +26,7 @@ import de.quantummaid.reflectmaid.ResolvedType;
 
 import java.util.List;
 
+@FunctionalInterface
 public interface CustomPrimitiveSerializationDetector {
     List<TypeSerializer> detect(ResolvedType type);
 }

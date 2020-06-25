@@ -27,6 +27,7 @@ import de.quantummaid.reflectmaid.GenericType;
 
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
+@SuppressWarnings("java:S1200")
 public final class Builder13<X, A, B, C, D, E, F, G, H, I, J, K, L, M>
         extends AbstractBuilder<X, Deserializer13<X, A, B, C, D, E, F, G, H, I, J, K, L, M>> {
 

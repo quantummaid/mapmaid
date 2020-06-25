@@ -90,6 +90,7 @@ import static java.lang.String.format;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1200")
 public final class MapMaidBuilder {
     private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
     private final Processor processor = processor();
@@ -233,11 +234,13 @@ public final class MapMaidBuilder {
         final TypeIdentifier typeIdentifier = customType.type();
         final Optional<TypeSerializer> serializer = customType.serializer();
         if (capabilities.hasSerialization() && serializer.isEmpty()) {
-            throw new IllegalArgumentException(format("serializer is missing for type '%s'", typeIdentifier.description()));
+            throw new IllegalArgumentException(format(
+                    "serializer is missing for type '%s'", typeIdentifier.description()));
         }
         final Optional<TypeDeserializer> deserializer = customType.deserializer();
         if (capabilities.hasDeserialization() && deserializer.isEmpty()) {
-            throw new IllegalArgumentException(format("deserializer is missing for type '%s'", typeIdentifier.description()));
+            throw new IllegalArgumentException(format("deserializer is missing for type '%s'",
+                    typeIdentifier.description()));
         }
         final Context context = emptyContext(this.processor::dispatch, typeIdentifier);
         serializer.ifPresent(context::setSerializer);

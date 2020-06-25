@@ -54,7 +54,8 @@ public abstract class StatefulDefinition {
         return false;
     }
 
-    public StatefulDefinition detect(final SimpleDetector detector, // NOSONAR
+    @SuppressWarnings("java:S1172")
+    public StatefulDefinition detect(final SimpleDetector detector,
                                      final Disambiguators disambiguators,
                                      final List<TypeIdentifier> injectedTypes) {
         return this;

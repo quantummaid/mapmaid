@@ -89,7 +89,8 @@ final class CommonFilters {
         });
     }
 
-    static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicConstructorsForCustomPrimitiveDeserialization() {
+    static Filter<TypeDeserializer, DisambiguationContext>
+    ignoreNonPublicConstructorsForCustomPrimitiveDeserialization() {
         return filterOfType(CustomPrimitiveByConstructorDeserializer.class, (deserializer, context, containingType) -> {
             if (deserializer.constructor().isPublic()) {
                 return allowed();
@@ -99,7 +100,8 @@ final class CommonFilters {
         });
     }
 
-    static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicMethodsForSerializedObjectDeserialization() {
+    static Filter<TypeDeserializer, DisambiguationContext>
+    ignoreNonPublicMethodsForSerializedObjectDeserialization() {
         return filterOfType(MethodSerializedObjectDeserializer.class, (deserializer, context, containingType) -> {
             if (deserializer.method().isPublic()) {
                 return allowed();
@@ -109,14 +111,16 @@ final class CommonFilters {
         });
     }
 
-    static Filter<TypeDeserializer, DisambiguationContext> ignoreNonPublicConstructorsForSerializedObjectDeserialization() {
-        return filterOfType(ConstructorSerializedObjectDeserializer.class, (deserializer, context, containingType) -> {
-            if (deserializer.constructor().isPublic()) {
-                return allowed();
-            } else {
-                return denied("only public constructors are considered for deserialization");
-            }
-        });
+    static Filter<TypeDeserializer, DisambiguationContext>
+    ignoreNonPublicConstructorsForSerializedObjectDeserialization() {
+        return filterOfType(ConstructorSerializedObjectDeserializer.class,
+                (deserializer, context, containingType) -> {
+                    if (deserializer.constructor().isPublic()) {
+                        return allowed();
+                    } else {
+                        return denied("only public constructors are considered for deserialization");
+                    }
+                });
     }
 
     static Filter<TypeSerializer, DisambiguationContext> nameOfSerializerMethodIsNot(final String name) {
@@ -150,15 +154,22 @@ final class CommonFilters {
     }
 
     static Filter<SerializationField, DisambiguationContext> ignoreTransientFields() {
-        return ignoreFieldsThat(ResolvedField::isTransient, "transient fields are not serialized");
+        return ignoreFieldsThat(
+                ResolvedField::isTransient,
+                "transient fields are not serialized"
+        );
     }
 
     static Filter<SerializationField, DisambiguationContext> ignoreNonPublicFields() {
-        return ignoreFieldsThat(resolvedField -> !resolvedField.isPublic(), "only public fields are serialized");
+        return ignoreFieldsThat(
+                resolvedField -> !resolvedField.isPublic(),
+                "only public fields are serialized"
+        );
     }
 
-    private static Filter<SerializationField, DisambiguationContext> ignoreFieldsThat(final Predicate<ResolvedField> fieldPredicate,
-                                                                                      final String message) {
+    private static Filter<SerializationField, DisambiguationContext> ignoreFieldsThat(
+            final Predicate<ResolvedField> fieldPredicate,
+            final String message) {
         return (field, context, containingType) -> {
             if (!(field.getQuery() instanceof PublicFieldQuery)) {
                 return allowed();

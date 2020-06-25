@@ -27,6 +27,7 @@ import de.quantummaid.reflectmaid.ResolvedType;
 
 import java.util.Optional;
 
+@FunctionalInterface
 public interface DefinitionFactory {
     Optional<Definition> analyze(ResolvedType type, RequiredCapabilities capabilities);
 }

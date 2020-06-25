@@ -83,7 +83,8 @@ public final class ClassScannerRecipe implements Recipe {
                         .filter(type -> !this.deserializationExclusions.contains(type.assignableType()))
                         .map(GenericType::fromResolvedType)
                         .forEach(type -> builder.withType(
-                                type, deserialization(), format("because parameter type of method %s", method.describe())));
+                                type, deserialization(), format(
+                                        "because parameter type of method %s", method.describe())));
                 method.returnType().ifPresent(type -> {
                     if (this.serializationExclusions.contains(type.assignableType())) {
                         return;

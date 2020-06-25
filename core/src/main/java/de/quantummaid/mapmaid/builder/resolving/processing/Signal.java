@@ -30,9 +30,12 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import java.util.List;
 import java.util.Optional;
 
+@FunctionalInterface
 public interface Signal {
 
-    static Signal detect(final SimpleDetector detector, final Disambiguators disambiguators, final List<TypeIdentifier> injectedTypes) {
+    static Signal detect(final SimpleDetector detector,
+                         final Disambiguators disambiguators,
+                         final List<TypeIdentifier> injectedTypes) {
         return definition -> definition.detect(detector, disambiguators, injectedTypes);
     }
 

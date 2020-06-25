@@ -45,6 +45,7 @@ import static de.quantummaid.reflectmaid.GenericType.genericType;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1200")
 public final class DeserializationOnlyType<T> implements CustomType<T> {
     private final TypeIdentifier type;
     private final TypeDeserializer deserializer;
@@ -57,131 +58,157 @@ public final class DeserializationOnlyType<T> implements CustomType<T> {
         return serializedObjectBuilder00(type);
     }
 
-    public static <T> DeserializationOnlyType<T> customPrimitive(final Class<T> type,
-                                                                 final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
+    public static <T> DeserializationOnlyType<T> customPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
         return customPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> customPrimitive(final GenericType<T> type,
-                                                                 final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
+    public static <T> DeserializationOnlyType<T> customPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
         return stringBasedCustomPrimitive(type, deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> stringBasedCustomPrimitive(final Class<T> type,
-                                                                            final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
+    public static <T> DeserializationOnlyType<T> stringBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
         return stringBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> stringBasedCustomPrimitive(final GenericType<T> type,
-                                                                            final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
+    public static <T> DeserializationOnlyType<T> stringBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, String> deserializer) {
         return createCustomPrimitive(type, deserializer, String.class);
     }
 
-    public static <T> DeserializationOnlyType<T> longBasedCustomPrimitive(final Class<T> type,
-                                                                          final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
+    public static <T> DeserializationOnlyType<T> longBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
         return longBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> longBasedCustomPrimitive(final GenericType<T> type,
-                                                                          final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
+    public static <T> DeserializationOnlyType<T> longBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Long> deserializer) {
         return createCustomPrimitive(type, deserializer, Long.class);
     }
 
-    public static <T> DeserializationOnlyType<T> intBasedCustomPrimitive(final Class<T> type,
-                                                                         final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
+    public static <T> DeserializationOnlyType<T> intBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
         return intBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> intBasedCustomPrimitive(final GenericType<T> type,
-                                                                         final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
+    public static <T> DeserializationOnlyType<T> intBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Integer> deserializer) {
         return createCustomPrimitive(type, deserializer, Integer.class);
     }
 
-    public static <T> DeserializationOnlyType<T> shortBasedCustomPrimitive(final Class<T> type,
-                                                                           final CustomCustomPrimitiveDeserializer<T, Short> deserializer) {
+    public static <T> DeserializationOnlyType<T> shortBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Short> deserializer) {
         return shortBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> shortBasedCustomPrimitive(final GenericType<T> type,
-                                                                           final CustomCustomPrimitiveDeserializer<T, Short> deserializer) {
+    public static <T> DeserializationOnlyType<T> shortBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Short> deserializer) {
         return createCustomPrimitive(type, deserializer, Short.class);
     }
 
-    public static <T> DeserializationOnlyType<T> byteBasedCustomPrimitive(final Class<T> type,
-                                                                          final CustomCustomPrimitiveDeserializer<T, Byte> deserializer) {
+    public static <T> DeserializationOnlyType<T> byteBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Byte> deserializer) {
         return byteBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> byteBasedCustomPrimitive(final GenericType<T> type,
-                                                                          final CustomCustomPrimitiveDeserializer<T, Byte> deserializer) {
+    public static <T> DeserializationOnlyType<T> byteBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Byte> deserializer) {
         return createCustomPrimitive(type, deserializer, Byte.class);
     }
 
-    public static <T> DeserializationOnlyType<T> floatBasedCustomPrimitive(final Class<T> type,
-                                                                           final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {
+    public static <T> DeserializationOnlyType<T> floatBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {
         return floatBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> floatBasedCustomPrimitive(final GenericType<T> type,
-                                                                           final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {
+    public static <T> DeserializationOnlyType<T> floatBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Float> deserializer) {
         return createCustomPrimitive(type, deserializer, Float.class);
     }
 
-    public static <T> DeserializationOnlyType<T> doubleBasedCustomPrimitive(final Class<T> type,
-                                                                            final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
+    public static <T> DeserializationOnlyType<T> doubleBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
         return doubleBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> doubleBasedCustomPrimitive(final GenericType<T> type,
-                                                                            final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
+    public static <T> DeserializationOnlyType<T> doubleBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Double> deserializer) {
         return createCustomPrimitive(type, deserializer, Double.class);
     }
 
-    public static <T> DeserializationOnlyType<T> booleanBasedCustomPrimitive(final Class<T> type,
-                                                                             final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
+    public static <T> DeserializationOnlyType<T> booleanBasedCustomPrimitive(
+            final Class<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
         return booleanBasedCustomPrimitive(genericType(type), deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> booleanBasedCustomPrimitive(final GenericType<T> type,
-                                                                             final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
+    public static <T> DeserializationOnlyType<T> booleanBasedCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, Boolean> deserializer) {
         return createCustomPrimitive(type, deserializer, Boolean.class);
     }
 
-    public static <C, T> DeserializationOnlyType<C> inlinedCollection(final Class<C> collectionType,
-                                                                      final Class<T> contentType,
-                                                                      final InlinedCollectionFactory<C, T> collectionFactory) {
+    public static <C, T> DeserializationOnlyType<C> inlinedCollection(
+            final Class<C> collectionType,
+            final Class<T> contentType,
+            final InlinedCollectionFactory<C, T> collectionFactory) {
         final GenericType<C> collectionTypeIdentifier = genericType(collectionType);
         final GenericType<T> contentTypeIdentifier = genericType(contentType);
         return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, collectionFactory);
     }
 
-    public static <C, T> DeserializationOnlyType<C> inlinedCollection(final GenericType<C> collectionType,
-                                                                      final GenericType<T> contentType,
-                                                                      final InlinedCollectionFactory<C, T> collectionFactory) {
+    public static <C, T> DeserializationOnlyType<C> inlinedCollection(
+            final GenericType<C> collectionType,
+            final GenericType<T> contentType,
+            final InlinedCollectionFactory<C, T> collectionFactory) {
         final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(collectionType);
         final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(contentType);
         return inlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, collectionFactory);
     }
 
     @SuppressWarnings("unchecked")
-    public static <C> DeserializationOnlyType<C> inlinedCollection(final TypeIdentifier collectionType,
-                                                                   final TypeIdentifier contentType,
-                                                                   final InlinedCollectionFactory<?, ?> collectionFactory) {
+    public static <C> DeserializationOnlyType<C> inlinedCollection(
+            final TypeIdentifier collectionType,
+            final TypeIdentifier contentType,
+            final InlinedCollectionFactory<?, ?> collectionFactory) {
         final InlinedCollectionDeserializer deserializer =
-                inlinedCollectionDeserializer(contentType, (InlinedCollectionFactory<Object, Object>) collectionFactory);
+                inlinedCollectionDeserializer(
+                        contentType,
+                        (InlinedCollectionFactory<Object, Object>) collectionFactory
+                );
         return deserializationOnlyType(collectionType, deserializer);
     }
 
-    public static <T> DeserializationOnlyType<T> deserializationOnlyType(final TypeIdentifier type,
-                                                                         final TypeDeserializer deserializer) {
+    public static <T> DeserializationOnlyType<T> deserializationOnlyType(
+            final TypeIdentifier type,
+            final TypeDeserializer deserializer) {
         validateNotNull(type, "type");
         validateNotNull(deserializer, "deserializer");
         return new DeserializationOnlyType<>(type, deserializer);
     }
 
-    private static <T, B> DeserializationOnlyType<T> createCustomPrimitive(final GenericType<T> type,
-                                                                           final CustomCustomPrimitiveDeserializer<T, B> deserializer,
-                                                                           final Class<B> baseType) {
+    private static <T, B> DeserializationOnlyType<T> createCustomPrimitive(
+            final GenericType<T> type,
+            final CustomCustomPrimitiveDeserializer<T, B> deserializer,
+            final Class<B> baseType) {
         final TypeDeserializer typeDeserializer = deserializer.toTypeDeserializer(baseType);
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return new DeserializationOnlyType<>(typeIdentifier, typeDeserializer);

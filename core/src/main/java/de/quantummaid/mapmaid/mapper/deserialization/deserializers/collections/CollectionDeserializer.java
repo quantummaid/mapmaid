@@ -63,12 +63,14 @@ public interface CollectionDeserializer extends TypeDeserializer {
         if (input instanceof UniversalNull) {
             return null;
         }
-        final UniversalCollection universalCollection = castSafely(input, UniversalCollection.class, exceptionTracker, typeIdentifier, debugInformation);
+        final UniversalCollection universalCollection = castSafely(
+                input, UniversalCollection.class, exceptionTracker, typeIdentifier, debugInformation);
         final List<Object> deserializedList = new ArrayList<>(10);
         final TypeIdentifier contentType = contentType();
         int index = 0;
         for (final Universal element : universalCollection.content()) {
-            final Object deserialized = callback.deserializeRecursive(element, contentType, exceptionTracker.stepIntoArray(index), injector, debugInformation);
+            final Object deserialized = callback.deserializeRecursive(
+                    element, contentType, exceptionTracker.stepIntoArray(index), injector, debugInformation);
             deserializedList.add(deserialized);
             index = index + 1;
         }

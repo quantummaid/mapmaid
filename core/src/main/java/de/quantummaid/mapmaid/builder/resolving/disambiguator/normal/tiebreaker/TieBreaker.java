@@ -41,6 +41,7 @@ import static java.lang.String.format;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1192")
 public final class TieBreaker {
     private final IrrefutableHints<TypeSerializer> customPrimitiveSerializationHints;
     private final IrrefutableHints<TypeSerializer> serializedObjectSerializationHints;
@@ -48,10 +49,11 @@ public final class TieBreaker {
     private final IrrefutableHints<TypeDeserializer> customPrimitiveDeserializationHints;
     private final IrrefutableHints<TypeDeserializer> serializedObjectDeserializationHints;
 
-    public static TieBreaker tieBreaker(final List<IrrefutableHint<TypeSerializer>> customPrimitiveSerializationHints,
-                                        final List<IrrefutableHint<TypeSerializer>> serializedObjectSerializationHints,
-                                        final List<IrrefutableHint<TypeDeserializer>> customPrimitiveDeserializationHints,
-                                        final List<IrrefutableHint<TypeDeserializer>> serializedObjectDeserializationHints) {
+    public static TieBreaker tieBreaker(
+            final List<IrrefutableHint<TypeSerializer>> customPrimitiveSerializationHints,
+            final List<IrrefutableHint<TypeSerializer>> serializedObjectSerializationHints,
+            final List<IrrefutableHint<TypeDeserializer>> customPrimitiveDeserializationHints,
+            final List<IrrefutableHint<TypeDeserializer>> serializedObjectDeserializationHints) {
         return new TieBreaker(
                 irrefutableHints(customPrimitiveSerializationHints),
                 irrefutableHints(serializedObjectSerializationHints),
@@ -60,9 +62,10 @@ public final class TieBreaker {
         );
     }
 
-    public DetectionResult<TypeSerializer> breakTieForSerializationOnly(final DetectionResult<TypeSerializer> customPrimitive,
-                                                                        final DetectionResult<TypeSerializer> serializedObject,
-                                                                        final ScanInformationBuilder scanInformationBuilder) {
+    public DetectionResult<TypeSerializer> breakTieForSerializationOnly(
+            final DetectionResult<TypeSerializer> customPrimitive,
+            final DetectionResult<TypeSerializer> serializedObject,
+            final ScanInformationBuilder scanInformationBuilder) {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
@@ -84,46 +87,54 @@ public final class TieBreaker {
         if (customPrimitiveBreaking.isTieBreaking() && serializedObjectBreaking.isTieBreaking()) {
             final String explanation = format("Unable to choose between serialized object and custom primitive%n" +
                             "\tSerialized Object serializer: %s%n" +
-                            "\tPrioritized because: %s%n" + // NOSONAR
+                            "\tPrioritized because: %s%n" +
                             "\tCustom Primitive serializer: %s%n" +
-                            "\tPrioritized because: %s%n", // NOSONAR
+                            "\tPrioritized because: %s%n",
                     serializedObject.result().description(), serializedObjectBreaking.getReason(),
                     customPrimitive.result().description(), customPrimitiveBreaking.getReason()
             );
             return failure(explanation);
         }
 
-        return breakTie(customPrimitiveBreaking, serializedObjectBreaking, scanInformationBuilder, customPrimitive, serializedObject);
+        return breakTie(
+                customPrimitiveBreaking,
+                serializedObjectBreaking,
+                scanInformationBuilder,
+                customPrimitive,
+                serializedObject
+        );
     }
 
-    public DetectionResult<TypeDeserializer> breakTieForDeserializationOnly(final DetectionResult<TypeDeserializer> customPrimitive,
-                                                                            final DetectionResult<TypeDeserializer> serializedObject,
-                                                                            final ScanInformationBuilder scanInformationBuilder) {
+    public DetectionResult<TypeDeserializer> breakTieForDeserializationOnly(
+            final DetectionResult<TypeDeserializer> customPrimitive,
+            final DetectionResult<TypeDeserializer> serializedObject,
+            final ScanInformationBuilder scanInformationBuilder) {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
-
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
-            customPrimitiveBreaking = this.customPrimitiveDeserializationHints.isTieBreaking(customPrimitive.result());
+            customPrimitiveBreaking = this.customPrimitiveDeserializationHints.isTieBreaking(
+                    customPrimitive.result()
+            );
         } else {
             customPrimitiveBreaking = notATieBreakingReason();
         }
-
         final TieBreakingReason serializedObjectBreaking;
         if (!serializedObject.isFailure()) {
-            serializedObjectBreaking = this.serializedObjectDeserializationHints.isTieBreaking(serializedObject.result());
+            serializedObjectBreaking = this.serializedObjectDeserializationHints.isTieBreaking(
+                    serializedObject.result()
+            );
         } else {
             serializedObjectBreaking = notATieBreakingReason();
         }
-
         if (customPrimitiveBreaking.isTieBreaking() && serializedObjectBreaking.isTieBreaking()) {
             final String explanation = format("" +
                             "Unable to choose between serialized object and custom primitive%n" +
                             "\tSerialized Object deserializer: %s%n" +
-                            "\tPrioritized because: %s%n" + // NOSONAR
+                            "\tPrioritized because: %s%n" +
                             "\tCustom Primitive deserializer: %s%n" +
-                            "\tPrioritized because: %s%n", // NOSONAR
+                            "\tPrioritized because: %s%n",
                     serializedObject.result().description(),
                     serializedObjectBreaking.getReason(),
                     customPrimitive.result().description(),
@@ -131,8 +142,8 @@ public final class TieBreaker {
             );
             return failure(explanation);
         }
-
-        return breakTie(customPrimitiveBreaking, serializedObjectBreaking, scanInformationBuilder, customPrimitive, serializedObject);
+        return breakTie(customPrimitiveBreaking, serializedObjectBreaking,
+                scanInformationBuilder, customPrimitive, serializedObject);
     }
 
     private static <T> DetectionResult<T> breakTie(final TieBreakingReason customPrimitiveBreaking,
