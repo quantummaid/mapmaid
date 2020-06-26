@@ -114,6 +114,10 @@ public final class MapMaidBuilder {
     }
 
     public <T> MapMaidBuilder serializing(final SerializationOnlyType<T> customType) {
+        return serializing((CustomType<T>) customType);
+    }
+
+    public <T> MapMaidBuilder serializing(final CustomType<T> customType) {
         return withCustomType(serialization(), customType);
     }
 
@@ -126,6 +130,10 @@ public final class MapMaidBuilder {
     }
 
     public <T> MapMaidBuilder deserializing(final DeserializationOnlyType<T> customType) {
+        return deserializing((CustomType<T>) customType);
+    }
+
+    public <T> MapMaidBuilder deserializing(final CustomType<T> customType) {
         return withCustomType(deserialization(), customType);
     }
 
@@ -138,6 +146,10 @@ public final class MapMaidBuilder {
     }
 
     public <T> MapMaidBuilder serializingAndDeserializing(final DuplexType<T> customType) {
+        return serializingAndDeserializing((CustomType<T>) customType);
+    }
+
+    public <T> MapMaidBuilder serializingAndDeserializing(final CustomType<T> customType) {
         return withCustomType(duplex(), customType);
     }
 
