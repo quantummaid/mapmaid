@@ -26,12 +26,12 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.44</version>
+        <version>0.9.45</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.67</version>
+    <version>0.9.68</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
