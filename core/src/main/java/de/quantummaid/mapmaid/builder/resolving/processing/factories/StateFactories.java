@@ -35,6 +35,7 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.UndetectedFactory.undetectedFactory;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
 
 @ToString
@@ -48,6 +49,7 @@ public final class StateFactories {
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
+                kotlinSealedClassFactory(),
                 undetectedFactory()
         );
         return new StateFactories(stateFactories);

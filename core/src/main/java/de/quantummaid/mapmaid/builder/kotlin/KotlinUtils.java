@@ -19,25 +19,27 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin;
+package de.quantummaid.mapmaid.builder.kotlin;
 
-import org.junit.jupiter.api.Test;
+import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.ThirdPartyAnnotation;
+import kotlin.jvm.JvmClassMappingKt;
+import kotlin.reflect.KClass;
 
-import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
+import static de.quantummaid.reflectmaid.ThirdPartyAnnotation.thirdPartyAnnotation;
 
-public final class KotlinSealedClassExample {
+public final class KotlinUtils {
+    private static final ThirdPartyAnnotation KOTLIN_METADATA = thirdPartyAnnotation("kotlin.Metadata");
 
-    @Test
-    public void kotlinSealedClassExample() {
-        scenarioBuilderFor(MyKotlinSealedClass.class)
-                .withSerializedForm("" +
-                        "{" +
-                        "\"type\":\"de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin.KotlinSealedSubclass1\"," +
-                        "\"field1\":\"foo\"," +
-                        "\"field2\":\"bar\"" +
-                        "}")
-                .withDeserializedForm(new KotlinSealedSubclass1("foo", "bar"))
-                .withAllScenariosSuccessful()
-                .run();
+    private KotlinUtils() {
+    }
+
+    public static boolean isKotlinClass(final ResolvedType resolvedType) {
+        return KOTLIN_METADATA.isAnnotatedWith(resolvedType);
+    }
+
+    public static KClass<?> kotlinClassOf(final ResolvedType resolvedType) {
+        final Class<?> assignableType = resolvedType.assignableType();
+        return JvmClassMappingKt.getKotlinClass(assignableType);
     }
 }
