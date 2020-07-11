@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.specs.schema;
 
-import de.quantummaid.mapmaid.domain.AComplexType;
-import de.quantummaid.mapmaid.domain.AComplexTypeWithCollections;
+import de.quantummaid.mapmaid.domain.*;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -117,6 +116,64 @@ public final class SchemaSpecs {
                         "  arrayList:\n" +
                         "    type: array\n" +
                         "    items:\n" +
+                        "      type: string\n");
+    }
+
+    @Test
+    public void mapMaidCanGenerateDeserializationSchemaForPolymorphicHierarchy() {
+        given(
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .build()
+        )
+                .when().theDeserializationSchemaIsQueriedFor(AnInterface.class)
+                .theSchemaWas("" +
+                        "oneOf:\n" +
+                        "- type:\n" +
+                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
+                        "    type: string\n" +
+                        "  properties:\n" +
+                        "    d:\n" +
+                        "      type: string\n" +
+                        "    c:\n" +
+                        "      type: string\n" +
+                        "- type:\n" +
+                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
+                        "    type: string\n" +
+                        "  properties:\n" +
+                        "    a:\n" +
+                        "      type: string\n" +
+                        "    b:\n" +
+                        "      type: string\n");
+    }
+
+    @Test
+    public void mapMaidCanGenerateSerializationSchemaForPolymorphicHierarchy() {
+        given(
+                aMapMaid()
+                        .serializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .build()
+        )
+                .when().theSerializationSchemaIsQueriedFor(AnInterface.class)
+                .theSchemaWas("" +
+                        "oneOf:\n" +
+                        "- type:\n" +
+                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
+                        "    type: string\n" +
+                        "  properties:\n" +
+                        "    d:\n" +
+                        "      type: string\n" +
+                        "    c:\n" +
+                        "      type: string\n" +
+                        "- type:\n" +
+                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
+                        "    type: string\n" +
+                        "  properties:\n" +
+                        "    a:\n" +
+                        "      type: string\n" +
+                        "    b:\n" +
                         "      type: string\n");
     }
 }
