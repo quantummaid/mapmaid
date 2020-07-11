@@ -61,7 +61,7 @@ public final class SchemaSupport {
     private static Map<String, Object> addProperty(final String key,
                                                    final Map<String, Object> childSchema,
                                                    final Map<String, Object> objectSchema) {
-        final Map<String, Object> properties = new LinkedHashMap<>((Map<String, Object>) objectSchema.get("properties"));
+        final Map<String, Object> properties = new LinkedHashMap<>((Map<String, Object>) objectSchema.get(PROPERTIES));
         properties.put(key, childSchema);
         final Map<String, Object> copy = new LinkedHashMap<>(objectSchema);
         copy.put(PROPERTIES, properties);
