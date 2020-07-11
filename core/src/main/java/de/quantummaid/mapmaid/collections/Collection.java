@@ -19,35 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization.validation;
-
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+package de.quantummaid.mapmaid.collections;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static java.lang.String.join;
+public final class Collection {
+    private static final int SMALL_SIZE = 10;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
-final class TrackingPosition {
-    private final List<String> positions;
-
-    static TrackingPosition empty() {
-        return new TrackingPosition(smallList());
+    private Collection() {
     }
 
-    TrackingPosition next(final String name) {
-        final List<String> newPositions = new ArrayList<>(this.positions);
-        newPositions.add(name);
-        return new TrackingPosition(newPositions);
+    public static <T> List<T> smallList() {
+        return new ArrayList<>(SMALL_SIZE);
     }
 
-    String render() {
-        return join(".", this.positions);
+    public static <K, V> Map<K, V> smallMap() {
+        return new HashMap<>(SMALL_SIZE);
     }
 }

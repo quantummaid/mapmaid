@@ -30,7 +30,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.KeyElement.keyElement;
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;

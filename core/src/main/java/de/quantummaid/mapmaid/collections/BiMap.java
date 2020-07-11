@@ -19,46 +19,57 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs.examples.system.generator.lowlevel;
+package de.quantummaid.mapmaid.collections;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class FieldModel {
-    private final String name;
-    private final String type;
-    private final List<String> modifiers;
+public final class BiMap<A, B> {
+    private final Map<A, B> byA;
+    private final Map<B, A> byB;
 
-    public static FieldModel field(final String name, final String type) {
-        return new FieldModel(name, type, smallList());
+    public static <A, B> BiMap<A, B> biMap(final Map<A, B> map) {
+        final Map<B, A> byB = map.entrySet()
+                .stream()
+                .collect(toMap(Entry::getValue, Entry::getKey));
+        return new BiMap<>(map, byB);
     }
 
-    public FieldModel withModifier(final String modifier) {
-        this.modifiers.add(modifier);
-        return this;
+    public Optional<B> lookup(final A key) {
+        return Optional.ofNullable(byA.get(key));
     }
 
-    public FieldModel withModifiers(final String... modifiers) {
-        this.modifiers.addAll(asList(modifiers));
-        return this;
+    public Optional<A> reverseLookup(final B key) {
+        return Optional.ofNullable(byB.get(key));
     }
 
-    public String render() {
-        final StringJoiner joiner = new StringJoiner(" ", "\t", ";");
-        this.modifiers.forEach(joiner::add);
-        joiner.add(this.type);
-        joiner.add(this.name);
-        return joiner.toString();
+    public int size() {
+        return byA.size();
+    }
+
+    public void forEach(final BiConsumer<? super A, ? super B> action) {
+        byA.forEach(action);
+    }
+
+    public List<B> values() {
+        return new ArrayList<>(byA.values());
+    }
+
+    public List<A> keys() {
+        return new ArrayList<>(byA.keySet());
     }
 }

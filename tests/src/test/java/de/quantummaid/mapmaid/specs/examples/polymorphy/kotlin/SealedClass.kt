@@ -19,35 +19,9 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization.validation;
+package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin
 
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+sealed class MyKotlinSealedClass
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static java.lang.String.join;
-
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
-final class TrackingPosition {
-    private final List<String> positions;
-
-    static TrackingPosition empty() {
-        return new TrackingPosition(smallList());
-    }
-
-    TrackingPosition next(final String name) {
-        final List<String> newPositions = new ArrayList<>(this.positions);
-        newPositions.add(name);
-        return new TrackingPosition(newPositions);
-    }
-
-    String render() {
-        return join(".", this.positions);
-    }
-}
+data class KotlinSealedSubclass1(val field1: String,
+                                 val field2: String) : MyKotlinSealedClass()

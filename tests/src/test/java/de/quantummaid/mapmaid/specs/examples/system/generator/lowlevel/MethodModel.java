@@ -29,7 +29,7 @@ import lombok.ToString;
 import java.util.List;
 import java.util.StringJoiner;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;

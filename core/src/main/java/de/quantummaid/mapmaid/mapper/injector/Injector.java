@@ -34,7 +34,7 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.mapper.injector.NamedDirectInjection.namedDirectInjection;
 import static de.quantummaid.mapmaid.mapper.injector.PropertyName.propertyName;
 import static de.quantummaid.mapmaid.mapper.injector.TypedDirectInjection.typedDirectInjection;

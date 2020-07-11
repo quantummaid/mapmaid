@@ -36,8 +36,8 @@ import lombok.ToString;
 
 import java.util.*;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
-import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.resolve;
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;

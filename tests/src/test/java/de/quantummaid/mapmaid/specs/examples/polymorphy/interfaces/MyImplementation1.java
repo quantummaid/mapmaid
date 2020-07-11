@@ -19,24 +19,16 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid;
+package de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public final class Collection {
-    private static final int SMALL_SIZE = 10;
-
-    private Collection() {
-    }
-
-    public static <T> List<T> smallList() {
-        return new ArrayList<>(SMALL_SIZE);
-    }
-
-    public static <K, V> Map<K, V> smallMap() {
-        return new HashMap<>(SMALL_SIZE);
-    }
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public final class MyImplementation1 implements MyInterface {
+    public final MyInterface field1;
+    public final MyInterface field2;
 }
