@@ -130,19 +130,21 @@ public final class SchemaSpecs {
                 .when().theDeserializationSchemaIsQueriedFor(AnInterface.class)
                 .theSchemaWas("" +
                         "oneOf:\n" +
-                        "- type:\n" +
-                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
-                        "    type: string\n" +
+                        "- type: object\n" +
                         "  properties:\n" +
                         "    d:\n" +
                         "      type: string\n" +
+                        "    __type__:\n" +
+                        "      pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
+                        "      type: string\n" +
                         "    c:\n" +
                         "      type: string\n" +
-                        "- type:\n" +
-                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
-                        "    type: string\n" +
+                        "- type: object\n" +
                         "  properties:\n" +
                         "    a:\n" +
+                        "      type: string\n" +
+                        "    __type__:\n" +
+                        "      pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
                         "      type: string\n" +
                         "    b:\n" +
                         "      type: string\n");
@@ -159,19 +161,21 @@ public final class SchemaSpecs {
                 .when().theSerializationSchemaIsQueriedFor(AnInterface.class)
                 .theSchemaWas("" +
                         "oneOf:\n" +
-                        "- type:\n" +
-                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
-                        "    type: string\n" +
+                        "- type: object\n" +
                         "  properties:\n" +
                         "    d:\n" +
                         "      type: string\n" +
+                        "    __type__:\n" +
+                        "      pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
+                        "      type: string\n" +
                         "    c:\n" +
                         "      type: string\n" +
-                        "- type:\n" +
-                        "    pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
-                        "    type: string\n" +
+                        "- type: object\n" +
                         "  properties:\n" +
                         "    a:\n" +
+                        "      type: string\n" +
+                        "    __type__:\n" +
+                        "      pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
                         "      type: string\n" +
                         "    b:\n" +
                         "      type: string\n");

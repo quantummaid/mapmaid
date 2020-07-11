@@ -32,6 +32,7 @@ import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalO
 import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
 
 public final class SchemaSupport {
+    private static final String PROPERTIES = "properties";
 
     private SchemaSupport() {
     }
@@ -49,11 +50,22 @@ public final class SchemaSupport {
         final List<Map<String, Object>> schemas = new ArrayList<>(nameToType.size());
         nameToType.forEach((name, implementation) -> {
             final UniversalObject rawImplementationSchema = (UniversalObject) schemaCallback.schema(implementation);
-            final Map<String, Object> implementationSchemaMap = new LinkedHashMap<>((Map) rawImplementationSchema.toNativeJava());
-            implementationSchemaMap.put(typeField, stringConstant(name));
-            schemas.add(implementationSchemaMap);
+            final Map<String, Object> implementationSchemaMap = (Map) rawImplementationSchema.toNativeJava();
+            final Map<String, Object> updated = addProperty(typeField, stringConstant(name), implementationSchemaMap);
+            schemas.add(updated);
         });
         return UniversalObject.universalObjectFromNativeMap(Map.of("oneOf", schemas));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> addProperty(final String key,
+                                                   final Map<String, Object> childSchema,
+                                                   final Map<String, Object> objectSchema) {
+        final Map<String, Object> properties = new LinkedHashMap<>((Map<String, Object>) objectSchema.get("properties"));
+        properties.put(key, childSchema);
+        final Map<String, Object> copy = new LinkedHashMap<>(objectSchema);
+        copy.put(PROPERTIES, properties);
+        return copy;
     }
 
     public static Universal schemaForObject(final Map<String, TypeIdentifier> fields,
@@ -66,7 +78,7 @@ public final class SchemaSupport {
 
         final Map<String, Universal> map = new HashMap<>();
         map.put("type", universalString("object"));
-        map.put("properties", universalObject(properties));
+        map.put(PROPERTIES, universalObject(properties));
         return universalObject(map);
     }
 
