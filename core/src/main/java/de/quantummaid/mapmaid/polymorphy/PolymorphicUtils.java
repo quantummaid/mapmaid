@@ -39,7 +39,7 @@ public final class PolymorphicUtils {
 
     public static BiMap<String, TypeIdentifier> nameToIdentifier(final List<TypeIdentifier> subTypes,
                                                                  final MapMaidConfiguration mapMaidConfiguration) {
-        final PolymorphicTypeIdentifierExtractor extractor = mapMaidConfiguration.getPolymorphicTypeIdentifierExtractor();
+        final PolymorphicTypeIdentifierExtractor extractor = mapMaidConfiguration.getTypeIdentifierExtractor();
         final Map<String, TypeIdentifier> nameToTypeMap = subTypes.stream()
                 .collect(toMap(extractor::extract, identity()));
         return biMap(nameToTypeMap);

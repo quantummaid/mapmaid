@@ -35,7 +35,7 @@ public final class MapMaidConfiguration {
     private String typeIdentifierKey = "type";
     @Getter
     @Setter
-    private PolymorphicTypeIdentifierExtractor polymorphicTypeIdentifierExtractor = TypeIdentifier::description;
+    private PolymorphicTypeIdentifierExtractor typeIdentifierExtractor = TypeIdentifier::description;
 
     public static MapMaidConfiguration emptyMapMaidConfiguration() {
         return new MapMaidConfiguration();

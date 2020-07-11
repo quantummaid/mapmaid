@@ -30,6 +30,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -70,6 +71,18 @@ public final class AdvancedBuilder {
 
     public static AdvancedBuilder advancedBuilder() {
         return new AdvancedBuilder();
+    }
+
+    public AdvancedBuilder withTypeIdentifierKey(final String typeIdentifierKey) {
+        validateNotNull(typeIdentifierKey, "typeIdentifierKey");
+        mapMaidConfiguration.setTypeIdentifierKey(typeIdentifierKey);
+        return this;
+    }
+
+    public AdvancedBuilder withTypeIdentifierExtractor(final PolymorphicTypeIdentifierExtractor extractor) {
+        validateNotNull(extractor, "extractor");
+        mapMaidConfiguration.setTypeIdentifierExtractor(extractor);
+        return this;
     }
 
     public AdvancedBuilder withPreferredCustomPrimitiveFactoryName(final String name) {
