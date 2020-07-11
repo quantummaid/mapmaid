@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.tracker;
 
-import de.quantummaid.mapmaid.Collection;
+import de.quantummaid.mapmaid.collections.Collection;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

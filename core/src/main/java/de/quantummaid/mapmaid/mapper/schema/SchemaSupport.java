@@ -21,13 +21,12 @@
 
 package de.quantummaid.mapmaid.mapper.schema;
 
+import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.mapper.universal.UniversalString;
+import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
@@ -35,6 +34,26 @@ import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalS
 public final class SchemaSupport {
 
     private SchemaSupport() {
+    }
+
+    public static Map<String, Object> stringConstant(final String value) {
+        return Map.of(
+                "type", "string",
+                "pattern", value);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked", "CastToConcreteClass"})
+    public static Universal schemaForPolymorphicParent(final BiMap<String, TypeIdentifier> nameToType,
+                                                       final String typeField,
+                                                       final SchemaCallback schemaCallback) {
+        final List<Map<String, Object>> schemas = new ArrayList<>(nameToType.size());
+        nameToType.forEach((name, implementation) -> {
+            final UniversalObject rawImplementationSchema = (UniversalObject) schemaCallback.schema(implementation);
+            final Map<String, Object> implementationSchemaMap = new LinkedHashMap<>((Map) rawImplementationSchema.toNativeJava());
+            implementationSchemaMap.put(typeField, stringConstant(name));
+            schemas.add(implementationSchemaMap);
+        });
+        return UniversalObject.universalObjectFromNativeMap(Map.of("oneOf", schemas));
     }
 
     public static Universal schemaForObject(final Map<String, TypeIdentifier> fields,
@@ -46,7 +65,7 @@ public final class SchemaSupport {
         });
 
         final Map<String, Universal> map = new HashMap<>();
-        map.put("type", UniversalString.universalString("object"));
+        map.put("type", universalString("object"));
         map.put("properties", universalObject(properties));
         return universalObject(map);
     }

@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.specs.examples.system.Result.emptyResult;
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.DeserializationSuccessfulExpectation.deserializationWas;

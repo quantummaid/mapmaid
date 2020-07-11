@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
-import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation.serializationFieldInstantiation;

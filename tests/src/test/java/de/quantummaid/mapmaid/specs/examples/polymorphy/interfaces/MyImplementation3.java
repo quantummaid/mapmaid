@@ -19,35 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization.validation;
+package de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static java.lang.String.join;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-final class TrackingPosition {
-    private final List<String> positions;
-
-    static TrackingPosition empty() {
-        return new TrackingPosition(smallList());
-    }
-
-    TrackingPosition next(final String name) {
-        final List<String> newPositions = new ArrayList<>(this.positions);
-        newPositions.add(name);
-        return new TrackingPosition(newPositions);
-    }
-
-    String render() {
-        return join(".", this.positions);
-    }
+public final class MyImplementation3 implements MyInterface {
+    public final String field1;
+    public final String field2;
+    public final String field3;
 }

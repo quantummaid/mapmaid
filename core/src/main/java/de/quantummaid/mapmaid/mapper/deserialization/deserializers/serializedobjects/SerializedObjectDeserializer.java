@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer.castSafely;
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;

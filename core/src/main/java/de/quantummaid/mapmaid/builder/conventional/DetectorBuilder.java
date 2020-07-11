@@ -33,7 +33,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.detection.SimpleDetector.detector;
 import static de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization.ConstructorBasedCustomPrimitiveDeserializationDetector.constructorBased;

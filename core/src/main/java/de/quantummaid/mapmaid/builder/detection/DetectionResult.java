@@ -31,7 +31,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
