@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs.examples.polymorphy;
+package de.quantummaid.mapmaid.polymorphy;
 
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.debug.DebugInformation;

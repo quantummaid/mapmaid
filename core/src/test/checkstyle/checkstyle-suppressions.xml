@@ -37,7 +37,7 @@
     <suppress checks="IllegalCatchCheck" files="Deserializer|When"/>
     <suppress checks="MethodLength" files="Deserializer"/>
     <suppress checks="MethodLength" files="MapMaidBuilder"/>
-    <suppress checks="VisibilityModifier" files="MapMaidBuilder"/>
+    <suppress checks="VisibilityModifier|FileLength" files="MapMaidBuilder"/>
     <suppress
             checks="MagicNumber|MethodName|IllegalCatch|LineLength|MethodLength|FinalParameters|LineLength|InnerTypeLast"
             files="Examples|Instances"/>

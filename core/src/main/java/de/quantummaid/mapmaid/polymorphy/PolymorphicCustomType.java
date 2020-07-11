@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs.examples.polymorphy;
+package de.quantummaid.mapmaid.polymorphy;
 
 import de.quantummaid.mapmaid.builder.customtypes.CustomType;
 import de.quantummaid.mapmaid.collections.BiMap;
@@ -33,19 +33,17 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.collections.BiMap.biMap;
+import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
+import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.mapmaid.specs.examples.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
-import static de.quantummaid.mapmaid.specs.examples.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static kotlin.jvm.JvmClassMappingKt.getJavaClass;
 
 @ToString
 @EqualsAndHashCode
@@ -58,24 +56,13 @@ public final class PolymorphicCustomType<T> implements CustomType<T> {
     private final String typeField;
 
     public static <T> PolymorphicCustomType<T> fromKotlinSealedClass(final KClass<T> kotlinClass) {
-        final Class<T> javaClass = getJavaClass(kotlinClass);
+        final Class<T> javaClass = JvmClassMappingKt.getJavaClass(kotlinClass);
         final TypeIdentifier typeIdentifier = typeIdentifierFor(javaClass);
         final List<TypeIdentifier> implementations = kotlinClass.getSealedSubclasses().stream()
                 .map(JvmClassMappingKt::getJavaClass)
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
         return polymorphicCustomType(typeIdentifier, implementations, TypeIdentifier::description, DEFAULT_TYPE_FIELD);
-    }
-
-    @SafeVarargs
-    @SuppressWarnings("varargs")
-    public static <T> PolymorphicCustomType<T> polymorphicCustomType(final Class<T> superType,
-                                                                     final Class<? extends T>... implementations) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(superType);
-        final List<TypeIdentifier> implementationTypes = Arrays.stream(implementations)
-                .map(TypeIdentifier::typeIdentifierFor)
-                .collect(toList());
-        return polymorphicCustomType(typeIdentifier, implementationTypes, TypeIdentifier::description, DEFAULT_TYPE_FIELD);
     }
 
     public static <T> PolymorphicCustomType<T> polymorphicCustomType(final TypeIdentifier typeIdentifier,

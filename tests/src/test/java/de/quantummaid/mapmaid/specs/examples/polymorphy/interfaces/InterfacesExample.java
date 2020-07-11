@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.specs.examples.polymorphy.PolymorphicCustomType.polymorphicCustomType;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class InterfacesExample {
@@ -59,33 +58,27 @@ public final class InterfacesExample {
                         )
                 )
                 .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(
-                                polymorphicCustomType(
-                                        MyInterface.class,
-                                        MyImplementation1.class,
-                                        MyImplementation2.class,
-                                        MyImplementation3.class
-                                )
+                        mapMaidBuilder.deserializingSubtypes(
+                                MyInterface.class,
+                                MyImplementation1.class,
+                                MyImplementation2.class,
+                                MyImplementation3.class
                         )
                 )
                 .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(
-                                polymorphicCustomType(
-                                        MyInterface.class,
-                                        MyImplementation1.class,
-                                        MyImplementation2.class,
-                                        MyImplementation3.class
-                                )
+                        mapMaidBuilder.serializingSubtypes(
+                                MyInterface.class,
+                                MyImplementation1.class,
+                                MyImplementation2.class,
+                                MyImplementation3.class
                         )
                 )
                 .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                polymorphicCustomType(
-                                        MyInterface.class,
-                                        MyImplementation1.class,
-                                        MyImplementation2.class,
-                                        MyImplementation3.class
-                                )
+                        mapMaidBuilder.serializingAndDeserializingSubtypes(
+                                MyInterface.class,
+                                MyImplementation1.class,
+                                MyImplementation2.class,
+                                MyImplementation3.class
                         )
                 )
                 .run();
