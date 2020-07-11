@@ -28,6 +28,7 @@ import kotlin.reflect.KClass;
 
 import static de.quantummaid.reflectmaid.ThirdPartyAnnotation.thirdPartyAnnotation;
 
+@SuppressWarnings("java:S1452")
 public final class KotlinUtils {
     private static final ThirdPartyAnnotation KOTLIN_METADATA = thirdPartyAnnotation("kotlin.Metadata");
 
