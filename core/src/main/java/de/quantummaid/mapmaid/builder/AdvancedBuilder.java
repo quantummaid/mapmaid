@@ -30,6 +30,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -40,11 +41,12 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.builder.MapMaidConfiguration.emptyMapMaidConfiguration;
 import static de.quantummaid.mapmaid.builder.MarshallerAutoloadingException.conflictingMarshallersForTypes;
 import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloadIfClassPresent;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry.marshallerRegistry;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -65,9 +67,22 @@ public final class AdvancedBuilder {
     private boolean autoloadMarshallers = true;
     private List<MarshallerAndUnmarshaller> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller>> autoloadMethod = this::autoloadMarshallers;
+    private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
 
     public static AdvancedBuilder advancedBuilder() {
         return new AdvancedBuilder();
+    }
+
+    public AdvancedBuilder withTypeIdentifierKey(final String typeIdentifierKey) {
+        validateNotNull(typeIdentifierKey, "typeIdentifierKey");
+        mapMaidConfiguration.setTypeIdentifierKey(typeIdentifierKey);
+        return this;
+    }
+
+    public AdvancedBuilder withTypeIdentifierExtractor(final PolymorphicTypeIdentifierExtractor extractor) {
+        validateNotNull(extractor, "extractor");
+        mapMaidConfiguration.setTypeIdentifierExtractor(extractor);
+        return this;
     }
 
     public AdvancedBuilder withPreferredCustomPrimitiveFactoryName(final String name) {
@@ -161,6 +176,10 @@ public final class AdvancedBuilder {
             });
         }
         return marshallerRegistry(this.unmarshallerMap);
+    }
+
+    MapMaidConfiguration mapMaidConfiguration() {
+        return mapMaidConfiguration;
     }
 
     private void autoload() {

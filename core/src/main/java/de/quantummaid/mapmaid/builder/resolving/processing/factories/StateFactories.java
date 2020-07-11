@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -35,6 +36,7 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.UndetectedFactory.undetectedFactory;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
 
 @ToString
@@ -48,15 +50,17 @@ public final class StateFactories {
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
+                kotlinSealedClassFactory(),
                 undetectedFactory()
         );
         return new StateFactories(stateFactories);
     }
 
     public StatefulDefinition createState(final TypeIdentifier type,
-                                          final Context context) {
+                                          final Context context,
+                                          final MapMaidConfiguration mapMaidConfiguration) {
         for (final StateFactory stateFactory : this.stateFactories) {
-            final Optional<StatefulDefinition> statefulDefinition = stateFactory.create(type, context);
+            final Optional<StatefulDefinition> statefulDefinition = stateFactory.create(type, context, mapMaidConfiguration);
             if (statefulDefinition.isPresent()) {
                 return statefulDefinition.get();
             }

@@ -36,8 +36,8 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Map;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
-import static de.quantummaid.mapmaid.Collection.smallMap;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.debug.scaninformation.ActualScanInformation.actualScanInformation;
 import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 

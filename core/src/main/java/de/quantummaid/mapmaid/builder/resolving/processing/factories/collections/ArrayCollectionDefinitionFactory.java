@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.collections;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
@@ -49,7 +50,9 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier, final Context context) {
+    public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier,
+                                               final Context context,
+                                               final MapMaidConfiguration configuration) {
         if (typeIdentifier.isVirtual()) {
             return empty();
         }

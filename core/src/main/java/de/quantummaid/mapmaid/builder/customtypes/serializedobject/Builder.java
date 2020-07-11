@@ -34,7 +34,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializationField.deserializationField;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializer.userProvidedDeserializer;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomSerializationField.serializationField;

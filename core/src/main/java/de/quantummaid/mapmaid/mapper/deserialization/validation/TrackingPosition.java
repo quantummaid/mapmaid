@@ -28,7 +28,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static java.lang.String.join;
 
 @ToString
