@@ -76,7 +76,7 @@ public final class PolymorphySpecs {
         )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
-                "  \"type\": \"impl1\",\n" +
+                "  \"__type__\": \"impl1\",\n" +
                 "  \"a\": \"foo\",\n" +
                 "  \"b\": \"bar\"\n" +
                 "}").from(MarshallingType.JSON).toTheType(AnInterface.class)
