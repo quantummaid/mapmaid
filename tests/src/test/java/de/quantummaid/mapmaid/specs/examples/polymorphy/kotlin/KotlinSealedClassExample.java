@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.specs.examples.polymorphy.PolymorphicCustomType.fromKotlinSealedClass;
+import static de.quantummaid.mapmaid.polymorphy.PolymorphicCustomType.fromKotlinSealedClass;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 

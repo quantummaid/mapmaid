@@ -49,6 +49,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.polymorphy.PolymorphicCustomType;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
@@ -56,13 +57,9 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.MapMaid.mapMaid;
 import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
@@ -76,16 +73,19 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDese
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
 import static de.quantummaid.mapmaid.debug.Reason.reason;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.theSerializer;
+import static de.quantummaid.mapmaid.polymorphy.PolymorphicCustomType.polymorphicCustomType;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 
 @ToString
 @EqualsAndHashCode
@@ -151,6 +151,105 @@ public final class MapMaidBuilder {
 
     public <T> MapMaidBuilder serializingAndDeserializing(final CustomType<T> customType) {
         return withCustomType(duplex(), customType);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    public final <T> MapMaidBuilder serializingSubtypes(final Class<T> superType,
+                                                        final Class<? extends T>... subTypes) {
+        final GenericType<T> genericSuperType = genericType(superType);
+        final GenericType[] genericSubTypes = Arrays.stream(subTypes)
+                .map(GenericType::genericType)
+                .toArray(GenericType[]::new);
+        return serializingSubtypes(genericSuperType, genericSubTypes);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    public final <T> MapMaidBuilder serializingSubtypes(final GenericType<T> superType,
+                                                        final GenericType<? extends T>... subTypes) {
+        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(superType);
+        final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+                .map(TypeIdentifier::typeIdentifierFor)
+                .toArray(TypeIdentifier[]::new);
+        return serializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
+    }
+
+    public MapMaidBuilder serializingSubtypes(final TypeIdentifier superType,
+                                              final TypeIdentifier... subTypes) {
+        final PolymorphicCustomType<Object> customType = polymorphicCustomType(
+                superType,
+                asList(subTypes),
+                TypeIdentifier::description,
+                "type"
+        );
+        return serializing(customType);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    public final <T> MapMaidBuilder deserializingSubtypes(final Class<T> superType,
+                                                          final Class<? extends T>... subTypes) {
+        final GenericType<T> genericSuperType = genericType(superType);
+        final GenericType[] genericSubTypes = Arrays.stream(subTypes)
+                .map(GenericType::genericType)
+                .toArray(GenericType[]::new);
+        return deserializingSubtypes(genericSuperType, genericSubTypes);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    public final <T> MapMaidBuilder deserializingSubtypes(final GenericType<T> superType,
+                                                          final GenericType<? extends T>... subTypes) {
+        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(superType);
+        final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+                .map(TypeIdentifier::typeIdentifierFor)
+                .toArray(TypeIdentifier[]::new);
+        return deserializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
+    }
+
+    public MapMaidBuilder deserializingSubtypes(final TypeIdentifier superType,
+                                                final TypeIdentifier... subTypes) {
+        final PolymorphicCustomType<Object> customType = polymorphicCustomType(
+                superType,
+                asList(subTypes),
+                TypeIdentifier::description,
+                "type"
+        );
+        return deserializing(customType);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    public final <T> MapMaidBuilder serializingAndDeserializingSubtypes(final Class<T> superType,
+                                                                        final Class<? extends T>... subTypes) {
+        final GenericType<T> genericSuperType = genericType(superType);
+        final GenericType[] genericSubTypes = Arrays.stream(subTypes)
+                .map(GenericType::genericType)
+                .toArray(GenericType[]::new);
+        return serializingAndDeserializingSubtypes(genericSuperType, genericSubTypes);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    public final <T> MapMaidBuilder serializingAndDeserializingSubtypes(final GenericType<T> superType,
+                                                                        final GenericType<? extends T>... subTypes) {
+        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(superType);
+        final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+                .map(TypeIdentifier::typeIdentifierFor)
+                .toArray(TypeIdentifier[]::new);
+        return serializingAndDeserializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
+    }
+
+    public MapMaidBuilder serializingAndDeserializingSubtypes(final TypeIdentifier superType,
+                                                              final TypeIdentifier... subTypes) {
+        final PolymorphicCustomType<Object> customType = polymorphicCustomType(
+                superType,
+                asList(subTypes),
+                TypeIdentifier::description,
+                "type"
+        );
+        return serializingAndDeserializing(customType);
     }
 
     public MapMaidBuilder injecting(final Class<?> type) {
