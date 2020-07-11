@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories;
@@ -68,7 +69,9 @@ public final class States {
                 .collect(toList());
     }
 
-    public States apply(final Signal signal, final Processor processor) {
+    public States apply(final Signal signal,
+                        final Processor processor,
+                        final MapMaidConfiguration configuration) {
         final Optional<TypeIdentifier> optionalTarget = signal.target();
         if (optionalTarget.isEmpty()) {
             final List<StatefulDefinition> newStates = this.states.stream()
@@ -81,7 +84,7 @@ public final class States {
 
             if (!contains(target, newStates)) {
                 final Context context = emptyContext(processor::dispatch, target);
-                final StatefulDefinition state = this.stateFactories.createState(target, context);
+                final StatefulDefinition state = this.stateFactories.createState(target, context, configuration);
                 newStates.add(state);
             }
 

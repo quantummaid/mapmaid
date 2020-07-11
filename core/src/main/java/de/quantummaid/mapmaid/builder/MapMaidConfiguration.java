@@ -19,18 +19,25 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.factories;
+package de.quantummaid.mapmaid.builder;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-import java.util.Optional;
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MapMaidConfiguration {
+    @Getter
+    @Setter
+    private String typeIdentifierKey = "type";
+    @Getter
+    @Setter
+    private PolymorphicTypeIdentifierExtractor polymorphicTypeIdentifierExtractor = TypeIdentifier::description;
 
-@FunctionalInterface
-public interface StateFactory {
-    Optional<StatefulDefinition> create(TypeIdentifier type,
-                                        Context context,
-                                        MapMaidConfiguration mapMaidConfiguration);
+    public static MapMaidConfiguration emptyMapMaidConfiguration() {
+        return new MapMaidConfiguration();
+    }
 }

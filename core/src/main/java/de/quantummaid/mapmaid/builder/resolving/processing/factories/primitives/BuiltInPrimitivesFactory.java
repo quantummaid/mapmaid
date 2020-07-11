@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
@@ -51,7 +52,9 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final TypeIdentifier type, final Context context) {
+    public Optional<StatefulDefinition> create(final TypeIdentifier type,
+                                               final Context context,
+                                               final MapMaidConfiguration configuration) {
         if (type.isVirtual()) {
             return empty();
         }

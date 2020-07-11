@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -36,11 +37,11 @@ import lombok.ToString;
 
 import java.util.*;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.resolve;
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -69,8 +70,9 @@ public final class Processor {
     }
 
     public Map<TypeIdentifier, CollectionResult> collect(final SimpleDetector detector,
-                                                         final Disambiguators disambiguators) {
-        resolveRecursively(detector, disambiguators);
+                                                         final Disambiguators disambiguators,
+                                                         final MapMaidConfiguration configuration) {
+        resolveRecursively(detector, disambiguators, configuration);
         final Map<TypeIdentifier, Report> reports = this.states.collect();
 
         final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders = new HashMap<>(reports.size());
@@ -103,18 +105,19 @@ public final class Processor {
     }
 
     private void resolveRecursively(final SimpleDetector detector,
-                                    final Disambiguators disambiguators) {
+                                    final Disambiguators disambiguators,
+                                    final MapMaidConfiguration configuration) {
         final List<TypeIdentifier> injectedTypes = this.states.injections();
         while (!this.pendingSignals.isEmpty()) {
             final Signal signal = this.pendingSignals.remove();
-            this.states = this.states.apply(signal, this);
+            this.states = this.states.apply(signal, this, configuration);
         }
-        final States detected = this.states.apply(detect(detector, disambiguators, injectedTypes), this);
-        final States resolved = detected.apply(resolve(), this);
+        final States detected = this.states.apply(detect(detector, disambiguators, injectedTypes), this, configuration);
+        final States resolved = detected.apply(resolve(), this, configuration);
         this.states = resolved;
 
         if (!this.pendingSignals.isEmpty()) {
-            resolveRecursively(detector, disambiguators);
+            resolveRecursively(detector, disambiguators, configuration);
         }
     }
 }

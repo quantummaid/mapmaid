@@ -19,18 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.factories;
+package de.quantummaid.mapmaid.builder;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-
-import java.util.Optional;
-
-@FunctionalInterface
-public interface StateFactory {
-    Optional<StatefulDefinition> create(TypeIdentifier type,
-                                        Context context,
-                                        MapMaidConfiguration mapMaidConfiguration);
+public interface ManuallyAddedState {
+    void addState(MapMaidConfiguration configuration);
 }

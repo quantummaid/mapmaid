@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -45,7 +46,8 @@ public final class UndetectedFactory implements StateFactory {
 
     @Override
     public Optional<StatefulDefinition> create(final TypeIdentifier type,
-                                               final Context context) {
+                                               final Context context,
+                                               final MapMaidConfiguration configuration) {
         return of(unreasoned(context));
     }
 }

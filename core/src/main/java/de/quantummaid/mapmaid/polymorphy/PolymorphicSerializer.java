@@ -44,14 +44,14 @@ import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PolymorphicSerializer implements TypeSerializer {
-    private final TypeIdentifier typeIdentifier;
+    private final TypeIdentifier superType;
     private final BiMap<String, TypeIdentifier> nameToType;
     private final String typeField;
 
-    public static PolymorphicSerializer polymorphicSerializer(final TypeIdentifier typeIdentifier,
+    public static PolymorphicSerializer polymorphicSerializer(final TypeIdentifier superType,
                                                               final BiMap<String, TypeIdentifier> nameToType,
                                                               final String typeField) {
-        return new PolymorphicSerializer(typeIdentifier, nameToType, typeField);
+        return new PolymorphicSerializer(superType, nameToType, typeField);
     }
 
     @Override
@@ -78,7 +78,7 @@ public final class PolymorphicSerializer implements TypeSerializer {
 
     @Override
     public String description() {
-        return format("polymorphic serializer for %s", this.typeIdentifier.description());
+        return format("polymorphic serializer for %s", this.superType.description());
     }
 
     @Override
