@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
+import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -56,9 +57,10 @@ public final class StateFactories {
     }
 
     public StatefulDefinition createState(final TypeIdentifier type,
-                                          final Context context) {
+                                          final Context context,
+                                          final MapMaidConfiguration mapMaidConfiguration) {
         for (final StateFactory stateFactory : this.stateFactories) {
-            final Optional<StatefulDefinition> statefulDefinition = stateFactory.create(type, context);
+            final Optional<StatefulDefinition> statefulDefinition = stateFactory.create(type, context, mapMaidConfiguration);
             if (statefulDefinition.isPresent()) {
                 return statefulDefinition.get();
             }

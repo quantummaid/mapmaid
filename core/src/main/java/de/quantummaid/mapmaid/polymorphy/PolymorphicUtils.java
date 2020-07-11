@@ -19,18 +19,29 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.factories;
+package de.quantummaid.mapmaid.polymorphy;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.Map;
 
-@FunctionalInterface
-public interface StateFactory {
-    Optional<StatefulDefinition> create(TypeIdentifier type,
-                                        Context context,
-                                        MapMaidConfiguration mapMaidConfiguration);
+import static de.quantummaid.mapmaid.collections.BiMap.biMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
+public final class PolymorphicUtils {
+
+    private PolymorphicUtils() {
+    }
+
+    public static BiMap<String, TypeIdentifier> nameToIdentifier(final List<TypeIdentifier> subTypes,
+                                                                 final MapMaidConfiguration mapMaidConfiguration) {
+        final PolymorphicTypeIdentifierExtractor extractor = mapMaidConfiguration.getPolymorphicTypeIdentifierExtractor();
+        final Map<String, TypeIdentifier> nameToTypeMap = subTypes.stream()
+                .collect(toMap(extractor::extract, identity()));
+        return biMap(nameToTypeMap);
+    }
 }
