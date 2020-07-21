@@ -42,3 +42,9 @@ data class KotlinDto(val field1: KotlinCustomPrimitive,
                      val field2: String,
                      val field3: Int,
                      val field4: KotlinCustomPrimitive)
+
+data class KotlinDtoWithGeneric<S>(
+        val field1: List<String>,
+        val field2: List<List<Int>>,
+        val field3: Collection<S>,
+        val field4: Collection<Collection<S>>)
