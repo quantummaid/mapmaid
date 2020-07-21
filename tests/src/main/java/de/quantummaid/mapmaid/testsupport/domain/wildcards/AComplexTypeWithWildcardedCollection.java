@@ -32,9 +32,9 @@ import java.util.List;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AComplexTypeWithWildcardedCollection {
-    private final List<?> list;
+    private final List<? super String> list;
 
-    public static AComplexTypeWithWildcardedCollection deserialize(final List<?> list) {
+    public static AComplexTypeWithWildcardedCollection deserialize(final List<? super String> list) {
         return new AComplexTypeWithWildcardedCollection(list);
     }
 }
