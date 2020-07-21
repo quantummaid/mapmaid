@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs;
+package de.quantummaid.mapmaid.specs.polymorphy;
 
 import de.quantummaid.mapmaid.domain.AnImplementation1;
 import de.quantummaid.mapmaid.domain.AnImplementation2;
@@ -81,5 +81,12 @@ public final class PolymorphySpecs {
                 "  \"b\": \"bar\"\n" +
                 "}").from(MarshallingType.JSON).toTheType(AnInterface.class)
                 .theDeserializedObjectIs(new AnImplementation1("foo", "bar"));
+    }
+
+    @Test
+    public void polymorphicSubtypesAreNotPrimitiveInlined() {
+        given(
+                aMapMaid()
+        )
     }
 }
