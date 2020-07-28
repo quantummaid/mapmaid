@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.debug;
 
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -35,6 +36,7 @@ import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
@@ -46,8 +48,7 @@ import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScanInformationBuilder {
     private final TypeIdentifier type;
-    private final List<Reason> deserializationReasons;
-    private final List<Reason> serializationReasons;
+    private DetectionRequirementReasons detectionRequirementReasons = DetectionRequirementReasons.empty();
     private final Map<TypeSerializer, List<String>> serializers;
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> deserializers;
@@ -56,7 +57,7 @@ public final class ScanInformationBuilder {
 
     public static ScanInformationBuilder scanInformationBuilder(final TypeIdentifier type) {
         return new ScanInformationBuilder(
-                type, smallList(), smallList(), smallMap(), smallMap(), smallMap());
+                type, smallMap(), smallMap(), smallMap());
     }
 
     public void addSerializer(final TypeSerializer serializer) {
@@ -76,28 +77,27 @@ public final class ScanInformationBuilder {
         this.deserializers.clear();
     }
 
+    public boolean changeRequirements(final Function<DetectionRequirementReasons, DetectionRequirementReasons> reducer) {
+        final DetectionRequirementReasons oldReaons = this.detectionRequirementReasons;
+        final DetectionRequirementReasons newReasons = reducer.apply(oldReaons);
+        this.detectionRequirementReasons = newReasons;
+        return oldReaons.hasChanged(newReasons);
+    }
+
     public void addSerializationReason(final Reason reason) {
-        if (this.serializationReasons.contains(reason)) {
-            return;
-        }
-        this.serializationReasons.add(reason);
+        changeRequirements(reasons -> reasons.addSerialization(reason));
     }
 
     public boolean removeSerializationReasonAndReturnIfEmpty(final Reason reason) {
-        this.serializationReasons.remove(reason);
-        return this.serializationReasons.isEmpty();
+        return changeRequirements(reasons -> reasons.removeSerialization(reason));
     }
 
     public void addDeserializationReason(final Reason reason) {
-        if (this.deserializationReasons.contains(reason)) {
-            return;
-        }
-        this.deserializationReasons.add(reason);
+        changeRequirements(reasons -> reasons.addDeserialization(reason));
     }
 
     public boolean removeDeserializationReasonAndReturnIfEmpty(final Reason reason) {
-        this.deserializationReasons.remove(reason);
-        return this.deserializationReasons.isEmpty();
+        return changeRequirements(reasons -> reasons.removeDeserialization(reason));
     }
 
     public void ignoreAllOtherSerializers(final TypeSerializer serializer,
@@ -187,8 +187,8 @@ public final class ScanInformationBuilder {
             this.deserializers.remove(this.deserializer);
         }
         final Reasons reasons = reasons(
-                this.deserializationReasons,
-                this.serializationReasons,
+                this.detectionRequirementReasons.deserializationReasons,
+                this.detectionRequirementReasons.serializationReasons,
                 serializationSubReasonProvider,
                 deserializationSubReasonProvider);
         return actualScanInformation(

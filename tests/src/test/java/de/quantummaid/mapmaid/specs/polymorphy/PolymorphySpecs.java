@@ -24,10 +24,11 @@ package de.quantummaid.mapmaid.specs.polymorphy;
 import de.quantummaid.mapmaid.domain.AnImplementation1;
 import de.quantummaid.mapmaid.domain.AnImplementation2;
 import de.quantummaid.mapmaid.domain.AnInterface;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
+import static de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype.primitiveSubtype;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
@@ -50,7 +51,7 @@ public final class PolymorphySpecs {
                 "  \"a\": \"foo\",\n" +
                 "  \"b\": \"bar\",\n" +
                 "  \"test\": \"de.quantummaid.mapmaid.domain.AnImplementation1\"\n" +
-                "}").from(MarshallingType.JSON).toTheType(AnInterface.class)
+                "}").from(JSON).toTheType(AnInterface.class)
                 .theDeserializedObjectIs(new AnImplementation1("foo", "bar"));
     }
 
@@ -79,7 +80,7 @@ public final class PolymorphySpecs {
                 "  \"__type__\": \"impl1\",\n" +
                 "  \"a\": \"foo\",\n" +
                 "  \"b\": \"bar\"\n" +
-                "}").from(MarshallingType.JSON).toTheType(AnInterface.class)
+                "}").from(JSON).toTheType(AnInterface.class)
                 .theDeserializedObjectIs(new AnImplementation1("foo", "bar"));
     }
 
@@ -87,6 +88,15 @@ public final class PolymorphySpecs {
     public void polymorphicSubtypesAreNotPrimitiveInlined() {
         given(
                 aMapMaid()
+                        .serializingAndDeserializingSubtypes(Supertype.class, PrimitiveSubtype.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
         )
+                .when().mapMaidSerializes(primitiveSubtype("abc"), Supertype.class).withMarshallingType(JSON)
+                .theSerializationResultWas("" +
+                        "{\n" +
+                        "  \"__type__\": \"de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype\",\n" +
+                        "  \"internalValue\": \"abc\"\n" +
+                        "}");
     }
 }
