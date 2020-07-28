@@ -99,6 +99,11 @@ public final class When {
         };
     }
 
+    public WithMarshallingType mapMaidSerializes(final Object object, final Class<?> type) {
+        final GenericType<?> genericType = GenericType.genericType(type);
+        return mapMaidSerializes(object, genericType);
+    }
+
     public WithMarshallingType mapMaidSerializes(final Object object, final GenericType<?> type) {
         return marshallingType -> {
             final String serialized = this.mapMaid.serializeTo(object, marshallingType, type);
