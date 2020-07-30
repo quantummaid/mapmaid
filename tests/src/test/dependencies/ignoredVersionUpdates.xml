@@ -7,5 +7,10 @@
                 <ignoreVersion>1.4.12-java7</ignoreVersion>
             </ignoreVersions>
         </rule>
+        <rule groupId="org.jetbrains.kotlin" comparisonMethod="maven">
+            <ignoreVersions>
+                <ignoreVersion>1.4.0-rc</ignoreVersion>
+            </ignoreVersions>
+        </rule>
     </rules>
 </ruleset>
