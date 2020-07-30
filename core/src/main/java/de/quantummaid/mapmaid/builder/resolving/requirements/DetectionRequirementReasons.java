@@ -26,7 +26,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -35,40 +34,77 @@ import static java.util.Collections.emptyList;
 public final class DetectionRequirementReasons {
     public final List<Reason> serializationReasons;
     public final List<Reason> deserializationReasons;
-    private final List<Reason> inlineProhibitionReasons;
+    private final List<Reason> objectEnforcingReasons;
+    private final List<Reason> inlinedPrimitiveReasons;
 
     public static DetectionRequirementReasons empty() {
-        return new DetectionRequirementReasons(emptyList(), emptyList(), emptyList());
+        return new DetectionRequirementReasons(emptyList(), emptyList(), emptyList(), emptyList());
     }
 
     public DetectionRequirementReasons addSerialization(final Reason reason) {
         final List<Reason> newSerializationReasons = new ArrayList<>(this.serializationReasons);
         newSerializationReasons.add(reason);
-        return new DetectionRequirementReasons(newSerializationReasons, this.deserializationReasons, this.inlineProhibitionReasons);
+        return new DetectionRequirementReasons(
+                newSerializationReasons,
+                this.deserializationReasons,
+                this.objectEnforcingReasons,
+                this.inlinedPrimitiveReasons
+        );
     }
 
     public DetectionRequirementReasons removeSerialization(final Reason reason) {
         final List<Reason> newSerializationReasons = new ArrayList<>(this.serializationReasons);
         newSerializationReasons.remove(reason);
-        return new DetectionRequirementReasons(newSerializationReasons, this.deserializationReasons, this.inlineProhibitionReasons);
+        return new DetectionRequirementReasons(
+                newSerializationReasons,
+                this.deserializationReasons,
+                this.objectEnforcingReasons,
+                this.inlinedPrimitiveReasons
+        );
     }
 
     public DetectionRequirementReasons addDeserialization(final Reason reason) {
         final List<Reason> newDeserializationReasons = new ArrayList<>(this.deserializationReasons);
         newDeserializationReasons.add(reason);
-        return new DetectionRequirementReasons(this.serializationReasons, newDeserializationReasons, this.inlineProhibitionReasons);
+        return new DetectionRequirementReasons(
+                this.serializationReasons,
+                newDeserializationReasons,
+                this.objectEnforcingReasons,
+                this.inlinedPrimitiveReasons
+        );
     }
 
     public DetectionRequirementReasons removeDeserialization(final Reason reason) {
         final List<Reason> newDeserializationReasons = new ArrayList<>(this.deserializationReasons);
         newDeserializationReasons.remove(reason);
-        return new DetectionRequirementReasons(this.serializationReasons, newDeserializationReasons, this.inlineProhibitionReasons);
+        return new DetectionRequirementReasons(
+                this.serializationReasons,
+                newDeserializationReasons,
+                this.objectEnforcingReasons,
+                this.inlinedPrimitiveReasons
+        );
     }
 
-    public DetectionRequirementReasons prohibitInlining(final Reason reason) {
-        final List<Reason> newInlineProhibitionReasons = new ArrayList<>(this.inlineProhibitionReasons);
-        this.inlineProhibitionReasons.add(reason);
-        return new DetectionRequirementReasons(this.serializationReasons, this.deserializationReasons, newInlineProhibitionReasons);
+    public DetectionRequirementReasons enforceObject(final Reason reason) {
+        final List<Reason> newObjectEnforcingReasons = new ArrayList<>(this.objectEnforcingReasons);
+        newObjectEnforcingReasons.add(reason);
+        return new DetectionRequirementReasons(
+                this.serializationReasons,
+                this.deserializationReasons,
+                newObjectEnforcingReasons,
+                this.inlinedPrimitiveReasons
+        );
+    }
+
+    public DetectionRequirementReasons removeObjectEnforcingReason(final Reason reason) {
+        final List<Reason> newObjectEnforcingReasons = new ArrayList<>(this.objectEnforcingReasons);
+        newObjectEnforcingReasons.remove(reason);
+        return new DetectionRequirementReasons(
+                this.serializationReasons,
+                this.deserializationReasons,
+                newObjectEnforcingReasons,
+                this.inlinedPrimitiveReasons
+        );
     }
 
     public boolean hasChanged(final DetectionRequirementReasons old) {
@@ -77,11 +113,12 @@ public final class DetectionRequirementReasons {
         return !currentDetectionRequirements.equals(oldDetectionRequirements);
     }
 
-    private DetectionRequirements detectionRequirements() {
+    public DetectionRequirements detectionRequirements() {
         return DetectionRequirements.detectionRequirements(
                 !this.serializationReasons.isEmpty(),
                 !this.deserializationReasons.isEmpty(),
-                !this.inlineProhibitionReasons.isEmpty()
+                !this.objectEnforcingReasons.isEmpty(),
+                !this.inlinedPrimitiveReasons.isEmpty()
         );
     }
 }

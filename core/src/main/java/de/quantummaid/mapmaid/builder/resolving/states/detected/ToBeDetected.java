@@ -19,15 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.undetected;
+package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
+import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulSerializer;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
@@ -35,21 +37,26 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
-import static de.quantummaid.mapmaid.builder.resolving.states.resolving.ResolvingSerializer.resolvingSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.states.undetectable.UndetectableSerializer.undetectableSerializer;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolving.resolvingDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Undetectable.undetectableDuplex;
 import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class UndetectedSerializer extends StatefulSerializer {
+public final class ToBeDetected extends StatefulDefinition {
 
-    private UndetectedSerializer(final Context context) {
+    private ToBeDetected(final Context context) {
         super(context);
     }
 
-    public static UndetectedSerializer undetectedSerializer(final Context context) {
-        return new UndetectedSerializer(context);
+    public static ToBeDetected toBeDetected(final Context context) {
+        return new ToBeDetected(context);
+    }
+
+    @Override
+    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        this.context.scanInformationBuilder().changeRequirements(reducer);
+        return this;
     }
 
     @Override
@@ -57,14 +64,24 @@ public final class UndetectedSerializer extends StatefulSerializer {
                                      final Disambiguators disambiguators,
                                      final List<TypeIdentifier> injectedTypes) {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
+        final RequiredCapabilities requiredCapabilities = requirements.toCapabilities();
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(), scanInformationBuilder, serialization(), disambiguators, injectedTypes
+                this.context.type(),
+                scanInformationBuilder,
+                requiredCapabilities,
+                disambiguators,
+                injectedTypes
         );
         if (result.isFailure()) {
-            return undetectableSerializer(this.context, format("no serializer detected:%n%s",
-                    result.reasonForFailure()));
+            return undetectableDuplex(this.context, format("no duplex detected:%n%s", result.reasonForFailure()));
         }
-        this.context.setSerializer(result.result().serializer());
-        return resolvingSerializer(this.context);
+        if (requirements.serialization) {
+            this.context.setSerializer(result.result().serializer());
+        }
+        if (requirements.deserialization) {
+            this.context.setDeserializer(result.result().deserializer());
+        }
+        return resolvingDuplex(this.context);
     }
 }

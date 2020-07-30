@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.CollectionInformation.collectionInformations;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ListCollectionDeserializer.listDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ListCollectionSerializer.listSerializer;
 import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;

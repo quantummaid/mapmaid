@@ -38,7 +38,7 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.kotlin.KotlinUtils.isKotlinClass;
 import static de.quantummaid.mapmaid.builder.kotlin.KotlinUtils.kotlinClassOf;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedUnreasoned.fixedUnreasoned;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;

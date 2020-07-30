@@ -32,9 +32,11 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
+import static java.util.Optional.ofNullable;
 
 @ToString
 @EqualsAndHashCode
@@ -63,7 +65,7 @@ public final class Context {
         final boolean empty = this.scanInformationBuilder.removeSerializationReasonAndReturnIfEmpty(reason);
         if (empty) {
             final Reason transitiveReason = becauseOf(this.type);
-            dispatch(definition -> definition.removeSerialization(transitiveReason));
+            dispatch(definition -> definition.changeRequirements(current -> current.removeSerialization(transitiveReason)));
             return true;
         }
         return false;
@@ -73,7 +75,7 @@ public final class Context {
         final boolean empty = this.scanInformationBuilder.removeDeserializationReasonAndReturnIfEmpty(reason);
         if (empty) {
             final Reason transitiveReason = becauseOf(this.type);
-            dispatch(definition -> definition.removeDeserialization(transitiveReason));
+            dispatch(definition -> definition.changeRequirements(current -> current.removeDeserialization(transitiveReason)));
             return true;
         }
         return false;
@@ -83,16 +85,16 @@ public final class Context {
         return this.scanInformationBuilder;
     }
 
-    public TypeSerializer serializer() {
-        return this.serializer;
+    public Optional<TypeSerializer> serializer() {
+        return ofNullable(this.serializer);
     }
 
     public void setSerializer(final TypeSerializer serializer) {
         this.serializer = serializer;
     }
 
-    public TypeDeserializer deserializer() {
-        return this.deserializer;
+    public Optional<TypeDeserializer> deserializer() {
+        return ofNullable(this.deserializer);
     }
 
     public void setDeserializer(final TypeDeserializer deserializer) {

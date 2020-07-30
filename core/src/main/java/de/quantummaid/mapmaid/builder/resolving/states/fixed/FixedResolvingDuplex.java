@@ -19,36 +19,43 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.resolving;
+package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDeserializer;
 import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
-import static de.quantummaid.mapmaid.builder.resolving.states.resolved.ResolvedDuplex.resolvedDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedResolvedDuplex.fixedResolvedDuplex;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class ResolvingDuplex extends StatefulDeserializer {
+public final class FixedResolvingDuplex extends StatefulDefinition {
 
-    private ResolvingDuplex(final Context context) {
+    private FixedResolvingDuplex(final Context context) {
         super(context);
     }
 
-    public static ResolvingDuplex resolvingDuplex(final Context context) {
-        return new ResolvingDuplex(context);
+    public static StatefulDefinition fixedResolvingDuplex(final Context context) {
+        return new FixedResolvingDuplex(context);
     }
 
     @Override
+    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        this.context.scanInformationBuilder().changeRequirements(reducer);
+        return this;
+    }
+
+
+    @Override
     public StatefulDefinition resolve() {
-        this.context.serializer().requiredTypes().forEach(type ->
-                this.context.dispatch(Signal.addSerialization(type, becauseOf(this.context.type()))));
-        this.context.deserializer().requiredTypes().forEach(type ->
-                this.context.dispatch(Signal.addDeserialization(type, becauseOf(this.context.type()))));
-        return resolvedDuplex(this.context);
+        this.context.serializer().ifPresent(serializer -> serializer.requiredTypes().forEach(type ->
+                this.context.dispatch(Signal.addSerialization(type, becauseOf(this.context.type())))));
+        this.context.deserializer().ifPresent(deserializer -> deserializer.requiredTypes().forEach(type ->
+                this.context.dispatch(Signal.addDeserialization(type, becauseOf(this.context.type())))));
+        return fixedResolvedDuplex(this.context);
     }
 }

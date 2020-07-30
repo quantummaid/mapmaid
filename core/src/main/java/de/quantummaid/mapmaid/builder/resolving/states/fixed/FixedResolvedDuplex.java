@@ -19,15 +19,15 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.resolved;
+package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulSerializer;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,27 +35,39 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
+import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class ResolvedSerializer extends StatefulSerializer {
+public final class FixedResolvedDuplex extends StatefulDefinition {
 
-    private ResolvedSerializer(final Context context) {
+    private FixedResolvedDuplex(final Context context) {
         super(context);
     }
 
-    public static StatefulDefinition resolvedSerializer(final Context context) {
-        return new ResolvedSerializer(context);
+    public static StatefulDefinition fixedResolvedDuplex(final Context context) {
+        return new FixedResolvedDuplex(context);
+    }
+
+    @Override
+    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        this.context.scanInformationBuilder().changeRequirements(reducer);
+        return this;
     }
 
     @Override
     public Optional<Report> getDefinition() {
-        final TypeSerializer serializer = this.context.serializer();
-        final Definition definition = generalDefinition(this.context.type(), serializer, null);
+        final TypeSerializer serializer = this.context.serializer().orElse(null);
+        final TypeDeserializer deserializer = this.context.deserializer().orElse(null);
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
-        scanInformationBuilder.setSerializer(serializer);
-        final CollectionResult collectionResult = CollectionResult.collectionResult(definition, scanInformationBuilder);
-        return Optional.of(success(collectionResult));
+        if (serializer != null) {
+            scanInformationBuilder.setSerializer(serializer);
+        }
+        if (deserializer != null) {
+            scanInformationBuilder.setDeserializer(deserializer);
+        }
+        final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
+        return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
     }
 }

@@ -39,7 +39,7 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedUnreasoned.fixedUnreasoned;
 import static java.util.Optional.empty;
 
 @ToString
