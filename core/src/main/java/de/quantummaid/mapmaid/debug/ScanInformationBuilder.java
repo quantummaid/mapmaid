@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -77,23 +79,27 @@ public final class ScanInformationBuilder {
         this.deserializers.clear();
     }
 
-    public boolean changeRequirements(final Function<DetectionRequirementReasons, DetectionRequirementReasons> reducer) {
+    public boolean changeRequirements(final RequirementsReducer reducer) {
         final DetectionRequirementReasons oldReaons = this.detectionRequirementReasons;
-        final DetectionRequirementReasons newReasons = reducer.apply(oldReaons);
+        final DetectionRequirementReasons newReasons = reducer.reduce(oldReaons);
         this.detectionRequirementReasons = newReasons;
         return oldReaons.hasChanged(newReasons);
     }
 
-    public void addSerializationReason(final Reason reason) {
-        changeRequirements(reasons -> reasons.addSerialization(reason));
+    public DetectionRequirements detectionRequirements() {
+        return this.detectionRequirementReasons.detectionRequirements();
+    }
+
+    public boolean addSerializationReason(final Reason reason) {
+        return changeRequirements(reasons -> reasons.addSerialization(reason));
     }
 
     public boolean removeSerializationReasonAndReturnIfEmpty(final Reason reason) {
         return changeRequirements(reasons -> reasons.removeSerialization(reason));
     }
 
-    public void addDeserializationReason(final Reason reason) {
-        changeRequirements(reasons -> reasons.addDeserialization(reason));
+    public boolean addDeserializationReason(final Reason reason) {
+        return changeRequirements(reasons -> reasons.addDeserialization(reason));
     }
 
     public boolean removeDeserializationReasonAndReturnIfEmpty(final Reason reason) {

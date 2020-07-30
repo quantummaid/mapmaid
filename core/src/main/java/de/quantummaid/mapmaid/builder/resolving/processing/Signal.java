@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.builder.resolving.processing;
 
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.List;
@@ -40,19 +40,19 @@ public interface Signal {
     }
 
     static Signal addSerialization(final TypeIdentifier type, final Reason reason) {
-        return to(type, definition -> definition.addSerialization(reason));
+        return to(type, definition -> definition.changeRequirements(current -> current.addSerialization(reason)));
     }
 
     static Signal removeSerialization(final Reason reason) {
-        return definition -> definition.removeSerialization(reason);
+        return definition -> definition.changeRequirements(current -> current.removeSerialization(reason));
     }
 
     static Signal addDeserialization(final TypeIdentifier type, final Reason reason) {
-        return to(type, definition -> definition.addDeserialization(reason));
+        return to(type, definition -> definition.changeRequirements(current -> current.addDeserialization(reason)));
     }
 
     static Signal removeDeserialization(final Reason reason) {
-        return definition -> definition.removeDeserialization(reason);
+        return definition -> definition.changeRequirements(current -> current.removeDeserialization(reason));
     }
 
     static Signal resolve() {

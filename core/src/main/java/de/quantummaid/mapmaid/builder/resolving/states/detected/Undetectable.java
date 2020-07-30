@@ -19,13 +19,13 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.undetectable;
+package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDuplex;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -36,18 +36,28 @@ import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class UndetectableDuplex extends StatefulDuplex {
+public final class Undetectable extends StatefulDefinition {
     private final String reason;
 
-    private UndetectableDuplex(final Context context,
-                               final String reason) {
+    private Undetectable(final Context context,
+                         final String reason) {
         super(context);
         this.reason = reason;
     }
 
     public static StatefulDefinition undetectableDuplex(final Context context,
                                                         final String reason) {
-        return new UndetectableDuplex(context, reason);
+        return new Undetectable(context, reason);
+    }
+
+    @Override
+    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
+        if (changed) {
+            return ToBeDetected.toBeDetected(this.context);
+        } else {
+            return this;
+        }
     }
 
     @Override

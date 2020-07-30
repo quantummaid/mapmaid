@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.requirements;
 
+import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,32 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DetectionRequirements {
-    private final boolean serialization;
-    private final boolean deserialization;
-    private final boolean inliningProhibited;
+    public final boolean serialization;
+    public final boolean deserialization;
+    public final boolean hasToBeObject;
+    public final boolean hasToBeInlinedPrimitive;
 
     static DetectionRequirements detectionRequirements(final boolean serialization,
                                                        final boolean deserialization,
-                                                       final boolean inliningProhibited) {
-        return new DetectionRequirements(serialization, deserialization, inliningProhibited);
+                                                       final boolean hasToBeObject,
+                                                       final boolean hasToBeInlinedPrimitive) {
+        return new DetectionRequirements(serialization, deserialization, hasToBeObject, hasToBeInlinedPrimitive);
+    }
+
+    public boolean isUnreasoned() {
+        return !serialization && !deserialization;
+    }
+
+    public RequiredCapabilities toCapabilities() {
+        if (serialization && !deserialization) {
+            return RequiredCapabilities.serialization();
+        }
+        if (!serialization && deserialization) {
+            return RequiredCapabilities.deserialization();
+        }
+        if (serialization && deserialization) {
+            return RequiredCapabilities.duplex();
+        }
+        throw new UnsupportedOperationException();
     }
 }

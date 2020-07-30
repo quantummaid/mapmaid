@@ -22,8 +22,6 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.testsupport.domain.half.*;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -31,6 +29,8 @@ import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializatio
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class HalfDefinitionsSpecs {
 
@@ -40,7 +40,7 @@ public final class HalfDefinitionsSpecs {
                 aMapMaid()
                         .withType(ASerializationOnlyString.class, serialization())
                         .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                                advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyString.init()).withMarshallingType(JSON)
@@ -54,7 +54,7 @@ public final class HalfDefinitionsSpecs {
                 aMapMaid()
                         .withType(ADeserializationOnlyString.class, deserialization())
                         .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                                advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("\"foo\"").from(JSON).toTheType(ADeserializationOnlyString.class)
@@ -68,7 +68,7 @@ public final class HalfDefinitionsSpecs {
                 aMapMaid()
                         .withType(ASerializationOnlyComplexType.class, serialization())
                         .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                                advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(JSON)
@@ -85,7 +85,7 @@ public final class HalfDefinitionsSpecs {
                 aMapMaid()
                         .withType(ADeserializationOnlyComplexType.class, deserialization())
                         .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                                advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -100,9 +100,9 @@ public final class HalfDefinitionsSpecs {
     @Test
     public void mapMaidCanValidateThatSerializationWorks() {
         given(() -> aMapMaid()
-                .withType(AnUnresolvableSerializationOnlyComplexType.class, serialization())
+                .serializing(AnUnresolvableSerializationOnlyComplexType.class)
                 .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                        advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidIsInstantiated()
@@ -114,7 +114,7 @@ public final class HalfDefinitionsSpecs {
         given(() -> aMapMaid()
                 .withType(AnUnresolvableDeserializationOnlyComplexType.class, deserialization())
                 .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
+                        advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidIsInstantiated()

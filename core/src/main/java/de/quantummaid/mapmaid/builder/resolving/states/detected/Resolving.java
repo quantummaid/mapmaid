@@ -19,35 +19,36 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.unreasoned;
+package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Report;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
+import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolved.resolvedDuplex;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class Unreasoned extends StatefulDefinition {
+public final class Resolving extends StatefulDefinition {
 
-    private Unreasoned(final Context context) {
+    private Resolving(final Context context) {
         super(context);
     }
 
-    public static StatefulDefinition unreasoned(final Context context) {
-        return new Unreasoned(context);
+    public static Resolving resolvingDuplex(final Context context) {
+        return new Resolving(context);
     }
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
         final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
-        if(changed) {
+        if (changed) {
             return toBeDetected(context);
         } else {
             return this;
@@ -55,7 +56,17 @@ public final class Unreasoned extends StatefulDefinition {
     }
 
     @Override
-    public Optional<Report> getDefinition() {
-        return Optional.empty();
+    public StatefulDefinition resolve() {
+        final DetectionRequirements requirements = this.context.scanInformationBuilder().detectionRequirements();
+
+        if (requirements.serialization) {
+            this.context.serializer().orElseThrow().requiredTypes().forEach(type ->
+                    this.context.dispatch(Signal.addSerialization(type, becauseOf(this.context.type()))));
+        }
+        if (requirements.deserialization) {
+            this.context.deserializer().orElseThrow().requiredTypes().forEach(type ->
+                    this.context.dispatch(Signal.addDeserialization(type, becauseOf(this.context.type()))));
+        }
+        return resolvedDuplex(this.context);
     }
 }

@@ -19,35 +19,35 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.fixed.resolving;
+package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedDeserializerDefinition;
-import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.resolved.FixedResolvedDeserializer.fixedResolvedDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedResolvingDuplex.fixedResolvingDuplex;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class FixedResolvingDeserializer extends FixedDeserializerDefinition {
+public final class FixedUnreasoned extends StatefulDefinition {
 
-    private FixedResolvingDeserializer(final Context context) {
+    private FixedUnreasoned(final Context context) {
         super(context);
     }
 
-    public static StatefulDefinition fixedResolvingDeserializer(final Context context) {
-        return new FixedResolvingDeserializer(context);
+    public static StatefulDefinition fixedUnreasoned(final Context context) {
+        return new FixedUnreasoned(context);
     }
 
     @Override
-    public StatefulDefinition resolve() {
-        this.context.deserializer().requiredTypes().forEach(requirement ->
-                this.context.dispatch(
-                        Signal.addDeserialization(requirement, becauseOf(this.context.type()))));
-        return fixedResolvedDeserializer(this.context);
+    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
+        if (changed) {
+            return fixedResolvingDuplex(context);
+        } else {
+            return this;
+        }
     }
 }

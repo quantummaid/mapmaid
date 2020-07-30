@@ -23,8 +23,8 @@ package de.quantummaid.mapmaid.builder.resolving.states.injecting;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -57,8 +57,8 @@ public final class InjectedDefinition extends StatefulDefinition {
 
     @Override
     public Optional<Report> getDefinition() {
-        final TypeSerializer serializer = this.context.serializer();
-        final TypeDeserializer deserializer = this.context.deserializer();
+        final TypeSerializer serializer = this.context.serializer().orElseThrow();
+        final TypeDeserializer deserializer = this.context.deserializer().orElseThrow();
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         scanInformationBuilder.setSerializer(serializer);
         scanInformationBuilder.setDeserializer(deserializer);
@@ -67,26 +67,8 @@ public final class InjectedDefinition extends StatefulDefinition {
     }
 
     @Override
-    public StatefulDefinition addSerialization(final Reason reason) {
-        this.context.scanInformationBuilder().addSerializationReason(reason);
-        return this;
-    }
-
-    @Override
-    public StatefulDefinition removeSerialization(final Reason reason) {
-        this.context.removeSerializationReasonAndReturnIfEmpty(reason);
-        return this;
-    }
-
-    @Override
-    public StatefulDefinition addDeserialization(final Reason reason) {
-        this.context.scanInformationBuilder().addDeserializationReason(reason);
-        return this;
-    }
-
-    @Override
-    public StatefulDefinition removeDeserialization(final Reason reason) {
-        this.context.removeDeserializationReasonAndReturnIfEmpty(reason);
+    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        this.context.scanInformationBuilder().changeRequirements(reducer);
         return this;
     }
 }
