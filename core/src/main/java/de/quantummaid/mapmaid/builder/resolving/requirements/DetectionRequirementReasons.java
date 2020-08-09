@@ -24,12 +24,14 @@ package de.quantummaid.mapmaid.builder.resolving.requirements;
 import de.quantummaid.mapmaid.debug.Reason;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 
+@ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DetectionRequirementReasons {
     public final List<Reason> serializationReasons;

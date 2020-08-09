@@ -19,57 +19,63 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.detected;
+package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
+import static de.quantummaid.mapmaid.builder.resolving.Report.success;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
-import static java.lang.String.format;
+import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class Undetectable extends StatefulDefinition {
-    private final String reason;
+public final class Resolved extends StatefulDefinition {
 
-    private Undetectable(final Context context,
-                         final String reason) {
+    private Resolved(final Context context) {
         super(context);
-        this.reason = reason;
     }
 
-    public static StatefulDefinition undetectable(final Context context,
-                                                  final String reason) {
-        return new Undetectable(context, reason);
+    public static StatefulDefinition fixedResolvedDuplex(final Context context) {
+        return new Resolved(context);
     }
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = context.scanInformationBuilder().changeRequirements(reducer);
-        if (changed) {
-            return ToBeDetected.toBeDetected(context);
-        } else {
-            return this;
-        }
+        this.context.scanInformationBuilder().changeRequirements(reducer);
+        return this;
     }
 
     @Override
     public Optional<Report> getDefinition() {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        final CollectionResult collectionResult = collectionResult(null, scanInformationBuilder);
-        final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
-        final String mode = Lingo.mode(detectionRequirements.serialization, detectionRequirements.deserialization);
-        return Optional.of(failure(collectionResult, format("unable to detect %s:\n%s", mode, reason)));
+        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
+        final TypeSerializer serializer;
+        if (detectionRequirements.serialization) {
+            serializer = this.context.serializer().orElseThrow();
+            scanInformationBuilder.setSerializer(serializer);
+        } else {
+            serializer = null;
+        }
+        final TypeDeserializer deserializer;
+        if (detectionRequirements.deserialization) {
+            deserializer = this.context.deserializer().orElseThrow();
+            scanInformationBuilder.setDeserializer(deserializer);
+        } else {
+            deserializer = null;
+        }
+        final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
+        return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
     }
 }

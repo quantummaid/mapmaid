@@ -22,32 +22,30 @@
 package de.quantummaid.mapmaid.builder.resolving.states.fixed;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Report;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
+import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
-import static de.quantummaid.mapmaid.builder.resolving.Report.success;
-import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
-import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.Resolved.fixedResolvedDuplex;
+import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class FixedResolvedDuplex extends StatefulDefinition {
+public final class Resolving extends StatefulDefinition {
 
-    private FixedResolvedDuplex(final Context context) {
+    private Resolving(final Context context) {
         super(context);
     }
 
-    public static StatefulDefinition fixedResolvedDuplex(final Context context) {
-        return new FixedResolvedDuplex(context);
+    public static StatefulDefinition fixedResolvingDuplex(final Context context) {
+        return new Resolving(context);
     }
 
     @Override
@@ -56,18 +54,19 @@ public final class FixedResolvedDuplex extends StatefulDefinition {
         return this;
     }
 
+
     @Override
-    public Optional<Report> getDefinition() {
-        final TypeSerializer serializer = this.context.serializer().orElse(null);
-        final TypeDeserializer deserializer = this.context.deserializer().orElse(null);
-        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
-        if (serializer != null) {
-            scanInformationBuilder.setSerializer(serializer);
+    public StatefulDefinition resolve() {
+        final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
+        final Reason reason = becauseOf(this.context.type());
+        if (detectionRequirements.serialization) {
+            final TypeSerializer serializer = context.serializer().orElseThrow();
+            serializer.requiredTypes().forEach(type -> context.dispatch(addSerialization(type, reason)));
         }
-        if (deserializer != null) {
-            scanInformationBuilder.setDeserializer(deserializer);
+        if (detectionRequirements.deserialization) {
+            final TypeDeserializer deserializer = context.deserializer().orElseThrow();
+            deserializer.requiredTypes().forEach(type -> context.dispatch(addDeserialization(type, reason)));
         }
-        final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
-        return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
+        return fixedResolvedDuplex(this.context);
     }
 }

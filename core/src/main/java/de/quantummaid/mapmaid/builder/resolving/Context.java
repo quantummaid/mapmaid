@@ -58,6 +58,7 @@ public final class Context {
     }
 
     public void dispatch(final Signal signal) {
+        System.out.println("signal = " + signal);
         this.dispatcher.accept(signal);
     }
 

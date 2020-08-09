@@ -26,7 +26,6 @@ import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.states.unreasoned.Unreasoned;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
@@ -76,9 +75,8 @@ public final class Resolved extends StatefulDefinition {
 
     @Override
     public Optional<Report> getDefinition() {
-        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
-
         final TypeSerializer serializer;
         if (requirements.serialization) {
             serializer = this.context.serializer().orElseThrow();
