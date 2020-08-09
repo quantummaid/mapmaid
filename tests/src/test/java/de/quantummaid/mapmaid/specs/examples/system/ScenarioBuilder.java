@@ -137,7 +137,7 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withSerializationFailing() {
-        return withSerializationFailing(format("%s: unable to detect serializer", this.type.description()));
+        return withSerializationFailing(format("%s: unable to detect serialization-only", this.type.description()));
     }
 
     public ScenarioBuilder withSerializationFailing(final String message) {
@@ -146,7 +146,7 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withDeserializationFailing() {
-        return withDeserializationFailing(format("%s: unable to detect deserializer", this.type.description()));
+        return withDeserializationFailing(format("%s: unable to detect deserialization-only", this.type.description()));
     }
 
     public ScenarioBuilder withDeserializationFailing(final String message) {
@@ -224,7 +224,7 @@ public final class ScenarioBuilder {
                 initializationWasSuccessfulExpectation(),
                 serializationWas(this.serializedForm),
                 deserializationFailedForNotSupported(this.type));
-        withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserializer", this.type.description())));
+        withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserialization-only", this.type.description())));
         withDuplexFailing();
         return this;
     }

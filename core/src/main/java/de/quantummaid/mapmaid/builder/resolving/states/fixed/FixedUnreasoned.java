@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedResolvingDuplex.fixedResolvingDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.fixed.Resolving.fixedResolvingDuplex;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)

@@ -32,17 +32,18 @@ import lombok.ToString;
 public final class RequiredCapabilities {
     private final boolean serialization;
     private final boolean deserialization;
+    private final String description;
 
     public static RequiredCapabilities duplex() {
-        return new RequiredCapabilities(true, true);
+        return new RequiredCapabilities(true, true, "duplex");
     }
 
     public static RequiredCapabilities serialization() {
-        return new RequiredCapabilities(true, false);
+        return new RequiredCapabilities(true, false, "serialization");
     }
 
     public static RequiredCapabilities deserialization() {
-        return new RequiredCapabilities(false, true);
+        return new RequiredCapabilities(false, true, "deserialization");
     }
 
     public boolean hasDeserialization() {
@@ -51,5 +52,9 @@ public final class RequiredCapabilities {
 
     public boolean hasSerialization() {
         return this.serialization;
+    }
+
+    public String describe() {
+        return description;
     }
 }

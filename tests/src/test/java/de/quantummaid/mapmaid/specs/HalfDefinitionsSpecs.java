@@ -101,12 +101,11 @@ public final class HalfDefinitionsSpecs {
     public void mapMaidCanValidateThatSerializationWorks() {
         given(() -> aMapMaid()
                 .serializing(AnUnresolvableSerializationOnlyComplexType.class)
-                .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString: unable to detect serializer");
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString: unable to detect serialization-only");
     }
 
     @Test
@@ -118,6 +117,6 @@ public final class HalfDefinitionsSpecs {
                 .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString: unable to detect deserializer");
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyString: unable to detect deserialization-only");
     }
 }

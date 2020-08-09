@@ -38,7 +38,7 @@ import lombok.ToString;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolving.resolvingDuplex;
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Undetectable.undetectableDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Undetectable.undetectable;
 import static java.lang.String.format;
 
 @ToString
@@ -55,6 +55,7 @@ public final class ToBeDetected extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
+        System.out.println("change!!! " + reducer);
         this.context.scanInformationBuilder().changeRequirements(reducer);
         return this;
     }
@@ -66,6 +67,7 @@ public final class ToBeDetected extends StatefulDefinition {
         final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
         final RequiredCapabilities requiredCapabilities = requirements.toCapabilities();
+        System.out.println("requiredCapabilities = " + requiredCapabilities);
         final DetectionResult<DisambiguationResult> result = detector.detect(
                 this.context.type(),
                 scanInformationBuilder,
@@ -74,7 +76,10 @@ public final class ToBeDetected extends StatefulDefinition {
                 injectedTypes
         );
         if (result.isFailure()) {
-            return undetectableDuplex(this.context, format("no duplex detected:%n%s", result.reasonForFailure()));
+            return undetectable(this.context, format("no %s detected:%n%s",
+                    requiredCapabilities.describe(),
+                    result.reasonForFailure())
+            );
         }
         if (requirements.serialization) {
             this.context.setSerializer(result.result().serializer());

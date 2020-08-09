@@ -87,6 +87,7 @@ public final class ScanInformationBuilder {
     }
 
     public DetectionRequirements detectionRequirements() {
+        System.out.println(this.detectionRequirementReasons);
         return this.detectionRequirementReasons.detectionRequirements();
     }
 
