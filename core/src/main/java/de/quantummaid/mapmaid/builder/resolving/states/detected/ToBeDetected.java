@@ -55,8 +55,7 @@ public final class ToBeDetected extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        System.out.println("change!!! " + reducer);
-        this.context.scanInformationBuilder().changeRequirements(reducer);
+        context.scanInformationBuilder().changeRequirements(reducer);
         return this;
     }
 
@@ -64,29 +63,28 @@ public final class ToBeDetected extends StatefulDefinition {
     public StatefulDefinition detect(final SimpleDetector detector,
                                      final Disambiguators disambiguators,
                                      final List<TypeIdentifier> injectedTypes) {
-        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
         final RequiredCapabilities requiredCapabilities = requirements.toCapabilities();
-        System.out.println("requiredCapabilities = " + requiredCapabilities);
         final DetectionResult<DisambiguationResult> result = detector.detect(
-                this.context.type(),
+                context.type(),
                 scanInformationBuilder,
                 requiredCapabilities,
                 disambiguators,
                 injectedTypes
         );
         if (result.isFailure()) {
-            return undetectable(this.context, format("no %s detected:%n%s",
+            return undetectable(context, format("no %s detected:%n%s",
                     requiredCapabilities.describe(),
                     result.reasonForFailure())
             );
         }
         if (requirements.serialization) {
-            this.context.setSerializer(result.result().serializer());
+            context.setSerializer(result.result().serializer());
         }
         if (requirements.deserialization) {
-            this.context.setDeserializer(result.result().deserializer());
+            context.setDeserializer(result.result().deserializer());
         }
-        return resolvingDuplex(this.context);
+        return resolvingDuplex(context);
     }
 }

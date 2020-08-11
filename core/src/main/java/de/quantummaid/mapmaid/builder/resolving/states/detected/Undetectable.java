@@ -70,6 +70,6 @@ public final class Undetectable extends StatefulDefinition {
         final CollectionResult collectionResult = collectionResult(null, scanInformationBuilder);
         final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
         final String mode = Lingo.mode(detectionRequirements.serialization, detectionRequirements.deserialization);
-        return Optional.of(failure(collectionResult, format("unable to detect %s:\n%s", mode, reason)));
+        return Optional.of(failure(collectionResult, format("unable to detect %s:%n%s", mode, reason)));
     }
 }

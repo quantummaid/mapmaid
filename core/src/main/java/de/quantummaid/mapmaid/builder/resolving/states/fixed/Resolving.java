@@ -28,11 +28,13 @@ import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
-import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
+import java.util.List;
+
+import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.*;
 import static de.quantummaid.mapmaid.builder.resolving.states.fixed.Resolved.fixedResolvedDuplex;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
@@ -54,18 +56,25 @@ public final class Resolving extends StatefulDefinition {
         return this;
     }
 
-
     @Override
     public StatefulDefinition resolve() {
         final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
         final Reason reason = becauseOf(this.context.type());
         if (detectionRequirements.serialization) {
             final TypeSerializer serializer = context.serializer().orElseThrow();
-            serializer.requiredTypes().forEach(type -> context.dispatch(addSerialization(type, reason)));
+            final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
+            requiredTypes.forEach(type -> context.dispatch(addSerialization(type, reason)));
+            if (serializer.forcesDependenciesToBeObjects()) {
+                requiredTypes.forEach(type -> context.dispatch(forceObject(reason)));
+            }
         }
         if (detectionRequirements.deserialization) {
             final TypeDeserializer deserializer = context.deserializer().orElseThrow();
-            deserializer.requiredTypes().forEach(type -> context.dispatch(addDeserialization(type, reason)));
+            final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
+            requiredTypes.forEach(type -> context.dispatch(addDeserialization(type, reason)));
+            if (deserializer.forcesDependenciesToBeObjects()) {
+                requiredTypes.forEach(type -> context.dispatch(forceObject(reason)));
+            }
         }
         return fixedResolvedDuplex(this.context);
     }

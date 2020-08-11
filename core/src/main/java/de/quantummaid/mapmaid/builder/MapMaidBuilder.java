@@ -245,11 +245,9 @@ public final class MapMaidBuilder implements
         manuallyAddedStates.add(configuration -> {
             final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
             if (capabilities.hasSerialization()) {
-                System.out.println("adding serialization");
                 this.processor.dispatch(addSerialization(typeIdentifier, reason));
             }
             if (capabilities.hasDeserialization()) {
-                System.out.println("adding deserialization");
                 this.processor.dispatch(addDeserialization(typeIdentifier, reason));
             }
         });
@@ -259,7 +257,6 @@ public final class MapMaidBuilder implements
     @Override
     public <T> MapMaidBuilder withCustomType(final RequiredCapabilities capabilities,
                                              final CustomType<T> customType) {
-        System.out.println("capabilities = " + capabilities);
         validateNotNull(capabilities, "capabilities");
         validateNotNull(customType, "customType");
         manuallyAddedStates.add(configuration -> {

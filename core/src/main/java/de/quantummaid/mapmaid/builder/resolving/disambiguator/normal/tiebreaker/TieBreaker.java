@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -69,21 +70,21 @@ public final class TieBreaker {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
-
+        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
-            customPrimitiveBreaking = this.customPrimitiveSerializationHints.isTieBreaking(customPrimitive.result());
+            customPrimitiveBreaking = this.customPrimitiveSerializationHints.isTieBreaking(customPrimitive.result(),
+                    detectionRequirements);
         } else {
             customPrimitiveBreaking = notATieBreakingReason();
         }
-
         final TieBreakingReason serializedObjectBreaking;
         if (!serializedObject.isFailure()) {
-            serializedObjectBreaking = this.serializedObjectSerializationHints.isTieBreaking(serializedObject.result());
+            serializedObjectBreaking = this.serializedObjectSerializationHints.isTieBreaking(serializedObject.result(),
+                    detectionRequirements);
         } else {
             serializedObjectBreaking = notATieBreakingReason();
         }
-
         if (customPrimitiveBreaking.isTieBreaking() && serializedObjectBreaking.isTieBreaking()) {
             final String explanation = format("Unable to choose between serialized object and custom primitive%n" +
                             "\tSerialized Object serializer: %s%n" +
@@ -95,7 +96,6 @@ public final class TieBreaker {
             );
             return failure(explanation);
         }
-
         return breakTie(
                 customPrimitiveBreaking,
                 serializedObjectBreaking,
@@ -112,10 +112,12 @@ public final class TieBreaker {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
+        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
             customPrimitiveBreaking = this.customPrimitiveDeserializationHints.isTieBreaking(
-                    customPrimitive.result()
+                    customPrimitive.result(),
+                    detectionRequirements
             );
         } else {
             customPrimitiveBreaking = notATieBreakingReason();
@@ -123,7 +125,8 @@ public final class TieBreaker {
         final TieBreakingReason serializedObjectBreaking;
         if (!serializedObject.isFailure()) {
             serializedObjectBreaking = this.serializedObjectDeserializationHints.isTieBreaking(
-                    serializedObject.result()
+                    serializedObject.result(),
+                    detectionRequirements
             );
         } else {
             serializedObjectBreaking = notATieBreakingReason();

@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
 
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+
 public interface Preference<T> {
-    boolean prefer(T t);
+    boolean prefer(T t, DetectionRequirements requirements);
 }

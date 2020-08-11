@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.detection.serializedobject;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
@@ -65,9 +66,14 @@ public final class SerializationFieldInstantiation {
             final DisambiguationContext context) {
         final List<SerializationField> serializationFieldList = new ArrayList<>(this.fields.size());
         final List<String> problems = smallList();
+        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         this.fields.forEach((name, fieldImplementations) -> {
             final List<SerializationField> preferredFields = preferences.preferred(
-                    fieldImplementations, context, containingType, scanInformationBuilder::ignoreSerializationField);
+                    fieldImplementations,
+                    context,
+                    detectionRequirements,
+                    containingType,
+                    scanInformationBuilder::ignoreSerializationField);
             if (preferredFields.size() != 1) {
                 final String fieldsString = preferredFields.stream()
                         .map(SerializationField::describe)

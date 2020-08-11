@@ -38,7 +38,6 @@ import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
@@ -58,8 +57,7 @@ public final class ScanInformationBuilder {
     private TypeDeserializer deserializer;
 
     public static ScanInformationBuilder scanInformationBuilder(final TypeIdentifier type) {
-        return new ScanInformationBuilder(
-                type, smallMap(), smallMap(), smallMap());
+        return new ScanInformationBuilder(type, smallMap(), smallMap(), smallMap());
     }
 
     public void addSerializer(final TypeSerializer serializer) {
@@ -87,24 +85,7 @@ public final class ScanInformationBuilder {
     }
 
     public DetectionRequirements detectionRequirements() {
-        System.out.println(this.detectionRequirementReasons);
         return this.detectionRequirementReasons.detectionRequirements();
-    }
-
-    public boolean addSerializationReason(final Reason reason) {
-        return changeRequirements(reasons -> reasons.addSerialization(reason));
-    }
-
-    public boolean removeSerializationReasonAndReturnIfEmpty(final Reason reason) {
-        return changeRequirements(reasons -> reasons.removeSerialization(reason));
-    }
-
-    public boolean addDeserializationReason(final Reason reason) {
-        return changeRequirements(reasons -> reasons.addDeserialization(reason));
-    }
-
-    public boolean removeDeserializationReasonAndReturnIfEmpty(final Reason reason) {
-        return changeRequirements(reasons -> reasons.removeDeserialization(reason));
     }
 
     public void ignoreAllOtherSerializers(final TypeSerializer serializer,

@@ -105,7 +105,7 @@ public final class DisambiguatorBuilder {
                         ignoreNonPublicConstructorsForCustomPrimitiveDeserialization()
                 ),
                 List.of(
-                        deserializer -> deserializer instanceof CustomPrimitiveAsEnumDeserializer,
+                        (deserializer, requirements) -> deserializer instanceof CustomPrimitiveAsEnumDeserializer,
                         customPrimitiveFactoryNamed(this.preferredCustomPrimitiveFactoryName),
                         customPrimitiveFactoryWithSameNameAsClass()
                 ));
@@ -120,7 +120,7 @@ public final class DisambiguatorBuilder {
                         nameOfSerializerMethodIsNot("hashCode")
                 ),
                 List.of(
-                        serializer -> serializer instanceof EnumCustomPrimitiveSerializer,
+                        (serializer, requirements) -> serializer instanceof EnumCustomPrimitiveSerializer,
                         customPrimitiveSerializerNamed(this.preferredCustomPrimitiveSerializationMethodName)
                 ));
     }
@@ -134,7 +134,7 @@ public final class DisambiguatorBuilder {
                 List.of(
                         serializedObjectFactoryNamed(this.preferredSerializedObjectFactoryName),
                         serializedObjectFactoryWithSameNameAsClass(),
-                        deserializer -> deserializer instanceof MethodSerializedObjectDeserializer
+                        (deserializer, requirements) -> deserializer instanceof MethodSerializedObjectDeserializer
                 ));
     }
 
