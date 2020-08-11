@@ -55,6 +55,10 @@ public interface Signal {
         return definition -> definition.changeRequirements(current -> current.removeDeserialization(reason));
     }
 
+    static Signal forceObject(final Reason reason) {
+        return definition -> definition.changeRequirements(current -> current.enforceObject(reason));
+    }
+
     static Signal resolve() {
         return StatefulDefinition::resolve;
     }

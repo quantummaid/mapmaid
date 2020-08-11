@@ -47,6 +47,18 @@ public final class DetectionRequirements {
         return !serialization && !deserialization;
     }
 
+    public boolean isSerializationOnly() {
+        return serialization && !deserialization;
+    }
+
+    public boolean isDeserializationOnly() {
+        return !serialization && deserialization;
+    }
+
+    public boolean isDuplex() {
+        return serialization && deserialization;
+    }
+
     public RequiredCapabilities toCapabilities() {
         if (serialization && !deserialization) {
             return RequiredCapabilities.serialization();

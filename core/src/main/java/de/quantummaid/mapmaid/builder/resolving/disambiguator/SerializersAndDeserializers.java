@@ -30,8 +30,6 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,24 +37,20 @@ public final class SerializersAndDeserializers {
     private final List<TypeSerializer> serializers;
     private final List<TypeDeserializer> deserializers;
 
+    public static SerializersAndDeserializers empty() {
+        return new SerializersAndDeserializers(List.of(), List.of());
+    }
+
     public static SerializersAndDeserializers serializersAndDeserializers(final List<TypeSerializer> serializers,
                                                                           final List<TypeDeserializer> deserializers) {
         return new SerializersAndDeserializers(serializers, deserializers);
     }
 
-    public boolean deserializationOnly() {
-        return isNull(this.serializers);
-    }
-
-    public boolean serializationOnly() {
-        return isNull(this.deserializers);
-    }
-
     public List<TypeSerializer> serializers() {
-        return this.serializers;
+        return serializers;
     }
 
     public List<TypeDeserializer> deserializers() {
-        return this.deserializers;
+        return deserializers;
     }
 }

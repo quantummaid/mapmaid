@@ -41,7 +41,7 @@ final class CommonPreferences {
     }
 
     static Preference<SerializationField> publicFields() {
-        return field -> {
+        return (field, requirements) -> {
             final SerializationFieldQuery query = field.getQuery();
             return query instanceof PublicFieldQuery;
         };
@@ -56,7 +56,7 @@ final class CommonPreferences {
     }
 
     static Preference<TypeDeserializer> serializedObjectFactoryThat(final Predicate<Method> filter) {
-        return deserializer -> {
+        return (deserializer, requirements) -> {
             if (!(deserializer instanceof MethodSerializedObjectDeserializer)) {
                 return false;
             }
@@ -66,7 +66,7 @@ final class CommonPreferences {
     }
 
     static Preference<TypeSerializer> customPrimitiveSerializerNamed(final String name) {
-        return serializer -> {
+        return (serializer, requirements) -> {
             if (!(serializer instanceof MethodCustomPrimitiveSerializer)) {
                 return false;
             }
@@ -84,7 +84,7 @@ final class CommonPreferences {
     }
 
     private static Preference<TypeDeserializer> customPrimitiveFactoryThat(final Predicate<Method> filter) {
-        return deserializer -> {
+        return (deserializer, requirements) -> {
             if (!(deserializer instanceof CustomPrimitiveByMethodDeserializer)) {
                 return false;
             }

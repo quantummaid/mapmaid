@@ -85,8 +85,8 @@ public final class PolymorphySpecs {
     }
 
     @Test
-    public void polymorphicSubtypesAreNotPrimitiveInlined() {
-        given(
+    public void polymorphicSubtypesCannotBePrimitiveInlined() {
+        given(() ->
                 aMapMaid()
                         .serializingAndDeserializingSubtypes(Supertype.class, PrimitiveSubtype.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
@@ -98,5 +98,17 @@ public final class PolymorphySpecs {
                         "  \"__type__\": \"de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype\",\n" +
                         "  \"internalValue\": \"abc\"\n" +
                         "}");
+    }
+
+    @Test
+    public void polymorphicSubtypesCauseInitializationToFailIfTheyCanOnlyBePrimitive() {
+        given(() ->
+                aMapMaid()
+                        .serializingAndDeserializingSubtypes(Supertype.class, PrimitiveOnlySubtype.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidIsInstantiated()
+                .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.specs.polymorphy.PrimitiveOnlySubtype: unable to detect duplex:");
     }
 }

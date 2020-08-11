@@ -29,14 +29,14 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PrimitiveSubtype implements Supertype {
+public final class PrimitiveOnlySubtype implements Supertype {
     private final String internalValue;
 
-    public static PrimitiveSubtype primitiveSubtype(final String internalValue) {
-        return new PrimitiveSubtype(internalValue);
+    public static PrimitiveOnlySubtype primitiveOnlySubtype(final String value) {
+        return new PrimitiveOnlySubtype(value);
     }
 
-    public String getInternalValue() {
-        return internalValue;
+    public String value() {
+        return this.internalValue;
     }
 }

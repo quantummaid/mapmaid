@@ -77,6 +77,11 @@ public final class PolymorphicSerializer implements TypeSerializer {
     }
 
     @Override
+    public boolean forcesDependenciesToBeObjects() {
+        return true;
+    }
+
+    @Override
     public String description() {
         return format("polymorphic serializer for %s", this.superType.description());
     }

@@ -35,11 +35,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceClass.equivalenceClass;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceSignature.allOfDeserializer;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -72,17 +73,18 @@ public final class SymmetryBuilder {
     }
 
     public void addSerializer(final SerializationFieldOptions serializer) {
-        this.equivalenceClasses.forEach((signature, equivalenceClass) -> signature.match(serializer)
+        validateNotNull(serializer, "serializer");
+        equivalenceClasses.forEach((signature, equivalenceClass) -> signature.match(serializer)
                 .ifPresent(specializedSerializer ->
-                        this.equivalenceClasses.get(signature).setSerializationFields(specializedSerializer)));
+                        equivalenceClasses.get(signature).setSerializationFields(specializedSerializer)));
     }
 
     public DetectionResult<EquivalenceClass> determineGreatestCommonFields() {
-        final List<EquivalenceSignature> sorted = this.equivalenceClasses.keySet().stream()
+        final List<EquivalenceSignature> sorted = equivalenceClasses.keySet().stream()
                 .sorted()
                 .collect(toList());
         final List<EquivalenceClass> supportedClasses = sorted.stream()
-                .map(this.equivalenceClasses::get)
+                .map(equivalenceClasses::get)
                 .filter(EquivalenceClass::fullySupported)
                 .collect(toList());
         if (supportedClasses.isEmpty()) {

@@ -49,6 +49,10 @@ public interface TypeDeserializer {
 
     String description();
 
+    default boolean forcesDependenciesToBeObjects() {
+        return false;
+    }
+
     default Universal schema(final SchemaCallback schemaCallback) {
         throw new UnsupportedOperationException(format("Schema generation not supported for '%s'", description()));
     }

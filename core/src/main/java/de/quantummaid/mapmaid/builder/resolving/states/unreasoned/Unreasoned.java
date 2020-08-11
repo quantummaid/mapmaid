@@ -47,7 +47,7 @@ public final class Unreasoned extends StatefulDefinition {
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
         final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
-        if(changed) {
+        if (changed) {
             return toBeDetected(context);
         } else {
             return this;

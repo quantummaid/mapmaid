@@ -38,7 +38,7 @@ public final class CommonTieBreakers {
     }
 
     public static IrrefutableHint<TypeDeserializer> serializedObjectFactoryNamed(final String name) {
-        return element -> {
+        return (element, detectionRequirements) -> {
             if (!(element instanceof MethodSerializedObjectDeserializer)) {
                 return notATieBreakingReason();
             }
@@ -52,7 +52,7 @@ public final class CommonTieBreakers {
     }
 
     public static IrrefutableHint<TypeDeserializer> primitiveFactoryNamed(final String name) {
-        return element -> {
+        return (element, detectionRequirements) -> {
             if (!(element instanceof CustomPrimitiveByMethodDeserializer)) {
                 return notATieBreakingReason();
             }
@@ -66,7 +66,7 @@ public final class CommonTieBreakers {
     }
 
     public static IrrefutableHint<TypeSerializer> primitiveSerializationMethodNamed(final String name) {
-        return element -> {
+        return (element, detectionRequirements) -> {
             if (!(element instanceof MethodCustomPrimitiveSerializer)) {
                 return notATieBreakingReason();
             }
