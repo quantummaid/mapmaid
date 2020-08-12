@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.builder.resolving.requirements;
 
 import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -38,9 +40,40 @@ public final class DetectionRequirementReasons {
     public final List<Reason> deserializationReasons;
     private final List<Reason> objectEnforcingReasons;
     private final List<Reason> inlinedPrimitiveReasons;
+    private final TypeSerializer manuallyConfiguredSerializer;
+    private final TypeDeserializer manuallyConfiguredDeserializer;
 
     public static DetectionRequirementReasons empty() {
-        return new DetectionRequirementReasons(emptyList(), emptyList(), emptyList(), emptyList());
+        return new DetectionRequirementReasons(
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                null,
+                null
+        );
+    }
+
+    public DetectionRequirementReasons setManuallyConfiguredSerializer(final TypeSerializer manuallyConfiguredSerializer) {
+        return new DetectionRequirementReasons(
+                this.serializationReasons,
+                this.deserializationReasons,
+                this.objectEnforcingReasons,
+                this.inlinedPrimitiveReasons,
+                manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
+        );
+    }
+
+    public DetectionRequirementReasons setManuallyConfiguredDeserializer(final TypeDeserializer manuallyConfiguredDeserializer) {
+        return new DetectionRequirementReasons(
+                this.serializationReasons,
+                this.deserializationReasons,
+                this.objectEnforcingReasons,
+                this.inlinedPrimitiveReasons,
+                this.manuallyConfiguredSerializer,
+                manuallyConfiguredDeserializer
+        );
     }
 
     public DetectionRequirementReasons addSerialization(final Reason reason) {
@@ -50,7 +83,9 @@ public final class DetectionRequirementReasons {
                 newSerializationReasons,
                 this.deserializationReasons,
                 this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons
+                this.inlinedPrimitiveReasons,
+                this.manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
         );
     }
 
@@ -61,7 +96,9 @@ public final class DetectionRequirementReasons {
                 newSerializationReasons,
                 this.deserializationReasons,
                 this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons
+                this.inlinedPrimitiveReasons,
+                this.manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
         );
     }
 
@@ -72,7 +109,9 @@ public final class DetectionRequirementReasons {
                 this.serializationReasons,
                 newDeserializationReasons,
                 this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons
+                this.inlinedPrimitiveReasons,
+                this.manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
         );
     }
 
@@ -83,7 +122,9 @@ public final class DetectionRequirementReasons {
                 this.serializationReasons,
                 newDeserializationReasons,
                 this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons
+                this.inlinedPrimitiveReasons,
+                this.manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
         );
     }
 
@@ -94,18 +135,9 @@ public final class DetectionRequirementReasons {
                 this.serializationReasons,
                 this.deserializationReasons,
                 newObjectEnforcingReasons,
-                this.inlinedPrimitiveReasons
-        );
-    }
-
-    public DetectionRequirementReasons removeObjectEnforcingReason(final Reason reason) {
-        final List<Reason> newObjectEnforcingReasons = new ArrayList<>(this.objectEnforcingReasons);
-        newObjectEnforcingReasons.remove(reason);
-        return new DetectionRequirementReasons(
-                this.serializationReasons,
-                this.deserializationReasons,
-                newObjectEnforcingReasons,
-                this.inlinedPrimitiveReasons
+                this.inlinedPrimitiveReasons,
+                this.manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
         );
     }
 
@@ -120,7 +152,9 @@ public final class DetectionRequirementReasons {
                 !this.serializationReasons.isEmpty(),
                 !this.deserializationReasons.isEmpty(),
                 !this.objectEnforcingReasons.isEmpty(),
-                !this.inlinedPrimitiveReasons.isEmpty()
+                !this.inlinedPrimitiveReasons.isEmpty(),
+                this.manuallyConfiguredSerializer,
+                this.manuallyConfiguredDeserializer
         );
     }
 }

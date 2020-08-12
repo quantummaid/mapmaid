@@ -19,21 +19,40 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.requirements;
+package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
-import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import java.util.function.Consumer;
+import java.util.Optional;
 
-import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class RemoveDeserializationSignal implements Signal {
+    private final Reason reason;
 
-public class ChangeAction {
+    public static Signal removeDeserialization(final Reason reason) {
+        return new RemoveDeserializationSignal(reason);
+    }
 
-    public void removedSerialization(final TypeIdentifier type,
-                                     final Consumer<Signal> dispatcher) {
-        final Reason transitiveReason = becauseOf(type);
-        dispatcher.accept(definition -> definition.changeRequirements(current -> current.removeSerialization(transitiveReason)));
+    @Override
+    public StatefulDefinition handleState(final StatefulDefinition definition) {
+        return definition.changeRequirements(current -> current.removeDeserialization(reason));
+    }
+
+    @Override
+    public Optional<TypeIdentifier> target() {
+        return Optional.empty();
+    }
+
+    @Override
+    public String description() {
+        return "remove deserialization";
     }
 }

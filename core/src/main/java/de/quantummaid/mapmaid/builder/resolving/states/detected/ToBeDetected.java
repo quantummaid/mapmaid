@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
@@ -65,17 +64,15 @@ public final class ToBeDetected extends StatefulDefinition {
                                      final List<TypeIdentifier> injectedTypes) {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
-        final RequiredCapabilities requiredCapabilities = requirements.toCapabilities();
-        final DetectionResult<DisambiguationResult> result = detector.detect(
+        final DetectionResult<DisambiguationResult> result = requirements.fixedResult().orElseGet(() -> detector.detect(
                 context.type(),
                 scanInformationBuilder,
-                requiredCapabilities,
                 disambiguators,
                 injectedTypes
-        );
+        ));
         if (result.isFailure()) {
             return undetectable(context, format("no %s detected:%n%s",
-                    requiredCapabilities.describe(),
+                    requirements.describe(),
                     result.reasonForFailure())
             );
         }
