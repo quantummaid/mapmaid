@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
@@ -37,9 +38,9 @@ import lombok.ToString;
 
 import java.util.*;
 
-import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.detect;
-import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.resolve;
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.DetectSignal.detect;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.ResolveSignal.resolve;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
@@ -108,15 +109,15 @@ public final class Processor {
                                     final Disambiguators disambiguators,
                                     final MapMaidConfiguration configuration) {
         final List<TypeIdentifier> injectedTypes = this.states.injections();
-        while (!this.pendingSignals.isEmpty()) {
-            final Signal signal = this.pendingSignals.remove();
-            this.states = this.states.apply(signal, this, configuration);
+        while (!pendingSignals.isEmpty()) {
+            final Signal signal = pendingSignals.remove();
+            states = states.apply(signal, this, configuration);
         }
-        final States detected = this.states.apply(detect(detector, disambiguators, injectedTypes), this, configuration);
+        final States detected = states.apply(detect(detector, disambiguators, injectedTypes), this, configuration);
         final States resolved = detected.apply(resolve(), this, configuration);
-        this.states = resolved;
+        states = resolved;
 
-        if (!this.pendingSignals.isEmpty()) {
+        if (!pendingSignals.isEmpty()) {
             resolveRecursively(detector, disambiguators, configuration);
         }
     }

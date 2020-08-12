@@ -25,13 +25,21 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
+import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddDeserializationSignal.addDeserialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddSerializationSignal.addSerialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.EnforceObjectSignal.enforceObject;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolved.resolved;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolved.resolvedDuplex;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -47,7 +55,7 @@ public final class Resolving extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
+        final boolean changed = context.scanInformationBuilder().changeRequirements(reducer);
         if (changed) {
             return toBeDetected(context);
         } else {
@@ -57,16 +65,24 @@ public final class Resolving extends StatefulDefinition {
 
     @Override
     public StatefulDefinition resolve() {
-        final DetectionRequirements requirements = this.context.scanInformationBuilder().detectionRequirements();
-
-        if (requirements.serialization) {
-            this.context.serializer().orElseThrow().requiredTypes().forEach(type ->
-                    this.context.dispatch(Signal.addSerialization(type, becauseOf(this.context.type()))));
+        final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
+        final Reason reason = becauseOf(context.type());
+        if (detectionRequirements.serialization) {
+            final TypeSerializer serializer = context.serializer().orElseThrow();
+            final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
+            requiredTypes.forEach(type -> context.dispatch(addSerialization(type, reason)));
+            if (serializer.forcesDependenciesToBeObjects()) {
+                requiredTypes.forEach(type -> context.dispatch(enforceObject(type, reason)));
+            }
         }
-        if (requirements.deserialization) {
-            this.context.deserializer().orElseThrow().requiredTypes().forEach(type ->
-                    this.context.dispatch(Signal.addDeserialization(type, becauseOf(this.context.type()))));
+        if (detectionRequirements.deserialization) {
+            final TypeDeserializer deserializer = context.deserializer().orElseThrow();
+            final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
+            requiredTypes.forEach(type -> context.dispatch(addDeserialization(type, reason)));
+            if (deserializer.forcesDependenciesToBeObjects()) {
+                requiredTypes.forEach(type -> context.dispatch(enforceObject(type, reason)));
+            }
         }
-        return resolvedDuplex(this.context);
+        return resolved(context);
     }
 }

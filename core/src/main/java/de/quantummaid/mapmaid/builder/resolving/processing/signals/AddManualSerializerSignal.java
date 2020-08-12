@@ -19,35 +19,41 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.factories;
+package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Optional;
-
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
-import static java.util.Optional.of;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UndetectedFactory implements StateFactory {
+public final class AddManualSerializerSignal implements Signal {
+    private final TypeIdentifier target;
+    private final TypeSerializer serializer;
 
-    public static UndetectedFactory undetectedFactory() {
-        return new UndetectedFactory();
+    public static Signal addManualSerializer(final TypeIdentifier target, final TypeSerializer serializer) {
+        return new AddManualSerializerSignal(target, serializer);
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier type,
-                                               final Context context,
-                                               final MapMaidConfiguration configuration) {
-        return of(StateFactoryResult.stateFactoryResult(unreasoned(context), List.of()));
+    public String description() {
+        return "add manual serializer";
+    }
+
+    @Override
+    public StatefulDefinition handleState(final StatefulDefinition definition) {
+        return definition.changeRequirements(current -> current.setManuallyConfiguredSerializer(serializer));
+    }
+
+    @Override
+    public Optional<TypeIdentifier> target() {
+        return Optional.of(target);
     }
 }

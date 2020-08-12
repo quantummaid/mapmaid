@@ -21,11 +21,19 @@
 
 package de.quantummaid.mapmaid.builder.resolving.requirements;
 
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.Optional;
+
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
 
 @ToString
 @EqualsAndHashCode
@@ -35,12 +43,21 @@ public final class DetectionRequirements {
     public final boolean deserialization;
     public final boolean hasToBeObject;
     public final boolean hasToBeInlinedPrimitive;
+    private final TypeSerializer manuallyConfiguredSerializer;
+    private final TypeDeserializer manuallyConfiguredDeserializer;
 
     static DetectionRequirements detectionRequirements(final boolean serialization,
                                                        final boolean deserialization,
                                                        final boolean hasToBeObject,
-                                                       final boolean hasToBeInlinedPrimitive) {
-        return new DetectionRequirements(serialization, deserialization, hasToBeObject, hasToBeInlinedPrimitive);
+                                                       final boolean hasToBeInlinedPrimitive,
+                                                       final TypeSerializer manuallyConfiguredSerializer,
+                                                       final TypeDeserializer manuallyConfiguredDeserializer) {
+        return new DetectionRequirements(serialization,
+                deserialization,
+                hasToBeObject,
+                hasToBeInlinedPrimitive,
+                manuallyConfiguredSerializer,
+                manuallyConfiguredDeserializer);
     }
 
     public boolean isUnreasoned() {
@@ -59,16 +76,24 @@ public final class DetectionRequirements {
         return serialization && deserialization;
     }
 
-    public RequiredCapabilities toCapabilities() {
-        if (serialization && !deserialization) {
-            return RequiredCapabilities.serialization();
+    public String describe() {
+        if (isSerializationOnly()) {
+            return "serialization";
         }
-        if (!serialization && deserialization) {
-            return RequiredCapabilities.deserialization();
+        if (isDeserializationOnly()) {
+            return "deserialization";
         }
-        if (serialization && deserialization) {
-            return RequiredCapabilities.duplex();
+        if (isDuplex()) {
+            return "duplex";
         }
         throw new UnsupportedOperationException();
+    }
+
+    public Optional<DetectionResult<DisambiguationResult>> fixedResult() {
+        if (manuallyConfiguredSerializer != null || manuallyConfiguredDeserializer != null) {
+            return Optional.of(success(disambiguationResult(manuallyConfiguredSerializer, manuallyConfiguredDeserializer)));
+        } else {
+            return Optional.empty();
+        }
     }
 }

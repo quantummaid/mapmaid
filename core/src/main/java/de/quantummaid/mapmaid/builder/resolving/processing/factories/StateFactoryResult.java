@@ -21,33 +21,28 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import java.util.List;
-import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
-import static java.util.Optional.of;
-
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UndetectedFactory implements StateFactory {
+public final class StateFactoryResult {
+    private final StatefulDefinition initialState;
+    private final List<Signal> signals;
 
-    public static UndetectedFactory undetectedFactory() {
-        return new UndetectedFactory();
+    public static StateFactoryResult stateFactoryResult(final StatefulDefinition initialState,
+                                                        final List<Signal> signals) {
+        return new StateFactoryResult(initialState, signals);
     }
 
-    @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier type,
-                                               final Context context,
-                                               final MapMaidConfiguration configuration) {
-        return of(StateFactoryResult.stateFactoryResult(unreasoned(context), List.of()));
+    public StatefulDefinition initialState() {
+        return initialState;
+    }
+
+    public List<Signal> signals() {
+        return signals;
     }
 }

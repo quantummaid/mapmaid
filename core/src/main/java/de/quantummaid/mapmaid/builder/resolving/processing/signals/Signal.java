@@ -19,7 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.detection;
+package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
-public interface SerializerFactory {
+import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+
+import java.util.Optional;
+
+public interface Signal {
+    StatefulDefinition handleState(StatefulDefinition definition);
+
+    Optional<TypeIdentifier> target();
+
+    String description();
 }

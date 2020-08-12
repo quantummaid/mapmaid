@@ -38,8 +38,10 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.RemoveDeserializationSignal.removeDeserialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.RemoveSerializationSignal.removeSerialization;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
-import static de.quantummaid.mapmaid.builder.resolving.states.unreasoned.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
@@ -51,22 +53,22 @@ public final class Resolved extends StatefulDefinition {
         super(context);
     }
 
-    public static StatefulDefinition resolvedDuplex(final Context context) {
+    public static StatefulDefinition resolved(final Context context) {
         return new Resolved(context);
     }
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
+        final boolean changed = context.scanInformationBuilder().changeRequirements(reducer);
         if (changed) {
-            final Reason transitiveReason = becauseOf(this.context.type());
-            this.context.dispatch(definition -> definition.changeRequirements(current -> current.removeSerialization(transitiveReason)));
-            this.context.dispatch(definition -> definition.changeRequirements(current -> current.removeDeserialization(transitiveReason)));
-            final boolean unreasoned = this.context.scanInformationBuilder().detectionRequirements().isUnreasoned();
+            final Reason transitiveReason = becauseOf(context.type());
+            context.dispatch(removeSerialization(transitiveReason));
+            context.dispatch(removeDeserialization(transitiveReason));
+            final boolean unreasoned = context.scanInformationBuilder().detectionRequirements().isUnreasoned();
             if (unreasoned) {
-                return unreasoned(this.context);
+                return unreasoned(context);
             } else {
-                return toBeDetected(this.context);
+                return toBeDetected(context);
             }
         } else {
             return this;
@@ -79,7 +81,7 @@ public final class Resolved extends StatefulDefinition {
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
         final TypeSerializer serializer;
         if (requirements.serialization) {
-            serializer = this.context.serializer().orElseThrow();
+            serializer = context.serializer().orElseThrow();
             scanInformationBuilder.setSerializer(serializer);
         } else {
             serializer = null;
@@ -87,12 +89,12 @@ public final class Resolved extends StatefulDefinition {
 
         final TypeDeserializer deserializer;
         if (requirements.deserialization) {
-            deserializer = this.context.deserializer().orElseThrow();
+            deserializer = context.deserializer().orElseThrow();
             scanInformationBuilder.setDeserializer(deserializer);
         } else {
             deserializer = null;
         }
-        final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
+        final Definition definition = generalDefinition(context.type(), serializer, deserializer);
         return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
     }
 }

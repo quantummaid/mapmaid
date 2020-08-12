@@ -67,10 +67,12 @@ import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinition
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
-import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addDeserialization;
-import static de.quantummaid.mapmaid.builder.resolving.processing.Signal.addSerialization;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddDeserializationSignal.addDeserialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddSerializationSignal.addSerialization;
 import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
@@ -194,23 +196,20 @@ public final class MapMaidBuilder implements
                                        final TypeIdentifier superType,
                                        final List<TypeIdentifier> subTypes) {
         manuallyAddedStates.add(configuration -> {
-            final Context context = emptyContext(this.processor::dispatch, superType);
             final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subTypes, configuration);
             final String typeIdentifierKey = configuration.getTypeIdentifierKey();
-
-            final TypeSerializer serializer = polymorphicSerializer(superType, nameToType, typeIdentifierKey);
-            context.setSerializer(serializer);
-
-            final PolymorphicDeserializer deserializer = polymorphicDeserializer(superType, nameToType, typeIdentifierKey);
-            context.setDeserializer(deserializer);
-
-            final StatefulDefinition statefulDefinition = fixedUnreasoned(context);
+            final Context context = emptyContext(this.processor::dispatch, superType);
+            final StatefulDefinition statefulDefinition = unreasoned(context);
             this.processor.addState(statefulDefinition);
             if (capabilities.hasSerialization()) {
-                this.processor.dispatch(addSerialization(superType, manuallyAdded()));
+                final TypeSerializer serializer = polymorphicSerializer(superType, nameToType, typeIdentifierKey);
+                processor.dispatch(addManualSerializer(superType, serializer));
+                processor.dispatch(addSerialization(superType, manuallyAdded()));
             }
             if (capabilities.hasDeserialization()) {
-                this.processor.dispatch(addDeserialization(superType, manuallyAdded()));
+                final PolymorphicDeserializer deserializer = polymorphicDeserializer(superType, nameToType, typeIdentifierKey);
+                processor.dispatch(addManualDeserializer(superType, deserializer));
+                processor.dispatch(addDeserialization(superType, manuallyAdded()));
             }
         });
         return this;
@@ -261,25 +260,25 @@ public final class MapMaidBuilder implements
         validateNotNull(customType, "customType");
         manuallyAddedStates.add(configuration -> {
             final TypeIdentifier typeIdentifier = customType.type();
-            final Optional<TypeSerializer> serializer = customType.serializer();
-            if (capabilities.hasSerialization() && serializer.isEmpty()) {
-                throw new IllegalArgumentException(format(
-                        "serializer is missing for type '%s'", typeIdentifier.description()));
-            }
-            final Optional<TypeDeserializer> deserializer = customType.deserializer();
-            if (capabilities.hasDeserialization() && deserializer.isEmpty()) {
-                throw new IllegalArgumentException(format("deserializer is missing for type '%s'",
-                        typeIdentifier.description()));
-            }
             final Context context = emptyContext(this.processor::dispatch, typeIdentifier);
-            serializer.ifPresent(context::setSerializer);
-            deserializer.ifPresent(context::setDeserializer);
-            final StatefulDefinition statefulDefinition = fixedUnreasoned(context);
+            final StatefulDefinition statefulDefinition = unreasoned(context);
             this.processor.addState(statefulDefinition);
             if (capabilities.hasSerialization()) {
+                final Optional<TypeSerializer> serializer = customType.serializer();
+                if (serializer.isEmpty()) {
+                    throw new IllegalArgumentException(format(
+                            "serializer is missing for type '%s'", typeIdentifier.description()));
+                }
+                this.processor.dispatch(addManualSerializer(typeIdentifier, serializer.get()));
                 this.processor.dispatch(addSerialization(typeIdentifier, manuallyAdded()));
             }
             if (capabilities.hasDeserialization()) {
+                final Optional<TypeDeserializer> deserializer = customType.deserializer();
+                if (deserializer.isEmpty()) {
+                    throw new IllegalArgumentException(format("deserializer is missing for type '%s'",
+                            typeIdentifier.description()));
+                }
+                this.processor.dispatch(addManualDeserializer(typeIdentifier, deserializer.get()));
                 this.processor.dispatch(addDeserialization(typeIdentifier, manuallyAdded()));
             }
         });

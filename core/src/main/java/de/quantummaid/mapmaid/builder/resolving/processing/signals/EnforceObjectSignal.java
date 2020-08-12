@@ -19,43 +19,41 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.states.unreasoned;
+package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
-
 @ToString
-@EqualsAndHashCode(callSuper = true)
-public final class Unreasoned extends StatefulDefinition {
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class EnforceObjectSignal implements Signal {
+    private final TypeIdentifier target;
+    private final Reason reason;
 
-    private Unreasoned(final Context context) {
-        super(context);
-    }
-
-    public static StatefulDefinition unreasoned(final Context context) {
-        return new Unreasoned(context);
-    }
-
-    @Override
-    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
-        if (changed) {
-            return toBeDetected(context);
-        } else {
-            return this;
-        }
+    public static Signal enforceObject(final TypeIdentifier target, final Reason reason) {
+        return new EnforceObjectSignal(target, reason);
     }
 
     @Override
-    public Optional<Report> getDefinition() {
-        return Optional.empty();
+    public StatefulDefinition handleState(final StatefulDefinition definition) {
+        return definition.changeRequirements(current -> current.enforceObject(reason));
+    }
+
+    @Override
+    public Optional<TypeIdentifier> target() {
+        return Optional.of(target);
+    }
+
+    @Override
+    public String description() {
+        return "enforce object";
     }
 }
