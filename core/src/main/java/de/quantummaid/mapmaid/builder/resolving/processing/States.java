@@ -25,6 +25,8 @@ import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories;
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
+import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -84,8 +86,9 @@ public final class States {
 
             if (!contains(target, newStates)) {
                 final Context context = emptyContext(processor::dispatch, target);
-                final StatefulDefinition state = this.stateFactories.createState(target, context, configuration);
-                newStates.add(state);
+                final StateFactoryResult state = this.stateFactories.createState(target, context, configuration);
+                newStates.add(state.initialState());
+                state.signals().forEach(processor::dispatch);
             }
 
             newStates.replaceAll(statefulDefinition -> {

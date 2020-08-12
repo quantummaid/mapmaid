@@ -37,6 +37,11 @@ public final class DisambiguationResult {
     private final TypeSerializer serializer;
     private final TypeDeserializer deserializer;
 
+    public static DisambiguationResult disambiguationResult(final TypeSerializer serializer,
+                                                            final TypeDeserializer deserializer) {
+        return new DisambiguationResult(serializer, deserializer);
+    }
+
     public static DisambiguationResult serializationOnlyResult(final TypeSerializer serializer) {
         validateNotNull(serializer, "serializer");
         return new DisambiguationResult(serializer, null);

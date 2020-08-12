@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories.kotlin;
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
@@ -38,7 +38,10 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.kotlin.KotlinUtils.isKotlinClass;
 import static de.quantummaid.mapmaid.builder.kotlin.KotlinUtils.kotlinClassOf;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;
@@ -52,7 +55,7 @@ public final class KotlinSealedClassFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final TypeIdentifier type,
+    public Optional<StateFactoryResult> create(final TypeIdentifier type,
                                                final Context context,
                                                final MapMaidConfiguration mapMaidConfiguration) {
         if (type.isVirtual()) {
@@ -74,10 +77,10 @@ public final class KotlinSealedClassFactory implements StateFactory {
         final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subtypes, mapMaidConfiguration);
 
         final PolymorphicSerializer serializer = polymorphicSerializer(type, nameToType, "type");
-        context.setSerializer(serializer);
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
-        context.setDeserializer(deserializer);
-
-        return Optional.of(fixedUnreasoned(context));
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of(
+                addManualSerializer(type, serializer),
+                addManualDeserializer(type, deserializer)
+        )));
     }
 }

@@ -24,16 +24,20 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories.collection
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ClassType;
 import de.quantummaid.reflectmaid.ResolvedType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.CollectionInformation.collectionInformations;
-import static de.quantummaid.mapmaid.builder.resolving.states.fixed.unreasoned.FixedUnreasoned.fixedUnreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ListCollectionDeserializer.listDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ListCollectionSerializer.listSerializer;
 import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;
@@ -48,7 +52,7 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final TypeIdentifier typeIdentifier,
+    public Optional<StateFactoryResult> create(final TypeIdentifier typeIdentifier,
                                                final Context context,
                                                final MapMaidConfiguration configuration) {
         if (typeIdentifier.isVirtual()) {
@@ -66,8 +70,9 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
         }
         final ResolvedType genericType = ((ClassType) type).typeParameter(typeVariableName("E"));
         final CollectionInformation collectionInformation = this.collectionInformations.get(type.assignableType());
-        context.setSerializer(listSerializer(genericType));
-        context.setDeserializer(listDeserializer(genericType, collectionInformation.mapper()));
-        return Optional.of(fixedUnreasoned(context));
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of(
+                addManualSerializer(typeIdentifier, listSerializer(genericType)),
+                addManualDeserializer(typeIdentifier, listDeserializer(genericType, collectionInformation.mapper()))
+        )));
     }
 }

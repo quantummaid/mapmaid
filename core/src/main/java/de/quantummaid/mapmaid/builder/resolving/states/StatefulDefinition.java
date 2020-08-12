@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.List;
@@ -38,13 +38,7 @@ public abstract class StatefulDefinition {
         this.context = context;
     }
 
-    public abstract StatefulDefinition addSerialization(Reason reason);
-
-    public abstract StatefulDefinition removeSerialization(Reason reason);
-
-    public abstract StatefulDefinition addDeserialization(Reason reason);
-
-    public abstract StatefulDefinition removeDeserialization(Reason reason);
+    public abstract StatefulDefinition changeRequirements(RequirementsReducer reducer);
 
     public TypeIdentifier type() {
         return this.context.type();

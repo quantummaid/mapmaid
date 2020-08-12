@@ -47,4 +47,8 @@ public interface TypeSerializer {
     default Universal schema(final SchemaCallback schemaCallback) {
         throw new UnsupportedOperationException(format("Schema generation not supported for '%s'", description()));
     }
+
+    default boolean forcesDependenciesToBeObjects() {
+        return false;
+    }
 }

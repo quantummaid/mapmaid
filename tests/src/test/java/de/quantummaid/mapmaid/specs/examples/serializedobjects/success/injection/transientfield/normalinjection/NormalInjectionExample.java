@@ -41,7 +41,7 @@ public final class NormalInjectionExample {
                 .withDeserializedForm(DtoWithTransientInjection.dtoWithTransientInjection("a", "b", System.out))
                 .withInjection(injector -> injector.put(System.out))
                 .withSerializationSuccessful()
-                .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
+                .withDeserializationFailing("java.io.OutputStream: unable to detect deserialization-only:")
                 .withDuplexFailing()
                 .withManualDeserialization(mapMaidBuilder -> {
                     mapMaidBuilder.deserializing(DtoWithTransientInjection.class)

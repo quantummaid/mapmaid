@@ -40,7 +40,7 @@ public final class StaticInjectionExample {
                         "}")
                 .withDeserializedForm(DtoWithTransientInjection.dtoWithTransientInjection("a", "b", System.out))
                 .withSerializationSuccessful()
-                .withDeserializationFailing("java.io.OutputStream: unable to detect deserializer:")
+                .withDeserializationFailing("java.io.OutputStream: unable to detect deserialization-only:")
                 .withDuplexFailing()
                 .withManualDeserialization(mapMaidBuilder -> {
                     mapMaidBuilder.deserializing(DtoWithTransientInjection.class)

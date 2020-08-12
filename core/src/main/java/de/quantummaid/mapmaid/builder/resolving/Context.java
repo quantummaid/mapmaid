@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.processing.Signal;
-import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -32,9 +31,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
-import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
+import static java.util.Optional.ofNullable;
 
 @ToString
 @EqualsAndHashCode
@@ -59,40 +59,20 @@ public final class Context {
         this.dispatcher.accept(signal);
     }
 
-    public boolean removeSerializationReasonAndReturnIfEmpty(final Reason reason) {
-        final boolean empty = this.scanInformationBuilder.removeSerializationReasonAndReturnIfEmpty(reason);
-        if (empty) {
-            final Reason transitiveReason = becauseOf(this.type);
-            dispatch(definition -> definition.removeSerialization(transitiveReason));
-            return true;
-        }
-        return false;
-    }
-
-    public boolean removeDeserializationReasonAndReturnIfEmpty(final Reason reason) {
-        final boolean empty = this.scanInformationBuilder.removeDeserializationReasonAndReturnIfEmpty(reason);
-        if (empty) {
-            final Reason transitiveReason = becauseOf(this.type);
-            dispatch(definition -> definition.removeDeserialization(transitiveReason));
-            return true;
-        }
-        return false;
-    }
-
     public ScanInformationBuilder scanInformationBuilder() {
         return this.scanInformationBuilder;
     }
 
-    public TypeSerializer serializer() {
-        return this.serializer;
+    public Optional<TypeSerializer> serializer() {
+        return ofNullable(this.serializer);
     }
 
     public void setSerializer(final TypeSerializer serializer) {
         this.serializer = serializer;
     }
 
-    public TypeDeserializer deserializer() {
-        return this.deserializer;
+    public Optional<TypeDeserializer> deserializer() {
+        return ofNullable(this.deserializer);
     }
 
     public void setDeserializer(final TypeDeserializer deserializer) {

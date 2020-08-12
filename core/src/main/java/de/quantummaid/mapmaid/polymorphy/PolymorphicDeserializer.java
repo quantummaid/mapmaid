@@ -89,6 +89,11 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
     }
 
     @Override
+    public boolean forcesDependenciesToBeObjects() {
+        return true;
+    }
+
+    @Override
     public String description() {
         return format("polymorphic deserializer for %s", this.typeIdentifier.description());
     }

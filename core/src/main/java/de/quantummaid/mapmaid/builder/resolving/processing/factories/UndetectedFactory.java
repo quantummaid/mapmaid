@@ -23,16 +23,16 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.states.unreasoned.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static java.util.Optional.of;
 
 @ToString
@@ -45,9 +45,9 @@ public final class UndetectedFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StatefulDefinition> create(final TypeIdentifier type,
+    public Optional<StateFactoryResult> create(final TypeIdentifier type,
                                                final Context context,
                                                final MapMaidConfiguration configuration) {
-        return of(unreasoned(context));
+        return of(StateFactoryResult.stateFactoryResult(unreasoned(context), List.of()));
     }
 }

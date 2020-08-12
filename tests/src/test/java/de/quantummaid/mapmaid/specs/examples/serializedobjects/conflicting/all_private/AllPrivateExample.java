@@ -41,15 +41,14 @@ public final class AllPrivateExample {
                         "  \"townNameB\": \"c\",\n" +
                         "  \"townNameC\": \"d\"\n" +
                         "}")
-                .withAllScenariosFailing(
-                        "de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.all_private.AddALotRequest: unable to detect",
-                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
-                                serializedObject(AddALotRequest.class)
-                                        .withField("name", Name.class, object -> Name.fromStringValue("a"))
-                                        .withField("townNameA", TownName.class, object -> TownName.townName("b"))
-                                        .withField("townNameB", TownName.class, object -> TownName.townName("c"))
-                                        .withField("townNameC", TownName.class, object -> TownName.townName("d"))
-                                        .deserializedUsing((field1, field2, field3, field4) -> AddALotRequest.addALotRequest())
+                .withAllScenariosFailing("de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.all_private.AddALotRequest: unable to detect")
+                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
+                        serializedObject(AddALotRequest.class)
+                                .withField("name", Name.class, object -> Name.fromStringValue("a"))
+                                .withField("townNameA", TownName.class, object -> TownName.townName("b"))
+                                .withField("townNameB", TownName.class, object -> TownName.townName("c"))
+                                .withField("townNameC", TownName.class, object -> TownName.townName("d"))
+                                .deserializedUsing((field1, field2, field3, field4) -> AddALotRequest.addALotRequest())
                         )
                 )
                 .run();

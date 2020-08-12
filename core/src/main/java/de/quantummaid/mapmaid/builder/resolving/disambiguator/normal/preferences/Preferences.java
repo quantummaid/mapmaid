@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
 
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -40,7 +41,7 @@ public final class Preferences<T, C> {
     private final List<Preference<T>> preferences;
 
     public static <T, C> Preferences<T, C> preferences(final List<Filter<T, C>> filters,
-                                                 final List<Preference<T>> preferences) {
+                                                       final List<Preference<T>> preferences) {
         return new Preferences<>(Filters.filters(filters), preferences);
     }
 
@@ -48,13 +49,17 @@ public final class Preferences<T, C> {
         return preferences(emptyList(), preferences);
     }
 
-    public List<T> preferred(final List<T> options, final C context, final ResolvedType containingType, final Striker<T> striker) {
+    public List<T> preferred(final List<T> options,
+                             final C context,
+                             final DetectionRequirements detectionRequirements,
+                             final ResolvedType containingType,
+                             final Striker<T> striker) {
         final List<T> filtered = options.stream()
                 .filter(t -> this.filters.isAllowed(t, context, containingType, striker))
                 .collect(toList());
         for (final Preference<T> preference : this.preferences) {
             final List<T> preferred = filtered.stream()
-                    .filter(preference::prefer)
+                    .filter(element -> preference.prefer(element, detectionRequirements))
                     .collect(toList());
             if (!preferred.isEmpty()) {
                 return preferred;

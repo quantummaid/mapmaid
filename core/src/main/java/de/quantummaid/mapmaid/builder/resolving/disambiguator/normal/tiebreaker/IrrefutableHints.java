@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +39,9 @@ public final class IrrefutableHints<T> {
         return new IrrefutableHints<>(hints);
     }
 
-    public TieBreakingReason isTieBreaking(final T element) {
+    public TieBreakingReason isTieBreaking(final T element, final DetectionRequirements detectionRequirements) {
         return this.hints.stream()
-                .map(hint -> hint.isTieBreaking(element))
+                .map(hint -> hint.isTieBreaking(element, detectionRequirements))
                 .filter(TieBreakingReason::isTieBreaking)
                 .findFirst()
                 .orElseGet(TieBreakingReason::notATieBreakingReason);
