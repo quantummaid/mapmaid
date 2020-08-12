@@ -19,9 +19,25 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin
+package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin.sealedclass;
 
-sealed class MyKotlinSealedClass
+import org.junit.jupiter.api.Test;
 
-data class KotlinSealedSubclass1(val field1: String,
-                                 val field2: String) : MyKotlinSealedClass()
+import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
+
+public final class KotlinSealedClassExample {
+
+    @Test
+    public void kotlinSealedClassExample() {
+        scenarioBuilderFor(MyKotlinSealedClass.class)
+                .withSerializedForm("" +
+                        "{" +
+                        "\"type\":\"de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin.sealedclass.KotlinSealedSubclass1\"," +
+                        "\"field1\":\"foo\"," +
+                        "\"field2\":\"bar\"" +
+                        "}")
+                .withDeserializedForm(new KotlinSealedSubclass1("foo", "bar"))
+                .withAllScenariosSuccessful()
+                .run();
+    }
+}
