@@ -38,6 +38,7 @@
         <module>all</module>
         <module>jackson</module>
         <module>minimal-json</module>
+        <module>dynamodb</module>
     </modules>
 
     <properties>
