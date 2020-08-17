@@ -25,7 +25,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.eclipsesource.json.WriterConfig;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +37,14 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MinimalJsonUnmarshaller implements Unmarshaller {
+public final class MinimalJsonUnmarshaller implements StringUnmarshaller {
 
     public static MinimalJsonUnmarshaller minimalJsonUnmarshaller() {
         return new MinimalJsonUnmarshaller();
     }
 
     @Override
-    public Object unmarshal(final String input) {
+    public Object unmarshalString(final String input) {
         final JsonValue json = Json.parse(input);
         return unmarshallRec(json);
     }

@@ -70,12 +70,12 @@ public final class When {
 
     public AsStage mapMaidDeserializes(final String input) {
         return marshallingType -> type ->
-                doDeserialization(() -> this.mapMaid.deserialize(input, type, marshallingType));
+                doDeserialization(() -> mapMaid.deserialize(input, type, marshallingType));
     }
 
     public AsStage mapMaidDeserializesWithInjection(final String input, final InjectorLambda injector) {
         return marshallingType -> type ->
-                doDeserialization(() -> this.mapMaid.deserialize(input, type, marshallingType, injector));
+                doDeserialization(() -> mapMaid.deserialize(input, type, marshallingType, injector));
     }
 
     @SuppressWarnings("unchecked")
@@ -91,7 +91,7 @@ public final class When {
     public WithMarshallingType mapMaidSerializes(final Object object) {
         return marshallingType -> {
             try {
-                final String serialized = this.mapMaid.serializeTo(object, marshallingType);
+                final Object serialized = mapMaid.serializeTo(object, marshallingType);
                 return then(this.thenData.withSerializationResult(serialized));
             } catch (final Exception e) {
                 return then(this.thenData.withException(e));
@@ -106,7 +106,7 @@ public final class When {
 
     public WithMarshallingType mapMaidSerializes(final Object object, final GenericType<?> type) {
         return marshallingType -> {
-            final String serialized = this.mapMaid.serializeTo(object, marshallingType, type);
+            final Object serialized = mapMaid.serializeTo(object, marshallingType, type);
             return then(this.thenData.withSerializationResult(serialized));
         };
     }
@@ -119,7 +119,7 @@ public final class When {
 
     public Then mapMaidMarshalsFromUniversalObject(final Object universalObject,
                                                    final MarshallingType marshallingType) {
-        final String serialized = this.mapMaid.serializer().marshalFromUniversalObject(universalObject, marshallingType);
+        final Object serialized = mapMaid.serializer().marshalFromUniversalObject(universalObject, marshallingType);
         return then(this.thenData.withSerializationResult(serialized));
     }
 
@@ -133,29 +133,29 @@ public final class When {
                                                              final UnaryOperator<Map<String, Object>> injector) {
         return marshallingType -> {
             final TypeIdentifier typeIdentifier = typeIdentifierFor(object.getClass());
-            final String serialized = this.mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
-            return then(this.thenData.withSerializationResult(serialized));
+            final Object serialized = mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
+            return then(thenData.withSerializationResult(serialized));
         };
     }
 
     public Then theDeserializationSchemaIsQueriedFor(final Class<?> type) {
         final String schema = mapMaid.deserializationSchemaFor(type, YAML);
-        return then(this.thenData.withSchema(schema));
+        return then(thenData.withSchema(schema));
     }
 
     public Then theSerializationSchemaIsQueriedFor(final Class<?> type) {
         final String schema = mapMaid.serializationSchemaFor(type, YAML);
-        return then(this.thenData.withSchema(schema));
+        return then(thenData.withSchema(schema));
     }
 
     public Then theDefinitionsAreQueried() {
-        final DebugInformation debugInformation = this.mapMaid.debugInformation();
-        return then(this.thenData.withDebugInformation(debugInformation));
+        final DebugInformation debugInformation = mapMaid.debugInformation();
+        return then(thenData.withDebugInformation(debugInformation));
     }
 
     public Then theSupportedMarshallingTypesAreQueried() {
-        final Set<MarshallingType> marshallingTypes = this.mapMaid.serializer().supportedMarshallingTypes();
-        final Set<MarshallingType> unmarshallingTypes = this.mapMaid.deserializer().supportedMarshallingTypes();
+        final Set<MarshallingType<?>> marshallingTypes = this.mapMaid.serializer().supportedMarshallingTypes();
+        final Set<MarshallingType<?>> unmarshallingTypes = this.mapMaid.deserializer().supportedMarshallingTypes();
         return then(this.thenData.withSupportedMarshallingTypes(marshallingTypes, unmarshallingTypes));
     }
 

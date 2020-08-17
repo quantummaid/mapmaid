@@ -42,8 +42,8 @@ public final class ThenData {
     private DebugInformation debugInformation;
     private String schema;
 
-    private Set<MarshallingType> supportedMarshallingTypes;
-    private Set<MarshallingType> supportedUnmarshallingTypes;
+    private Set<MarshallingType<?>> supportedMarshallingTypes;
+    private Set<MarshallingType<?>> supportedUnmarshallingTypes;
 
     public static ThenData thenData() {
         return new ThenData();
@@ -95,18 +95,18 @@ public final class ThenData {
     }
 
     public ThenData withSupportedMarshallingTypes(
-            final Set<MarshallingType> marshallingTypes,
-            final Set<MarshallingType> unmarshallingTypes) {
+            final Set<MarshallingType<?>> marshallingTypes,
+            final Set<MarshallingType<?>> unmarshallingTypes) {
         this.supportedMarshallingTypes = unmodifiableSet(marshallingTypes);
         this.supportedUnmarshallingTypes = unmodifiableSet(unmarshallingTypes);
         return this;
     }
 
-    public Set<MarshallingType> getSupportedMarshallingTypes() {
+    public Set<MarshallingType<?>> getSupportedMarshallingTypes() {
         return unmodifiableSet(supportedMarshallingTypes);
     }
 
-    public Set<MarshallingType> getSupportedUnmarshallingTypes() {
+    public Set<MarshallingType<?>> getSupportedUnmarshallingTypes() {
         return unmodifiableSet(supportedUnmarshallingTypes);
     }
 }
