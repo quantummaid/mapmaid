@@ -78,7 +78,7 @@ import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
-import static de.quantummaid.mapmaid.mapper.serialization.Serializer.theSerializer;
+import static de.quantummaid.mapmaid.mapper.serialization.Serializer.serializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;
@@ -345,15 +345,15 @@ public final class MapMaidBuilder implements
         final DebugInformation debugInformation = debugInformation(scanInformationMap);
         final Definitions definitions = definitions(definitionsMap, debugInformation);
 
-        final MarshallerRegistry<Marshaller> marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();
-        final Serializer serializer = theSerializer(
+        final MarshallerRegistry<Marshaller<?>> marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();
+        final Serializer serializer = serializer(
                 marshallerRegistry,
                 definitions,
                 CUSTOM_PRIMITIVE_MAPPINGS,
                 debugInformation
         );
 
-        final MarshallerRegistry<Unmarshaller> unmarshallerRegistry = this.advancedBuilder.buildUnmarshallerRegistry();
+        final MarshallerRegistry<Unmarshaller<?>> unmarshallerRegistry = this.advancedBuilder.buildUnmarshallerRegistry();
         final Deserializer deserializer = theDeserializer(
                 unmarshallerRegistry,
                 definitions,

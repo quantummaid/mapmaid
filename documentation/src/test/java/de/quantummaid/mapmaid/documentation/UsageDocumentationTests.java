@@ -144,9 +144,12 @@ public final class UsageDocumentationTests {
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(Email.class)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                        .usingMarshaller(MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"), gson::toJson, input -> {
-                            return gson.fromJson(input, Object.class);
-                        }))
+                        .usingMarshaller(
+                                MarshallingType.marshallingType("YOUR_CUSTOM_FORMAT"),
+                                gson::toJson,
+                                input -> {
+                                    return gson.fromJson(input, Object.class);
+                                }))
                 .build();
         //Showcase end example1
 

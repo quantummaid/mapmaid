@@ -19,33 +19,20 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.testsupport.givenwhenthen;
+package de.quantummaid.mapmaid.mapper.marshalling.string;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.google.gson.Gson;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
-import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-public final class Unmarshallers {
+public interface StringUnmarshaller extends Unmarshaller<String> {
 
-    private Unmarshallers() {
-    }
+    Object unmarshalString(String input) throws Exception;
 
-    public static StringUnmarshaller jsonUnmarshaller() {
-        final Gson gson = new Gson();
-        return input -> gson.fromJson(input, Object.class);
-    }
-
-    public static StringUnmarshaller xmlUnmarshaller() {
-        final XmlMapper xmlMapper = new XmlMapper();
-        return input -> xmlMapper.readValue(input, Object.class);
-    }
-
-    public static StringUnmarshaller yamlUnmarshaller() {
-        final DumperOptions options = new DumperOptions();
-        final Yaml yaml = new Yaml(options);
-        return yaml::load;
+    @Override
+    default Object unmarshal(final String input) throws Exception {
+        if (input.isEmpty()) {
+            return null;
+        }
+        final String trimmedInput = input.trim();
+        return unmarshalString(trimmedInput);
     }
 }

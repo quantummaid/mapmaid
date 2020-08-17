@@ -63,7 +63,7 @@ public final class Deserializer {
     private final DebugInformation debugInformation;
     private final InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory();
 
-    public static Deserializer theDeserializer(final MarshallerRegistry<Unmarshaller> unmarshallerRegistry,
+    public static Deserializer theDeserializer(final MarshallerRegistry<Unmarshaller<?>> unmarshallerRegistry,
                                                final Definitions definitions,
                                                final CustomPrimitiveMappings customPrimitiveMappings,
                                                final ValidationMappings exceptionMapping,
@@ -88,16 +88,16 @@ public final class Deserializer {
         return deserialize(universal, targetType, injectorProducer);
     }
 
-    public Object deserializeToUniversalObject(final String input,
-                                               final MarshallingType type) {
+    public <M> Object deserializeToUniversalObject(final String input,
+                                                   final MarshallingType<M> type) {
         final Universal universal = this.unmarshallers.unmarshall(input, type);
         return universal.toNativeJava();
     }
 
-    public Object deserialize(final String input,
-                              final TypeIdentifier targetType,
-                              final MarshallingType marshallingType,
-                              final InjectorLambda injectorProducer) {
+    public <M> Object deserialize(final M input,
+                                  final TypeIdentifier targetType,
+                                  final MarshallingType<M> marshallingType,
+                                  final InjectorLambda injectorProducer) {
         try {
             final Universal unmarshalled = this.unmarshallers.unmarshall(input, marshallingType);
             return deserialize(unmarshalled, targetType, injectorProducer);
@@ -134,7 +134,7 @@ public final class Deserializer {
         return deserializer.schema(this::schema);
     }
 
-    public Set<MarshallingType> supportedMarshallingTypes() {
+    public Set<MarshallingType<?>> supportedMarshallingTypes() {
         return this.unmarshallers.supportedMarshallingTypes();
     }
 

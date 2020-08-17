@@ -74,17 +74,20 @@ public final class MapMaid {
         return serializeToJson(object, type);
     }
 
-    public String serializeToJson(final Object object, final Class<?> type) {
+    public String serializeToJson(final Object object,
+                                  final Class<?> type) {
         final GenericType<?> genericType = genericType(type);
         return serializeToJson(object, genericType);
     }
 
-    public String serializeToJson(final Object object, final GenericType<?> type) {
+    public String serializeToJson(final Object object,
+                                  final GenericType<?> type) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return serializeToJson(object, typeIdentifier);
     }
 
-    public String serializeToJson(final Object object, final TypeIdentifier type) {
+    public String serializeToJson(final Object object,
+                                  final TypeIdentifier type) {
         return serializeTo(object, JSON, type);
     }
 
@@ -94,17 +97,20 @@ public final class MapMaid {
         return serializeToYaml(object, type);
     }
 
-    public String serializeToYaml(final Object object, final Class<?> type) {
+    public String serializeToYaml(final Object object,
+                                  final Class<?> type) {
         final GenericType<?> genericType = genericType(type);
         return serializeToYaml(object, genericType);
     }
 
-    public String serializeToYaml(final Object object, final GenericType<?> type) {
+    public String serializeToYaml(final Object object,
+                                  final GenericType<?> type) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return serializeToYaml(object, typeIdentifier);
     }
 
-    public String serializeToYaml(final Object object, final TypeIdentifier type) {
+    public String serializeToYaml(final Object object,
+                                  final TypeIdentifier type) {
         return serializeTo(object, MarshallingType.YAML, type);
     }
 
@@ -114,166 +120,205 @@ public final class MapMaid {
         return serializeToXml(object, type);
     }
 
-    public String serializeToXml(final Object object, final Class<?> type) {
+    public String serializeToXml(final Object object,
+                                 final Class<?> type) {
         final GenericType<?> genericType = genericType(type);
         return serializeToXml(object, genericType);
     }
 
-    public String serializeToXml(final Object object, final GenericType<?> type) {
+    public String serializeToXml(final Object object,
+                                 final GenericType<?> type) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return serializeToXml(object, typeIdentifier);
     }
 
-    public String serializeToXml(final Object object, final TypeIdentifier type) {
+    public String serializeToXml(final Object object,
+                                 final TypeIdentifier type) {
         return serializeTo(object, MarshallingType.XML, type);
     }
 
-    public String serializeTo(final Object object, final MarshallingType marshallingType) {
+    public <T> T serializeTo(final Object object,
+                             final MarshallingType<T> marshallingType) {
         validateNotNull(object, "object");
         final Class<?> type = object.getClass();
         return serializeTo(object, marshallingType, type);
     }
 
-    public String serializeTo(final Object object, final MarshallingType marshallingType, final Class<?> type) {
+    public <T> T serializeTo(final Object object,
+                             final MarshallingType<T> marshallingType,
+                             final Class<?> type) {
         final GenericType<?> genericType = genericType(type);
         return serializeTo(object, marshallingType, genericType);
     }
 
-    public String serializeTo(final Object object, final MarshallingType marshallingType, final GenericType<?> type) {
+    public <T> T serializeTo(final Object object,
+                             final MarshallingType<T> marshallingType,
+                             final GenericType<?> type) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return serializeTo(object, marshallingType, typeIdentifier);
     }
 
-    public String serializeTo(final Object object, final MarshallingType marshallingType, final TypeIdentifier type) {
+    public <T> T serializeTo(final Object object,
+                             final MarshallingType<T> marshallingType,
+                             final TypeIdentifier type) {
         return this.serializer.serialize(object, type, marshallingType, input -> input);
     }
 
-    public <T> T deserializeJson(final String json, final Class<T> targetType) {
+    public <T> T deserializeJson(final String json,
+                                 final Class<T> targetType) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserializeJson(json, genericType);
     }
 
-    public <T> T deserializeJson(final String json, final GenericType<T> targetType) {
+    public <T> T deserializeJson(final String json,
+                                 final GenericType<T> targetType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserializeJson(json, typeIdentifier);
     }
 
-    public <T> T deserializeJson(final String json, final TypeIdentifier targetType) {
+    public <T> T deserializeJson(final String json,
+                                 final TypeIdentifier targetType) {
         return this.deserializeJson(json, targetType, noop());
     }
 
-    public <T> T deserializeJson(final String json, final Class<T> targetType, final InjectorLambda injector) {
+    public <T> T deserializeJson(final String json,
+                                 final Class<T> targetType,
+                                 final InjectorLambda injector) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserializeJson(json, genericType, injector);
     }
 
-    public <T> T deserializeJson(final String json, final GenericType<T> targetType, final InjectorLambda injector) {
+    public <T> T deserializeJson(final String json,
+                                 final GenericType<T> targetType,
+                                 final InjectorLambda injector) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserializeJson(json, typeIdentifier, injector);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T deserializeJson(final String json, final TypeIdentifier targetType, final InjectorLambda injector) {
+    public <T> T deserializeJson(final String json,
+                                 final TypeIdentifier targetType,
+                                 final InjectorLambda injector) {
         return (T) this.deserialize(json, targetType, JSON, injector);
     }
 
-    public <T> T deserializeYaml(final String yaml, final Class<T> targetType) {
+    public <T> T deserializeYaml(final String yaml,
+                                 final Class<T> targetType) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserializeYaml(yaml, genericType);
     }
 
-    public <T> T deserializeYaml(final String yaml, final GenericType<T> targetType) {
+    public <T> T deserializeYaml(final String yaml,
+                                 final GenericType<T> targetType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserializeYaml(yaml, typeIdentifier);
     }
 
-    public <T> T deserializeYaml(final String yaml, final TypeIdentifier targetType) {
+    public <T> T deserializeYaml(final String yaml,
+                                 final TypeIdentifier targetType) {
         return this.deserializeYaml(yaml, targetType, noop());
     }
 
-    public <T> T deserializeYaml(final String yaml, final Class<T> targetType, final InjectorLambda injector) {
+    public <T> T deserializeYaml(final String yaml,
+                                 final Class<T> targetType,
+                                 final InjectorLambda injector) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserializeYaml(yaml, genericType, injector);
     }
 
-    public <T> T deserializeYaml(final String yaml, final GenericType<T> targetType, final InjectorLambda injector) {
+    public <T> T deserializeYaml(final String yaml,
+                                 final GenericType<T> targetType,
+                                 final InjectorLambda injector) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserializeYaml(yaml, typeIdentifier, injector);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T deserializeYaml(final String yaml, final TypeIdentifier targetType, final InjectorLambda injector) {
+    public <T> T deserializeYaml(final String yaml,
+                                 final TypeIdentifier targetType,
+                                 final InjectorLambda injector) {
         return (T) this.deserialize(yaml, targetType, MarshallingType.YAML, injector);
     }
 
-    public <T> T deserializeXml(final String xml, final Class<T> targetType) {
+    public <T> T deserializeXml(final String xml,
+                                final Class<T> targetType) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserializeXml(xml, genericType);
     }
 
-    public <T> T deserializeXml(final String xml, final GenericType<T> targetType) {
+    public <T> T deserializeXml(final String xml,
+                                final GenericType<T> targetType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserializeXml(xml, typeIdentifier);
     }
 
-    public <T> T deserializeXml(final String xml, final TypeIdentifier targetType) {
+    public <T> T deserializeXml(final String xml,
+                                final TypeIdentifier targetType) {
         return this.deserializeXml(xml, targetType, noop());
     }
 
-    public <T> T deserializeXml(final String xml, final Class<T> targetType, final InjectorLambda injector) {
+    public <T> T deserializeXml(final String xml,
+                                final Class<T> targetType,
+                                final InjectorLambda injector) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserializeXml(xml, genericType, injector);
     }
 
-    public <T> T deserializeXml(final String xml, final GenericType<T> targetType, final InjectorLambda injector) {
+    public <T> T deserializeXml(final String xml,
+                                final GenericType<T> targetType,
+                                final InjectorLambda injector) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserializeXml(xml, typeIdentifier, injector);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T deserializeXml(final String xml, final TypeIdentifier targetType, final InjectorLambda injector) {
+    public <T> T deserializeXml(final String xml,
+                                final TypeIdentifier targetType,
+                                final InjectorLambda injector) {
         return (T) this.deserialize(xml, targetType, MarshallingType.XML, injector);
     }
 
-    public <T> T deserialize(final String input, final Class<T> targetType, final MarshallingType marshallingType) {
+    public <T, M> T deserialize(final M input,
+                                final Class<T> targetType,
+                                final MarshallingType<M> marshallingType) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserialize(input, genericType, marshallingType);
     }
 
-    public <T> T deserialize(final String input,
-                             final GenericType<T> targetType,
-                             final MarshallingType marshallingType) {
+    public <T, M> T deserialize(final M input,
+                                final GenericType<T> targetType,
+                                final MarshallingType<M> marshallingType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
         return this.deserialize(input, typeIdentifier, marshallingType);
     }
 
-    public <T> T deserialize(final String input,
-                             final TypeIdentifier targetType,
-                             final MarshallingType marshallingType) {
+    public <T, M> T deserialize(final M input,
+                                final TypeIdentifier targetType,
+                                final MarshallingType<M> marshallingType) {
         return this.deserialize(input, targetType, marshallingType, noop());
     }
 
-    public <T> T deserialize(final String input,
-                             final Class<T> targetType,
-                             final MarshallingType marshallingType,
-                             final InjectorLambda injector) {
+    public <T, M> T deserialize(final M input,
+                                final Class<T> targetType,
+                                final MarshallingType<M> marshallingType,
+                                final InjectorLambda injector) {
         final GenericType<T> genericType = genericType(targetType);
         return this.deserialize(input, genericType, marshallingType, injector);
     }
 
-    public <T> T deserialize(final String input,
-                             final GenericType<T> targetType,
-                             final MarshallingType marshallingType,
-                             final InjectorLambda injector) {
+    public <T, M> T deserialize(final M input,
+                                final GenericType<T> targetType,
+                                final MarshallingType<M> marshallingType,
+                                final InjectorLambda injector) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
-        return this.deserialize(input, typeIdentifier, marshallingType, injector);
+        return deserialize(input, typeIdentifier, marshallingType, injector);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T deserialize(final String input,
-                             final TypeIdentifier targetType,
-                             final MarshallingType marshallingType,
-                             final InjectorLambda injector) {
+    public <T, M> T deserialize(final M input,
+                                final TypeIdentifier targetType,
+                                final MarshallingType<M> marshallingType,
+                                final InjectorLambda injector) {
         return (T) this.deserializer.deserialize(input, targetType, marshallingType, injector);
     }
 
@@ -281,32 +326,38 @@ public final class MapMaid {
         return this.debugInformation;
     }
 
-    public String deserializationSchemaFor(final Class<?> type, final MarshallingType marshallingType) {
+    public <M> M deserializationSchemaFor(final Class<?> type,
+                                          final MarshallingType<M> marshallingType) {
         final GenericType<?> genericType = genericType(type);
         return deserializationSchemaFor(genericType, marshallingType);
     }
 
-    public String deserializationSchemaFor(final GenericType<?> type, final MarshallingType marshallingType) {
+    public <M> M deserializationSchemaFor(final GenericType<?> type,
+                                          final MarshallingType<M> marshallingType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return deserializationSchemaFor(typeIdentifier, marshallingType);
     }
 
-    public String deserializationSchemaFor(final TypeIdentifier type, final MarshallingType marshallingType) {
+    public <M> M deserializationSchemaFor(final TypeIdentifier type,
+                                          final MarshallingType<M> marshallingType) {
         final Universal schema = this.deserializer.schema(type);
         return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
     }
 
-    public String serializationSchemaFor(final Class<?> type, final MarshallingType marshallingType) {
+    public <M> M serializationSchemaFor(final Class<?> type,
+                                        final MarshallingType<M> marshallingType) {
         final GenericType<?> genericType = genericType(type);
         return serializationSchemaFor(genericType, marshallingType);
     }
 
-    public String serializationSchemaFor(final GenericType<?> type, final MarshallingType marshallingType) {
+    public <M> M serializationSchemaFor(final GenericType<?> type,
+                                        final MarshallingType<M> marshallingType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
         return serializationSchemaFor(typeIdentifier, marshallingType);
     }
 
-    public String serializationSchemaFor(final TypeIdentifier type, final MarshallingType marshallingType) {
+    public <M> M serializationSchemaFor(final TypeIdentifier type,
+                                        final MarshallingType<M> marshallingType) {
         final Universal schema = this.serializer.schema(type);
         return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
     }

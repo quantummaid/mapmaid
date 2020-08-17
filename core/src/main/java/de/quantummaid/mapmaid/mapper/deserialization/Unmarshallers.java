@@ -33,39 +33,33 @@ import lombok.ToString;
 import java.util.Set;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.UnmarshallingException.unmarshallingException;
-import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
+import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class Unmarshallers {
-    private final MarshallerRegistry<Unmarshaller> unmarshallers;
+    private final MarshallerRegistry<Unmarshaller<?>> unmarshallers;
 
-    static Unmarshallers unmarshallers(final MarshallerRegistry<Unmarshaller> unmarshallers) {
+    static Unmarshallers unmarshallers(final MarshallerRegistry<Unmarshaller<?>> unmarshallers) {
         validateNotNull(unmarshallers, "unmarshallers");
         return new Unmarshallers(unmarshallers);
     }
 
-    Universal unmarshall(final String input,
-                         final MarshallingType marshallingType) {
+    <M> Universal unmarshall(final M input,
+                             final MarshallingType marshallingType) {
         validateNotNull(input, "input");
-        if (input.isEmpty()) {
-            return universalNull();
-        }
-        final Unmarshaller unmarshaller = this.unmarshallers.getForType(marshallingType);
-
-        final String trimmedInput = input.trim();
-
+        final Unmarshaller<M> unmarshaller = (Unmarshaller<M>) unmarshallers.getForType(marshallingType);
         try {
-            final Object unmarshalled = unmarshaller.unmarshal(trimmedInput);
-            return Universal.fromNativeJava(unmarshalled);
+            final Object unmarshalled = unmarshaller.unmarshal(input);
+            return fromNativeJava(unmarshalled);
         } catch (final Exception e) {
             throw unmarshallingException(input, e);
         }
     }
 
-    Set<MarshallingType> supportedMarshallingTypes() {
-        return this.unmarshallers.supportedTypes();
+    Set<MarshallingType<?>> supportedMarshallingTypes() {
+        return unmarshallers.supportedTypes();
     }
 }

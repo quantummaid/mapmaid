@@ -89,9 +89,13 @@ public class MinimalJsonSpecs {
     }
 
     private void marshalAndUnmarshalTest(final String json, final Object object) {
-        final MinimalJsonUnmarshaller unmarshaller = minimalJsonUnmarshaller();
-        assertEquals(object, unmarshaller.unmarshal(json), "unmarshalling from string to object");
-        final MinimalJsonMarshaller marshaller = minimalJsonMarshaller();
-        assertEquals(json, marshaller.marshal(object), "marshalling from object to string");
+        try {
+            final MinimalJsonUnmarshaller unmarshaller = minimalJsonUnmarshaller();
+            assertEquals(object, unmarshaller.unmarshal(json), "unmarshalling from string to object");
+            final MinimalJsonMarshaller marshaller = minimalJsonMarshaller();
+            assertEquals(json, marshaller.marshal(object), "marshalling from object to string");
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

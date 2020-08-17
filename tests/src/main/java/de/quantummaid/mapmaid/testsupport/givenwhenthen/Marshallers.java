@@ -35,18 +35,18 @@ public final class Marshallers {
     private Marshallers() {
     }
 
-    public static Marshaller jsonMarshaller() {
+    public static Marshaller<String> jsonMarshaller() {
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson::toJson;
     }
 
-    public static Marshaller xmlMarshaller() {
+    public static Marshaller<String> xmlMarshaller() {
         final XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
         return xmlMapper::writeValueAsString;
     }
 
-    public static Marshaller yamlMarshaller() {
+    public static Marshaller<String> yamlMarshaller() {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(FlowStyle.BLOCK);
         options.setPrettyFlow(true);

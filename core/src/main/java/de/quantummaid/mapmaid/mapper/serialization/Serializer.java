@@ -53,33 +53,33 @@ import static java.util.Objects.isNull;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Serializer implements SerializationCallback {
-    private final MarshallerRegistry<Marshaller> marshallers;
+    private final MarshallerRegistry<Marshaller<?>> marshallers;
     private final Definitions definitions;
     private final CustomPrimitiveMappings customPrimitiveMappings;
     private final DebugInformation debugInformation;
 
-    public static Serializer theSerializer(final MarshallerRegistry<Marshaller> marshallers,
-                                           final Definitions definitions,
-                                           final CustomPrimitiveMappings customPrimitiveMappings,
-                                           final DebugInformation debugInformation) {
+    public static Serializer serializer(final MarshallerRegistry<Marshaller<?>> marshallers,
+                                        final Definitions definitions,
+                                        final CustomPrimitiveMappings customPrimitiveMappings,
+                                        final DebugInformation debugInformation) {
         return new Serializer(marshallers, definitions, customPrimitiveMappings, debugInformation);
     }
 
-    public Set<MarshallingType> supportedMarshallingTypes() {
+    public Set<MarshallingType<?>> supportedMarshallingTypes() {
         return this.marshallers.supportedTypes();
     }
 
     @SuppressWarnings("unchecked")
-    public String serialize(final Object object,
-                            final TypeIdentifier type,
-                            final MarshallingType marshallingType,
-                            final UnaryOperator<Map<String, Object>> serializedPropertyInjector) {
+    public <T> T serialize(final Object object,
+                           final TypeIdentifier type,
+                           final MarshallingType<T> marshallingType,
+                           final UnaryOperator<Map<String, Object>> serializedPropertyInjector) {
         validateNotNull(object, "object");
         Object normalized = normalize(object, type);
         if (normalized instanceof Map) {
             normalized = serializedPropertyInjector.apply((Map<String, Object>) normalized);
         }
-        final Marshaller marshaller = this.marshallers.getForType(marshallingType);
+        final Marshaller<T> marshaller = (Marshaller<T>) this.marshallers.getForType(marshallingType);
         try {
             return marshaller.marshal(normalized);
         } catch (final Exception e) {
@@ -87,9 +87,9 @@ public final class Serializer implements SerializationCallback {
         }
     }
 
-    public String marshalFromUniversalObject(final Object object,
-                                             final MarshallingType marshallingType) {
-        final Marshaller marshaller = this.marshallers.getForType(marshallingType);
+    public <T> T marshalFromUniversalObject(final Object object,
+                                            final MarshallingType<T> marshallingType) {
+        final Marshaller<T> marshaller = (Marshaller<T>) this.marshallers.getForType(marshallingType);
         try {
             return marshaller.marshal(object);
         } catch (final Exception e) {

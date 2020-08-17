@@ -21,6 +21,6 @@
 
 package de.quantummaid.mapmaid.mapper.marshalling;
 
-public interface Marshaller {
-    String marshal(Object object) throws Exception; // NOSONAR
+public interface Marshaller<T> {
+    T marshal(Object object) throws Exception; // NOSONAR
 }

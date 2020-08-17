@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.mapper.marshalling;
 
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,27 +29,30 @@ import lombok.ToString;
 import java.util.Map;
 import java.util.Set;
 
+import static de.quantummaid.mapmaid.mapper.marshalling.UnsupportedMarshallingTypeException.unsupportedMarshallingTypeException;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MarshallerRegistry<T> {
-    private final Map<MarshallingType, T> map;
+    private final Map<MarshallingType<?>, T> map;
 
-    public static <T> MarshallerRegistry<T> marshallerRegistry(final Map<MarshallingType, T> map) {
-        NotNullValidator.validateNotNull(map, "map");
+    public static <T> MarshallerRegistry<T> marshallerRegistry(final Map<MarshallingType<?>, T> map) {
+        validateNotNull(map, "map");
         return new MarshallerRegistry<>(map);
     }
 
-    public T getForType(final MarshallingType type) {
-        NotNullValidator.validateNotNull(type, "type");
+    public T getForType(final MarshallingType<?> type) {
+        validateNotNull(type, "type");
         final T entry = this.map.get(type);
         if (entry == null) {
-            throw UnsupportedMarshallingTypeException.unsupportedMarshallingTypeException(type, this.map.keySet());
+            throw unsupportedMarshallingTypeException(type, this.map.keySet());
         }
         return entry;
     }
 
-    public Set<MarshallingType> supportedTypes() {
+    public Set<MarshallingType<?>> supportedTypes() {
         return this.map.keySet();
     }
 }

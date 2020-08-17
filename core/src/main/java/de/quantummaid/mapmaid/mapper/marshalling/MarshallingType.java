@@ -21,25 +21,26 @@
 
 package de.quantummaid.mapmaid.mapper.marshalling;
 
-import de.quantummaid.mapmaid.shared.validators.RequiredStringValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MarshallingType {
-    public static final MarshallingType JSON = marshallingType("json");
-    public static final MarshallingType XML = marshallingType("xml");
-    public static final MarshallingType YAML = marshallingType("yaml");
+public final class MarshallingType<T> {
+    public static final MarshallingType<String> JSON = marshallingType("json");
+    public static final MarshallingType<String> XML = marshallingType("xml");
+    public static final MarshallingType<String> YAML = marshallingType("yaml");
 
     private final String type;
 
-    public static MarshallingType marshallingType(final String type) {
-        RequiredStringValidator.validateNotNullNorEmpty(type, "type");
-        return new MarshallingType(type);
+    public static <T> MarshallingType<T> marshallingType(final String type) {
+        validateNotNullNorEmpty(type, "type");
+        return new MarshallingType<>(type);
     }
 
     public String internalValueForMapping() {

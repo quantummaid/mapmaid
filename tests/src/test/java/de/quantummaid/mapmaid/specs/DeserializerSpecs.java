@@ -151,6 +151,7 @@ public final class DeserializerSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("").from(JSON).toTheType(AComplexType.class)

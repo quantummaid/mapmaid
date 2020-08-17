@@ -36,7 +36,7 @@ import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedUnmars
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UrlEncodedMarshallerRecipe implements Recipe {
 
-    public static MarshallingType urlEncoded() {
+    public static MarshallingType<String> urlEncoded() {
         return MarshallingType.marshallingType("urlencoded");
     }
 
