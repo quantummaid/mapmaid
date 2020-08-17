@@ -68,14 +68,16 @@ public final class When {
         }
     }
 
+    @SuppressWarnings({"unchecked", "CastToConcreteClass"})
     public AsStage mapMaidDeserializes(final String input) {
         return marshallingType -> type ->
-                doDeserialization(() -> mapMaid.deserialize(input, type, marshallingType));
+                doDeserialization(() -> mapMaid.deserialize(input, type, (MarshallingType<String>) marshallingType));
     }
 
+    @SuppressWarnings({"unchecked", "CastToConcreteClass"})
     public AsStage mapMaidDeserializesWithInjection(final String input, final InjectorLambda injector) {
         return marshallingType -> type ->
-                doDeserialization(() -> mapMaid.deserialize(input, type, marshallingType, injector));
+                doDeserialization(() -> mapMaid.deserialize(input, type, (MarshallingType<String>) marshallingType, injector));
     }
 
     @SuppressWarnings("unchecked")
@@ -118,13 +120,13 @@ public final class When {
     }
 
     public Then mapMaidMarshalsFromUniversalObject(final Object universalObject,
-                                                   final MarshallingType marshallingType) {
+                                                   final MarshallingType<String> marshallingType) {
         final Object serialized = mapMaid.serializer().marshalFromUniversalObject(universalObject, marshallingType);
         return then(this.thenData.withSerializationResult(serialized));
     }
 
     public Then mapMaidUnmarshalsToUniversalObject(final String input,
-                                                   final MarshallingType marshallingType) {
+                                                   final MarshallingType<String> marshallingType) {
         final Object deserialized = this.mapMaid.deserializer().deserializeToUniversalObject(input, marshallingType);
         return then(this.thenData.withDeserializationResult(deserialized));
     }

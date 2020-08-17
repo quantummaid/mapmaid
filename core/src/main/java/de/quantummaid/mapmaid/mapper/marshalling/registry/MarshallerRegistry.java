@@ -19,30 +19,36 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.jackson;
+package de.quantummaid.mapmaid.mapper.marshalling.registry;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
+import java.util.Map;
+import java.util.Set;
+
+import static de.quantummaid.mapmaid.mapper.marshalling.registry.Registry.registry;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonUnmarshaller implements StringUnmarshaller {
-    private final ObjectMapper objectMapper;
+public final class MarshallerRegistry {
+    private final Registry<Marshaller<?>> registry;
 
-    public static JacksonUnmarshaller jacksonUnmarshaller(final ObjectMapper objectMapper) {
-        validateNotNull(objectMapper, "objectMapper");
-        return new JacksonUnmarshaller(objectMapper);
+    public static MarshallerRegistry marshallerRegistry(final Map<MarshallingType<?>, Marshaller<?>> map) {
+        validateNotNull(map, "map");
+        final Registry<Marshaller<?>> registry = registry(map);
+        return new MarshallerRegistry(registry);
     }
 
-    @Override
-    public Object unmarshalString(final String input) throws Exception {
-        return this.objectMapper.readValue(input, Object.class);
+    @SuppressWarnings("unchecked")
+    public <M> Marshaller<M> getForType(final MarshallingType<M> type) {
+        validateNotNull(type, "type");
+        return (Marshaller<M>) registry.getForType(type);
+    }
+
+    public Set<MarshallingType<?>> supportedTypes() {
+        return registry.supportedTypes();
     }
 }

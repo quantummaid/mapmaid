@@ -40,9 +40,9 @@ import static java.util.stream.Collectors.joining;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UrlEncodedMarshaller implements Marshaller {
+public final class UrlEncodedMarshaller implements Marshaller<String> {
 
-    public static Marshaller urlEncodedMarshaller() {
+    public static Marshaller<String> urlEncodedMarshaller() {
         return new UrlEncodedMarshaller();
     }
 

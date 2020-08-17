@@ -78,9 +78,9 @@ public final class Autoloader {
                         clazz)));
     }
 
-    private static MarshallerAndUnmarshaller invoke(final Method staticInitializer) {
+    private static MarshallerAndUnmarshaller<?> invoke(final Method staticInitializer) {
         try {
-            return (MarshallerAndUnmarshaller) staticInitializer.invoke(null);
+            return (MarshallerAndUnmarshaller<?>) staticInitializer.invoke(null);
         } catch (final IllegalAccessException | InvocationTargetException e) {
             throw autoloadingException(e);
         }

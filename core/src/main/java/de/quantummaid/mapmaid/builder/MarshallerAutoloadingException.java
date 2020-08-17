@@ -32,8 +32,8 @@ public final class MarshallerAutoloadingException extends RuntimeException {
     }
 
     public static MarshallerAutoloadingException conflictingMarshallersForTypes(
-            final MarshallingType marshallingType,
-            final Collection<MarshallerAndUnmarshaller> marshallerAndUnmarshallers) {
+            final MarshallingType<?> marshallingType,
+            final Collection<MarshallerAndUnmarshaller<?>> marshallerAndUnmarshallers) {
 
         final String conflictingMarshallers = marshallerAndUnmarshallers.stream()
                 .map(marshallerAndUnmarshaller -> marshallerAndUnmarshaller.getClass().getName())
