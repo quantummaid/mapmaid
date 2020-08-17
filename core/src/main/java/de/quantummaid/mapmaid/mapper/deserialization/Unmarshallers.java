@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization;
 
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -40,17 +40,17 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class Unmarshallers {
-    private final MarshallerRegistry<Unmarshaller<?>> unmarshallers;
+    private final UnmarshallerRegistry unmarshallers;
 
-    static Unmarshallers unmarshallers(final MarshallerRegistry<Unmarshaller<?>> unmarshallers) {
+    static Unmarshallers unmarshallers(final UnmarshallerRegistry unmarshallers) {
         validateNotNull(unmarshallers, "unmarshallers");
         return new Unmarshallers(unmarshallers);
     }
 
     <M> Universal unmarshall(final M input,
-                             final MarshallingType marshallingType) {
+                             final MarshallingType<M> marshallingType) {
         validateNotNull(input, "input");
-        final Unmarshaller<M> unmarshaller = (Unmarshaller<M>) unmarshallers.getForType(marshallingType);
+        final Unmarshaller<M> unmarshaller = unmarshallers.getForType(marshallingType);
         try {
             final Object unmarshalled = unmarshaller.unmarshal(input);
             return fromNativeJava(unmarshalled);

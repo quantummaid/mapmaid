@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;

@@ -35,7 +35,7 @@ import java.util.Objects;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MinimalJsonMarshaller implements Marshaller {
+public final class MinimalJsonMarshaller implements Marshaller<String> {
 
     public static MinimalJsonMarshaller minimalJsonMarshaller() {
         return new MinimalJsonMarshaller();

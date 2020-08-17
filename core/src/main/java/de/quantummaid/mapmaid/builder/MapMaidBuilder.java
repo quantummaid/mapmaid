@@ -44,9 +44,8 @@ import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.*;
-import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
@@ -71,8 +70,8 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddDes
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddSerializationSignal.addSerialization;
-import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
@@ -345,7 +344,7 @@ public final class MapMaidBuilder implements
         final DebugInformation debugInformation = debugInformation(scanInformationMap);
         final Definitions definitions = definitions(definitionsMap, debugInformation);
 
-        final MarshallerRegistry<Marshaller<?>> marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();
+        final MarshallerRegistry marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();
         final Serializer serializer = serializer(
                 marshallerRegistry,
                 definitions,
@@ -353,7 +352,7 @@ public final class MapMaidBuilder implements
                 debugInformation
         );
 
-        final MarshallerRegistry<Unmarshaller<?>> unmarshallerRegistry = this.advancedBuilder.buildUnmarshallerRegistry();
+        final UnmarshallerRegistry unmarshallerRegistry = this.advancedBuilder.buildUnmarshallerRegistry();
         final Deserializer deserializer = theDeserializer(
                 unmarshallerRegistry,
                 definitions,
