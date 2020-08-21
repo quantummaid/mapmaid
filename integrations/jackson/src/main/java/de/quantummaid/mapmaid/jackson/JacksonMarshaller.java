@@ -33,10 +33,10 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonMarshaller implements Marshaller {
+public final class JacksonMarshaller implements Marshaller<String> {
     private final ObjectMapper objectMapper;
 
-    public static Marshaller jacksonMarshaller(final ObjectMapper objectMapper) {
+    public static Marshaller<String> jacksonMarshaller(final ObjectMapper objectMapper) {
         validateNotNull(objectMapper, "objectMapper");
         return new JacksonMarshaller(objectMapper);
     }

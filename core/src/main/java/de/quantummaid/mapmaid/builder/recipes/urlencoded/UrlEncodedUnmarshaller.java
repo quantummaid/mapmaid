@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder.recipes.urlencoded;
 
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +38,14 @@ import static de.quantummaid.mapmaid.builder.recipes.urlencoded.ParsedUrlEncoded
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UrlEncodedUnmarshaller implements Unmarshaller {
+public final class UrlEncodedUnmarshaller implements StringUnmarshaller {
 
-    public static Unmarshaller urlEncodedUnmarshaller() {
+    public static Unmarshaller<String> urlEncodedUnmarshaller() {
         return new UrlEncodedUnmarshaller();
     }
 
     @Override
-    public Object unmarshal(final String input) {
+    public Object unmarshalString(final String input) {
         final ParsedUrlEncoded parsed = parse(input);
         return parseFromKey(Key.emptyKey(), parsed);
     }

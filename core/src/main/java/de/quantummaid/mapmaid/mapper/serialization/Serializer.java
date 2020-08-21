@@ -26,12 +26,11 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import lombok.AccessLevel;
@@ -45,6 +44,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -53,33 +53,33 @@ import static java.util.Objects.isNull;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Serializer implements SerializationCallback {
-    private final MarshallerRegistry<Marshaller> marshallers;
+    private final MarshallerRegistry marshallers;
     private final Definitions definitions;
     private final CustomPrimitiveMappings customPrimitiveMappings;
     private final DebugInformation debugInformation;
 
-    public static Serializer theSerializer(final MarshallerRegistry<Marshaller> marshallers,
-                                           final Definitions definitions,
-                                           final CustomPrimitiveMappings customPrimitiveMappings,
-                                           final DebugInformation debugInformation) {
+    public static Serializer serializer(final MarshallerRegistry marshallers,
+                                        final Definitions definitions,
+                                        final CustomPrimitiveMappings customPrimitiveMappings,
+                                        final DebugInformation debugInformation) {
         return new Serializer(marshallers, definitions, customPrimitiveMappings, debugInformation);
     }
 
-    public Set<MarshallingType> supportedMarshallingTypes() {
+    public Set<MarshallingType<?>> supportedMarshallingTypes() {
         return this.marshallers.supportedTypes();
     }
 
     @SuppressWarnings("unchecked")
-    public String serialize(final Object object,
-                            final TypeIdentifier type,
-                            final MarshallingType marshallingType,
-                            final UnaryOperator<Map<String, Object>> serializedPropertyInjector) {
+    public <T> T serialize(final Object object,
+                           final TypeIdentifier type,
+                           final MarshallingType<T> marshallingType,
+                           final UnaryOperator<Map<String, Object>> serializedPropertyInjector) {
         validateNotNull(object, "object");
         Object normalized = normalize(object, type);
         if (normalized instanceof Map) {
             normalized = serializedPropertyInjector.apply((Map<String, Object>) normalized);
         }
-        final Marshaller marshaller = this.marshallers.getForType(marshallingType);
+        final Marshaller<T> marshaller = marshallers.getForType(marshallingType);
         try {
             return marshaller.marshal(normalized);
         } catch (final Exception e) {
@@ -87,9 +87,9 @@ public final class Serializer implements SerializationCallback {
         }
     }
 
-    public String marshalFromUniversalObject(final Object object,
-                                             final MarshallingType marshallingType) {
-        final Marshaller marshaller = this.marshallers.getForType(marshallingType);
+    public <T> T marshalFromUniversalObject(final Object object,
+                                            final MarshallingType<T> marshallingType) {
+        final Marshaller<T> marshaller = marshallers.getForType(marshallingType);
         try {
             return marshaller.marshal(object);
         } catch (final Exception e) {
@@ -116,21 +116,21 @@ public final class Serializer implements SerializationCallback {
                                          final Object object,
                                          final SerializationTracker tracker) {
         if (isNull(object)) {
-            return UniversalNull.universalNull();
+            return universalNull();
         }
         final SerializationTracker childTracker = tracker.trackToProhibitCyclicReferences(object);
-        final Definition definition = this.definitions.getDefinitionForType(type);
+        final Definition definition = definitions.getDefinitionForType(type);
         return definition.serializer()
                 .orElseThrow(() -> {
-                    final ScanInformation scanInformation = this.debugInformation.scanInformationFor(type);
+                    final ScanInformation scanInformation = debugInformation.scanInformationFor(type);
                     return mapMaidException(
                             format("No serializer configured for type '%s'", definition.type().description()), scanInformation);
                 })
-                .serialize(object, this, childTracker, this.customPrimitiveMappings, this.debugInformation);
+                .serialize(object, this, childTracker, customPrimitiveMappings, debugInformation);
     }
 
     public Definitions getDefinitions() {
-        return this.definitions;
+        return definitions;
     }
 
     public Universal schema(final TypeIdentifier typeIdentifier) {

@@ -24,5 +24,5 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 
 public interface AsStage {
-    ToStage from(MarshallingType marshallingType);
+    ToStage from(MarshallingType<?> marshallingType);
 }

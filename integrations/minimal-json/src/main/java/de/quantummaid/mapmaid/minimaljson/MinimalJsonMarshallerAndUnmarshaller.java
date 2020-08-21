@@ -26,23 +26,23 @@ import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 
-public class MinimalJsonMarshallerAndUnmarshaller implements MarshallerAndUnmarshaller {
+public class MinimalJsonMarshallerAndUnmarshaller implements MarshallerAndUnmarshaller<String> {
     public static MinimalJsonMarshallerAndUnmarshaller minimalJsonMarshallerAndUnmarshaller() {
         return new MinimalJsonMarshallerAndUnmarshaller();
     }
 
     @Override
-    public MarshallingType marshallingType() {
+    public MarshallingType<String> marshallingType() {
         return MarshallingType.JSON;
     }
 
     @Override
-    public Marshaller marshaller() {
+    public Marshaller<String> marshaller() {
         return MinimalJsonMarshaller.minimalJsonMarshaller();
     }
 
     @Override
-    public Unmarshaller unmarshaller() {
+    public Unmarshaller<String> unmarshaller() {
         return MinimalJsonUnmarshaller.minimalJsonUnmarshaller();
     }
 }

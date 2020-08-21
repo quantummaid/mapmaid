@@ -34,8 +34,8 @@ public final class UnsupportedMarshallingTypeException extends RuntimeException 
         super(message);
     }
 
-    public static UnsupportedMarshallingTypeException unsupportedMarshallingTypeException(final MarshallingType required,
-                                                                                          final Set<MarshallingType> registered) {
+    public static UnsupportedMarshallingTypeException unsupportedMarshallingTypeException(final MarshallingType<?> required,
+                                                                                          final Set<MarshallingType<?>> registered) {
         NotNullValidator.validateNotNull(required, "required");
         NotNullValidator.validateNotNull(registered, "registered");
         final String knownTypes = registered.stream()

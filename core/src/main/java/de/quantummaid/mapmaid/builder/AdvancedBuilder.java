@@ -27,9 +27,11 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.NormalDisambiguator;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
@@ -47,7 +49,8 @@ import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloa
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallerRegistry.marshallerRegistry;
+import static de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry.marshallerRegistry;
+import static de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry.unmarshallerRegistry;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -55,18 +58,18 @@ import static java.util.stream.Collectors.groupingBy;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AdvancedBuilder {
-    private static final List<Autoloadable<MarshallerAndUnmarshaller>> AUTOLOADABLE_MARSHALLERS = List.of(
+    private static final List<Autoloadable<MarshallerAndUnmarshaller<?>>> AUTOLOADABLE_MARSHALLERS = List.of(
             autoloadIfClassPresent("de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller"),
             autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonJsonMarshaller"),
             autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonXmlMarshaller"),
             autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonYamlMarshaller")
     );
-    private Map<MarshallingType, Marshaller> marshallerMap = smallMap();
-    private Map<MarshallingType, Unmarshaller> unmarshallerMap = smallMap();
+    private Map<MarshallingType<?>, Marshaller<?>> marshallerMap = smallMap();
+    private Map<MarshallingType<?>, Unmarshaller<?>> unmarshallerMap = smallMap();
     private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
     private boolean autoloadMarshallers = true;
-    private List<MarshallerAndUnmarshaller> autoloadedMarshallers = null;
-    private Supplier<List<MarshallerAndUnmarshaller>> autoloadMethod = this::autoloadMarshallers;
+    private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
+    private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
     private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
 
     public static AdvancedBuilder advancedBuilder() {
@@ -105,16 +108,16 @@ public final class AdvancedBuilder {
         return this;
     }
 
-    public AdvancedBuilder usingMarshaller(final MarshallerAndUnmarshaller marshallerAndUnmarshaller) {
-        final MarshallingType marshallingType = marshallerAndUnmarshaller.marshallingType();
-        final Marshaller marshaller = marshallerAndUnmarshaller.marshaller();
-        final Unmarshaller unmarshaller = marshallerAndUnmarshaller.unmarshaller();
+    public <M> AdvancedBuilder usingMarshaller(final MarshallerAndUnmarshaller<M> marshallerAndUnmarshaller) {
+        final MarshallingType<M> marshallingType = marshallerAndUnmarshaller.marshallingType();
+        final Marshaller<M> marshaller = marshallerAndUnmarshaller.marshaller();
+        final Unmarshaller<M> unmarshaller = marshallerAndUnmarshaller.unmarshaller();
         return usingMarshaller(marshallingType, marshaller, unmarshaller);
     }
 
-    public AdvancedBuilder usingMarshaller(final MarshallingType marshallingType,
-                                           final Marshaller marshaller,
-                                           final Unmarshaller unmarshaller) {
+    public <M> AdvancedBuilder usingMarshaller(final MarshallingType<M> marshallingType,
+                                               final Marshaller<M> marshaller,
+                                               final Unmarshaller<M> unmarshaller) {
         validateNotNull(marshaller, "marshaller");
         validateNotNull(unmarshaller, "unmarshaller");
         validateNotNull(marshallingType, "marshallingType");
@@ -123,26 +126,26 @@ public final class AdvancedBuilder {
         return doNotAutoloadMarshallers();
     }
 
-    public AdvancedBuilder usingMarshaller(final Map<MarshallingType, Marshaller> marshallerMap,
-                                           final Map<MarshallingType, Unmarshaller> unmarshallerMap) {
+    public AdvancedBuilder usingMarshaller(final Map<MarshallingType<?>, Marshaller<?>> marshallerMap,
+                                           final Map<MarshallingType<?>, Unmarshaller<?>> unmarshallerMap) {
         this.marshallerMap = new HashMap<>(marshallerMap);
         this.unmarshallerMap = new HashMap<>(unmarshallerMap);
         return doNotAutoloadMarshallers();
     }
 
-    public AdvancedBuilder usingJsonMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
+    public AdvancedBuilder usingJsonMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
         validateNotNull(marshaller, "jsonMarshaller");
         validateNotNull(unmarshaller, "jsonUnmarshaller");
         return usingMarshaller(MarshallingType.JSON, marshaller, unmarshaller);
     }
 
-    public AdvancedBuilder usingYamlMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
+    public AdvancedBuilder usingYamlMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
         validateNotNull(marshaller, "yamlMarshaller");
         validateNotNull(unmarshaller, "yamlUnmarshaller");
         return usingMarshaller(MarshallingType.YAML, marshaller, unmarshaller);
     }
 
-    public AdvancedBuilder usingXmlMarshaller(final Marshaller marshaller, final Unmarshaller unmarshaller) {
+    public AdvancedBuilder usingXmlMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
         validateNotNull(marshaller, "xmlMarshaller");
         validateNotNull(unmarshaller, "xmlUnmarshaller");
         return usingMarshaller(MarshallingType.XML, marshaller, unmarshaller);
@@ -154,28 +157,28 @@ public final class AdvancedBuilder {
         return disambiguators(defaultDisambiguator, specialDisambiguators);
     }
 
-    MarshallerRegistry<Marshaller> buildMarshallerRegistry() {
-        if (this.autoloadMarshallers) {
+    MarshallerRegistry buildMarshallerRegistry() {
+        if (autoloadMarshallers) {
             autoload();
-            this.autoloadedMarshallers.forEach(autoloadableMarshaller -> {
-                final MarshallingType marshallingType = autoloadableMarshaller.marshallingType();
-                final Marshaller marshaller = autoloadableMarshaller.marshaller();
-                this.marshallerMap.put(marshallingType, marshaller);
+            autoloadedMarshallers.forEach(autoloadableMarshaller -> {
+                final MarshallingType<?> marshallingType = autoloadableMarshaller.marshallingType();
+                final Marshaller<?> marshaller = autoloadableMarshaller.marshaller();
+                marshallerMap.put(marshallingType, marshaller);
             });
         }
-        return marshallerRegistry(this.marshallerMap);
+        return marshallerRegistry(marshallerMap);
     }
 
-    MarshallerRegistry<Unmarshaller> buildUnmarshallerRegistry() {
-        if (this.autoloadMarshallers) {
+    UnmarshallerRegistry buildUnmarshallerRegistry() {
+        if (autoloadMarshallers) {
             autoload();
-            this.autoloadedMarshallers.forEach(autoloadableMarshaller -> {
-                final MarshallingType marshallingType = autoloadableMarshaller.marshallingType();
-                final Unmarshaller unmarshaller = autoloadableMarshaller.unmarshaller();
-                this.unmarshallerMap.put(marshallingType, unmarshaller);
+            autoloadedMarshallers.forEach(autoloadableMarshaller -> {
+                final MarshallingType<?> marshallingType = autoloadableMarshaller.marshallingType();
+                final Unmarshaller<?> unmarshaller = autoloadableMarshaller.unmarshaller();
+                unmarshallerMap.put(marshallingType, unmarshaller);
             });
         }
-        return marshallerRegistry(this.unmarshallerMap);
+        return unmarshallerRegistry(unmarshallerMap);
     }
 
     MapMaidConfiguration mapMaidConfiguration() {
@@ -183,26 +186,26 @@ public final class AdvancedBuilder {
     }
 
     private void autoload() {
-        if (this.autoloadedMarshallers == null) {
-            this.autoloadedMarshallers = autoloadMethod.get();
+        if (autoloadedMarshallers == null) {
+            autoloadedMarshallers = autoloadMethod.get();
         }
     }
 
-    private List<MarshallerAndUnmarshaller> autoloadMarshallers() {
-        final Map<MarshallingType, List<MarshallerAndUnmarshaller>> foundByMarshallingTypes =
+    private List<MarshallerAndUnmarshaller<?>> autoloadMarshallers() {
+        final Map<MarshallingType<?>, List<MarshallerAndUnmarshaller<?>>> foundByMarshallingTypes =
                 AUTOLOADABLE_MARSHALLERS.stream()
                         .map(Autoloadable::autoload)
                         .flatMap(Optional::stream)
                         .collect(groupingBy(MarshallerAndUnmarshaller::marshallingType));
 
-        final MarshallingType[] conflicting = foundByMarshallingTypes.values().stream()
+        final MarshallingType<?>[] conflicting = foundByMarshallingTypes.values().stream()
                 .filter(val -> val.size() > 1)
                 .map(marshallerAndUnmarshallers -> marshallerAndUnmarshallers.get(0))
                 .map(MarshallerAndUnmarshaller::marshallingType)
                 .toArray(MarshallingType[]::new);
 
         if (conflicting.length >= 1) {
-            final MarshallingType firstConflict = conflicting[0];
+            final MarshallingType<?> firstConflict = conflicting[0];
             throw conflictingMarshallersForTypes(firstConflict, foundByMarshallingTypes.get(firstConflict));
         }
 

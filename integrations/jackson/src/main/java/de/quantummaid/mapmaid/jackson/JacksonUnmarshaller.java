@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JacksonUnmarshaller implements Unmarshaller {
+public final class JacksonUnmarshaller implements StringUnmarshaller {
     private final ObjectMapper objectMapper;
 
     public static JacksonUnmarshaller jacksonUnmarshaller(final ObjectMapper objectMapper) {
@@ -42,7 +42,7 @@ public final class JacksonUnmarshaller implements Unmarshaller {
     }
 
     @Override
-    public Object unmarshal(final String input) throws Exception {
+    public Object unmarshalString(final String input) throws Exception {
         return this.objectMapper.readValue(input, Object.class);
     }
 }

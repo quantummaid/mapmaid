@@ -33,7 +33,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JacksonMarshallers implements Recipe {
-    private final MarshallerAndUnmarshaller marshallerAndUnmarshaller;
+    private final MarshallerAndUnmarshaller<String> marshallerAndUnmarshaller;
 
     public static JacksonMarshallers jacksonMarshallerJson() {
         return new JacksonMarshallers(new JacksonJsonMarshaller());

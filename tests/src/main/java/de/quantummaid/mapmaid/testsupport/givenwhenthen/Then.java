@@ -156,12 +156,12 @@ public final class Then {
         return this;
     }
 
-    public Then mapMaidKnowsAboutMarshallingTypes(final MarshallingType... types) {
+    public Then mapMaidKnowsAboutMarshallingTypes(final MarshallingType<?>... types) {
         assertThat(this.thenData.getSupportedMarshallingTypes(), hasItems(types));
         return this;
     }
 
-    public Then mapMaidKnowsAboutUnmarshallingTypes(final MarshallingType... types) {
+    public Then mapMaidKnowsAboutUnmarshallingTypes(final MarshallingType<?>... types) {
         assertThat(this.thenData.getSupportedUnmarshallingTypes(), hasItems(types));
         return this;
     }

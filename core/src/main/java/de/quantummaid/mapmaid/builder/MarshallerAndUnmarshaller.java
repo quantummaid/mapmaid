@@ -25,10 +25,10 @@ import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 
-public interface MarshallerAndUnmarshaller {
-    MarshallingType marshallingType();
+public interface MarshallerAndUnmarshaller<M> {
+    MarshallingType<M> marshallingType();
 
-    Marshaller marshaller();
+    Marshaller<M> marshaller();
 
-    Unmarshaller unmarshaller();
+    Unmarshaller<M> unmarshaller();
 }

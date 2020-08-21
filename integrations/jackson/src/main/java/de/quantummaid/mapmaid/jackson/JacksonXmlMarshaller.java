@@ -32,7 +32,7 @@ import static de.quantummaid.mapmaid.jackson.JacksonUnmarshaller.jacksonUnmarsha
 import static de.quantummaid.mapmaid.jackson.ObjectMappers.objectMapperXml;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.XML;
 
-public final class JacksonXmlMarshaller implements MarshallerAndUnmarshaller {
+public final class JacksonXmlMarshaller implements MarshallerAndUnmarshaller<String> {
     private final ObjectMapper objectMapper = objectMapperXml();
 
     public static JacksonXmlMarshaller jacksonXmlMarshaller() {
@@ -40,17 +40,17 @@ public final class JacksonXmlMarshaller implements MarshallerAndUnmarshaller {
     }
 
     @Override
-    public MarshallingType marshallingType() {
+    public MarshallingType<String> marshallingType() {
         return XML;
     }
 
     @Override
-    public Marshaller marshaller() {
+    public Marshaller<String> marshaller() {
         return jacksonMarshaller(this.objectMapper);
     }
 
     @Override
-    public Unmarshaller unmarshaller() {
+    public Unmarshaller<String> unmarshaller() {
         return jacksonUnmarshaller(this.objectMapper);
     }
 }
