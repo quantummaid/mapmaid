@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.dynamodb;
 
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.HashMap;
@@ -30,7 +32,12 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
+
+    public static DynamoDbMarshaller dynamoDbMarshaller() {
+        return new DynamoDbMarshaller();
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -52,6 +59,9 @@ public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
         }
         if (input instanceof Long) {
             return marshalLong((Long) input);
+        }
+        if (input instanceof Integer) {
+            return marshalInteger((Integer) input);
         }
         throw new UnsupportedOperationException("unable to marshal object of type: " + input.getClass().getSimpleName());
     }
@@ -97,6 +107,11 @@ public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
         return AttributeValue.builder()
                 .bool(b)
                 .build();
+    }
+
+    private AttributeValue marshalInteger(final Integer i) {
+        final Long l = Long.valueOf(i);
+        return marshalLong(l);
     }
 
     private AttributeValue marshalLong(final Long l) {

@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.dynamodb;
 
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.HashMap;
@@ -31,7 +33,12 @@ import java.util.stream.Collectors;
 import static java.lang.Long.parseLong;
 import static java.lang.String.format;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DynamoDbUnmarshaller implements Unmarshaller<AttributeValue> {
+
+    public static DynamoDbUnmarshaller dynamoDbUnmarshaller() {
+        return new DynamoDbUnmarshaller();
+    }
 
     @Override
     public Object unmarshal(final AttributeValue attributeValue) {
