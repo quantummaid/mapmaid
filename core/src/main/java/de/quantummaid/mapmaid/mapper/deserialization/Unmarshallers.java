@@ -39,6 +39,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1452")
 final class Unmarshallers {
     private final UnmarshallerRegistry unmarshallers;
 

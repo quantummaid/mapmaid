@@ -35,6 +35,7 @@ import static java.util.Collections.unmodifiableSet;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1452")
 public final class ThenData {
     private Object deserializationResult;
     private Object serializationResult;

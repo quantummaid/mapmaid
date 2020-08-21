@@ -52,6 +52,7 @@ import static java.util.Objects.isNull;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1452")
 public final class Serializer implements SerializationCallback {
     private final MarshallerRegistry marshallers;
     private final Definitions definitions;
