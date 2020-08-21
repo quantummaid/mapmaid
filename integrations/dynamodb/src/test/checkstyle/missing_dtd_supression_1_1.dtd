@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+
+        <!--
   ~ Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
   ~
   ~ Licensed to the Apache Software Foundation (ASF) under one
@@ -20,28 +21,11 @@
   ~ under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+        <!ELEMENT suppressions (suppress*)>
 
-    <parent>
-        <groupId>de.quantummaid.mapmaid</groupId>
-        <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.80</version>
-    </parent>
-
-    <artifactId>integrations-parent</artifactId>
-    <packaging>pom</packaging>
-
-    <name>MapMaid - Integrations</name>
-
-    <modules>
-        <module>all</module>
-        <module>jackson</module>
-        <module>minimal-json</module>
-        <module>dynamodb</module>
-    </modules>
-
-    <properties>
-        <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
-    </properties>
-</project>
+        <!ELEMENT suppress EMPTY>
+        <!ATTLIST suppress files CDATA #REQUIRED
+                checks CDATA #IMPLIED
+                id CDATA #IMPLIED
+                lines CDATA #IMPLIED
+                columns CDATA #IMPLIED>

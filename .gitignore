@@ -37,3 +37,5 @@ target
 .project
 .classpath
 .settings/
+
+native-libs/
