@@ -41,7 +41,7 @@ public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public AttributeValue marshal(final Object input) throws UnsupportedOperationException {
+    public AttributeValue marshal(final Object input) {
         if (input == null) {
             return marshalNull();
         }

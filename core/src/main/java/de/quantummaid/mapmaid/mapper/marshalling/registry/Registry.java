@@ -32,6 +32,7 @@ import static de.quantummaid.mapmaid.mapper.marshalling.UnsupportedMarshallingTy
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1452")
 final class Registry<T> {
     private final Map<MarshallingType<?>, T> map;
 
