@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.mapper.marshalling.string;
 
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 
+@SuppressWarnings("java:S112")
 public interface StringUnmarshaller extends Unmarshaller<String> {
 
     Object unmarshalString(String input) throws Exception;

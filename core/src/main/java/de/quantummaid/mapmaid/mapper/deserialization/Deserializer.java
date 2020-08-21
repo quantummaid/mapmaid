@@ -54,6 +54,7 @@ import static java.lang.String.format;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1452")
 public final class Deserializer {
     private final Definitions definitions;
     private final ValidationMappings validationMappings;

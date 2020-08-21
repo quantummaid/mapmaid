@@ -33,6 +33,7 @@ import static de.quantummaid.mapmaid.mapper.marshalling.registry.Registry.regist
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S1452")
 public final class UnmarshallerRegistry {
     private final Registry<Unmarshaller<?>> registry;
 

@@ -31,6 +31,7 @@ import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.v
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("java:S2326")
 public final class MarshallingType<T> {
     public static final MarshallingType<String> JSON = marshallingType("json");
     public static final MarshallingType<String> XML = marshallingType("xml");
