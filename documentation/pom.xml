@@ -39,7 +39,8 @@
             ${project.basedir}/src/test/checkstyle/checkstyle-suppressions.xml
         </checkstyle.suppressions.location>
         <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
-        <sonar.coverage.jacoco.xmlReportPaths>../coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>../coverage/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
@@ -63,6 +64,13 @@
             <version>2.0.1.Final</version>
         </dependency>
         <!-- Showcase end jsr303dependency -->
+        <!-- Showcase start dynamodbdependency -->
+        <dependency>
+            <groupId>de.quantummaid.mapmaid.integrations</groupId>
+            <artifactId>mapmaid-dynamodb</artifactId>
+            <version>0.9.80</version>
+        </dependency>
+        <!-- Showcase end dynamodbdependency -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

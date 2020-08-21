@@ -29,7 +29,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.documentation.marshalling.domain.*;
+import de.quantummaid.mapmaid.dynamodb.DynamoDbMarshallerAndUnmarshaller;
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
 
@@ -78,6 +80,37 @@ public final class MarshallingDocumentationTests {
         assertThat(urlEncoded, is("addresses[0][houseNumber]=7a&addresses[0][zipCode]=423423&addresses[0][country]=USA&" +
                 "addresses[0][streetName]=Nulla+Street&addresses[0][region]=Mississippi&addresses[0][city]=Mankato&" +
                 "firstNames[0]=Aaron&firstNames[1]=Adam"));
+    }
+
+    @Test
+    public void attributeValue() {
+        //Showcase start attributeValue
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .serializingAndDeserializing(ComplexPerson.class)
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(DynamoDbMarshallerAndUnmarshaller.dynamoDbMarshallerAndUnmarshaller()))
+                .build();
+        //Showcase end attributeValue
+
+        final ComplexPerson object = ComplexPerson.deserialize(
+                asList(FirstName.fromStringValue("Aaron"), FirstName.fromStringValue("Adam")),
+                singletonList(Address.deserialize(
+                        StreetName.fromStringValue("Nulla Street"),
+                        HouseNumber.fromStringValue("7a"),
+                        ZipCode.fromStringValue("423423"),
+                        CityName.fromStringValue("Mankato"),
+                        Region.fromStringValue("Mississippi"),
+                        Country.fromStringValue("USA")
+                )));
+
+        //Showcase start attributeValueSerialization
+        final AttributeValue attributeValue = mapMaid.serializeTo(object, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+        //Showcase end attributeValueSerialization
+
+        //Showcase start attributeValueDeserialization
+        final ComplexPerson deserialized = mapMaid.deserialize(attributeValue, ComplexPerson.class, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+        //Showcase end attributeValueDeserialization
+
+        assertThat(deserialized.firstNames, is(object.firstNames));
     }
 
     @Test

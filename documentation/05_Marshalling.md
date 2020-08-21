@@ -69,6 +69,39 @@ In order to use it, you need to use the corresponding `MarshallingType`:
 final String urlEncoded = mapMaid.serializeTo(object, urlEncoded());
 ```
 
+### AWS DynamoDB `AttributeValue`
+MapMaid is able to marshal and unmarshal `software.amazon.awssdk.services.dynamodb.model.AttributeValue`
+data structures that are used in the AWS DynamoDB SDK. To use it, add the following dependency:
+
+<!---[CodeSnippet](dynamodbdependency)-->
+```xml
+<dependency>
+    <groupId>de.quantummaid.mapmaid.integrations</groupId>
+    <artifactId>mapmaid-dynamodb</artifactId>
+    <version>0.9.80</version>
+</dependency>
+```
+
+Configuration:
+<!---[CodeSnippet](attributeValue)-->
+```java
+final MapMaid mapMaid = MapMaid.aMapMaid()
+        .serializingAndDeserializing(ComplexPerson.class)
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(DynamoDbMarshallerAndUnmarshaller.dynamoDbMarshallerAndUnmarshaller()))
+        .build();
+```
+Serialization:
+<!---[CodeSnippet](attributeValueSerialization)-->
+```java
+final AttributeValue attributeValue = mapMaid.serializeTo(object, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+```
+
+Deserialization:
+<!---[CodeSnippet](attributeValueDeserialization)-->
+```java
+final ComplexPerson deserialized = mapMaid.deserialize(attributeValue, ComplexPerson.class, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+```
+
 ## Registering your own marshaller
 If these marshallers do not fit your needs, you can easily provide your own by implementing the
 `Marshaller` and `Unmarshaller` interfaces.
@@ -118,7 +151,7 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 </dependency>
 ```
 
-### Yaml with ObjectMapper
+### YAML with ObjectMapper
 
 <!---[CodeSnippet](yamlWithObjectMapper)-->
 ```java
