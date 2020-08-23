@@ -19,32 +19,42 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.marshalling;
+package de.quantummaid.mapmaid;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@SuppressWarnings("java:S2326")
-public final class MarshallingType<X> {
-    public static final MarshallingType<String> JSON = marshallingType("json");
-    public static final MarshallingType<String> XML = marshallingType("xml");
-    public static final MarshallingType<String> YAML = marshallingType("yaml");
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public final class RequiredCapabilities {
+    private final boolean serialization;
+    private final boolean deserialization;
+    private final String description;
 
-    private final String type;
-
-    public static <X> MarshallingType<X> marshallingType(final String type) {
-        validateNotNullNorEmpty(type, "type");
-        return new MarshallingType<>(type);
+    public static RequiredCapabilities duplex() {
+        return new RequiredCapabilities(true, true, "duplex");
     }
 
-    public String internalValueForMapping() {
-        return this.type;
+    public static RequiredCapabilities serialization() {
+        return new RequiredCapabilities(true, false, "serialization");
+    }
+
+    public static RequiredCapabilities deserialization() {
+        return new RequiredCapabilities(false, true, "deserialization");
+    }
+
+    public boolean hasDeserialization() {
+        return this.deserialization;
+    }
+
+    public boolean hasSerialization() {
+        return this.serialization;
+    }
+
+    public String describe() {
+        return description;
     }
 }

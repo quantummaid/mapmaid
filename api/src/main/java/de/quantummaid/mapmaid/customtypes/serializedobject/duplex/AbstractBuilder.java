@@ -19,32 +19,25 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.marshalling;
+package de.quantummaid.mapmaid.customtypes.serializedobject.duplex;
 
-import lombok.AccessLevel;
+import de.quantummaid.mapmaid.customtypes.DuplexType;
+import de.quantummaid.mapmaid.customtypes.serializedobject.Builder;
+import de.quantummaid.mapmaid.customtypes.serializedobject.InvocableDeserializer;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
+import static de.quantummaid.mapmaid.customtypes.serializedobject.duplex.Common.createDuplexType;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@SuppressWarnings("java:S2326")
-public final class MarshallingType<X> {
-    public static final MarshallingType<String> JSON = marshallingType("json");
-    public static final MarshallingType<String> XML = marshallingType("xml");
-    public static final MarshallingType<String> YAML = marshallingType("yaml");
+@RequiredArgsConstructor
+public class AbstractBuilder<X, T extends InvocableDeserializer<X>> {
+    protected final Builder builder;
 
-    private final String type;
-
-    public static <X> MarshallingType<X> marshallingType(final String type) {
-        validateNotNullNorEmpty(type, "type");
-        return new MarshallingType<>(type);
-    }
-
-    public String internalValueForMapping() {
-        return this.type;
+    public DuplexType<X> deserializedUsing(final T deserializer) {
+        builder.setDeserializer(deserializer);
+        return createDuplexType(builder);
     }
 }

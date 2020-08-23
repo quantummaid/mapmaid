@@ -19,32 +19,46 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.marshalling;
+package de.quantummaid.mapmaid.identifier;
 
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
+import static de.quantummaid.reflectmaid.validators.NotNullValidator.validateNotNull;
+import static java.lang.String.format;
+import static java.util.UUID.randomUUID;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@SuppressWarnings("java:S2326")
-public final class MarshallingType<X> {
-    public static final MarshallingType<String> JSON = marshallingType("json");
-    public static final MarshallingType<String> XML = marshallingType("xml");
-    public static final MarshallingType<String> YAML = marshallingType("yaml");
+public final class VirtualTypeIdentifier implements TypeIdentifier {
+    private final String id;
 
-    private final String type;
-
-    public static <X> MarshallingType<X> marshallingType(final String type) {
-        validateNotNullNorEmpty(type, "type");
-        return new MarshallingType<>(type);
+    public static TypeIdentifier virtualTypeIdentifier(final String id) {
+        validateNotNull(id, "id");
+        return new VirtualTypeIdentifier(id);
     }
 
-    public String internalValueForMapping() {
-        return this.type;
+    public static TypeIdentifier uniqueVirtualTypeIdentifier() {
+        final String id = randomUUID().toString();
+        return new VirtualTypeIdentifier(id);
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return true;
+    }
+
+    @Override
+    public ResolvedType getRealType() {
+        throw new UnsupportedOperationException(format("Virtual type '%s' does not have a real type", description()));
+    }
+
+    @Override
+    public String description() {
+        return format("<virtual type '%s'>", this.id);
     }
 }

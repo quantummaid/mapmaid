@@ -57,10 +57,6 @@
         </developer>
     </developers>
 
-    <modules>
-        <module>autoload-tests</module>
-    </modules>
-
     <properties>
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     </properties>
@@ -96,6 +92,7 @@
                 </property>
             </activation>
             <modules>
+                <module>api</module>
                 <module>bom</module>
                 <module>core</module>
                 <module>coverage</module>
@@ -114,6 +111,7 @@
                 </property>
             </activation>
             <modules>
+                <module>api</module>
                 <module>bom</module>
                 <module>core</module>
                 <module>integrations</module>

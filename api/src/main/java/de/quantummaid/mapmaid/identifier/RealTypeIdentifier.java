@@ -19,32 +19,39 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.marshalling;
+package de.quantummaid.mapmaid.identifier;
 
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
+import static de.quantummaid.reflectmaid.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@SuppressWarnings("java:S2326")
-public final class MarshallingType<X> {
-    public static final MarshallingType<String> JSON = marshallingType("json");
-    public static final MarshallingType<String> XML = marshallingType("xml");
-    public static final MarshallingType<String> YAML = marshallingType("yaml");
+public final class RealTypeIdentifier implements TypeIdentifier {
+    private final ResolvedType resolvedType;
 
-    private final String type;
-
-    public static <X> MarshallingType<X> marshallingType(final String type) {
-        validateNotNullNorEmpty(type, "type");
-        return new MarshallingType<>(type);
+    public static TypeIdentifier realTypeIdentifier(final ResolvedType type) {
+        validateNotNull(type, "type");
+        return new RealTypeIdentifier(type);
     }
 
-    public String internalValueForMapping() {
-        return this.type;
+    @Override
+    public ResolvedType getRealType() {
+        return this.resolvedType;
+    }
+
+    @Override
+    public String description() {
+        return this.resolvedType.description();
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return false;
     }
 }

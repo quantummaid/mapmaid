@@ -19,32 +19,23 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.marshalling;
+package de.quantummaid.mapmaid.customtypes.serializedobject.deserialization_only;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
+import de.quantummaid.mapmaid.customtypes.DeserializationOnlyType;
+import de.quantummaid.mapmaid.customtypes.serializedobject.Builder;
+import de.quantummaid.mapmaid.customtypes.serializedobject.Deserializer16;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
+import static de.quantummaid.mapmaid.customtypes.serializedobject.deserialization_only.Common.createDeserializationOnlyType;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@SuppressWarnings("java:S2326")
-public final class MarshallingType<X> {
-    public static final MarshallingType<String> JSON = marshallingType("json");
-    public static final MarshallingType<String> XML = marshallingType("xml");
-    public static final MarshallingType<String> YAML = marshallingType("yaml");
+@RequiredArgsConstructor
+@SuppressWarnings("java:S1200")
+public final class Builder16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> {
+    private final Builder builder;
 
-    private final String type;
-
-    public static <X> MarshallingType<X> marshallingType(final String type) {
-        validateNotNullNorEmpty(type, "type");
-        return new MarshallingType<>(type);
-    }
-
-    public String internalValueForMapping() {
-        return this.type;
+    public DeserializationOnlyType<X> deserializedUsing(
+            final Deserializer16<X, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> deserializer) {
+        builder.setDeserializer(deserializer);
+        return createDeserializationOnlyType(builder);
     }
 }

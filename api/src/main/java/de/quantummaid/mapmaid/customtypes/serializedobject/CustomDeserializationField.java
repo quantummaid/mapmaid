@@ -19,32 +19,29 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.marshalling;
+package de.quantummaid.mapmaid.customtypes.serializedobject;
 
+import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.RequiredStringValidator.validateNotNullNorEmpty;
-
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@SuppressWarnings("java:S2326")
-public final class MarshallingType<X> {
-    public static final MarshallingType<String> JSON = marshallingType("json");
-    public static final MarshallingType<String> XML = marshallingType("xml");
-    public static final MarshallingType<String> YAML = marshallingType("yaml");
+public final class CustomDeserializationField {
+    private final ResolvedType type;
+    private final String name;
 
-    private final String type;
-
-    public static <X> MarshallingType<X> marshallingType(final String type) {
-        validateNotNullNorEmpty(type, "type");
-        return new MarshallingType<>(type);
+    public static CustomDeserializationField deserializationField(final GenericType<?> type,
+                                                                  final String name) {
+        final ResolvedType resolvedType = type.toResolvedType();
+        return new CustomDeserializationField(resolvedType, name);
     }
 
-    public String internalValueForMapping() {
+    public String name() {
+        return this.name;
+    }
+
+    public ResolvedType type() {
         return this.type;
     }
 }

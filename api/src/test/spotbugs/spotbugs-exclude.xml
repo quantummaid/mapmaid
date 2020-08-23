@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020 Richard Hauswald - https://quantummaid.de/.
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<FindBugsFilter
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://github.com/spotbugs/filter/3.0.0"
+        xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+    <Match>
+        <Class name="de.quantummaid.mapmaid.filters.paths.ResourcesPath"/>
+        <Method name="basenamesOfChildren"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.builder.scanning.DefaultPackageScanner"/>
+        <Method name="scan"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.ParameterNameTest"/>
+        <Bug pattern="NS_DANGEROUS_NON_SHORT_CIRCUIT"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.mapper.deserialization.DeserializerTest"/>
+        <Bug pattern="NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.domain.AComplexValidatedType"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.domain.ACyclicType"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.examples.domain.User"/>
+        <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+</FindBugsFilter>
