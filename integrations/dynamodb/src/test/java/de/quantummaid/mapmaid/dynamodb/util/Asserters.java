@@ -28,6 +28,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -81,10 +82,21 @@ public final class Asserters {
     }
 
     public static AttributeValue testOnDynamoDbInstance(final Function<DynamoDbClient, AttributeValue> test) {
+        final Properties originalProperties = System.getProperties();
+
+        final Properties patchedProperties = new Properties(originalProperties);
+        System.setProperty("aws.region", "egal");
+        System.setProperty("aws.accessKeyId", "egal");
+        System.setProperty("aws.secretAccessKey", "egal");
+        System.setProperties(patchedProperties);
+
         try (LocalDynamoDb localDynamoDb = startLocalDynamoDb(freePort())) {
             localDynamoDb.createTable(TABLE_NAME, PRIMARY_KEY);
             final DynamoDbClient client = localDynamoDb.client();
             return test.apply(client);
+        } finally {
+            System.setProperties(originalProperties);
         }
     }
+
 }
