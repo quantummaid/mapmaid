@@ -18,10 +18,5 @@
         <ignoreVersion type="regex">.*-java7</ignoreVersion>
       </ignoreVersions>
     </rule>
-    <rule groupId="org.jetbrains.kotlin">
-      <ignoreVersions>
-        <ignoreVersion>1.4.0</ignoreVersion>
-      </ignoreVersions>
-    </rule>
   </rules>
 </ruleset>
