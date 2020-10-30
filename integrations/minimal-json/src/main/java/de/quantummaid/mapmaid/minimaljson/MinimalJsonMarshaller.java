@@ -74,8 +74,8 @@ public final class MinimalJsonMarshaller implements Marshaller<String> {
         } else if (Objects.isNull(object)) {
             return Json.value(null);
         } else {
-            throw new IllegalArgumentException(String.format(
-                    "unable to marshall object '%s' of type '%s' to json", object, object.getClass()));
+            throw new IllegalArgumentException("unable to marshall object '" + object +
+                    "' of type '" + object.getClass() + "' to json");
         }
     }
 }

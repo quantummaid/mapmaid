@@ -40,11 +40,8 @@ public final class WrongInputStructure {
         NotNullValidator.validateNotNull(expected, "expected");
         NotNullValidator.validateNotNull(actual, "actual");
         NotNullValidator.validateNotNull(location, "location");
-        final String message = String.format(
-                "Requiring the input to be an '%s' but found '%s' at '%s'",
-                Universal.describe(expected),
-                actual.toNativeJava(),
-                location);
+        final String message = "Requiring the input to be an '" + Universal.describe(expected) +
+                "' but found '" + actual.toNativeJava() + "' at '" + location + "'";
         return mapMaidException(message, scanInformations);
     }
 }

@@ -31,8 +31,4 @@ public final class CustomTypeValidationException extends IllegalArgumentExceptio
     public static CustomTypeValidationException customTypeValidationException(final String message) {
         return new CustomTypeValidationException(message);
     }
-
-    public static CustomTypeValidationException customTypeValidationException(final String messageFormat, final Object... args) {
-        return new CustomTypeValidationException(String.format(messageFormat, args));
-    }
 }

@@ -41,9 +41,8 @@ public final class UnrecognizedExceptionOccurredException extends RuntimeExcepti
             final TrackingPosition position,
             final Throwable unmappedException,
             final Object originalInput) {
-        final String msg = String.format("Unrecognized exception deserializing field '%s': %s",
-                position.render(), messageProvidingDebugInformation
-        );
+        final String msg = "Unrecognized exception deserializing field '" + position.render() +
+                "': " + messageProvidingDebugInformation;
         return new UnrecognizedExceptionOccurredException(msg, unmappedException, valueOf(originalInput));
     }
 }
