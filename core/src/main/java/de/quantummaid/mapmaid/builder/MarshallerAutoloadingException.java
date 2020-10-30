@@ -40,7 +40,7 @@ public final class MarshallerAutoloadingException extends RuntimeException {
                 .collect(Collectors.joining(", ", "[", "]"));
 
         throw new MarshallerAutoloadingException(
-                String.format("conflicting implementations for marshalling type '%s': %s",
-                        marshallingType.internalValueForMapping(), conflictingMarshallers));
+                "conflicting implementations for marshalling type '" +
+                        marshallingType.internalValueForMapping() + "': " + conflictingMarshallers);
     }
 }

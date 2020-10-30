@@ -84,9 +84,7 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
         final String joinedMethods = this.methods.values().stream()
                 .map(ResolvedMethod::describe)
                 .collect(joining(", ", "[", "]"));
-        return String.format(
-                "as serialized object by calling the constructor '%s' and then calling the methods: %s",
-                this.constructor.describe(), joinedMethods
-        );
+        return "as serialized object by calling the constructor '" +
+                this.constructor.describe() + "' and then calling the methods: " + joinedMethods;
     }
 }

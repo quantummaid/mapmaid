@@ -51,7 +51,7 @@ public final class LocalDynamoDb implements AutoCloseable {
         try {
             final DynamoDBProxyServer server = ServerRunner.createServerFromCommandLineArgs(localArgs);
             server.start();
-            final String url = String.format("http://localhost:%d", port);
+            final String url = "http://localhost:" + port;
             final DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
                     .endpointOverride(URI.create(url))
                     .build();

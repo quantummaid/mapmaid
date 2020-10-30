@@ -81,7 +81,7 @@ public final class UniversalLong implements UniversalPrimitive {
     public int toNativeIntExact() {
         //directly taken from the Math.integerExactInt method
         if ((int) this.value != this.value) {
-            final String message = String.format("Overflow when converting long '%d' to int.", this.value);
+            final String message = "Overflow when converting long '" + this.value + "' to int.";
             throw mapMaidException(message);
         }
         return (int) this.value;
@@ -90,7 +90,7 @@ public final class UniversalLong implements UniversalPrimitive {
     public short toNativeShortExact() {
         //directly taken from the BigDecimal shortValueExact method
         if ((short) this.value != this.value) {
-            final String message = String.format("Overflow when converting long '%d' to short.", this.value);
+            final String message = "Overflow when converting long '" + this.value + "' to short.";
             throw mapMaidException(message);
         }
         return (short) this.value;
@@ -99,7 +99,7 @@ public final class UniversalLong implements UniversalPrimitive {
     public byte toNativeByteExact() {
         //directly taken from the BigDecimal byteValueExact method
         if ((byte) this.value != this.value) {
-            final String message = format("Overflow when converting long '%d' to byte.", this.value);
+            final String message = "Overflow when converting long '" + this.value + "' to byte.";
             throw mapMaidException(message);
         }
         return (byte) this.value;
