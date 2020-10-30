@@ -30,6 +30,7 @@ import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.Long.parseLong;
 import static java.lang.String.format;
 
+@SuppressWarnings("java:S1192")
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
