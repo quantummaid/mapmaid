@@ -16,6 +16,7 @@
     <rule groupId="com.thoughtworks.xstream">
       <ignoreVersions>
         <ignoreVersion type="regex">.*-java7</ignoreVersion>
+        <ignoreVersion type="regex">.*-jdk7</ignoreVersion>
       </ignoreVersions>
     </rule>
   </rules>
