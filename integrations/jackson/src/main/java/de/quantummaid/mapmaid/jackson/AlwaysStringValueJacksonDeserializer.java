@@ -41,6 +41,7 @@ final class AlwaysStringValueJacksonDeserializer extends UntypedObjectDeserializ
         super(null, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Object deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
         final int currentTokenId = p.getCurrentTokenId();
