@@ -78,7 +78,7 @@ data structures that are used in the AWS DynamoDB SDK. To use it, add the follow
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-dynamodb</artifactId>
-    <version>0.9.99</version>
+    <version>0.9.100</version>
 </dependency>
 ```
 
