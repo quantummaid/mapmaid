@@ -84,7 +84,7 @@ public final class Serializer implements SerializationCallback {
         try {
             return marshaller.marshal(normalized);
         } catch (final Exception e) {
-            throw new UnsupportedOperationException(format("Could not marshal normalization %s", normalized), e);
+            throw UnexpectedExceptionThrownDuringMarshallingException.fromException(e, object);
         }
     }
 
@@ -94,7 +94,7 @@ public final class Serializer implements SerializationCallback {
         try {
             return marshaller.marshal(object);
         } catch (final Exception e) {
-            throw new UnsupportedOperationException(format("Could not marshal from object %s", object), e);
+            throw UnexpectedExceptionThrownDuringMarshallingException.fromException(e, object);
         }
     }
 

@@ -21,9 +21,11 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.domain.exceptions.AnException;
+import de.quantummaid.mapmaid.domain.AComplexNestedType;
 import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.exceptions.AnException;
+import de.quantummaid.mapmaid.mapper.deserialization.validation.UnexpectedExceptionThrownDuringDeserializationException;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -34,6 +36,9 @@ import static de.quantummaid.mapmaid.mapper.deserialization.validation.Validatio
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 
 public final class ExceptionTrackingSpecs {
 
@@ -41,7 +46,8 @@ public final class ExceptionTrackingSpecs {
     public void testUnmappedException() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -52,8 +58,56 @@ public final class ExceptionTrackingSpecs {
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
                 "}").from(MarshallingType.JSON).toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Unrecognized exception deserializing field 'number1': " +
-                        "Exception calling deserialize(input: x)");
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown when deserializing field " +
+                        "'number1': NumberFormatException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringDeserializationException.class, e -> {
+                    assertThat(
+                            e.rawCompleteInput.toString(),
+                            equalTo("{number1=x, number2=5, stringA=asdf, stringB=qwer}")
+                    );
+                    assertThat(e.unmappedException, instanceOf(NumberFormatException.class));
+                    assertThat(e.unmappedException.getMessage(), equalTo("For input string: \"x\""));
+                });
+    }
+
+    @Test
+    public void testUnmappedExceptionDeeperInHierarchy() {
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .serializingAndDeserializing(AComplexNestedType.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("" +
+                "{" +
+                "\"complexType1\"={\n" +
+                "  \"number1\": \"1\",\n" +
+                "  \"number2\": \"5\",\n" +
+                "  \"stringA\": \"asdf\",\n" +
+                "  \"stringB\": \"qwer\"\n" +
+                "},\n" +
+                "\"complexType2\"={\n" +
+                "  \"number1\": \"x\",\n" +
+                "  \"number2\": \"5\",\n" +
+                "  \"stringA\": \"asdf\",\n" +
+                "  \"stringB\": \"qwer\"\n" +
+                "}\n" +
+                "}"
+        ).from(MarshallingType.JSON).toTheType(AComplexNestedType.class)
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown when deserializing field " +
+                        "'complexType2.number1': NumberFormatException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringDeserializationException.class, e -> {
+                    assertThat(
+                            e.rawCompleteInput.toString(),
+                            equalTo("{" +
+                                    "complexType2={number1=x, number2=5, stringA=asdf, stringB=qwer}, " +
+                                    "complexType1={number1=1, number2=5, stringA=asdf, stringB=qwer}" +
+                                    "}")
+                    );
+                    assertThat(e.unmappedException, instanceOf(NumberFormatException.class));
+                    assertThat(e.unmappedException.getMessage(), equalTo("For input string: \"x\""));
+                });
     }
 
     @Test
@@ -90,8 +144,8 @@ public final class ExceptionTrackingSpecs {
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
                 "}").toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Unrecognized exception deserializing field 'number1': " +
-                        "Exception calling deserialize(input: x)");
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown when deserializing field " +
+                        "'number1': NumberFormatException");
     }
 
     @Test

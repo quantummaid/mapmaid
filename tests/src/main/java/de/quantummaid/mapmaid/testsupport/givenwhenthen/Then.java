@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.hamcrest.core.StringContains;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.Classification.CUSTOM_PRIMITIVE;
@@ -108,6 +109,16 @@ public final class Then {
                 .map(String::trim)
                 .collect(toList());
         assertThat(lines, hasItem(expectedMessage));
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Then anExceptionOfClassIsThrownFulfilling(final Class<T> expectedExceptionClass,
+                                                         final Consumer<T> verificationLogic) {
+        final Exception exception = this.thenData.getException();
+        assertThat(exception, not(is(nullValue())));
+        assertThat(exception, instanceOf(expectedExceptionClass));
+        verificationLogic.accept((T) exception);
         return this;
     }
 

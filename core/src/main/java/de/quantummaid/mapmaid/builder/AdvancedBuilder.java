@@ -64,13 +64,13 @@ public final class AdvancedBuilder {
             autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonXmlMarshaller"),
             autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonYamlMarshaller")
     );
+    private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
+    private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
     private Map<MarshallingType<?>, Marshaller<?>> marshallerMap = smallMap();
     private Map<MarshallingType<?>, Unmarshaller<?>> unmarshallerMap = smallMap();
-    private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
     private boolean autoloadMarshallers = true;
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
-    private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
 
     public static AdvancedBuilder advancedBuilder() {
         return new AdvancedBuilder();
@@ -134,6 +134,12 @@ public final class AdvancedBuilder {
     }
 
     public AdvancedBuilder usingJsonMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
+        validateNotNull(marshaller, "jsonMarshaller");
+        validateNotNull(unmarshaller, "jsonUnmarshaller");
+        return usingMarshaller(MarshallingType.JSON, marshaller, unmarshaller);
+    }
+
+    public AdvancedBuilder usingJsonMarshaller(final Marshaller<String> marshaller, final Unmarshaller<String> unmarshaller) {
         validateNotNull(marshaller, "jsonMarshaller");
         validateNotNull(unmarshaller, "jsonUnmarshaller");
         return usingMarshaller(MarshallingType.JSON, marshaller, unmarshaller);

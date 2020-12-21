@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.domain.*;
 import de.quantummaid.mapmaid.domain.exceptions.AnException;
+import de.quantummaid.mapmaid.mapper.deserialization.UnexpectedExceptionThrownDuringUnmarshallingException;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -30,6 +31,8 @@ import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public final class DeserializerSpecs {
 
@@ -169,11 +172,15 @@ public final class DeserializerSpecs {
         )
                 .when().mapMaidDeserializes("{\"number1\";\"1\",\"number2\":\"2\",\"stringA\"=\"a\",\"stringB\":\"b\"}")
                 .from(JSON).toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Error during unmarshalling for type 'de.quantummaid.mapmaid.domain.AComplexType' with input '{" +
-                        "\"number1\";\"1\"," +
-                        "\"number2\":\"2\"," +
-                        "\"stringA\"=\"a\"," +
-                        "\"stringB\":\"b\"}'");
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during unmarshalling: JsonSyntaxException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringUnmarshallingException.class, e -> {
+                    assertThat(e.objectToUnmarshall, equalTo(
+                                    "{\"number1\";\"1\"," +
+                                    "\"number2\":\"2\"," +
+                                    "\"stringA\"=\"a\"," +
+                                    "\"stringB\":\"b\"}")
+                    );
+                });
     }
 
     @Test

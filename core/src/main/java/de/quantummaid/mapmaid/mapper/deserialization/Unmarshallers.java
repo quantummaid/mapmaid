@@ -32,7 +32,7 @@ import lombok.ToString;
 
 import java.util.Set;
 
-import static de.quantummaid.mapmaid.mapper.deserialization.UnmarshallingException.unmarshallingException;
+import static de.quantummaid.mapmaid.mapper.deserialization.InternalUnmarshallingException.internalUnmarshallingException;
 import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
@@ -56,7 +56,7 @@ final class Unmarshallers {
             final Object unmarshalled = unmarshaller.unmarshal(input);
             return fromNativeJava(unmarshalled);
         } catch (final Exception e) {
-            throw unmarshallingException(input, e);
+            throw internalUnmarshallingException(input, e);
         }
     }
 

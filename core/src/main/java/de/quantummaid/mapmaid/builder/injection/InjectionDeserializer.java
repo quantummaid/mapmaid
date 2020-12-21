@@ -37,8 +37,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
-import static java.lang.String.format;
+import static de.quantummaid.mapmaid.builder.injection.InjectionIsNotDeserializableException.injectionIsNotDeerializableException;
 import static java.util.Collections.emptyList;
 
 @ToString
@@ -65,9 +64,7 @@ public final class InjectionDeserializer implements TypeDeserializer {
                              final TypeIdentifier typeIdentifier,
                              final DebugInformation debugInformation) {
         final ScanInformation scanInformation = debugInformation.scanInformationFor(this.typeIdentifier);
-        throw mapMaidException(format(
-                "Tried to deserialize type '%s' that is marked as injection-only (input was '%s')",
-                this.typeIdentifier.description(), input.toNativeJava()), scanInformation);
+        throw injectionIsNotDeerializableException(typeIdentifier, scanInformation, input);
     }
 
     @Override

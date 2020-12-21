@@ -24,7 +24,11 @@ package de.quantummaid.mapmaid.specs.polymorphy;
 import de.quantummaid.mapmaid.domain.AnImplementation1;
 import de.quantummaid.mapmaid.domain.AnImplementation2;
 import de.quantummaid.mapmaid.domain.AnInterface;
+import de.quantummaid.mapmaid.polymorphy.MissingPolymorphicTypeFieldException;
+import de.quantummaid.mapmaid.polymorphy.UnknownPolymorphicSubtypeException;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
@@ -32,6 +36,9 @@ import static de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype.primitive
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
+import static java.util.Collections.emptyMap;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public final class PolymorphySpecs {
 
@@ -110,5 +117,54 @@ public final class PolymorphySpecs {
         )
                 .when().mapMaidIsInstantiated()
                 .anExceptionIsThrownWithAMessageContaining("de.quantummaid.mapmaid.specs.polymorphy.PrimitiveOnlySubtype: unable to detect duplex:");
+    }
+
+    @Test
+    public void failsWhenInputIsNotAnObject() {
+        given(() ->
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidDeserializes("\"a\"").from(JSON).toTheType(AnInterface.class)
+                .anExceptionIsThrownWithAMessageContaining("Requiring the input to be an 'object'");
+    }
+
+    @Test
+    public void failsForMissingSubTypeFieldDuringDeserialization() {
+        given(() ->
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidDeserializes("{}").from(JSON).toTheType(AnInterface.class)
+                .anExceptionIsThrownWithAMessageContaining("Missing '__type__' field to identify polymorphic subtype " +
+                        "for type de.quantummaid.mapmaid.domain.AnInterface")
+                .anExceptionOfClassIsThrownFulfilling(MissingPolymorphicTypeFieldException.class, e -> {
+                    assertThat(e.input, equalTo(emptyMap()));
+                });
+    }
+
+    @Test
+    public void failsForUnknownSubTypeDuringDeserialization() {
+        final String input = "{" +
+                "\"__type__\":\"UnknownClass\"" +
+                "}";
+        given(() ->
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, AnImplementation1.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidDeserializes(input).from(JSON).toTheType(AnInterface.class)
+                .anExceptionIsThrownWithAMessageContaining("Unknown type 'UnknownClass' (needs to be a subtype of " +
+                        "de.quantummaid.mapmaid.domain.AnInterface, " +
+                        "known subtype identifiers: [de.quantummaid.mapmaid.domain.AnImplementation1])"
+                )
+                .anExceptionOfClassIsThrownFulfilling(UnknownPolymorphicSubtypeException.class, e -> {
+                    assertThat(e.input, equalTo(Map.of("__type__", "UnknownClass")));
+                });
     }
 }

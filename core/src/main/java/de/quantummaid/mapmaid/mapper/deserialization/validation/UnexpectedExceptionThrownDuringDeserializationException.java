@@ -21,28 +21,40 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.validation;
 
+import de.quantummaid.mapmaid.debug.MapMaidException;
+import de.quantummaid.mapmaid.mapper.deserialization.DeserializationContext;
+
 import static java.lang.String.valueOf;
 
-public final class UnrecognizedExceptionOccurredException extends RuntimeException {
+public final class UnexpectedExceptionThrownDuringDeserializationException extends MapMaidException {
     public final Throwable unmappedException;
-    public final String originalInput;
+    public final Object rawCompleteInput;
+    public final String deserializerInput;
 
-    private UnrecognizedExceptionOccurredException(
+    private UnexpectedExceptionThrownDuringDeserializationException(
             final String msg,
             final Throwable unmappedException,
-            final String originalInput) {
+            final Object originalInput,
+            final String deserializerInput) {
         super(msg, unmappedException);
         this.unmappedException = unmappedException;
-        this.originalInput = originalInput;
+        this.rawCompleteInput = originalInput;
+        this.deserializerInput = deserializerInput;
     }
 
-    static UnrecognizedExceptionOccurredException fromException(
+    static UnexpectedExceptionThrownDuringDeserializationException fromException(
+            final DeserializationContext context,
             final String messageProvidingDebugInformation,
             final TrackingPosition position,
             final Throwable unmappedException,
-            final Object originalInput) {
-        final String msg = "Unrecognized exception deserializing field '" + position.render() +
+            final Object input) {
+        final String msg = "Unexpected exception thrown when deserializing field '" + position.render() +
                 "': " + messageProvidingDebugInformation;
-        return new UnrecognizedExceptionOccurredException(msg, unmappedException, valueOf(originalInput));
+        return new UnexpectedExceptionThrownDuringDeserializationException(
+                msg,
+                unmappedException,
+                context.getRawCompleteInput(),
+                valueOf(input)
+        );
     }
 }

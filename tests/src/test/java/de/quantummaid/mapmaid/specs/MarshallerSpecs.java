@@ -25,6 +25,9 @@ import de.quantummaid.mapmaid.domain.AComplexNestedType;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithArray;
 import de.quantummaid.mapmaid.domain.Instances;
+import de.quantummaid.mapmaid.mapper.deserialization.UnexpectedExceptionThrownDuringUnmarshallingException;
+import de.quantummaid.mapmaid.mapper.serialization.UnexpectedExceptionThrownDuringMarshallingException;
+import de.quantummaid.mapmaid.specs.exceptions.TestException;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -32,9 +35,14 @@ import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarsha
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncodedMarshaller;
 import static de.quantummaid.mapmaid.domain.Instances.theFullyInitializedExampleDto;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
+import static de.quantummaid.mapmaid.specs.exceptions.ExceptionThrowingMarshaller.exceptionThrowingMarshaller;
+import static de.quantummaid.mapmaid.specs.exceptions.ExceptionThrowingMarshaller.exceptionThrowingUnmarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 
 public final class MarshallerSpecs {
 
@@ -182,5 +190,79 @@ public final class MarshallerSpecs {
                 .anExceptionIsThrownWithAMessageContaining("'json'")
                 .anExceptionIsThrownWithAMessageContaining("'yaml'")
                 .anExceptionIsThrownWithAMessageContaining("'xml'");
+    }
+
+    @Test
+    public void testMarshallerThrowingAnExceptionDuringSerialization() {
+        final Object input = theFullyInitializedExampleDto();
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(exceptionThrowingMarshaller(), jsonUnmarshaller())
+                        )
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidSerializes(input).withMarshallingType(JSON)
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during marshalling: TestException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringMarshallingException.class, e -> {
+                    assertThat(e.exception, instanceOf(TestException.class));
+                    assertThat(e.objectToBeMarshalled, equalTo(input));
+                });
+    }
+
+    @Test
+    public void testMarshallerThrowingAnExceptionDuringMarshalling() {
+        final Object input = theFullyInitializedExampleDto();
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(exceptionThrowingMarshaller(), jsonUnmarshaller())
+                        )
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidMarshalsFromUniversalObject(input, JSON)
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during marshalling: TestException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringMarshallingException.class, e -> {
+                    assertThat(e.exception, instanceOf(TestException.class));
+                    assertThat(e.objectToBeMarshalled, equalTo(input));
+                });
+    }
+
+    @Test
+    public void testUnmarshallerThrowingAnExceptionDuringDeserialization() {
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(jsonMarshaller(), exceptionThrowingUnmarshaller())
+                        )
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("{}").from(JSON).toTheType(AComplexType.class)
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during unmarshalling: TestException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringUnmarshallingException.class, e -> {
+                    assertThat(e.exception, instanceOf(TestException.class));
+                    assertThat(e.objectToUnmarshall, equalTo("{}"));
+                });
+    }
+
+    @Test
+    public void testUnmarshallerThrowingAnExceptionDuringUnmarshalling() {
+        given(
+                aMapMaid()
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
+                                .usingJsonMarshaller(jsonMarshaller(), exceptionThrowingUnmarshaller())
+                        )
+                        .serializingAndDeserializing(AComplexType.class)
+                        .build()
+        )
+                .when().mapMaidUnmarshalsToUniversalObject("{}", JSON)
+                .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during unmarshalling: TestException")
+                .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringUnmarshallingException.class, e -> {
+                    assertThat(e.exception, instanceOf(TestException.class));
+                    assertThat(e.objectToUnmarshall, equalTo("{}"));
+                });
     }
 }

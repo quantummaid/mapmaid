@@ -78,8 +78,9 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
             final Object mapped = customPrimitiveMappings.fromUniversal(universalPrimitive, baseType);
             return (T) deserialize(mapped);
         } catch (final Exception e) {
-            final String message = format("Exception calling deserialize(input: %s)", input.toNativeJava());
-            exceptionTracker.track(e, message);
+            final String message = e.getClass().getSimpleName();
+            final String inputAsString = input.toNativeJava().toString();
+            exceptionTracker.track(e, message, inputAsString);
             return null;
         }
     }

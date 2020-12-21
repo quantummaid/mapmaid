@@ -59,4 +59,12 @@
         <packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/kotlin\-reflect@.*$</packageUrl>
         <cpe>cpe:/a:jetbrains:kotlin</cpe>
     </suppress>
+    <suppress>
+    <notes><![CDATA[
+      A flaw was found in FasterXML Jackson Databind, where it did not have entity expansion secured properly.
+      This flaw allows vulnerability to XML external entity (XXE) attacks.
+       The highest threat from this vulnerability is data integrity.
+      ]]></notes>
+    <cve>CVE-2020-25649</cve>
+</suppress>
 </suppressions>
