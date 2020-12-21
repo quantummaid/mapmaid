@@ -24,8 +24,10 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
@@ -121,14 +123,24 @@ public final class When {
 
     public Then mapMaidMarshalsFromUniversalObject(final Object universalObject,
                                                    final MarshallingType<String> marshallingType) {
-        final Object serialized = mapMaid.serializer().marshalFromUniversalObject(universalObject, marshallingType);
-        return then(this.thenData.withSerializationResult(serialized));
+        final Serializer serializer = mapMaid.serializer();
+        try {
+            final Object serialized = serializer.marshalFromUniversalObject(universalObject, marshallingType);
+            return then(this.thenData.withSerializationResult(serialized));
+        } catch (final Exception e) {
+            return then(this.thenData.withException(e));
+        }
     }
 
     public Then mapMaidUnmarshalsToUniversalObject(final String input,
                                                    final MarshallingType<String> marshallingType) {
-        final Object deserialized = this.mapMaid.deserializer().deserializeToUniversalObject(input, marshallingType);
-        return then(this.thenData.withDeserializationResult(deserialized));
+        try {
+            final Deserializer deserializer = this.mapMaid.deserializer();
+            final Object deserialized = deserializer.deserializeToUniversalObject(input, marshallingType);
+            return then(this.thenData.withDeserializationResult(deserialized));
+        } catch (final Exception e) {
+            return then(this.thenData.withException(e));
+        }
     }
 
     public WithMarshallingType mapMaidSerializesWithInjector(final Object object,

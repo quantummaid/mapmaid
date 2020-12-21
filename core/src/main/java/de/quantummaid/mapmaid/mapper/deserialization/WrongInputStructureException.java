@@ -23,25 +23,36 @@ package de.quantummaid.mapmaid.mapper.deserialization;
 
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 
-import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+public final class WrongInputStructureException extends MapMaidException {
+    public final Object inputObject;
 
-public final class WrongInputStructure {
-
-    private WrongInputStructure() {
+    public WrongInputStructureException(final String message,
+                                        final Object inputObject) {
+        super(message, null);
+        this.inputObject = inputObject;
     }
 
-    public static MapMaidException wrongInputStructureException(final Class<? extends Universal> expected,
-                                                                final Universal actual,
-                                                                final String location,
-                                                                final ScanInformation... scanInformations) {
+    public static WrongInputStructureException wrongInputStructureException(final Class<? extends Universal> expected,
+                                                                            final Universal actual,
+                                                                            final ExceptionTracker exceptionTracker,
+                                                                            final ScanInformation scanInformation) {
         NotNullValidator.validateNotNull(expected, "expected");
         NotNullValidator.validateNotNull(actual, "actual");
-        NotNullValidator.validateNotNull(location, "location");
+        NotNullValidator.validateNotNull(exceptionTracker, "exceptionTracker");
+        final String position = exceptionTracker.getPosition();
+        final String location;
+        if (position.isEmpty()) {
+            location = "";
+        } else {
+            location = " for field '" + position + "'";
+        }
         final String message = "Requiring the input to be an '" + Universal.describe(expected) +
-                "' but found '" + actual.toNativeJava() + "' at '" + location + "'";
-        return mapMaidException(message, scanInformations);
+                "'" + location +
+                "\n\n" + scanInformation.render();
+        return new WrongInputStructureException(message, actual.toNativeJava());
     }
 }

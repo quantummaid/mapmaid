@@ -21,14 +21,19 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithCollections;
+import de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public final class SchematicSpecs {
 
@@ -40,7 +45,12 @@ public final class SchematicSpecs {
                         .serializingAndDeserializing(AComplexTypeWithCollections.class)
                         .build()
         )
-                .when().mapMaidDeserializes("{\"arrayList\": {}, \"array\": []}").from(MarshallingType.JSON).toTheType(AComplexTypeWithCollections.class)
-                .anExceptionIsThrownWithAMessageContaining("Requiring the input to be an 'collection' but found '{}' at 'arrayList'");
+                .when().mapMaidDeserializes("{\"arrayList\": {}, \"array\": []}")
+                .from(MarshallingType.JSON)
+                .toTheType(AComplexTypeWithCollections.class)
+                .anExceptionIsThrownWithAMessageContaining("Requiring the input to be an 'collection' for field 'arrayList'")
+                .anExceptionOfClassIsThrownFulfilling(WrongInputStructureException.class, e -> {
+                    assertThat(e.inputObject, equalTo(Collections.emptyMap()));
+                });
     }
 }

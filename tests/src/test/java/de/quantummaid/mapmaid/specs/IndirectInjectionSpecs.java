@@ -23,29 +23,35 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.mapmaid.mapper.deserialization.PredeserializedObjectCannotBeDeserialized;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public final class IndirectInjectionSpecs {
 
     @Test
     public void indirectInjectionIsNotPossible() {
+        final Map<String, Object> input = Map.of(
+                "stringA", "a",
+                "stringB", AString.fromStringValue("b"),
+                "number1", "1",
+                "number2", "2"
+        );
         given(
                 aMapMaid()
                         .deserializing(AComplexType.class)
                         .build())
-                .when().mapMaidDeserializesTheMap(
-                Map.of(
-                        "stringA", "a",
-                        "stringB", AString.fromStringValue("b"),
-                        "number1", "1",
-                        "number2", "2"
-                )).toTheType(AComplexType.class)
-                .anExceptionIsThrownWithAMessageContaining("Pre-deserialized objects are not supported in the input but found 'AString(value=b)'. " +
-                        "Please use injections to add pre-deserialized objects.");
+                .when().mapMaidDeserializesTheMap(input).toTheType(AComplexType.class)
+                .anExceptionIsThrownWithAMessageContaining("Pre-deserialized objects are not supported for " +
+                        "deserialization'. Please use injections to add pre-deserialized objects.")
+                .anExceptionOfClassIsThrownFulfilling(PredeserializedObjectCannotBeDeserialized.class, e -> {
+                    assertThat(e.objectToSerialize, equalTo(AString.fromStringValue("b")));
+                });
     }
 }

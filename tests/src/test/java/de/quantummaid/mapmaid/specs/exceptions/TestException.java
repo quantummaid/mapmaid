@@ -19,18 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.deserialization;
+package de.quantummaid.mapmaid.specs.exceptions;
 
-import static java.lang.String.format;
-
-public final class UnmarshallingException extends RuntimeException {
-
-    private UnmarshallingException(final String message, final Exception cause) {
-        super(message, cause);
-    }
-
-    public static UnmarshallingException unmarshallingException(final Object input, final Exception cause) {
-        final String message = format("Could not unmarshal from input %s", input);
-        return new UnmarshallingException(message, cause);
-    }
+public class TestException extends RuntimeException {
 }

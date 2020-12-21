@@ -28,11 +28,11 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
-public final class MapMaidException extends RuntimeException {
+public class MapMaidException extends RuntimeException {
     private static final String URL = "https://github.com/quantummaid/mapmaid/tree/master/documentation";
 
-    private MapMaidException(final String message,
-                             final Throwable cause) {
+    protected MapMaidException(final String message,
+                               final Throwable cause) {
         super(message, cause);
     }
 

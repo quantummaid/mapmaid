@@ -43,6 +43,7 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.mapper.deserialization.PredeserializedObjectCannotBeDeserialized.predeserializedObjectCannotBeDeserialized;
 import static java.lang.String.format;
 
 @ToString
@@ -94,8 +95,7 @@ final class InternalDeserializer implements DeserializerCallback {
         }
         if (input instanceof UniversalInjection) {
             final ScanInformation scanInformation = debugInformation.scanInformationFor(targetType);
-            throw mapMaidException(format("Pre-deserialized objects are not supported in the input but found '%s'. " +
-                    "Please use injections to add pre-deserialized objects.", input.toNativeJava()), scanInformation);
+            throw predeserializedObjectCannotBeDeserialized(scanInformation, input.toNativeJava());
         }
 
         final Definition definition = this.definitions.getDefinitionForType(targetType);

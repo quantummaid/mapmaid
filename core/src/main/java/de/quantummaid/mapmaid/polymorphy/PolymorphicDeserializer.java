@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.polymorphy;
 
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
@@ -37,7 +38,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForPolymorphicParent;
+import static de.quantummaid.mapmaid.polymorphy.MissingPolymorphicTypeFieldException.missingPolymorphicTypeFieldException;
+import static de.quantummaid.mapmaid.polymorphy.UnknownPolymorphicSubtypeException.unknownPolymorphicSubtypeException;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -67,17 +71,22 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
                              final CustomPrimitiveMappings customPrimitiveMappings,
                              final TypeIdentifier typeIdentifier,
                              final DebugInformation debugInformation) {
-        final UniversalObject universalObject = (UniversalObject) input;
+        final UniversalObject universalObject = asUniversalObject(input, exceptionTracker, debugInformation);
         final Universal typeAsUniversal = universalObject.getField(typeField)
-                .orElseThrow(() -> new IllegalArgumentException(format(
-                        "Missing '%s' information in universal object %s", typeField, input.toNativeJava())));
+                .orElseThrow(() -> {
+                    final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
+                    return missingPolymorphicTypeFieldException(
+                            input,
+                            typeIdentifier,
+                            typeField,
+                            scanInformation
+                    );
+                });
         final String type = (String) typeAsUniversal.toNativeJava();
         final TypeIdentifier implementation = nameToType.lookup(type)
                 .orElseThrow(() -> {
-                    final String subtypeIdentifier = String.join(", ", nameToType.keys());
-                    return new IllegalArgumentException(format(
-                            "Unknown type '%s' (needs to be a subtype of %s, known subtype identifiers: [%s])",
-                            type, typeIdentifier.description(), subtypeIdentifier));
+                    final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
+                    throw unknownPolymorphicSubtypeException(input, typeIdentifier, type, nameToType.keys(), scanInformation);
                 });
 
         return (T) callback.deserializeRecursive(
@@ -86,6 +95,17 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
                 exceptionTracker,
                 injector,
                 debugInformation);
+    }
+
+    private UniversalObject asUniversalObject(final Universal input,
+                                              final ExceptionTracker exceptionTracker,
+                                              final DebugInformation debugInformation) {
+        if (input instanceof UniversalObject) {
+            return (UniversalObject) input;
+        } else {
+            final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
+            throw wrongInputStructureException(UniversalObject.class, input, exceptionTracker, scanInformation);
+        }
     }
 
     @Override

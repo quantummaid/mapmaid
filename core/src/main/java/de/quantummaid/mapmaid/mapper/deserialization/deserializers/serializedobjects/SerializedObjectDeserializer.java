@@ -96,7 +96,8 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
             } catch (final Exception e) {
                 final String message = format("Exception calling deserialize(elements: %s) on deserializationMethod %s",
                         elements, this);
-                exceptionTracker.track(e, message);
+                final String deserializerInput = input.toNativeJava().toString();
+                exceptionTracker.track(e, message, deserializerInput);
                 return null;
             }
         }

@@ -27,11 +27,13 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationContext.deserializationContext;
 import static java.lang.String.format;
 
 @Slf4j
@@ -64,15 +66,34 @@ public final class ExceptionTracker {
         }
     }
 
-    public void track(final Throwable e, final String messageProvidingDebugInformation) {
+    public void track(final Throwable e,
+                      final String messageProvidingDebugInformation,
+                      final Object deserializerInput) {
         final Throwable resolvedThrowable = resolveThrowable(e);
         final ExceptionMappingList<Throwable> exceptionMapping = this.validationMappings.get(resolvedThrowable.getClass())
-                .orElseThrow(() -> UnrecognizedExceptionOccurredException.fromException(
-                        messageProvidingDebugInformation, this.position, resolvedThrowable, this.originalInput.toNativeJava()));
+                .orElseThrow(() -> unexpectedExceptionThrownDuringDeserializationException(
+                        messageProvidingDebugInformation, resolvedThrowable, deserializerInput
+                        )
+                );
         final String propertyPath = this.position.render();
         log.debug("Aggregating deserialization exception at {}", propertyPath, e);
         final List<ValidationError> mapped = exceptionMapping.map(resolvedThrowable, propertyPath);
         this.validationErrors.addAll(mapped);
+    }
+
+    @NotNull
+    private UnexpectedExceptionThrownDuringDeserializationException unexpectedExceptionThrownDuringDeserializationException(
+            final String messageProvidingDebugInformation,
+            final Throwable resolvedThrowable,
+            final Object deserializerInput
+    ) {
+        return UnexpectedExceptionThrownDuringDeserializationException.fromException(
+                deserializationContext(this.originalInput.toNativeJava()),
+                messageProvidingDebugInformation,
+                this.position,
+                resolvedThrowable,
+                deserializerInput
+        );
     }
 
     public ExceptionTracker stepInto(final String name) {

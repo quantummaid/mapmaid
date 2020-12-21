@@ -44,12 +44,11 @@ import lombok.ToString;
 
 import java.util.Set;
 
-import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer.internalDeserializer;
+import static de.quantummaid.mapmaid.mapper.deserialization.UnexpectedExceptionThrownDuringUnmarshallingException.unexpectedExceptionThrownDuringUnmarshallingException;
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
 import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -90,8 +89,12 @@ public final class Deserializer {
 
     public <M> Object deserializeToUniversalObject(final M input,
                                                    final MarshallingType<M> type) {
-        final Universal universal = unmarshallers.unmarshall(input, type);
-        return universal.toNativeJava();
+        try {
+            final Universal universal = unmarshallers.unmarshall(input, type);
+            return universal.toNativeJava();
+        } catch (final InternalUnmarshallingException e) {
+            throw unexpectedExceptionThrownDuringUnmarshallingException(e.objectToUnmarshall, e.getCause());
+        }
     }
 
     public <M> Object deserialize(final M input,
@@ -101,11 +104,9 @@ public final class Deserializer {
         try {
             final Universal unmarshalled = this.unmarshallers.unmarshall(input, marshallingType);
             return deserialize(unmarshalled, targetType, injectorProducer);
-        } catch (final UnmarshallingException e) {
+        } catch (final InternalUnmarshallingException e) {
             final ScanInformation scanInformation = this.debugInformation.scanInformationFor(targetType);
-            throw mapMaidException(format(
-                    "Error during unmarshalling for type '%s' with input '%s'",
-                    targetType.description(), input), e, scanInformation);
+            throw unexpectedExceptionThrownDuringUnmarshallingException(e.objectToUnmarshall, e.getCause(), scanInformation);
         }
     }
 
