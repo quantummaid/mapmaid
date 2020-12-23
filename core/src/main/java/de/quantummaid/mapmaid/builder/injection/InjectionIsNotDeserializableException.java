@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import static java.lang.String.format;
 
 public final class InjectionIsNotDeserializableException extends MapMaidException {
-    public final Object objectToSerialize;
+    public transient Object objectToSerialize;
 
     private InjectionIsNotDeserializableException(final String message,
                                                   final Object objectToSerialize) {

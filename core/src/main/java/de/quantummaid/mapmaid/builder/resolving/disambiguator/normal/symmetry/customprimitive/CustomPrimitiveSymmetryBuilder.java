@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
+import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
@@ -55,9 +55,7 @@ public final class CustomPrimitiveSymmetryBuilder {
     }
 
     private static <T> void ensureKeyIsPresent(final Class<?> type, final Map<Class<?>, List<T>> map) {
-        if (!map.containsKey(type)) {
-            map.put(type, smallList());
-        }
+        map.computeIfAbsent(type, s -> smallList());
     }
 
     public void addDeserializer(final CustomPrimitiveDeserializer deserializer) {

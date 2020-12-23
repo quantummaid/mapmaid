@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.mapper.deserialization;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 
 public final class InternalUnmarshallingException extends MapMaidException {
-    public final Object objectToUnmarshall;
+    public transient Object objectToUnmarshall;
 
     private InternalUnmarshallingException(final String message,
                                            final Exception cause,

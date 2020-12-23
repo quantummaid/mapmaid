@@ -81,10 +81,8 @@ public final class SerializationFieldOptions {
     public void add(final SerializationField field) {
         validateNotNull(field, "field");
         final String name = field.name();
-        if (!this.options.containsKey(name)) {
-            this.options.put(name, smallList());
-        }
-        this.options.get(name).add(field);
+        final List<SerializationField> serializationFields = this.options.computeIfAbsent(name, s -> smallList());
+        serializationFields.add(field);
     }
 
     public boolean contains(final String name, final ResolvedType type) {

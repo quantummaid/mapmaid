@@ -25,8 +25,8 @@ import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 
 public final class UnexpectedExceptionThrownDuringUnmarshallingException extends MapMaidException {
-    public final Object objectToUnmarshall;
     public final Throwable exception;
+    public transient Object objectToUnmarshall;
 
     private UnexpectedExceptionThrownDuringUnmarshallingException(final String message,
                                                                   final Throwable cause,

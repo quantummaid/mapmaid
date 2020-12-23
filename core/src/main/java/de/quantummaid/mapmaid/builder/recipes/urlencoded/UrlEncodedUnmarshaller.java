@@ -44,6 +44,11 @@ public final class UrlEncodedUnmarshaller implements StringUnmarshaller {
         return new UrlEncodedUnmarshaller();
     }
 
+    private static boolean areArrayIndeces(final List<KeyElement> indeces) {
+        return indeces.stream()
+                .anyMatch(KeyElement::isArrayIndex);
+    }
+
     @Override
     public Object unmarshalString(final String input) {
         final ParsedUrlEncoded parsed = parse(input);
@@ -52,7 +57,7 @@ public final class UrlEncodedUnmarshaller implements StringUnmarshaller {
 
     private Object parseFromKey(final Key key, final ParsedUrlEncoded parsed) {
         return parsed.getValue(key)
-                .map(string -> (Object) string)
+                .map(Object.class::cast)
                 .orElseGet(() -> parseArrayOrMap(key, parsed));
     }
 
@@ -84,10 +89,5 @@ public final class UrlEncodedUnmarshaller implements StringUnmarshaller {
             map.put(child.value(), childValue);
         });
         return map;
-    }
-
-    private static boolean areArrayIndeces(final List<KeyElement> indeces) {
-        return indeces.stream()
-                .anyMatch(KeyElement::isArrayIndex);
     }
 }

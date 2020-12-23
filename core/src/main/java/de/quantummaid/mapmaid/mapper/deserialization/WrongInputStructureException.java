@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 
 public final class WrongInputStructureException extends MapMaidException {
-    public final Object inputObject;
+    public transient Object inputObject;
 
     public WrongInputStructureException(final String message,
                                         final Object inputObject) {

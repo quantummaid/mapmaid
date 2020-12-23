@@ -28,8 +28,8 @@ import static java.lang.String.valueOf;
 
 public final class UnexpectedExceptionThrownDuringDeserializationException extends MapMaidException {
     public final Throwable unmappedException;
-    public final Object rawCompleteInput;
     public final String deserializerInput;
+    public transient Object rawCompleteInput;
 
     private UnexpectedExceptionThrownDuringDeserializationException(
             final String msg,
