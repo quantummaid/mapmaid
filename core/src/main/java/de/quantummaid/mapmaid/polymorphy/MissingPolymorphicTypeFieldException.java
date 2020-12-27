@@ -29,7 +29,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import static java.lang.String.format;
 
 public final class MissingPolymorphicTypeFieldException extends MapMaidException {
-    public transient Object input;
+    public final transient Object input;
 
     private MissingPolymorphicTypeFieldException(final String message,
                                                  final Object input) {

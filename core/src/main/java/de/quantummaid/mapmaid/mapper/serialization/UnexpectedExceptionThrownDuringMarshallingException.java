@@ -24,8 +24,8 @@ package de.quantummaid.mapmaid.mapper.serialization;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 
 public final class UnexpectedExceptionThrownDuringMarshallingException extends MapMaidException {
-    public final Throwable exception;
-    public transient Object objectToBeMarshalled;
+    private final Throwable exception;
+    private final transient Object objectToBeMarshalled;
 
     private UnexpectedExceptionThrownDuringMarshallingException(
             final String msg,
@@ -45,5 +45,13 @@ public final class UnexpectedExceptionThrownDuringMarshallingException extends M
                 exception,
                 objectToBeSerialized
         );
+    }
+
+    public Throwable exception() {
+        return exception;
+    }
+
+    public Object objectToBeMarshalled() {
+        return objectToBeMarshalled;
     }
 }

@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 
 public final class WrongInputStructureException extends MapMaidException {
-    public transient Object inputObject;
+    private final transient Object inputObject;
 
     public WrongInputStructureException(final String message,
                                         final Object inputObject) {
@@ -54,5 +54,9 @@ public final class WrongInputStructureException extends MapMaidException {
                 "'" + location +
                 "\n\n" + scanInformation.render();
         return new WrongInputStructureException(message, actual.toNativeJava());
+    }
+
+    public Object inputObject() {
+        return inputObject;
     }
 }

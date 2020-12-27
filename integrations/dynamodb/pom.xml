@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>integrations-parent</artifactId>
-        <version>0.9.101</version>
+        <version>0.9.102</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
@@ -120,7 +120,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>DynamoDBLocal</artifactId>
-            <version>1.13.5</version>
+            <version>1.13.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
