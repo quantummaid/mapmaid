@@ -206,8 +206,8 @@ public final class MarshallerSpecs {
                 .when().mapMaidSerializes(input).withMarshallingType(JSON)
                 .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during marshalling: TestException")
                 .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringMarshallingException.class, e -> {
-                    assertThat(e.exception, instanceOf(TestException.class));
-                    assertThat(e.objectToBeMarshalled, equalTo(input));
+                    assertThat(e.exception(), instanceOf(TestException.class));
+                    assertThat(e.objectToBeMarshalled(), equalTo(input));
                 });
     }
 
@@ -225,8 +225,8 @@ public final class MarshallerSpecs {
                 .when().mapMaidMarshalsFromUniversalObject(input, JSON)
                 .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during marshalling: TestException")
                 .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringMarshallingException.class, e -> {
-                    assertThat(e.exception, instanceOf(TestException.class));
-                    assertThat(e.objectToBeMarshalled, equalTo(input));
+                    assertThat(e.exception(), instanceOf(TestException.class));
+                    assertThat(e.objectToBeMarshalled(), equalTo(input));
                 });
     }
 
@@ -243,8 +243,8 @@ public final class MarshallerSpecs {
                 .when().mapMaidDeserializes("{}").from(JSON).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during unmarshalling: TestException")
                 .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringUnmarshallingException.class, e -> {
-                    assertThat(e.exception, instanceOf(TestException.class));
-                    assertThat(e.objectToUnmarshall, equalTo("{}"));
+                    assertThat(e.exception(), instanceOf(TestException.class));
+                    assertThat(e.objectToUnmarshall(), equalTo("{}"));
                 });
     }
 
@@ -261,8 +261,8 @@ public final class MarshallerSpecs {
                 .when().mapMaidUnmarshalsToUniversalObject("{}", JSON)
                 .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during unmarshalling: TestException")
                 .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringUnmarshallingException.class, e -> {
-                    assertThat(e.exception, instanceOf(TestException.class));
-                    assertThat(e.objectToUnmarshall, equalTo("{}"));
+                    assertThat(e.exception(), instanceOf(TestException.class));
+                    assertThat(e.objectToUnmarshall(), equalTo("{}"));
                 });
     }
 }

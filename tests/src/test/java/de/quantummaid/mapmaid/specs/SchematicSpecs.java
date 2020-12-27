@@ -50,7 +50,7 @@ public final class SchematicSpecs {
                 .toTheType(AComplexTypeWithCollections.class)
                 .anExceptionIsThrownWithAMessageContaining("Requiring the input to be an 'collection' for field 'arrayList'")
                 .anExceptionOfClassIsThrownFulfilling(WrongInputStructureException.class, e -> {
-                    assertThat(e.inputObject, equalTo(Collections.emptyMap()));
+                    assertThat(e.inputObject(), equalTo(Collections.emptyMap()));
                 });
     }
 }

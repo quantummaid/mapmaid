@@ -31,7 +31,7 @@ import java.util.List;
 import static java.lang.String.format;
 
 public final class UnknownPolymorphicSubtypeException extends MapMaidException {
-    public transient Object input;
+    private final transient Object input;
 
     private UnknownPolymorphicSubtypeException(final String message,
                                                final Object input) {
@@ -53,5 +53,9 @@ public final class UnknownPolymorphicSubtypeException extends MapMaidException {
                 type, typeIdentifier.description(), subtypes, scanInformation.render()
         );
         return new UnknownPolymorphicSubtypeException(message, input.toNativeJava());
+    }
+
+    public Object input() {
+        return input;
     }
 }

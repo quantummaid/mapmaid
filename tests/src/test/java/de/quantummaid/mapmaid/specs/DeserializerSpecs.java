@@ -174,7 +174,7 @@ public final class DeserializerSpecs {
                 .from(JSON).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during unmarshalling: JsonSyntaxException")
                 .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringUnmarshallingException.class, e -> {
-                    assertThat(e.objectToUnmarshall, equalTo(
+                    assertThat(e.objectToUnmarshall(), equalTo(
                                     "{\"number1\";\"1\"," +
                                     "\"number2\":\"2\"," +
                                     "\"stringA\"=\"a\"," +

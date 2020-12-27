@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import static java.lang.String.format;
 
 public final class PredeserializedObjectCannotBeDeserialized extends MapMaidException {
-    public transient Object objectToSerialize;
+    private final transient Object objectToSerialize;
 
     private PredeserializedObjectCannotBeDeserialized(final String message,
                                                       final Object objectToSerialize) {
@@ -46,5 +46,9 @@ public final class PredeserializedObjectCannotBeDeserialized extends MapMaidExce
                 scanInformation.render()
         );
         return new PredeserializedObjectCannotBeDeserialized(message, objectToSerialize);
+    }
+
+    public Object objectToSerialize() {
+        return objectToSerialize;
     }
 }

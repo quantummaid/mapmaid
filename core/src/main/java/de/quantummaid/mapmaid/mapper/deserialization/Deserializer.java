@@ -93,7 +93,7 @@ public final class Deserializer {
             final Universal universal = unmarshallers.unmarshall(input, type);
             return universal.toNativeJava();
         } catch (final InternalUnmarshallingException e) {
-            throw unexpectedExceptionThrownDuringUnmarshallingException(e.objectToUnmarshall, e.getCause());
+            throw unexpectedExceptionThrownDuringUnmarshallingException(e.objectToUnmarshall(), e.getCause());
         }
     }
 
@@ -106,7 +106,7 @@ public final class Deserializer {
             return deserialize(unmarshalled, targetType, injectorProducer);
         } catch (final InternalUnmarshallingException e) {
             final ScanInformation scanInformation = this.debugInformation.scanInformationFor(targetType);
-            throw unexpectedExceptionThrownDuringUnmarshallingException(e.objectToUnmarshall, e.getCause(), scanInformation);
+            throw unexpectedExceptionThrownDuringUnmarshallingException(e.objectToUnmarshall(), e.getCause(), scanInformation);
         }
     }
 

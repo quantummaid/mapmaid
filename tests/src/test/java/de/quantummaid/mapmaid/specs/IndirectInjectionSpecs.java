@@ -51,7 +51,7 @@ public final class IndirectInjectionSpecs {
                 .anExceptionIsThrownWithAMessageContaining("Pre-deserialized objects are not supported for " +
                         "deserialization'. Please use injections to add pre-deserialized objects.")
                 .anExceptionOfClassIsThrownFulfilling(PredeserializedObjectCannotBeDeserialized.class, e -> {
-                    assertThat(e.objectToSerialize, equalTo(AString.fromStringValue("b")));
+                    assertThat(e.objectToSerialize(), equalTo(AString.fromStringValue("b")));
                 });
     }
 }

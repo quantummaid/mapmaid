@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import static java.lang.String.format;
 
 public final class InjectionIsNotSerializableException extends MapMaidException {
-    public transient Object objectToSerialize;
+    private final transient Object objectToSerialize;
 
     private InjectionIsNotSerializableException(final String message,
                                                 final Object objectToSerialize) {
@@ -46,5 +46,9 @@ public final class InjectionIsNotSerializableException extends MapMaidException 
                 scanInformation.render()
         );
         return new InjectionIsNotSerializableException(message, objectToSerialize);
+    }
+
+    public Object objectToSerialize() {
+        return objectToSerialize;
     }
 }

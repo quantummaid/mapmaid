@@ -164,7 +164,7 @@ public final class PolymorphySpecs {
                         "known subtype identifiers: [de.quantummaid.mapmaid.domain.AnImplementation1])"
                 )
                 .anExceptionOfClassIsThrownFulfilling(UnknownPolymorphicSubtypeException.class, e -> {
-                    assertThat(e.input, equalTo(Map.of("__type__", "UnknownClass")));
+                    assertThat(e.input(), equalTo(Map.of("__type__", "UnknownClass")));
                 });
     }
 }
