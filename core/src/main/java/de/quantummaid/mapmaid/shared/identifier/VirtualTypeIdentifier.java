@@ -61,4 +61,9 @@ public final class VirtualTypeIdentifier implements TypeIdentifier {
     public String description() {
         return format("<virtual type '%s'>", this.id);
     }
+
+    @Override
+    public String simpleDescription() {
+        return description();
+    }
 }

@@ -63,4 +63,9 @@ public interface CustomPrimitiveSerializer extends TypeSerializer {
         final Class<?> baseType = baseType();
         return mapPrimitiveToSchema(baseType);
     }
+
+    @Override
+    default int numberOfParameters() {
+        return 1;
+    }
 }

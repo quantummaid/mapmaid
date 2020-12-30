@@ -29,6 +29,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,8 @@ import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolving.resolvingDuplex;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Undetectable.undetectable;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @ToString
@@ -49,13 +52,21 @@ public final class ToBeDetected extends StatefulDefinition {
     }
 
     public static ToBeDetected toBeDetected(final Context context) {
+        if (context.scanInformationBuilder().detectionRequirements().isUnreasoned()) {
+            throw mapMaidException(format("type %s has entered state %s but has no reasons to be detected" +
+                    " - this should never happen", context.type().description(), ToBeDetected.class.getSimpleName()));
+        }
         return new ToBeDetected(context);
     }
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        context.scanInformationBuilder().changeRequirements(reducer);
-        return this;
+        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+        return requiredAction.map(
+                () -> this,
+                () -> this,
+                () -> unreasoned(context)
+        );
     }
 
     @Override

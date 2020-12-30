@@ -21,9 +21,13 @@
 
 package de.quantummaid.mapmaid.specs.changing_structure;
 
+import de.quantummaid.mapmaid.domain.AComplexType;
+import de.quantummaid.mapmaid.domain.AString;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
+import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
@@ -58,5 +62,61 @@ public final class ChangingStructureSpecs {
                 .when().mapMaidDeserializes("\"foo\"").from(JSON).toTheType(CustomPrimitive.class)
                 .anExceptionIsThrownWithAMessageContaining("no definition found for type 'de.quantummaid.mapmaid.specs.changing_structure.CustomPrimitive'." +
                         " Known definitions are:");
+    }
+
+    @Test
+    public void canBecomeDuplexFromSerializationOnly() {
+        given(
+                aMapMaid()
+                        .serializing(AString.class)
+                        .deserializing(AComplexType.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidDeserializes("foo").from(JSON).toTheType(AString.class)
+                .noExceptionHasBeenThrown()
+                .theDeserializedObjectIs(AString.fromStringValue("foo"));
+    }
+
+    @Test
+    public void canBecomeDuplexFromDeserializationOnly() {
+        given(
+                aMapMaid()
+                        .deserializing(AString.class)
+                        .serializing(AComplexType.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidSerializes(AString.fromStringValue("foo")).withMarshallingType(JSON)
+                .noExceptionHasBeenThrown()
+                .theSerializationResultWas("\"foo\"");
+    }
+
+    @Test
+    public void serializationCanBeAddedToDeserializationOnlyTypeFromWithinNestedType() {
+        given(
+                aMapMaid()
+                        .withType(Address.class, deserialization())
+                        .withType(Order.class, serialization())
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
+                        .build()
+        )
+                .when().mapMaidSerializes(
+                new Address(
+                        new Zip("a"),
+                        new City("b"),
+                        new Street("c"),
+                        new StreetNumber("d")
+                ))
+                .withMarshallingType(JSON)
+                .noExceptionHasBeenThrown()
+                .theSerializationResultWas("" +
+                        "{\n" +
+                        "  \"zip\": \"a\",\n" +
+                        "  \"number\": \"d\",\n" +
+                        "  \"city\": \"b\",\n" +
+                        "  \"street\": \"c\"\n" +
+                        "}"
+                );
     }
 }

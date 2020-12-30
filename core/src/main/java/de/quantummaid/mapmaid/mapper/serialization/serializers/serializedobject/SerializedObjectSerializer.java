@@ -95,4 +95,9 @@ public final class SerializedObjectSerializer implements TypeSerializer {
                 .collect(toMap(SerializationField::name, SerializationField::type));
         return schemaForObject(fieldsMap, schemaCallback);
     }
+
+    @Override
+    public int numberOfParameters() {
+        return fields.fields().size();
+    }
 }

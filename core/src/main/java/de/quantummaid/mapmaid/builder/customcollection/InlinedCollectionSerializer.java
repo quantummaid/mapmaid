@@ -58,5 +58,4 @@ public final class InlinedCollectionSerializer implements CollectionSerializer {
     public String description() {
         return "custom collection";
     }
-
 }

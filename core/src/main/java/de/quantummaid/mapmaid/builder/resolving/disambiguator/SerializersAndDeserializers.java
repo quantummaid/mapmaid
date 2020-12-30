@@ -23,12 +23,16 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
@@ -46,11 +50,29 @@ public final class SerializersAndDeserializers {
         return new SerializersAndDeserializers(serializers, deserializers);
     }
 
-    public List<TypeSerializer> serializers() {
+    public boolean hasSerializers() {
+        return serializers != null;
+    }
+
+    public boolean hasDeserializers() {
+        return deserializers != null;
+    }
+
+    public List<TypeSerializer> serializers(final ResolvedType type) {
+        if (!hasSerializers()) {
+            throw mapMaidException(format(
+                    "no serializers detected for type %s - this should never happen",
+                    type.description()));
+        }
         return serializers;
     }
 
-    public List<TypeDeserializer> deserializers() {
+    public List<TypeDeserializer> deserializers(final ResolvedType type) {
+        if (!hasDeserializers()) {
+            throw mapMaidException(format(
+                    "no deserializers detected for type %s - this should never happen",
+                    type.description()));
+        }
         return deserializers;
     }
 }

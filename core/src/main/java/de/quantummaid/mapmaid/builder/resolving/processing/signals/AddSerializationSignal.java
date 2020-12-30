@@ -54,6 +54,6 @@ public final class AddSerializationSignal implements Signal {
 
     @Override
     public String description() {
-        return "add serialization";
+        return String.format("add serialization to %s", target.simpleDescription());
     }
 }

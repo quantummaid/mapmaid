@@ -54,6 +54,6 @@ public final class EnforceObjectSignal implements Signal {
 
     @Override
     public String description() {
-        return "enforce object";
+        return String.format("enforce object for %s", target.simpleDescription());
     }
 }

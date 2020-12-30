@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -34,6 +35,7 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 @ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DetectionRequirementReasons {
     public final List<Reason> serializationReasons;
@@ -155,6 +157,22 @@ public final class DetectionRequirementReasons {
                 !this.inlinedPrimitiveReasons.isEmpty(),
                 this.manuallyConfiguredSerializer,
                 this.manuallyConfiguredDeserializer
+        );
+    }
+
+    public boolean isUnreasoned() {
+        return this.serializationReasons.isEmpty() && this.deserializationReasons.isEmpty();
+    }
+
+    public String summary() {
+        return String.format(
+                "serialization: %d, deserialization: %d, object: %d, primitive: %d, manual serializer: %s, manual deserializer: %s",
+                serializationReasons.size(),
+                deserializationReasons.size(),
+                objectEnforcingReasons.size(),
+                inlinedPrimitiveReasons.size(),
+                manuallyConfiguredSerializer != null,
+                manuallyConfiguredDeserializer != null
         );
     }
 }

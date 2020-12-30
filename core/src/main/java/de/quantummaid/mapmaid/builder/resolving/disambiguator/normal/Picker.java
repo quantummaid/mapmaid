@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +46,9 @@ public final class Picker {
     private Picker() {
     }
 
-    public static DetectionResult<TypeSerializer> pickSerializer(final SerializersAndDeserializers options) {
-        final List<TypeSerializer> serializers = options.serializers();
+    public static DetectionResult<TypeSerializer> pickSerializer(final ResolvedType type,
+                                                                 final SerializersAndDeserializers options) {
+        final List<TypeSerializer> serializers = options.serializers(type);
         final Optional<DetectionResult<TypeSerializer>> preferredCustomPrimitive = oneOrNone(serializers, TypeSerializer::description);
         return preferredCustomPrimitive
                 .orElseGet(() -> failure("No serializers to choose from"));

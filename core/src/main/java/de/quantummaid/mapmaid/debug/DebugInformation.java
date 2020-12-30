@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.debug;
 
+import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ResolvedType;
@@ -43,9 +44,12 @@ import static java.util.stream.Collectors.joining;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DebugInformation {
     private final Map<TypeIdentifier, ScanInformation> scanInformations;
+    private final StateLog stateLog;
 
-    public static DebugInformation debugInformation(final Map<TypeIdentifier,
-            ScanInformationBuilder> scanInformationBuilders) {
+    public static DebugInformation debugInformation(
+            final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders,
+            final StateLog stateLog
+    ) {
         final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(scanInformationBuilders.size());
         final SubReasonProvider serializationSubReasonProvider =
                 typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
@@ -58,7 +62,7 @@ public final class DebugInformation {
                     scanInformations.put(typeIdentifier, scanInformation);
                 }
         );
-        return new DebugInformation(scanInformations);
+        return new DebugInformation(scanInformations, stateLog);
     }
 
     public ScanInformation scanInformationFor(final Class<?> type) {
@@ -91,6 +95,10 @@ public final class DebugInformation {
 
     public List<ScanInformation> allScanInformations() {
         return new ArrayList<>(this.scanInformations.values());
+    }
+
+    public StateLog stateLog() {
+        return stateLog;
     }
 
     public String dumpAll() {

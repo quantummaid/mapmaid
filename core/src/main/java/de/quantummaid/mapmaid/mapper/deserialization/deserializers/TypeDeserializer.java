@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.mapper.deserialization.deserializers;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
@@ -36,7 +37,7 @@ import java.util.List;
 import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
 import static java.lang.String.format;
 
-public interface TypeDeserializer {
+public interface TypeDeserializer extends MappingFunction {
     List<TypeIdentifier> requiredTypes();
 
     <T> T deserialize(Universal input,

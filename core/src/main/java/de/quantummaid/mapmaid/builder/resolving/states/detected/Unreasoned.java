@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.RequiredAction;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -46,12 +47,12 @@ public final class Unreasoned extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = this.context.scanInformationBuilder().changeRequirements(reducer);
-        if (changed) {
-            return toBeDetected(context);
-        } else {
-            return this;
-        }
+        final RequiredAction requiredAction = this.context.scanInformationBuilder().changeRequirements(reducer);
+        return requiredAction.map(
+                () -> this,
+                () -> toBeDetected(context),
+                () -> unreasoned(context)
+        );
     }
 
     @Override

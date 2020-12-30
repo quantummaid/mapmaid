@@ -108,4 +108,9 @@ public interface SerializedObjectDeserializer extends TypeDeserializer {
         final Map<String, TypeIdentifier> fields = fields().fields();
         return schemaForObject(fields, schemaCallback);
     }
+
+    @Override
+    default int numberOfParameters() {
+        return fields().size();
+    }
 }

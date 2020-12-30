@@ -90,4 +90,9 @@ public interface CustomPrimitiveDeserializer extends TypeDeserializer {
         final Class<?> baseType = baseType();
         return mapPrimitiveToSchema(baseType);
     }
+
+    @Override
+    default int numberOfParameters() {
+        return 1;
+    }
 }

@@ -43,17 +43,21 @@ public final class Reason {
     private final String reason;
     private final TypeIdentifier parent;
 
-    public static Reason reason(final String reason) {
-        validateNotNull(reason, "reason");
-        return new Reason(reason, null);
-    }
-
     public static Reason manuallyAdded() {
         return reason("manually added");
     }
 
     public static Reason becauseOf(final TypeIdentifier parent) {
         return new Reason(format("because of %s", parent.description()), parent);
+    }
+
+    public static Reason reason(final String reason) {
+        validateNotNull(reason, "reason");
+        return new Reason(reason, null);
+    }
+
+    public String reason() {
+        return reason;
     }
 
     public List<String> render(final SubReasonProvider subReasonProvider) {

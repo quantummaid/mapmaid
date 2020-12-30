@@ -41,6 +41,7 @@ import java.util.Map;
 
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
+import static de.quantummaid.mapmaid.debug.RequiredAction.*;
 import static de.quantummaid.mapmaid.debug.scaninformation.ActualScanInformation.actualScanInformation;
 import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 
@@ -77,11 +78,22 @@ public final class ScanInformationBuilder {
         this.deserializers.clear();
     }
 
-    public boolean changeRequirements(final RequirementsReducer reducer) {
+    public RequiredAction changeRequirements(final RequirementsReducer reducer) {
         final DetectionRequirementReasons oldReaons = this.detectionRequirementReasons;
         final DetectionRequirementReasons newReasons = reducer.reduce(oldReaons);
         this.detectionRequirementReasons = newReasons;
-        return oldReaons.hasChanged(newReasons);
+        if (detectionRequirements().isUnreasoned()) {
+            return unreasoned();
+        }
+        if (oldReaons.hasChanged(newReasons)) {
+            return requirementsChanged();
+        } else {
+            return nothingChanged();
+        }
+    }
+
+    public DetectionRequirementReasons detectionRequirementReasons() {
+        return detectionRequirementReasons;
     }
 
     public DetectionRequirements detectionRequirements() {

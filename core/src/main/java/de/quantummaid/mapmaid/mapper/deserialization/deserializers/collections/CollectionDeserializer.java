@@ -40,7 +40,7 @@ import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDe
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForCollection;
 import static java.util.Collections.singletonList;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings("unchecked")
 public interface CollectionDeserializer extends TypeDeserializer {
 
     TypeIdentifier contentType();
