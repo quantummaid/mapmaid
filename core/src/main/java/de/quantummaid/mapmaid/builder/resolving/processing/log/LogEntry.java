@@ -52,9 +52,7 @@ public final class LogEntry {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(format("%n%n[%s]%n", signal.description()));
         stringBuilder.append(DELIMITER);
-        changedStates.forEach(loggedState -> {
-            stringBuilder.append(loggedState.dump()).append("\n");
-        });
+        changedStates.forEach(loggedState -> stringBuilder.append(loggedState.dump()).append("\n"));
         stringBuilder.append(DELIMITER);
         return stringBuilder.toString();
     }
