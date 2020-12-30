@@ -341,7 +341,7 @@ public final class MapMaidBuilder implements
             scanInformationMap.put(type, collectionResult.scanInformation());
         });
 
-        final DebugInformation debugInformation = debugInformation(scanInformationMap);
+        final DebugInformation debugInformation = debugInformation(scanInformationMap, processor.log());
         final Definitions definitions = definitions(definitionsMap, debugInformation);
 
         final MarshallerRegistry marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();

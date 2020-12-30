@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
@@ -149,11 +150,11 @@ public final class TieBreaker {
                 scanInformationBuilder, customPrimitive, serializedObject);
     }
 
-    private static <T> DetectionResult<T> breakTie(final TieBreakingReason customPrimitiveBreaking,
-                                                   final TieBreakingReason serializedObjectBreaking,
-                                                   final ScanInformationBuilder scanInformationBuilder,
-                                                   final DetectionResult<T> customPrimitive,
-                                                   final DetectionResult<T> serializedObject) {
+    private static <T extends MappingFunction> DetectionResult<T> breakTie(final TieBreakingReason customPrimitiveBreaking,
+                                                                           final TieBreakingReason serializedObjectBreaking,
+                                                                           final ScanInformationBuilder scanInformationBuilder,
+                                                                           final DetectionResult<T> customPrimitive,
+                                                                           final DetectionResult<T> serializedObject) {
         if (customPrimitiveBreaking.isTieBreaking()) {
             serializedObject.ifSuccess(deserializer -> {
                 final String reason = format(
@@ -175,9 +176,15 @@ public final class TieBreaker {
         }
 
         if (customPrimitive.isSuccess()) {
-            serializedObject.ifSuccess(deserializer ->
-                    scanInformationBuilder.ignore(deserializer, "custom primitive has been preferred"));
-            return customPrimitive;
+            if (serializedObject.isSuccess() && serializedObject.result().numberOfParameters() > 1) {
+                customPrimitive.ifSuccess(deserializer -> scanInformationBuilder.ignore(deserializer,
+                        "serialized object has been preferred because it has multiple parameters"));
+                return serializedObject;
+            } else {
+                serializedObject.ifSuccess(deserializer ->
+                        scanInformationBuilder.ignore(deserializer, "custom primitive has been preferred"));
+                return customPrimitive;
+            }
         }
 
         return serializedObject;

@@ -19,40 +19,41 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.signals;
+package de.quantummaid.mapmaid.debug;
 
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Reason;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
-import java.util.Optional;
+import java.util.function.Supplier;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RemoveDeserializationSignal implements Signal {
-    private final Reason reason;
+public final class RequiredAction {
+    private final boolean unreasoned;
+    private final boolean changed;
 
-    public static Signal removeDeserialization(final Reason reason) {
-        return new RemoveDeserializationSignal(reason);
+    public static RequiredAction unreasoned() {
+        return new RequiredAction(true, false);
     }
 
-    @Override
-    public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.changeRequirements(current -> current.removeDeserialization(reason));
+    public static RequiredAction requirementsChanged() {
+        return new RequiredAction(false, true);
     }
 
-    @Override
-    public Optional<TypeIdentifier> target() {
-        return Optional.empty();
+    public static RequiredAction nothingChanged() {
+        return new RequiredAction(false, false);
     }
 
-    @Override
-    public String description() {
-        return String.format("remove deserialization resulting from '%s'", reason.reason());
+    public <T> T map(
+            final Supplier<T> nothingChanged,
+            final Supplier<T> requirementsChanged,
+            final Supplier<T> becameUnreasoned
+    ) {
+        if (unreasoned) {
+            return becameUnreasoned.get();
+        }
+        if (changed) {
+            return requirementsChanged.get();
+        }
+        return nothingChanged.get();
     }
 }

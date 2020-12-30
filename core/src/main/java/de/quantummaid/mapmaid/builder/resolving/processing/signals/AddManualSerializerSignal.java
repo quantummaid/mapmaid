@@ -44,7 +44,7 @@ public final class AddManualSerializerSignal implements Signal {
 
     @Override
     public String description() {
-        return "add manual serializer";
+        return String.format("add manual serializer to %s", target.simpleDescription());
     }
 
     @Override

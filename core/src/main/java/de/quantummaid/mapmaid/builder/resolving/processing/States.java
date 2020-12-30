@@ -26,7 +26,10 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
+import de.quantummaid.mapmaid.builder.resolving.processing.log.LoggedState;
+import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -38,6 +41,7 @@ import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories.defaultStateFactories;
+import static de.quantummaid.mapmaid.builder.resolving.processing.log.LoggedState.loggedState;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -73,7 +77,16 @@ public final class States {
 
     public States apply(final Signal signal,
                         final Processor processor,
-                        final MapMaidConfiguration configuration) {
+                        final MapMaidConfiguration configuration,
+                        final StateLogBuilder stateLog) {
+        final States newStates = apply(signal, processor, configuration);
+        stateLog.log(signal, newStates.dumpForLogging());
+        return newStates;
+    }
+
+    private States apply(final Signal signal,
+                         final Processor processor,
+                         final MapMaidConfiguration configuration) {
         final Optional<TypeIdentifier> optionalTarget = signal.target();
         if (optionalTarget.isEmpty()) {
             final List<StatefulDefinition> newStates = this.states.stream()
@@ -116,5 +129,18 @@ public final class States {
                                     final List<StatefulDefinition> states) {
         return states.stream()
                 .anyMatch(statefulDefinition -> statefulDefinition.context.type().equals(type));
+    }
+
+    private List<LoggedState> dumpForLogging() {
+        return states.stream()
+                .map(statefulDefinition -> {
+                    final TypeIdentifier type = statefulDefinition.type();
+                    final DetectionRequirementReasons detectionRequirementReasons = statefulDefinition
+                            .context
+                            .scanInformationBuilder()
+                            .detectionRequirementReasons();
+                    return loggedState(type, statefulDefinition.getClass(), detectionRequirementReasons);
+                })
+                .collect(toList());
     }
 }

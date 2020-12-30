@@ -52,4 +52,6 @@ public interface TypeIdentifier {
     ResolvedType getRealType();
 
     String description();
+
+    String simpleDescription();
 }

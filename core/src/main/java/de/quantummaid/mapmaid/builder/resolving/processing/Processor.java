@@ -25,6 +25,8 @@ import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
+import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.DebugInformation;
@@ -39,6 +41,7 @@ import lombok.ToString;
 import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
+import static de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder.stateLogBuilder;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.DetectSignal.detect;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.ResolveSignal.resolve;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
@@ -54,11 +57,13 @@ import static java.lang.String.format;
 public final class Processor {
     private States states;
     private final Queue<Signal> pendingSignals;
+    private final StateLogBuilder log;
 
     public static Processor processor() {
         final Queue<Signal> pendingSignals = new LinkedList<>();
         final States states = states(smallList());
-        return new Processor(states, pendingSignals);
+        final StateLogBuilder log = stateLogBuilder();
+        return new Processor(states, pendingSignals, log);
     }
 
     public void dispatch(final Signal signal) {
@@ -90,7 +95,7 @@ public final class Processor {
         });
 
         if (!failures.isEmpty()) {
-            final DebugInformation debugInformation = debugInformation(scanInformationBuilders);
+            final DebugInformation debugInformation = debugInformation(scanInformationBuilders, log.build());
             final StringJoiner errorMessageJoiner = new StringJoiner("\n\n");
             final List<ScanInformation> scanInformations = new ArrayList<>(failures.size());
             failures.forEach((typeIdentifier, report) -> {
@@ -111,14 +116,18 @@ public final class Processor {
         final List<TypeIdentifier> injectedTypes = this.states.injections();
         while (!pendingSignals.isEmpty()) {
             final Signal signal = pendingSignals.remove();
-            states = states.apply(signal, this, configuration);
+            states = states.apply(signal, this, configuration, log);
         }
-        final States detected = states.apply(detect(detector, disambiguators, injectedTypes), this, configuration);
-        final States resolved = detected.apply(resolve(), this, configuration);
+        final States detected = states.apply(detect(detector, disambiguators, injectedTypes), this, configuration, log);
+        final States resolved = detected.apply(resolve(), this, configuration, log);
         states = resolved;
 
         if (!pendingSignals.isEmpty()) {
             resolveRecursively(detector, disambiguators, configuration);
         }
+    }
+
+    public StateLog log() {
+        return log.build();
     }
 }

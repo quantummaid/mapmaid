@@ -58,4 +58,8 @@
         <Class name="de.quantummaid.mapmaid.builder.detection.customprimitive.CachedReflectionType"/>
         <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.builder.resolving.processing.log.LoggedState"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    </Match>
 </FindBugsFilter>

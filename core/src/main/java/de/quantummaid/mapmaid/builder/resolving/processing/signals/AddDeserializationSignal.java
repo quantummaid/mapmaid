@@ -54,6 +54,6 @@ public final class AddDeserializationSignal implements Signal {
 
     @Override
     public String description() {
-        return "add deserialization";
+        return String.format("add deserialization to %s", target.simpleDescription());
     }
 }

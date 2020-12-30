@@ -53,6 +53,6 @@ public final class RemoveSerializationSignal implements Signal {
 
     @Override
     public String description() {
-        return "remove serialization";
+        return String.format("remove serialization resulting from '%s'", reason.reason());
     }
 }

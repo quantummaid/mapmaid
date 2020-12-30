@@ -28,6 +28,7 @@ import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequiremen
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Lingo;
+import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -36,6 +37,8 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static java.lang.String.format;
 
 @ToString
@@ -56,12 +59,12 @@ public final class Undetectable extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = context.scanInformationBuilder().changeRequirements(reducer);
-        if (changed) {
-            return ToBeDetected.toBeDetected(context);
-        } else {
-            return this;
-        }
+        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+        return requiredAction.map(
+                () -> this,
+                () -> toBeDetected(context),
+                () -> unreasoned(context)
+        );
     }
 
     @Override

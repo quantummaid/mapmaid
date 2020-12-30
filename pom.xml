@@ -31,7 +31,7 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.102</version>
+    <version>0.9.103</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
@@ -63,7 +63,7 @@
 
     <properties>
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
-        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.version>1.4.21-2</kotlin.version>
     </properties>
 
     <build>

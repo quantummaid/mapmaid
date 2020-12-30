@@ -27,6 +27,7 @@ import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequiremen
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -59,20 +60,24 @@ public final class Resolved extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = context.scanInformationBuilder().changeRequirements(reducer);
-        if (changed) {
-            final Reason transitiveReason = becauseOf(context.type());
-            context.dispatch(removeSerialization(transitiveReason));
-            context.dispatch(removeDeserialization(transitiveReason));
-            final boolean unreasoned = context.scanInformationBuilder().detectionRequirements().isUnreasoned();
-            if (unreasoned) {
-                return unreasoned(context);
-            } else {
-                return toBeDetected(context);
-            }
-        } else {
-            return this;
-        }
+        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+        return requiredAction.map(
+                () -> this,
+                () -> {
+                    removeTransitiveReasons();
+                    return toBeDetected(context);
+                },
+                () -> {
+                    removeTransitiveReasons();
+                    return unreasoned(context);
+                }
+        );
+    }
+
+    private void removeTransitiveReasons() {
+        final Reason transitiveReason = becauseOf(context.type());
+        context.dispatch(removeSerialization(transitiveReason));
+        context.dispatch(removeDeserialization(transitiveReason));
     }
 
     @Override

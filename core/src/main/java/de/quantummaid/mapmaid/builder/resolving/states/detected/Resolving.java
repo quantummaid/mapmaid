@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequiremen
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -39,6 +40,7 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddSer
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.EnforceObjectSignal.enforceObject;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolved.resolved;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
 @ToString
@@ -55,12 +57,12 @@ public final class Resolving extends StatefulDefinition {
 
     @Override
     public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final boolean changed = context.scanInformationBuilder().changeRequirements(reducer);
-        if (changed) {
-            return toBeDetected(context);
-        } else {
-            return this;
-        }
+        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+        return requiredAction.map(
+                () -> this,
+                () -> toBeDetected(context),
+                () -> unreasoned(context)
+        );
     }
 
     @Override

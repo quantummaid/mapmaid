@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
@@ -33,7 +34,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public interface TypeSerializer {
+public interface TypeSerializer extends MappingFunction {
     List<TypeIdentifier> requiredTypes();
 
     Universal serialize(Object object,

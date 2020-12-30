@@ -19,44 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.shared.identifier;
+package de.quantummaid.mapmaid.builder.resolving.processing.log;
 
-import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import java.util.List;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RealTypeIdentifier implements TypeIdentifier {
-    private final ResolvedType resolvedType;
+public final class StateLog {
+    private final List<LogEntry> entries;
 
-    public static TypeIdentifier realTypeIdentifier(final ResolvedType type) {
-        validateNotNull(type, "type");
-        return new RealTypeIdentifier(type);
+    public static StateLog stateLog(final List<LogEntry> entries) {
+        return new StateLog(entries);
     }
 
-    @Override
-    public ResolvedType getRealType() {
-        return this.resolvedType;
+    public List<LogEntry> entries() {
+        return entries;
     }
 
-    @Override
-    public String description() {
-        return this.resolvedType.description();
-    }
-
-    @Override
-    public boolean isVirtual() {
-        return false;
-    }
-
-    @Override
-    public String simpleDescription() {
-        return resolvedType.simpleDescription();
+    public String dump() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        entries.stream()
+                .map(LogEntry::dump)
+                .forEach(stringBuilder::append);
+        return stringBuilder.toString();
     }
 }
