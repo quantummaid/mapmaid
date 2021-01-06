@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.103</version>
+        <version>0.9.104</version>
     </parent>
 
     <artifactId>documentation</artifactId>
@@ -38,11 +38,31 @@
         <checkstyle.suppressions.location>
             ${project.basedir}/src/test/checkstyle/checkstyle-suppressions.xml
         </checkstyle.suppressions.location>
+        <dependency-update-file-checksum>42f33b16b7099885cd5becc23c104f35</dependency-update-file-checksum>
         <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
         <sonar.coverage.jacoco.xmlReportPaths>../coverage/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.4.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.13</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.30</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -53,7 +73,7 @@
         <!-- Showcase start mapmaidalldependency -->
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
-            <artifactId>mapmaid-all</artifactId>
+            <artifactId>mapmaid-jackson</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Showcase end mapmaidalldependency -->
@@ -68,19 +88,17 @@
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
             <artifactId>mapmaid-dynamodb</artifactId>
-            <version>0.9.103</version>
+            <version>0.9.104</version>
         </dependency>
         <!-- Showcase end dynamodbdependency -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
