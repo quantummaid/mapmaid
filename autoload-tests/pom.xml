@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.103</version>
+        <version>0.9.104</version>
     </parent>
 
     <artifactId>autoloading-tests</artifactId>
@@ -35,6 +35,7 @@
     <name>MapMaid - Tests - Autoloading</name>
 
     <properties>
+        <dependency-update-file-checksum>42f33b16b7099885cd5becc23c104f35</dependency-update-file-checksum>
         <plugin-update-file-checksum>35fe547b725ca8e71b0d13c8c21894df</plugin-update-file-checksum>
     </properties>
 
