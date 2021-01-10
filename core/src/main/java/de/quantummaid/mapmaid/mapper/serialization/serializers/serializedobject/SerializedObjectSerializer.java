@@ -22,6 +22,9 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.mapmaid.mapper.generation.serializedobject.ManualField;
+import de.quantummaid.mapmaid.mapper.generation.serializedobject.SerializedObjectManualRegistration;
 import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -29,11 +32,13 @@ import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,5 +104,18 @@ public final class SerializedObjectSerializer implements TypeSerializer {
     @Override
     public int numberOfParameters() {
         return fields.fields().size();
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        final List<ManualField> fields = new ArrayList<>();
+        this.fields.fields().forEach(serializationField -> {
+            final TypeIdentifier typeIdentifier = serializationField.type();
+            final String name = serializationField.name();
+            final String query = serializationField.getQuery().manualRegistration();
+            final ManualField field = ManualField.serializableField(typeIdentifier.getRealType(), name, query);
+            fields.add(field);
+        });
+        return SerializedObjectManualRegistration.serializationOnlySerializedObject(type, fields);
     }
 }

@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.polymorphy;
 
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -30,6 +31,7 @@ import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -89,5 +91,10 @@ public final class PolymorphicSerializer implements TypeSerializer {
     @Override
     public Universal schema(final SchemaCallback schemaCallback) {
         return schemaForPolymorphicParent(nameToType, typeField, schemaCallback);
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

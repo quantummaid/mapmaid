@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -70,5 +71,10 @@ public final class CustomPrimitiveAsEnumDeserializer implements CustomPrimitiveD
         } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new UnsupportedOperationException("This should never happen", e);
         }
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

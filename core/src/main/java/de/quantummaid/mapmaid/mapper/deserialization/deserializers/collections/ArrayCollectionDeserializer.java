@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
@@ -61,5 +62,10 @@ public final class ArrayCollectionDeserializer implements CollectionDeserializer
     @Override
     public String description() {
         return "array deserialization";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

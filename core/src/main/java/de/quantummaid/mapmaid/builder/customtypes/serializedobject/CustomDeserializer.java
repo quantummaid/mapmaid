@@ -23,7 +23,9 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -75,5 +77,10 @@ public final class CustomDeserializer implements SerializedObjectDeserializer {
     @Override
     public String description() {
         return "user provided";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

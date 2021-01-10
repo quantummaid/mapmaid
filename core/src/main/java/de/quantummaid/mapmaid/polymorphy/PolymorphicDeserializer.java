@@ -27,18 +27,21 @@ import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
+import static de.quantummaid.mapmaid.mapper.generation.ManualRegistration.emptyManualRegistration;
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForPolymorphicParent;
 import static de.quantummaid.mapmaid.polymorphy.MissingPolymorphicTypeFieldException.missingPolymorphicTypeFieldException;
 import static de.quantummaid.mapmaid.polymorphy.UnknownPolymorphicSubtypeException.unknownPolymorphicSubtypeException;
@@ -121,5 +124,10 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
     @Override
     public Universal schema(final SchemaCallback schemaCallback) {
         return schemaForPolymorphicParent(nameToType, typeField, schemaCallback);
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return emptyManualRegistration();
     }
 }

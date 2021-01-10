@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
@@ -63,5 +64,10 @@ public final class ListCollectionDeserializer implements CollectionDeserializer 
     @Override
     public String description() {
         return format("deserializing a collection with content type '%s'", this.componentType.description());
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

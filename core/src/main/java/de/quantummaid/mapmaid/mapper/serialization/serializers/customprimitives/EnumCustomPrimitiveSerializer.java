@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +45,10 @@ public final class EnumCustomPrimitiveSerializer implements CustomPrimitiveSeria
     @Override
     public String description() {
         return "as custom primitive using Enum.name()";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

@@ -23,12 +23,14 @@ package de.quantummaid.mapmaid.builder.injection;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ import lombok.ToString;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.injection.InjectionIsNotSerializableException.injectionIsNotSerializableException;
+import static de.quantummaid.mapmaid.mapper.generation.ManualRegistration.emptyManualRegistration;
 import static java.util.Collections.emptyList;
 
 @ToString
@@ -67,5 +70,10 @@ public final class InjectionSerializer implements TypeSerializer {
     @Override
     public String description() {
         return "always inject";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return emptyManualRegistration();
     }
 }

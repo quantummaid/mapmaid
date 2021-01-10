@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject.fields;
 
+import de.quantummaid.mapmaid.mapper.generation.Util;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
@@ -57,5 +58,11 @@ public final class GetterFieldQuery implements SerializationFieldQuery {
     @Override
     public String describe() {
         return format("getter method '%s'", this.method.getName());
+    }
+
+    @Override
+    public String manualRegistration() {
+        final String normalizedMethod = Util.normalizeMethod(method.getName());
+        return String.format(" it.%s ", normalizedMethod);
     }
 }

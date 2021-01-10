@@ -21,7 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,10 @@ public final class BuiltInPrimitiveSerializer implements CustomPrimitiveSerializ
     @Override
     public Class<?> baseType() {
         return baseType;
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

@@ -91,7 +91,7 @@ public final class Builder {
 
     public TypeSerializer createSerializer() {
         final List<SerializationField> serializationFieldList = this.serializationFields.stream()
-                .map(field -> serializationField(field.type(), field.name(), field::query))
+                .map(field -> SerializationField.serializationField(field.type(), field.name(), field::query))
                 .collect(toList());
         final SerializationFields fields = serializationFields(serializationFieldList);
         return serializedObjectSerializer(fields);

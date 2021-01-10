@@ -22,8 +22,12 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.mapmaid.mapper.generation.serializedobject.ManualField;
+import de.quantummaid.mapmaid.mapper.generation.serializedobject.SerializedObjectManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
 import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
 import lombok.AccessLevel;
@@ -32,8 +36,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Parameter;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.TypeVariable;
+import java.util.*;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
@@ -91,11 +95,11 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
         final int deserializationMethodModifiers = deserializationConstructor.constructor().getModifiers();
         if (isAbstract(deserializationMethodModifiers)) {
             throw mapMaidException(format("The deserialization constructor %s configured for the SerializedObject " +
-                            "of type %s must not be abstract", deserializationConstructor, type));
+                    "of type %s must not be abstract", deserializationConstructor, type));
         }
         if (deserializationConstructor.constructor().getDeclaringClass() != type.assignableType()) {
             throw mapMaidException(format("The deserialization constructor %s configured for the SerializedObject " +
-                            "of type %s must return the DTO", deserializationConstructor, type));
+                    "of type %s must return the DTO", deserializationConstructor, type));
         }
     }
 
@@ -106,5 +110,35 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
 
     public ResolvedConstructor constructor() {
         return this.factoryConstructor;
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        final List<String> parameterNames = factoryConstructor.parameters().stream()
+                .map(ResolvedParameter::name)
+                .collect(toList());
+
+
+        final Map<Integer, ManualField> fieldsByIndex = new HashMap<>();
+        this.fields.fields().forEach((name, typeIdentifier) -> {
+            final ManualField field = ManualField.nonSerializableField(typeIdentifier.getRealType(), name);
+            final int index = parameterNames.indexOf(name);
+            fieldsByIndex.put(index, field);
+        });
+        final List<ManualField> fields = new ArrayList<>();
+        for (int i = 0; i < fieldsByIndex.size(); ++i) {
+            fields.add(fieldsByIndex.get(i));
+        }
+
+        final StringJoiner parameters = new StringJoiner(", ");
+        for (int i = 0; i < fields.size(); ++i) {
+            parameters.add("parameter" + i);
+        }
+        final String deserialization = String.format(" %s -> %s(%s) ",
+                parameters,
+                type.assignableType().getSimpleName(),
+                parameters
+        );
+        return SerializedObjectManualRegistration.deserializationOnlySerializedObject(type, fields, deserialization);
     }
 }

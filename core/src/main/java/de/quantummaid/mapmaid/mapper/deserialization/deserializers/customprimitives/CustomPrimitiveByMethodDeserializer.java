@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
@@ -36,6 +37,7 @@ import java.util.List;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer.createDescription;
+import static de.quantummaid.mapmaid.mapper.generation.customprimitive.CustomPrimitiveManualRegistration.deserializationOnlyCustomPrimitive;
 import static java.lang.String.format;
 
 @ToString
@@ -109,5 +111,11 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
             throw mapMaidException(format("Unexpected error invoking deserialization method %s for serialized custom primitive %s",
                     this.deserializationMethod, value), e);
         }
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        final String deserializer = String.format(" (s) -> %s.%s(s) ", type.assignableType().getSimpleName(), deserializationMethod.name());
+        return deserializationOnlyCustomPrimitive(type, deserializer);
     }
 }

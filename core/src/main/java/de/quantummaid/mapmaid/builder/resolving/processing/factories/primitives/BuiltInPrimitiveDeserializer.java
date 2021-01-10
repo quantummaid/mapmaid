@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,10 @@ public final class BuiltInPrimitiveDeserializer implements CustomPrimitiveDeseri
     @Override
     public String description() {
         return "does not require deserialization";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(ResolvedType type) {
+        return ManualRegistration.emptyManualRegistration();
     }
 }

@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries;
 
+import de.quantummaid.mapmaid.mapper.generation.Util;
 import de.quantummaid.reflectmaid.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -56,5 +57,10 @@ public final class PublicFieldQuery implements SerializationFieldQuery {
     @Override
     public String describe() {
         return format("field '%s'", this.field.describe());
+    }
+
+    @Override
+    public String manualRegistration() {
+        return String.format(" it.%s ", field.name());
     }
 }

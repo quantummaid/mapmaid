@@ -21,8 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.customprimitive;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.reflectmaid.ResolvedType;
 
 @FunctionalInterface
 public interface CustomCustomPrimitiveSerializer<T, B> {
@@ -44,6 +46,11 @@ public interface CustomCustomPrimitiveSerializer<T, B> {
             @Override
             public String description() {
                 return "custom provided";
+            }
+
+            @Override
+            public ManualRegistration manualRegistration(ResolvedType type) {
+                return ManualRegistration.emptyManualRegistration();
             }
         };
     }

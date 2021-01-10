@@ -22,12 +22,16 @@
 package de.quantummaid.mapmaid.mapper.definitions;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,5 +60,28 @@ public final class Definitions {
             return Optional.empty();
         }
         return of(this.definitions.get(targetType));
+    }
+
+    public List<ManualRegistration> manualRegistrations() {
+        final List<ManualRegistration> manualRegistrations = new ArrayList<>();
+        definitions.forEach((typeIdentifier, definition) -> {
+            if (typeIdentifier.isVirtual()) {
+                return;
+            }
+            final ManualRegistration manualRegistration = manualRegistrationFor(typeIdentifier.getRealType(), definition);
+            manualRegistrations.add(manualRegistration);
+        });
+        return manualRegistrations;
+    }
+
+    private ManualRegistration manualRegistrationFor(final ResolvedType type, final Definition definition) {
+        final Optional<ManualRegistration> deserialization = definition.deserializer().map(deserializer -> deserializer.manualRegistration(type));
+        final Optional<ManualRegistration> serialization = definition.serializer().map(serializer -> serializer.manualRegistration(type));
+        if (deserialization.isPresent() && serialization.isPresent()) {
+            final ManualRegistration deserializationManualRegistration = deserialization.get();
+            final ManualRegistration serializationManualRegistration = serialization.get();
+            return deserializationManualRegistration.merge(serializationManualRegistration);
+        }
+        return deserialization.orElseGet(serialization::get);
     }
 }

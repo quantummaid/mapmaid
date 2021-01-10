@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.mapmaid.mapper.generation.Util;
 import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import lombok.AccessLevel;
@@ -32,6 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.mapper.generation.customprimitive.CustomPrimitiveManualRegistration.serializationOnlyCustomPrimitive;
 import static java.lang.String.format;
 
 @ToString
@@ -84,5 +87,12 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
     @Override
     public String description() {
         return format("as custom primitive using %s", this.serializationMethod.describe());
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        final String normalizedMethod = Util.normalizeMethod(serializationMethod);
+        final String serialization = String.format("it.%s", normalizedMethod);
+        return serializationOnlyCustomPrimitive(type, serialization);
     }
 }

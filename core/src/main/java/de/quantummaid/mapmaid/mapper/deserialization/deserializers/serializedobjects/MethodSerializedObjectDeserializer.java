@@ -22,8 +22,12 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.mapmaid.mapper.generation.serializedobject.ManualField;
+import de.quantummaid.mapmaid.mapper.generation.serializedobject.SerializedObjectManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ClassType;
+import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
 import lombok.AccessLevel;
@@ -32,8 +36,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
@@ -111,5 +117,26 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
             throw mapMaidException(format("The deserialization method %s configured for the object " + // NOSONAR
                     "of type %s must return the DTO", deserializationMethod, type));
         }
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        final List<ManualField> fields = new ArrayList<>();
+        this.fields.fields().forEach((name, typeIdentifier) -> {
+            final ManualField field = ManualField.nonSerializableField(typeIdentifier.getRealType(), name);
+            fields.add(field);
+        });
+
+        final StringJoiner parameters = new StringJoiner(", ");
+        for (int i = 0; i < fields.size(); ++i) {
+            parameters.add("parameter" + i);
+        }
+        final String deserialization = String.format(" (%s) -> %s.%s(%s) ",
+                parameters,
+                type.assignableType().getSimpleName(),
+                factoryMethod.name(),
+                parameters
+        );
+        return SerializedObjectManualRegistration.deserializationOnlySerializedObject(type, fields, deserialization);
     }
 }

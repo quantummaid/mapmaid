@@ -25,10 +25,12 @@ import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ import lombok.ToString;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.generation.ManualRegistration.emptyManualRegistration;
 import static java.util.Collections.emptyList;
 
 @ToString
@@ -68,5 +71,10 @@ public final class FixedInjectionDeserializer implements TypeDeserializer {
     @Override
     public String description() {
         return "dependency injection";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        return emptyManualRegistration();
     }
 }

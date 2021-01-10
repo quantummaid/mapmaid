@@ -21,14 +21,17 @@
 
 package de.quantummaid.mapmaid.builder.customcollection;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.collections.CollectionSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ResolvedType;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.generation.ManualRegistration.emptyManualRegistration;
 import static lombok.AccessLevel.PRIVATE;
 
 @ToString
@@ -57,5 +60,10 @@ public final class InlinedCollectionSerializer implements CollectionSerializer {
     @Override
     public String description() {
         return "custom collection";
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        return emptyManualRegistration();
     }
 }

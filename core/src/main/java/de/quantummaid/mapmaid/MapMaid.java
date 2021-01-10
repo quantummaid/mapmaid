@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
@@ -34,6 +35,9 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
@@ -360,5 +364,12 @@ public final class MapMaid {
                                         final MarshallingType<M> marshallingType) {
         final Universal schema = this.serializer.schema(type);
         return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
+    }
+
+    public String eliminateReflections() {
+        final List<ManualRegistration> manualRegistrations = serializer.getDefinitions().manualRegistrations();
+        return manualRegistrations.stream()
+                .map(ManualRegistration::render)
+                .collect(Collectors.joining("\n"));
     }
 }

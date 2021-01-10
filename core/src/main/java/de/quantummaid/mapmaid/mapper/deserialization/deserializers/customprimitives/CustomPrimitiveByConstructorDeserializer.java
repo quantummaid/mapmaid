@@ -22,6 +22,8 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.mapmaid.mapper.generation.customprimitive.CustomPrimitiveManualRegistration;
 import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
 import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
@@ -102,5 +104,11 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
 
     public ResolvedConstructor constructor() {
         return this.constructor;
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        final String deserializer = String.format("%s(it)", type.assignableType().getSimpleName());
+        return CustomPrimitiveManualRegistration.deserializationOnlyCustomPrimitive(type, deserializer);
     }
 }

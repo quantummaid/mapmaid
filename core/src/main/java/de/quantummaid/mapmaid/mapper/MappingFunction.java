@@ -21,6 +21,9 @@
 
 package de.quantummaid.mapmaid.mapper;
 
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
+import de.quantummaid.reflectmaid.ResolvedType;
+
 import static java.lang.String.format;
 
 public interface MappingFunction {
@@ -29,4 +32,6 @@ public interface MappingFunction {
         throw new UnsupportedOperationException(format("number of parameters is not defined for %s - " +
                 "this should never happen", this.getClass().getSimpleName()));
     }
+
+    ManualRegistration manualRegistration(final ResolvedType type);
 }

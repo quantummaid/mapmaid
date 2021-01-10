@@ -27,4 +27,8 @@ public interface SerializationFieldQuery {
     default String describe() {
         return this.toString();
     }
+
+    default String manualRegistration() {
+        return "/* TODO */";
+    }
 }

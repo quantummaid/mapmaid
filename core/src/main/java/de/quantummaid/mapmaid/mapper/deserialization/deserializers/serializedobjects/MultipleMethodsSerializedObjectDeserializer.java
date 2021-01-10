@@ -22,9 +22,11 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
+import de.quantummaid.mapmaid.mapper.generation.ManualRegistration;
 import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
 import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
 import lombok.AccessLevel;
@@ -86,5 +88,25 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
                 .collect(joining(", ", "[", "]"));
         return "as serialized object by calling the constructor '" +
                 this.constructor.describe() + "' and then calling the methods: " + joinedMethods;
+    }
+
+    @Override
+    public ManualRegistration manualRegistration(final ResolvedType type) {
+        /*
+        final List<Field> fields = new ArrayList<>();
+        deserializationFields.fields().forEach((name, typeIdentifier) -> {
+            final Field field = Field.nonSerializableField(typeIdentifier.getRealType(), name);
+            fields.add(field);
+        });
+
+        final StringJoiner parameters = new StringJoiner(", ");
+        for (int i = 0; i < fields.size(); ++i) {
+            parameters.add("parameter" + i);
+        }
+        final String deserialization =
+                constructor.
+        return SerializedObjectManualRegistration.deserializationOnlySerializedObject(type, fields, )
+         */
+        return ManualRegistration.emptyManualRegistration();
     }
 }
