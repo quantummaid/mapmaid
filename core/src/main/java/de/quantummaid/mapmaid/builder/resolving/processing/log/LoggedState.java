@@ -46,15 +46,15 @@ public final class LoggedState {
         return new LoggedState(type, state, detectionRequirementReasons);
     }
 
-    public String getType() {
+    public String buildTypeDescription() {
         return type.description();
     }
 
-    public String getState() {
+    public String buildStateName() {
         return state.getSimpleName();
     }
 
-    public String getDetectionRequirementReasons() {
+    public String buildDetectionRequirementReasons() {
         return detectionRequirementReasons.summary();
     }
 
