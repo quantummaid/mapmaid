@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.specs;
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.LogEntry;
+import de.quantummaid.mapmaid.builder.resolving.processing.log.LoggedState;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
 import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.reflectmaid.GenericType;
@@ -45,6 +46,11 @@ public final class StateLogSpecs {
         final MapMaid mapMaid1 = MapMaid.aMapMaid()
                 .serializing(serializedObject(StateLog.class)
                         .withField("entries", GenericType.genericType(List.class, LogEntry.class), StateLog::entries))
+                .serializing(serializedObject(LoggedState.class)
+                        .withField("detectionRequirementReasons", String.class, LoggedState::buildDetectionRequirementReasons)
+                        .withField("type", String.class, LoggedState::buildTypeDescription)
+                        .withField("state", String.class, LoggedState::buildStateName)
+                )
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build();
 
