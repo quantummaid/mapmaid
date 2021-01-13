@@ -32,6 +32,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ToString
@@ -54,11 +57,15 @@ public final class MinimalJsonUnmarshaller implements StringUnmarshaller {
             return json.asString();
         } else if (json.isObject()) {
             final JsonObject members = json.asObject();
-            return members.names().stream()
-                    .collect(Collectors.toMap(name -> name, name -> {
-                        final JsonValue jsonValue = members.get(name);
-                        return unmarshallRec(jsonValue);
-                    }));
+            final List<String> names = members.names();
+            final int size = names.size();
+            final Map<String, Object> result = new LinkedHashMap<>(size);
+            names.forEach(name -> {
+                final JsonValue jsonValue = members.get(name);
+                final Object value = unmarshallRec(jsonValue);
+                result.put(name, value);
+            });
+            return result;
         } else if (json.isArray()) {
             return json.asArray().values().stream()
                     .map(this::unmarshallRec)

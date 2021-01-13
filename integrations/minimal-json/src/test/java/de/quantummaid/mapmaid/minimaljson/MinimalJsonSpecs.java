@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.minimaljson;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshaller.minimalJsonMarshaller;
@@ -86,6 +87,13 @@ public class MinimalJsonSpecs {
     @Test
     public void canMarshalAndUnmarshalJsonObjectValue() {
         marshalAndUnmarshalTest("{\"k\":[null,2,2.2,true,false,\"s\"]}", Map.of("k", asList(null, 2l, 2.2d, true, false, "s")));
+    }
+
+    @Test
+    public void canMarshalAndUnmarshalNullInAnObject() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("nullable", null);
+        marshalAndUnmarshalTest("{\"nullable\":null}", map);
     }
 
     private void marshalAndUnmarshalTest(final String json, final Object object) {
