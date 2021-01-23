@@ -31,7 +31,7 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-bom</artifactId>
-    <version>0.9.107</version>
+    <version>0.9.108</version>
     <packaging>pom</packaging>
 
     <name>MapMaid - BOM</name>
@@ -61,6 +61,11 @@
             <dependency>
                 <groupId>de.quantummaid.mapmaid.integrations</groupId>
                 <artifactId>mapmaid-minimal-json</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.quantummaid.mapmaid.integrations</groupId>
+                <artifactId>mapmaid-snakeyaml</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

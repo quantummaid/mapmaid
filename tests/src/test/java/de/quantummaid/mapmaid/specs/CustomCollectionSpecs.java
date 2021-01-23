@@ -33,8 +33,6 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.inlinedCollection;
 import static de.quantummaid.mapmaid.domain.ACustomCollection.aCustomCollection;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public class CustomCollectionSpecs {
 
@@ -42,27 +40,22 @@ public class CustomCollectionSpecs {
     public void customCollectionRegisteredDuplexCanBeSerialized() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .serializingAndDeserializing(DuplexType.inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
+                        .serializingAndDeserializing(DuplexType.inlinedCollection(
+                                ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
                         .build()
         )
                 .when().mapMaidSerializes(aCustomCollection(List.of("a", "b", "c")))
                 .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "[\n" +
-                        "  \"a\",\n" +
-                        "  \"b\",\n" +
-                        "  \"c\"\n" +
-                        "]");
+                .theSerializationResultWas("[\"a\",\"b\",\"c\"]");
     }
 
     @Test
     public void customCollectionRegisteredDuplexCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .serializingAndDeserializing(DuplexType.inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
+                        .serializingAndDeserializing(DuplexType.inlinedCollection(
+                                ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")
@@ -76,27 +69,21 @@ public class CustomCollectionSpecs {
     public void customCollectionCanBeRegisteredSerializingOnly() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializing(inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues))
                         .build()
         )
                 .when().mapMaidSerializes(aCustomCollection(List.of("a", "b", "c")))
                 .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "[\n" +
-                        "  \"a\",\n" +
-                        "  \"b\",\n" +
-                        "  \"c\"\n" +
-                        "]");
+                .theSerializationResultWas("[\"a\",\"b\",\"c\"]");
     }
 
     @Test
     public void customCollectionCanBeRegisteredDeserializingOnly() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .deserializing(DeserializationOnlyType.inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::aCustomCollection))
+                        .deserializing(DeserializationOnlyType.inlinedCollection(
+                                ACustomCollection.class, String.class, ACustomCollection::aCustomCollection))
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")

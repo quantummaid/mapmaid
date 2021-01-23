@@ -35,11 +35,15 @@ import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarsha
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncodedMarshaller;
 import static de.quantummaid.mapmaid.domain.Instances.theFullyInitializedExampleDto;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
+import static de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshaller.minimalJsonMarshaller;
+import static de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller.minimalJsonMarshallerAndUnmarshaller;
+import static de.quantummaid.mapmaid.minimaljson.MinimalJsonUnmarshaller.minimalJsonUnmarshaller;
+import static de.quantummaid.mapmaid.snakeyaml.SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.specs.exceptions.ExceptionThrowingMarshaller.exceptionThrowingMarshaller;
 import static de.quantummaid.mapmaid.specs.exceptions.ExceptionThrowingMarshaller.exceptionThrowingUnmarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.xmlMarshaller;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.xmlUnmarshaller;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -50,37 +54,23 @@ public final class MarshallerSpecs {
     public void testJsonMarshallingIsPossible() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
                 .when().mapMaidSerializes(theFullyInitializedExampleDto()).withMarshallingType(JSON)
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"number1\": \"1\",\n" +
-                        "  \"number2\": \"5\",\n" +
-                        "  \"stringA\": \"asdf\",\n" +
-                        "  \"stringB\": \"qwer\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"number1\":\"1\",\"number2\":\"5\",\"stringA\":\"asdf\",\"stringB\":\"qwer\"}");
     }
 
     @Test
     public void testJsonMarshallingWithCollectionsIsPossible() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexTypeWithArray.class)
                         .build()
         )
                 .when().mapMaidSerializes(Instances.theFullyInitializedExampleDtoWithCollections()).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"array\": [\n" +
-                        "    \"1\",\n" +
-                        "    \"2\"\n" +
-                        "  ]\n" +
-                        "}");
+                .theSerializationResultWas("{\"array\":[\"1\",\"2\"]}");
     }
 
     @Test
@@ -105,7 +95,7 @@ public final class MarshallerSpecs {
     public void testYamlMarshallingIsPossible() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -177,9 +167,9 @@ public final class MarshallerSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller())
+                                .usingMarshaller(minimalJsonMarshallerAndUnmarshaller())
                                 .usingXmlMarshaller(xmlMarshaller(), xmlUnmarshaller())
-                                .usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                                .usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .usingRecipe(urlEncodedMarshaller())
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
@@ -198,7 +188,7 @@ public final class MarshallerSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(exceptionThrowingMarshaller(), jsonUnmarshaller())
+                                .usingJsonMarshaller(exceptionThrowingMarshaller(), minimalJsonUnmarshaller())
                         )
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
@@ -217,7 +207,7 @@ public final class MarshallerSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(exceptionThrowingMarshaller(), jsonUnmarshaller())
+                                .usingJsonMarshaller(exceptionThrowingMarshaller(), minimalJsonUnmarshaller())
                         )
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
@@ -235,7 +225,7 @@ public final class MarshallerSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(jsonMarshaller(), exceptionThrowingUnmarshaller())
+                                .usingJsonMarshaller(minimalJsonMarshaller(), exceptionThrowingUnmarshaller())
                         )
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
@@ -253,7 +243,7 @@ public final class MarshallerSpecs {
         given(
                 aMapMaid()
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(jsonMarshaller(), exceptionThrowingUnmarshaller())
+                                .usingJsonMarshaller(minimalJsonMarshaller(), exceptionThrowingUnmarshaller())
                         )
                         .serializingAndDeserializing(AComplexType.class)
                         .build()

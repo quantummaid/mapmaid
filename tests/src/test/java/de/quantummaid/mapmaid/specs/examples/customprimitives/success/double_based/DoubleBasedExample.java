@@ -33,8 +33,8 @@ public final class DoubleBasedExample {
     @Test
     public void doubleBasedExample() {
         scenarioBuilderFor(Quantity.class)
-                .withSerializedForm("1.0")
-                .withDeserializedForm(Quantity.fromStringValue(1.0))
+                .withSerializedForm("1.2")
+                .withDeserializedForm(Quantity.fromStringValue(1.2))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
                         mapMaidBuilder.deserializing(DeserializationOnlyType.doubleBasedCustomPrimitive(Quantity.class, Quantity::fromStringValue)))

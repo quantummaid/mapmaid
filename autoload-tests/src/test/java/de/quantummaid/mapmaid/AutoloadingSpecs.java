@@ -21,27 +21,12 @@
 
 package de.quantummaid.mapmaid;
 
-import de.quantummaid.mapmaid.builder.MarshallerAutoloadingException;
-import de.quantummaid.mapmaid.jackson.JacksonJsonMarshaller;
-import de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshaller;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 
 public class AutoloadingSpecs {
-
-    @Test
-    public void throwsAnErrorWhenMultipleJsonImplementationsAreFoundWithoutHint() {
-        Given.given(
-                () -> MapMaid.aMapMaid().build()
-        )
-                .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithType(MarshallerAutoloadingException.class)
-                .anExceptionIsThrownWithAMessageContaining("conflicting implementations for marshalling type 'json'")
-                .anExceptionIsThrownWithAMessageContaining(JacksonJsonMarshaller.class.getName())
-                .anExceptionIsThrownWithAMessageContaining(MinimalJsonMarshaller.class.getName());
-    }
 
     @Test
     public void doesNotAutoloadWhenCustomMarshallersAreConfigured() {

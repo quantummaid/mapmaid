@@ -29,8 +29,6 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.virtualTypeIdentifier;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class VirtualTypeSpecs {
 
@@ -40,7 +38,6 @@ public final class VirtualTypeSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(customPrimitive(typeIdentifier, object -> object, value -> value))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("\"asdf\"").from(MarshallingType.JSON).toTheType(typeIdentifier)

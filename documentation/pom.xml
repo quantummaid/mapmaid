@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.107</version>
+        <version>0.9.108</version>
     </parent>
 
     <artifactId>documentation</artifactId>
@@ -73,7 +73,7 @@
         <!-- Showcase start mapmaidalldependency -->
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
-            <artifactId>mapmaid-jackson</artifactId>
+            <artifactId>mapmaid-minimal-json</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Showcase end mapmaidalldependency -->
@@ -88,9 +88,16 @@
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
             <artifactId>mapmaid-dynamodb</artifactId>
-            <version>0.9.107</version>
+            <version>0.9.108</version>
         </dependency>
         <!-- Showcase end dynamodbdependency -->
+        <!-- Showcase start yamldependency -->
+        <dependency>
+            <groupId>de.quantummaid.mapmaid.integrations</groupId>
+            <artifactId>mapmaid-snakeyaml</artifactId>
+            <version>0.9.108</version>
+        </dependency>
+        <!-- Showcase end yamldependency -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -122,6 +129,11 @@
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>1.4.15</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

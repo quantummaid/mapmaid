@@ -24,9 +24,8 @@ package de.quantummaid.mapmaid.specs.schema;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.snakeyaml.SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.yamlMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.yamlUnmarshaller;
 
 public final class PrimitiveDeserializationSchemaSpecs {
 
@@ -35,7 +34,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(String.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(String.class)
@@ -47,7 +46,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(int.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(int.class)
@@ -61,7 +60,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(Integer.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(Integer.class)
@@ -75,7 +74,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(long.class)
@@ -89,7 +88,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(Long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(Long.class)
@@ -103,7 +102,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(short.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(short.class)
@@ -115,7 +114,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(Short.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(Short.class)
@@ -127,7 +126,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(byte.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(byte.class)
@@ -139,7 +138,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(Byte.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(Byte.class)
@@ -151,7 +150,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(double.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(double.class)
@@ -165,7 +164,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(Double.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(Double.class)
@@ -179,7 +178,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(float.class)
@@ -193,7 +192,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(Float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(Float.class)
@@ -207,7 +206,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(boolean.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(boolean.class)
@@ -219,7 +218,7 @@ public final class PrimitiveDeserializationSchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(boolean.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(boolean.class)

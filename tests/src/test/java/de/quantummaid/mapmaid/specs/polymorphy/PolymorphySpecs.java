@@ -34,8 +34,6 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype.primitiveSubtype;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -47,10 +45,7 @@ public final class PolymorphySpecs {
         given(
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
-                        .withAdvancedSettings(advancedBuilder -> {
-                            advancedBuilder.withTypeIdentifierKey("test");
-                            advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller());
-                        })
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.withTypeIdentifierKey("test"))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -67,19 +62,16 @@ public final class PolymorphySpecs {
         given(
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
-                        .withAdvancedSettings(advancedBuilder -> {
-                            advancedBuilder.withTypeIdentifierExtractor(typeIdentifier -> {
-                                final Class<?> assignableType = typeIdentifier.getRealType().assignableType();
-                                if (assignableType.equals(AnImplementation1.class)) {
-                                    return "impl1";
-                                } else if (assignableType.equals(AnImplementation2.class)) {
-                                    return "impl2";
-                                } else {
-                                    throw new UnsupportedOperationException();
-                                }
-                            });
-                            advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller());
-                        })
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.withTypeIdentifierExtractor(typeIdentifier -> {
+                            final Class<?> assignableType = typeIdentifier.getRealType().assignableType();
+                            if (assignableType.equals(AnImplementation1.class)) {
+                                return "impl1";
+                            } else if (assignableType.equals(AnImplementation2.class)) {
+                                return "impl2";
+                            } else {
+                                throw new UnsupportedOperationException();
+                            }
+                        }))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -96,15 +88,10 @@ public final class PolymorphySpecs {
         given(() ->
                 aMapMaid()
                         .serializingAndDeserializingSubtypes(Supertype.class, PrimitiveSubtype.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(primitiveSubtype("abc"), Supertype.class).withMarshallingType(JSON)
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"__type__\": \"de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype\",\n" +
-                        "  \"internalValue\": \"abc\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"__type__\":\"de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype\",\"internalValue\":\"abc\"}");
     }
 
     @Test
@@ -112,7 +99,6 @@ public final class PolymorphySpecs {
         given(() ->
                 aMapMaid()
                         .serializingAndDeserializingSubtypes(Supertype.class, PrimitiveOnlySubtype.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidIsInstantiated()
@@ -124,7 +110,6 @@ public final class PolymorphySpecs {
         given(() ->
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("\"a\"").from(JSON).toTheType(AnInterface.class)
@@ -136,7 +121,6 @@ public final class PolymorphySpecs {
         given(() ->
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("{}").from(JSON).toTheType(AnInterface.class)
@@ -155,7 +139,6 @@ public final class PolymorphySpecs {
         given(() ->
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes(input).from(JSON).toTheType(AnInterface.class)

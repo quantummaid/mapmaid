@@ -45,6 +45,10 @@ public final class UniversalDouble implements UniversalPrimitive {
         return universalDoubleFromString(stringValue);
     }
 
+    public static UniversalDouble universalDoubleFromFloat(final float floatValue) {
+        return universalDoubleFromString(Float.toString(floatValue));
+    }
+
     private static UniversalDouble universalDoubleFromString(final String stringValue) {
         final Double doubleValue = parseDouble(stringValue);
         return universalDouble(doubleValue);

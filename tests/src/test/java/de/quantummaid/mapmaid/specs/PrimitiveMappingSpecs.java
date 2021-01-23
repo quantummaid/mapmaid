@@ -21,13 +21,13 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
+import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PrimitiveMappingSpecs {
 
@@ -36,7 +36,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(String.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("2.2").from(JSON).toTheType(String.class)
@@ -49,7 +48,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("2.0").from(JSON).toTheType(long.class)
@@ -62,7 +60,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(int.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("2.0").from(JSON).toTheType(int.class)
@@ -75,7 +72,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(short.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("2.0").from(JSON).toTheType(short.class)
@@ -88,7 +84,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(byte.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("2.0").from(JSON).toTheType(byte.class)
@@ -97,16 +92,15 @@ public class PrimitiveMappingSpecs {
     }
 
     @Test
-    public void longCanBeMappedToString_butRepresentedAsDoubleBecauseOfGson() {
+    public void longCanBeMappedToString() {
         given(
                 aMapMaid()
                         .deserializing(String.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(String.class)
                 .noExceptionHasBeenThrown()
-                .theDeserializedObjectIs("1.0");
+                .theDeserializedObjectIs("1");
     }
 
     @Test
@@ -114,7 +108,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(double.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(double.class)
@@ -127,7 +120,6 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(float.class)
@@ -140,11 +132,19 @@ public class PrimitiveMappingSpecs {
         given(
                 aMapMaid()
                         .deserializing(String.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("true").from(JSON).toTheType(String.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs("true");
+    }
+
+    @Test
+    public void floatCanBeMappedToDouble() {
+        final MapMaid mapMaid = MapMaid.aMapMaid()
+                .serializing(Float.class)
+                .build();
+        final String json = mapMaid.serializeToJson(1.3f);
+        assertEquals("1.3", json);
     }
 }

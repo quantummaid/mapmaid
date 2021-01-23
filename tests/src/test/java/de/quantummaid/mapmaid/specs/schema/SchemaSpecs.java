@@ -25,9 +25,8 @@ import de.quantummaid.mapmaid.domain.*;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.snakeyaml.SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.yamlMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.yamlUnmarshaller;
 
 public final class SchemaSpecs {
 
@@ -36,7 +35,7 @@ public final class SchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(AComplexType.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(AComplexType.class)
@@ -58,7 +57,7 @@ public final class SchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(AComplexType.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(AComplexType.class)
@@ -80,7 +79,7 @@ public final class SchemaSpecs {
         given(
                 aMapMaid()
                         .deserializing(AComplexTypeWithCollections.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(AComplexTypeWithCollections.class)
@@ -102,7 +101,7 @@ public final class SchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(AComplexTypeWithCollections.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(AComplexTypeWithCollections.class)
@@ -124,7 +123,7 @@ public final class SchemaSpecs {
         given(
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theDeserializationSchemaIsQueriedFor(AnInterface.class)
@@ -155,7 +154,7 @@ public final class SchemaSpecs {
         given(
                 aMapMaid()
                         .serializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(AnInterface.class)

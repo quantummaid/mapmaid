@@ -24,14 +24,14 @@ package de.quantummaid.mapmaid.documentation.marshalling;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.AdvancedBuilder;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller;
+import de.quantummaid.mapmaid.snakeyaml.SnakeYamlMarshallerAndUnmarshaller;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.jacksonMarshallerJson;
-import static de.quantummaid.mapmaid.jackson.JacksonMarshallers.jacksonMarshallerYaml;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -79,7 +79,8 @@ public final class JacksonMarshallerDocumentationTests {
     public void jsonMarshallerExample() {
         //Showcase start json
         final MapMaid mapMaid = aMapMaid()
-                .usingRecipe(jacksonMarshallerJson())
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingMarshaller(MinimalJsonMarshallerAndUnmarshaller.minimalJsonMarshallerAndUnmarshaller()))
                 .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         //Showcase end json
@@ -92,7 +93,8 @@ public final class JacksonMarshallerDocumentationTests {
     public void yamlMarshallerExample() {
         //Showcase start yaml
         final MapMaid mapMaid = aMapMaid()
-                .usingRecipe(jacksonMarshallerYaml())
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingMarshaller(SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller()))
                 .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         //Showcase end yaml

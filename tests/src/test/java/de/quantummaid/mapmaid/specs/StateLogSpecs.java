@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.serializedObject;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -51,7 +49,6 @@ public final class StateLogSpecs {
                         .withField("type", String.class, LoggedState::buildTypeDescription)
                         .withField("state", String.class, LoggedState::buildStateName)
                 )
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .build();
 
         final MapMaid mapMaid2 = MapMaid.aMapMaid()

@@ -76,10 +76,10 @@ public final class ConventionalDefinitionFactories {
                     UniversalLong::universalLong,
                     UniversalLong::toNativeLong),
             universalTypeMapper(float.class, UniversalDouble.class,
-                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble,
+                    UniversalDouble::universalDoubleFromFloat,
                     UniversalDouble::toNativeFloatExact),
             universalTypeMapper(Float.class, UniversalDouble.class,
-                    (Function<Float, UniversalDouble>) UniversalDouble::universalDouble,
+                    UniversalDouble::universalDoubleFromFloat,
                     UniversalDouble::toNativeFloatExact)
     );
 

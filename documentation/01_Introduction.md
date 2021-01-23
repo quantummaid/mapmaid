@@ -13,7 +13,7 @@ In order to use MapMaid, just add the following dependency to your project:
 ```xml
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
-    <artifactId>mapmaid-jackson</artifactId>
+    <artifactId>mapmaid-minimal-json</artifactId>
     <version>${project.version}</version>
 </dependency>
 ```

@@ -59,10 +59,7 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AdvancedBuilder {
     private static final List<Autoloadable<MarshallerAndUnmarshaller<?>>> AUTOLOADABLE_MARSHALLERS = List.of(
-            autoloadIfClassPresent("de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller"),
-            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonJsonMarshaller"),
-            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonXmlMarshaller"),
-            autoloadIfClassPresent("de.quantummaid.mapmaid.jackson.JacksonYamlMarshaller")
+            autoloadIfClassPresent("de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller")
     );
     private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
     private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();

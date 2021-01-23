@@ -21,8 +21,6 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -36,7 +34,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(double.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("2.2").from(JSON).toTheType(double.class)
@@ -49,7 +46,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1.23").from(JSON).toTheType(float.class)
@@ -62,7 +58,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1.23E-5").from(JSON).toTheType(float.class)
@@ -75,7 +70,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(long.class)
@@ -88,7 +82,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1E12").from(JSON).toTheType(long.class)
@@ -101,7 +94,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(int.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(int.class)
@@ -114,7 +106,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(short.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(short.class)
@@ -127,7 +118,6 @@ public class DirectPrimitivesSpecs {
         given(
                 aMapMaid()
                         .serializingAndDeserializing(byte.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("1").from(JSON).toTheType(byte.class)

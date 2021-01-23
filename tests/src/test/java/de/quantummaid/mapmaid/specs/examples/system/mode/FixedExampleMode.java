@@ -32,8 +32,6 @@ import lombok.ToString;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 @ToString
 @EqualsAndHashCode
@@ -47,9 +45,7 @@ public final class FixedExampleMode implements ExampleMode {
 
     @Override
     public MapMaid provideMapMaid(final ResolvedType type) {
-        final MapMaidBuilder mapMaidBuilder = aMapMaid()
-                .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()));
+        final MapMaidBuilder mapMaidBuilder = aMapMaid();
         this.fix.accept(mapMaidBuilder);
         return mapMaidBuilder.build();
     }

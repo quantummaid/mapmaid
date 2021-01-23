@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.*;
+import static de.quantummaid.mapmaid.snakeyaml.SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.*;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.*;
@@ -41,7 +42,6 @@ public final class UnmarshallerSpecs {
     public void testJsonUnmarshallingIsPossible() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -59,7 +59,6 @@ public final class UnmarshallerSpecs {
     public void testJsonUnmarshallingWithCollectionsIsPossible() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexTypeWithArray.class)
                         .build()
         )
@@ -95,7 +94,7 @@ public final class UnmarshallerSpecs {
     public void testYamlUnmarshallingIsPossible() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )

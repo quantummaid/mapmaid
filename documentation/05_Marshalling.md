@@ -21,13 +21,14 @@ This map is then passed on to the configured marshaller which will transform it 
 of the chosen format (JSON, XML, etc.).
 
 ## Common marshallers
-MapMaid ships with integrated marshallers for the common formats JSON, XML and YAML as well as
+MapMaid ships with integrated marshallers for the common formats JSON and YAML as well as
 the so-called `x-www-form-urlencoded` (url-encoded) format used in the HTTP protocol.
+It also ships with a marshaller that is specific to the AWS DynamoDB database (see below).
 
-### Pre-configured marshallers
-MapMaid comes pre-configured with marshallers for JSON, XML and YAML.
+### Pre-configured marshaller
+MapMaid comes pre-configured with a marshaller for JSON.
 They will be automatically deregistered once you manually register a marshaller.
-Alternatively, you can deactivate the pre-configured marshallers like this:
+Alternatively, you can deactivate the pre-configured marshaller like this:
 <!---[CodeSnippet](deactivateDefaultMarshallers)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
@@ -39,16 +40,29 @@ You can manually configure the default JSON marshaller like this:
 <!---[CodeSnippet](json)-->
 ```java
 final MapMaid mapMaid = aMapMaid()
-        .usingRecipe(jacksonMarshallerJson())
+        .withAdvancedSettings(advancedBuilder ->
+                advancedBuilder.usingMarshaller(MinimalJsonMarshallerAndUnmarshaller.minimalJsonMarshallerAndUnmarshaller()))
         .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
         .build();
 ```
 
-To only support YAML:
+# YAML
+In order to support YAML, you need to add this dependency to your project:
+<!---[CodeSnippet](yamldependency)-->
+```xml
+<dependency>
+    <groupId>de.quantummaid.mapmaid.integrations</groupId>
+    <artifactId>mapmaid-snakeyaml</artifactId>
+    <version>0.9.108</version>
+</dependency>
+```
+
+YAML marshalling and unmarshalling can then be configured like this:
 <!---[CodeSnippet](yaml)-->
 ```java
 final MapMaid mapMaid = aMapMaid()
-        .usingRecipe(jacksonMarshallerYaml())
+        .withAdvancedSettings(advancedBuilder ->
+                advancedBuilder.usingMarshaller(SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller()))
         .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
         .build();
 ```
@@ -78,7 +92,7 @@ data structures that are used in the AWS DynamoDB SDK. To use it, add the follow
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-dynamodb</artifactId>
-    <version>0.9.107</version>
+    <version>0.9.108</version>
 </dependency>
 ```
 

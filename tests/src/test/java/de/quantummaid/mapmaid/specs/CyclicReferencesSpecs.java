@@ -27,8 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class CyclicReferencesSpecs {
 
@@ -41,7 +39,6 @@ public final class CyclicReferencesSpecs {
 
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(ACyclicType.class)
                         .build()
         )
@@ -61,26 +58,25 @@ public final class CyclicReferencesSpecs {
 
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexNestedType.class)
                         .build()
         )
                 .when().mapMaidSerializes(nonCyclicType).withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"complexType2\": {\n" +
-                        "    \"number1\": \"42\",\n" +
-                        "    \"number2\": \"21\",\n" +
-                        "    \"stringA\": \"foo\",\n" +
-                        "    \"stringB\": \"bar\"\n" +
-                        "  },\n" +
-                        "  \"complexType1\": {\n" +
-                        "    \"number1\": \"42\",\n" +
-                        "    \"number2\": \"21\",\n" +
-                        "    \"stringA\": \"foo\",\n" +
-                        "    \"stringB\": \"bar\"\n" +
-                        "  }\n" +
+                        "{" +
+                        "\"complexType2\":{" +
+                        "\"number1\":\"42\"," +
+                        "\"number2\":\"21\"," +
+                        "\"stringA\":\"foo\"," +
+                        "\"stringB\":\"bar\"" +
+                        "}," +
+                        "\"complexType1\":{" +
+                        "\"number1\":\"42\"," +
+                        "\"number2\":\"21\"," +
+                        "\"stringA\":\"foo\"," +
+                        "\"stringB\":\"bar\"" +
+                        "}" +
                         "}");
     }
 }

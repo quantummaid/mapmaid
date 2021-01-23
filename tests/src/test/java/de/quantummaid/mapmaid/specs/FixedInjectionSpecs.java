@@ -22,15 +22,12 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
-
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class FixedInjectionSpecs {
 
@@ -40,7 +37,6 @@ public final class FixedInjectionSpecs {
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
                         .injecting(ANumber.class, () -> ANumber.fromInt(42))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -66,7 +62,6 @@ public final class FixedInjectionSpecs {
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
                         .injecting(ANumber.class, () -> ANumber.fromInt(42))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +

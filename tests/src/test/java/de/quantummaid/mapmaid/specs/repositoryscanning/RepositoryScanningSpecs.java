@@ -21,23 +21,19 @@
 
 package de.quantummaid.mapmaid.specs.repositoryscanning;
 
+import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.half.ADeserializationOnlyString;
 import de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyComplexType;
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.APrimitiveBoolean;
 import de.quantummaid.mapmaid.testsupport.domain.valid.APrimitiveInteger;
-import de.quantummaid.mapmaid.domain.AString;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 public final class RepositoryScanningSpecs {
@@ -46,16 +42,11 @@ public final class RepositoryScanningSpecs {
     public void classScannerRecipeRegistersReturnTypesAsSerializationOnly() {
         given(aMapMaid()
                 .usingRecipe(addAllReferencedClassesIn(RepositoryWithSerializationOnlyType.class))
-                .withAdvancedSettings(advancedBuilder ->
-                        advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                 .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"string\": \"theValue\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"string\":\"theValue\"}");
     }
 
     @Test
@@ -63,8 +54,6 @@ public final class RepositoryScanningSpecs {
         given(
                 aMapMaid()
                         .usingRecipe(addAllReferencedClassesIn(RepositoryWithDeserializationOnlyType.class))
-                        .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -93,15 +82,11 @@ public final class RepositoryScanningSpecs {
         given(
                 aMapMaid()
                         .usingRecipe(addAllReferencedClassesIn(RepositoryWithTypeVariableReference.class))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(AComplexParameterizedType.deserialize(AString.fromStringValue("foo")), genericType(AComplexParameterizedType.class, AString.class))
                 .withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"value\": \"foo\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"value\":\"foo\"}");
     }
 }

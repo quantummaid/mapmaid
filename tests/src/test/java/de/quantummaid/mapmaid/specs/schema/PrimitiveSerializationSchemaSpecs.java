@@ -24,9 +24,8 @@ package de.quantummaid.mapmaid.specs.schema;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.snakeyaml.SnakeYamlMarshallerAndUnmarshaller.snakeYamlMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.yamlMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.yamlUnmarshaller;
 
 public final class PrimitiveSerializationSchemaSpecs {
 
@@ -35,7 +34,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(String.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(String.class)
@@ -47,7 +46,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(int.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(int.class)
@@ -61,7 +60,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(Integer.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(Integer.class)
@@ -75,7 +74,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(long.class)
@@ -89,7 +88,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(Long.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(Long.class)
@@ -103,7 +102,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(short.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(short.class)
@@ -115,7 +114,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(Short.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(Short.class)
@@ -127,7 +126,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(byte.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(byte.class)
@@ -139,7 +138,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(Byte.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(Byte.class)
@@ -151,7 +150,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(double.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(double.class)
@@ -165,7 +164,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(Double.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(Double.class)
@@ -179,7 +178,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(float.class)
@@ -193,7 +192,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(Float.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(Float.class)
@@ -207,7 +206,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(boolean.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(boolean.class)
@@ -219,7 +218,7 @@ public final class PrimitiveSerializationSchemaSpecs {
         given(
                 aMapMaid()
                         .serializing(boolean.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingYamlMarshaller(yamlMarshaller(), yamlUnmarshaller()))
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
                         .build()
         )
                 .when().theSerializationSchemaIsQueriedFor(boolean.class)
