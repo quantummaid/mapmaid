@@ -22,14 +22,12 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.domain.AComplexNestedType;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
@@ -43,9 +41,6 @@ public final class IndirectOverrideDefinitionsSpecs {
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
                         .serializingAndDeserializing(customPrimitive(ANumber.class, object -> "23", value -> ANumber.fromInt(23)))
-                        .withAdvancedSettings(advancedBuilder -> {
-                            advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller());
-                        })
                         .build()
         )
                 .when().mapMaidDeserializes("42").from(MarshallingType.JSON).toTheType(ANumber.class)
@@ -67,7 +62,6 @@ public final class IndirectOverrideDefinitionsSpecs {
                                         ANumber.fromInt(200)
                                 ))
                         )
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("{\"foo\": \"qwer\"}").from(MarshallingType.JSON).toTheType(AComplexType.class)

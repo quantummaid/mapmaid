@@ -22,17 +22,15 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static java.lang.System.out;
 
 public final class PerformanceSpecs {
@@ -42,7 +40,6 @@ public final class PerformanceSpecs {
         final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
         if (runThisTest) {
             final MapMaid mapMaid = MapMaid.aMapMaid()
-                    .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                     .serializingAndDeserializing(AComplexType.class)
                     .build();
 
@@ -55,13 +52,7 @@ public final class PerformanceSpecs {
                                 ANumber.fromInt(1),
                                 ANumber.fromInt(5)))
                         .withMarshallingType(MarshallingType.JSON)
-                        .theSerializationResultWas("" +
-                                "{\n" +
-                                "  \"number1\": \"1\",\n" +
-                                "  \"number2\": \"5\",\n" +
-                                "  \"stringA\": \"asdf\",\n" +
-                                "  \"stringB\": \"qwer\"\n" +
-                                "}");
+                        .theSerializationResultWas("{\"number1\":\"1\",\"number2\":\"5\",\"stringA\":\"asdf\",\"stringB\":\"qwer\"}");
             }
         } else {
             out.println("Skipping this test, since system property testMode is not set to RELEASE");
@@ -73,7 +64,6 @@ public final class PerformanceSpecs {
         final Boolean runThisTest = Optional.ofNullable(System.getProperty("testMode")).map(s -> s.equals("RELEASE")).orElse(false);
         if (runThisTest) {
             final MapMaid mapMaid = MapMaid.aMapMaid()
-                    .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                     .serializingAndDeserializing(AComplexType.class)
                     .build();
             for (int i = 0; i < 10_000_000; ++i) {

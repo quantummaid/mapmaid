@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.domain.ANumber;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -30,8 +30,6 @@ import java.util.List;
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 
 public final class UniversalTypeSpecs {
 
@@ -49,16 +47,9 @@ public final class UniversalTypeSpecs {
     @Test
     public void mapMaidCanMarshalFromUniversalObject() {
         given(
-                aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
-                        .build()
+                aMapMaid().build()
         )
                 .when().mapMaidMarshalsFromUniversalObject(List.of("a", "b", "c"), MarshallingType.JSON)
-                .theSerializationResultWas("" +
-                        "[\n" +
-                        "  \"a\",\n" +
-                        "  \"b\",\n" +
-                        "  \"c\"\n" +
-                        "]");
+                .theSerializationResultWas("[\"a\",\"b\",\"c\"]");
     }
 }

@@ -63,4 +63,5 @@
     <suppress checks="TrailingComment" files="AComplexTypeWithDifferentCollections|ACyclicType|AComplexTypeWithSetters" />
     <suppress checks="MethodCount" files="SpecialCustomPrimitivesSpecs" />
     <suppress checks="MagicNumber|MethodLength" files="KotlinBasedDtoExample|KotlinBasedDtoWithGenericExample" />
+    <suppress checks="MagicNumber" files="FloatBasedExample|DoubleBasedExample" />
 </suppressions>

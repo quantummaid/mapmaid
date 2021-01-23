@@ -36,7 +36,9 @@ public final class MultipleFactoriesExample {
                         "  \"regionNameA\": \"qwer\"\n" +
                         "}")
                 .withDeserializedForm(AddRegionCall.addRegionCall(RegionName.someMethod("qwer")))
-                .withAllScenariosSuccessful()
+                .withDuplexSuccessful()
+                .withSerializationSuccessful("{\"regionNameA\":\"qwer\",\"regionNameB\":null}")
+                .withDeserializationSuccessful()
                 .run();
     }
 }

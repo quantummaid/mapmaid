@@ -34,8 +34,6 @@ import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError.fromExceptionMessageAndPropertyPath;
 import static de.quantummaid.mapmaid.mapper.deserialization.validation.ValidationError.fromStringMessageAndPropertyPath;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -46,8 +44,6 @@ public final class ExceptionTrackingSpecs {
     public void testUnmappedException() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -74,20 +70,18 @@ public final class ExceptionTrackingSpecs {
     public void testUnmappedExceptionDeeperInHierarchy() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder
-                                .usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexNestedType.class)
                         .build()
         )
                 .when().mapMaidDeserializes("" +
                 "{" +
-                "\"complexType1\"={\n" +
+                "\"complexType1\": {\n" +
                 "  \"number1\": \"1\",\n" +
                 "  \"number2\": \"5\",\n" +
                 "  \"stringA\": \"asdf\",\n" +
                 "  \"stringB\": \"qwer\"\n" +
                 "},\n" +
-                "\"complexType2\"={\n" +
+                "\"complexType2\": {\n" +
                 "  \"number1\": \"x\",\n" +
                 "  \"number2\": \"5\",\n" +
                 "  \"stringA\": \"asdf\",\n" +
@@ -114,7 +108,6 @@ public final class ExceptionTrackingSpecs {
     public void testMappedException() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .withExceptionIndicatingValidationError(AnException.class)
                         .build()
@@ -152,7 +145,6 @@ public final class ExceptionTrackingSpecs {
     public void testMappedExceptionWithoutMarshalling() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .withExceptionIndicatingValidationError(AnException.class)
                         .build()
@@ -172,7 +164,6 @@ public final class ExceptionTrackingSpecs {
     public void testMultipleExceptionsCanBeMapped() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .withExceptionIndicatingValidationError(AnException.class)
                         .build()
@@ -193,7 +184,6 @@ public final class ExceptionTrackingSpecs {
     public void exceptionIndicatingMultipleValidationErrors() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .withExceptionIndicatingMultipleValidationErrors(AnException.class,
                                 (exception, propertyPath) -> List.of(

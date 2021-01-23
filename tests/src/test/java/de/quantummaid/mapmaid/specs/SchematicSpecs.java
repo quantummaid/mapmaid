@@ -30,8 +30,6 @@ import java.util.Collections;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -41,7 +39,6 @@ public final class SchematicSpecs {
     public void wrongSchemaFormatCausesSensibleException() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexTypeWithCollections.class)
                         .build()
         )

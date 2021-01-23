@@ -33,8 +33,8 @@ public final class FloatBasedExample {
     @Test
     public void floatBasedExample() {
         scenarioBuilderFor(Quantity.class)
-                .withSerializedForm("1.0")
-                .withDeserializedForm(Quantity.fromStringValue(1.0F))
+                .withSerializedForm("1.1")
+                .withDeserializedForm(Quantity.fromStringValue(1.1F))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
                         mapMaidBuilder.deserializing(DeserializationOnlyType.floatBasedCustomPrimitive(Quantity.class, Quantity::fromStringValue)))

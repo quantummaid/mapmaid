@@ -22,13 +22,11 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithGetters;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithSetters;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers;
 import org.junit.jupiter.api.Test;
 
 public final class PojoSpecs {
@@ -38,7 +36,6 @@ public final class PojoSpecs {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexTypeWithGetters.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(
@@ -47,11 +44,7 @@ public final class PojoSpecs {
                         AString.fromStringValue("bar")
                 )).withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"stringA\": \"foo\",\n" +
-                        "  \"stringB\": \"bar\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"stringA\":\"foo\",\"stringB\":\"bar\"}");
     }
 
     @Test
@@ -59,7 +52,6 @@ public final class PojoSpecs {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexTypeWithSetters.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(Marshallers.jsonMarshaller(), Unmarshallers.jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("" +

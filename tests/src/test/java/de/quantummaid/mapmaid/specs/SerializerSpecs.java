@@ -31,8 +31,6 @@ import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static java.util.Collections.singletonList;
 
 public final class SerializerSpecs {
@@ -41,7 +39,6 @@ public final class SerializerSpecs {
     public void testMethodReferenceInCPSerializationMethod() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -51,20 +48,13 @@ public final class SerializerSpecs {
                         AString.fromStringValue("qwer"),
                         ANumber.fromInt(1),
                         ANumber.fromInt(5555))).withMarshallingType(MarshallingType.JSON)
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"number1\": \"1\",\n" +
-                        "  \"number2\": \"5555\",\n" +
-                        "  \"stringA\": \"asdf\",\n" +
-                        "  \"stringB\": \"qwer\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"number1\":\"1\",\"number2\":\"5555\",\"stringA\":\"asdf\",\"stringB\":\"qwer\"}");
     }
 
     @Test
     public void givenStringDomain_whenSerializing_thenReturnsJsonString() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -76,7 +66,6 @@ public final class SerializerSpecs {
     public void givenNumberDomain_whenSerializing_thenReturnsJsonString() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -88,7 +77,6 @@ public final class SerializerSpecs {
     public void givenComplexDomain_whenSerializing_thenReturnsJsonString() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -99,20 +87,13 @@ public final class SerializerSpecs {
                         ANumber.fromInt(1),
                         ANumber.fromInt(2)))
                 .withMarshallingType(MarshallingType.JSON)
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"number1\": \"1\",\n" +
-                        "  \"number2\": \"2\",\n" +
-                        "  \"stringA\": \"a\",\n" +
-                        "  \"stringB\": \"b\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"number1\":\"1\",\"number2\":\"2\",\"stringA\":\"a\",\"stringB\":\"b\"}");
     }
 
     @Test
     public void givenComplexDomainWithCollections_whenSerializing_thenReturnsJsonString() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexTypeWithCollections.class)
                         .build()
         )
@@ -127,26 +108,13 @@ public final class SerializerSpecs {
                 }))
                 .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"array\": [\n" +
-                        "    \"1\",\n" +
-                        "    \"2\",\n" +
-                        "    \"3\"\n" +
-                        "  ],\n" +
-                        "  \"arrayList\": [\n" +
-                        "    \"a\",\n" +
-                        "    \"b\",\n" +
-                        "    \"c\"\n" +
-                        "  ]\n" +
-                        "}");
+                .theSerializationResultWas("{\"array\":[\"1\",\"2\",\"3\"],\"arrayList\":[\"a\",\"b\",\"c\"]}");
     }
 
     @Test
     public void givenComplexNestedDomain_whenSerializing_thenReturnsJsonString() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexNestedType.class)
                         .build()
         )
@@ -162,19 +130,19 @@ public final class SerializerSpecs {
                         ANumber.fromInt(3),
                         ANumber.fromInt(4)))).withMarshallingType(MarshallingType.JSON)
                 .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"complexType2\": {\n" +
-                        "    \"number1\": \"3\",\n" +
-                        "    \"number2\": \"4\",\n" +
-                        "    \"stringA\": \"c\",\n" +
-                        "    \"stringB\": \"d\"\n" +
-                        "  },\n" +
-                        "  \"complexType1\": {\n" +
-                        "    \"number1\": \"1\",\n" +
-                        "    \"number2\": \"2\",\n" +
-                        "    \"stringA\": \"a\",\n" +
-                        "    \"stringB\": \"b\"\n" +
-                        "  }\n" +
+                        "{" +
+                        "\"complexType2\":{" +
+                        "\"number1\":\"3\"," +
+                        "\"number2\":\"4\"," +
+                        "\"stringA\":\"c\"," +
+                        "\"stringB\":\"d\"" +
+                        "}," +
+                        "\"complexType1\":{" +
+                        "\"number1\":\"1\"," +
+                        "\"number2\":\"2\"," +
+                        "\"stringA\":\"a\"," +
+                        "\"stringB\":\"b\"" +
+                        "}" +
                         "}");
     }
 
@@ -207,29 +175,18 @@ public final class SerializerSpecs {
         given2.aCyclicType = given3;
 
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                 .serializingAndDeserializing(ACyclicType.class)
                 .build();
         given(mapMaid)
                 .when().mapMaidSerializes(given1).withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"aString\": \"a\",\n" +
-                        "  \"aCyclicType\": {\n" +
-                        "    \"aString\": \"b\",\n" +
-                        "    \"aCyclicType\": {\n" +
-                        "      \"aString\": \"c\"\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}");
+                .theSerializationResultWas("{\"aString\":\"a\",\"aCyclicType\":{\"aString\":\"b\",\"aCyclicType\":{\"aString\":\"c\",\"aCyclicType\":null}}}");
     }
 
     @Test
     public void givenComplexDomainWithNullValues_whenSerializing_thenExcludesFromJson() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -240,18 +197,13 @@ public final class SerializerSpecs {
                         ANumber.fromInt(1),
                         null)).withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"number1\": \"1\",\n" +
-                        "  \"stringA\": \"a\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"number1\":\"1\",\"number2\":null,\"stringA\":\"a\",\"stringB\":null}");
     }
 
     @Test
     public void givenComplexDomainUsingInjector_whenSerializing_thenReturnsJsonString() {
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexType.class)
                         .build()
         )
@@ -266,13 +218,7 @@ public final class SerializerSpecs {
                     return input;
                 })
                 .withMarshallingType(MarshallingType.JSON)
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"number1\": \"1\",\n" +
-                        "  \"number2\": \"2\",\n" +
-                        "  \"stringA\": \"test\",\n" +
-                        "  \"stringB\": \"b\"\n" +
-                        "}");
+                .theSerializationResultWas("{\"number1\":\"1\",\"number2\":\"2\",\"stringA\":\"test\",\"stringB\":\"b\"}");
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -287,52 +233,13 @@ public final class SerializerSpecs {
 
         given(
                 aMapMaid()
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .serializingAndDeserializing(AComplexTypeWithNestedCollections.class)
                         .build()
         )
                 .when().mapMaidSerializes(typeWithNestedCollections)
                 .withMarshallingType(MarshallingType.JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"nestedList\": [\n" +
-                        "    [\n" +
-                        "      [\n" +
-                        "        [\n" +
-                        "          \"42\"\n" +
-                        "        ]\n" +
-                        "      ]\n" +
-                        "    ]\n" +
-                        "  ],\n" +
-                        "  \"nestedArray\": [\n" +
-                        "    [\n" +
-                        "      [\n" +
-                        "        [\n" +
-                        "          \"arrays\"\n" +
-                        "        ]\n" +
-                        "      ]\n" +
-                        "    ]\n" +
-                        "  ],\n" +
-                        "  \"nestedMix2\": [\n" +
-                        "    [\n" +
-                        "      [\n" +
-                        "        [\n" +
-                        "          \"43\"\n" +
-                        "        ]\n" +
-                        "      ]\n" +
-                        "    ]\n" +
-                        "  ],\n" +
-                        "  \"nestedMix1\": [\n" +
-                        "    [\n" +
-                        "      [\n" +
-                        "        [\n" +
-                        "          \"mixed\"\n" +
-                        "        ]\n" +
-                        "      ]\n" +
-                        "    ]\n" +
-                        "  ]\n" +
-                        "}");
+                .theSerializationResultWas("{\"nestedList\":[[[[\"42\"]]]],\"nestedArray\":[[[[\"arrays\"]]]],\"nestedMix2\":[[[[\"43\"]]]],\"nestedMix1\":[[[[\"mixed\"]]]]}");
     }
 
     public static class ANonConfiguredDomain {

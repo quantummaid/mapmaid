@@ -30,8 +30,6 @@ import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserializatio
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Marshallers.jsonMarshaller;
-import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Unmarshallers.jsonUnmarshaller;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 public final class ChangingStructureSpecs {
@@ -42,7 +40,6 @@ public final class ChangingStructureSpecs {
                 aMapMaid()
                         .serializing(SerializationDto.class)
                         .serializingAndDeserializing(genericType(MakeDuplexDto.class, SerializationDto.class))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(CustomPrimitive.customPrimitive("foo")).withMarshallingType(JSON)
@@ -56,7 +53,6 @@ public final class ChangingStructureSpecs {
                 aMapMaid()
                         .deserializing(DeserializationDto.class)
                         .serializingAndDeserializing(genericType(MakeDuplexDto.class, DeserializationDto.class))
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidDeserializes("\"foo\"").from(JSON).toTheType(CustomPrimitive.class)
@@ -70,10 +66,9 @@ public final class ChangingStructureSpecs {
                 aMapMaid()
                         .serializing(AString.class)
                         .deserializing(AComplexType.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
-                .when().mapMaidDeserializes("foo").from(JSON).toTheType(AString.class)
+                .when().mapMaidDeserializes("\"foo\"").from(JSON).toTheType(AString.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(AString.fromStringValue("foo"));
     }
@@ -84,7 +79,6 @@ public final class ChangingStructureSpecs {
                 aMapMaid()
                         .deserializing(AString.class)
                         .serializing(AComplexType.class)
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(AString.fromStringValue("foo")).withMarshallingType(JSON)
@@ -98,7 +92,6 @@ public final class ChangingStructureSpecs {
                 aMapMaid()
                         .withType(Address.class, deserialization())
                         .withType(Order.class, serialization())
-                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(jsonMarshaller(), jsonUnmarshaller()))
                         .build()
         )
                 .when().mapMaidSerializes(
@@ -110,13 +103,6 @@ public final class ChangingStructureSpecs {
                 ))
                 .withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
-                .theSerializationResultWas("" +
-                        "{\n" +
-                        "  \"zip\": \"a\",\n" +
-                        "  \"number\": \"d\",\n" +
-                        "  \"city\": \"b\",\n" +
-                        "  \"street\": \"c\"\n" +
-                        "}"
-                );
+                .theSerializationResultWas("{\"zip\":\"a\",\"number\":\"d\",\"city\":\"b\",\"street\":\"c\"}");
     }
 }
