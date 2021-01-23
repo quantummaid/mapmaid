@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Jackson marshaller.
 
-## [ a](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.107/jar) - 2021-01-20
+## [0.9.107](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.9.107/jar) - 2021-01-20
 ### Changed
 - Update dependencies.
 
