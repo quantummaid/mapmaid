@@ -19,34 +19,23 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.urlencoded;
+package de.quantummaid.mapmaid.dynamodb.compressing;
 
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerAndUnmarshaller.urlEncodedMarshallerAndUnmarshaller;
-
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UrlEncodedMarshallerRecipe implements Recipe {
+public final class DecompressingUnmarshaller implements Unmarshaller<byte[]> {
+    private final Unmarshaller<String> innerMarshaller;
 
-    public static MarshallingType<String> urlEncoded() {
-        return MarshallingType.marshallingType("urlencoded");
-    }
-
-    public static UrlEncodedMarshallerRecipe urlEncodedMarshaller() {
-        return new UrlEncodedMarshallerRecipe();
+    public static DecompressingUnmarshaller decompressingUnmarshaller(final Unmarshaller<String> innerMarshaller) {
+        return new DecompressingUnmarshaller(innerMarshaller);
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingMarshaller(urlEncodedMarshallerAndUnmarshaller()));
+    public Object unmarshal(final byte[] input) throws Exception {
+        final String decompressed = StringCompressor.decompress(input);
+        return innerMarshaller.unmarshal(decompressed);
     }
 }

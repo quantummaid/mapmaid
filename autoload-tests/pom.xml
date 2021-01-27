@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.108</version>
+        <version>0.9.109</version>
     </parent>
 
     <artifactId>autoloading-tests</artifactId>
@@ -42,13 +42,20 @@
     <dependencies>
         <dependency>
             <groupId>de.quantummaid.mapmaid.integrations</groupId>
-            <artifactId>mapmaid-minimal-json</artifactId>
-            <version>${project.version}</version>
+            <artifactId>mapmaid-dynamodb</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>de.quantummaid.mapmaid</groupId>
-            <artifactId>tests</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -45,5 +46,22 @@ public final class AutoloadingSpecs {
         assertEquals("[\"a\",\"b\",\"c\"]", json);
         final List<String> deserialized = mapMaid.deserializeJson(json, type);
         assertEquals(List.of("a", "b", "c"), deserialized);
+    }
+
+    @Test
+    public void doesNotAutoloadWhenCustomMarshallersAreConfigured() {
+        final MapMaid mapMaid = aMapMaid()
+                .withAdvancedSettings(advancedBuilder ->
+                        advancedBuilder.usingJsonMarshaller(
+                                object -> "customMarshalledValue", input -> unsupported()
+                        ))
+                .build();
+
+        final String json = mapMaid.serializer().marshalFromUniversalObject(null, JSON);
+        assertEquals("customMarshalledValue", json);
+    }
+
+    private <T> T unsupported() {
+        throw new UnsupportedOperationException();
     }
 }

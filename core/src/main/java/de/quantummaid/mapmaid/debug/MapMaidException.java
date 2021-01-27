@@ -47,14 +47,14 @@ public class MapMaidException extends RuntimeException {
     }
 
     public static MapMaidException mapMaidException(final String message,
-                                                    final Exception cause,
+                                                    final Throwable cause,
                                                     final ScanInformation... scanInformations) {
         final List<ScanInformation> asList = asList(scanInformations);
         return mapMaidException(message, cause, asList);
     }
 
     public static MapMaidException mapMaidException(final String message,
-                                                    final Exception cause,
+                                                    final Throwable cause,
                                                     final List<ScanInformation> scanInformations) {
         final StringBuilder messageBuilder = new StringBuilder();
         messageBuilder.append(message);

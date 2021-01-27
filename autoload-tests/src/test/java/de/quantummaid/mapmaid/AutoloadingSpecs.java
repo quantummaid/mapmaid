@@ -21,28 +21,29 @@
 
 package de.quantummaid.mapmaid;
 
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
+import de.quantummaid.mapmaid.debug.MapMaidException;
+import de.quantummaid.mapmaid.dynamodb.customdynamodb.CustomDynamoDbMarshallerRecipe;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AutoloadingSpecs {
 
     @Test
-    public void doesNotAutoloadWhenCustomMarshallersAreConfigured() {
-        Given.given(
-                () -> MapMaid.aMapMaid()
-                        .withAdvancedSettings(advancedBuilder ->
-                                advancedBuilder.usingJsonMarshaller(
-                                        object -> "customMarshalledValue", input -> unsupported()
-                                ))
-                        .build()
-        )
-                .when().mapMaidMarshalsFromUniversalObject(null, JSON)
-                .theSerializationResultWas("customMarshalledValue");
-    }
-
-    private <T> T unsupported() {
-        throw new UnsupportedOperationException();
+    public void optimisticLoadingOfMinimalJsonInDynamoDbFailsWithErrorMessage() {
+        MapMaidException mapMaidException = null;
+        try {
+            MapMaid.aMapMaid()
+                    .usingRecipe(CustomDynamoDbMarshallerRecipe.aDynamoDbMarshallerAndUnmarshaller()
+                            .compressingTopLevelProperty("a"))
+                    .build();
+        } catch (final MapMaidException e) {
+            mapMaidException = e;
+        }
+        assertThat(mapMaidException, is(notNullValue()));
+        assertThat(mapMaidException.getMessage(), containsString(
+                "MinimalJSON marshaller is not on classpath - provide it or configure a marshaller manually"));
+        assertThat(mapMaidException.getCause(), instanceOf(NoClassDefFoundError.class));
     }
 }

@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.dynamodb;
+package de.quantummaid.mapmaid.dynamodb.attributevalue;
 
 import de.quantummaid.mapmaid.builder.MarshallerAndUnmarshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
@@ -29,15 +29,15 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import static de.quantummaid.mapmaid.dynamodb.DynamoDbMarshaller.dynamoDbMarshaller;
-import static de.quantummaid.mapmaid.dynamodb.DynamoDbUnmarshaller.dynamoDbUnmarshaller;
+import static de.quantummaid.mapmaid.dynamodb.attributevalue.AttributeValueMarshaller.attributeValueMarshaller;
+import static de.quantummaid.mapmaid.dynamodb.attributevalue.AttributeValueUnmarshaller.attributeValueUnmarshaller;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DynamoDbMarshallerAndUnmarshaller implements MarshallerAndUnmarshaller<AttributeValue> {
+public final class AttributeValueMarshallerAndUnmarshaller implements MarshallerAndUnmarshaller<AttributeValue> {
     public static final MarshallingType<AttributeValue> DYNAMODB_ATTRIBUTEVALUE = MarshallingType.marshallingType("DYNAMODB_ATTRIBUTEVALUE");
 
-    public static DynamoDbMarshallerAndUnmarshaller dynamoDbMarshallerAndUnmarshaller() {
-        return new DynamoDbMarshallerAndUnmarshaller();
+    public static AttributeValueMarshallerAndUnmarshaller attributeValueMarshallerAndUnmarshaller() {
+        return new AttributeValueMarshallerAndUnmarshaller();
     }
 
     @Override
@@ -47,11 +47,11 @@ public final class DynamoDbMarshallerAndUnmarshaller implements MarshallerAndUnm
 
     @Override
     public Marshaller<AttributeValue> marshaller() {
-        return dynamoDbMarshaller();
+        return attributeValueMarshaller();
     }
 
     @Override
     public Unmarshaller<AttributeValue> unmarshaller() {
-        return dynamoDbUnmarshaller();
+        return attributeValueUnmarshaller();
     }
 }

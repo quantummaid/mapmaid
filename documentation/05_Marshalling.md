@@ -53,7 +53,7 @@ In order to support YAML, you need to add this dependency to your project:
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-snakeyaml</artifactId>
-    <version>0.9.108</version>
+    <version>0.9.109</version>
 </dependency>
 ```
 
@@ -92,7 +92,7 @@ data structures that are used in the AWS DynamoDB SDK. To use it, add the follow
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-dynamodb</artifactId>
-    <version>0.9.108</version>
+    <version>0.9.109</version>
 </dependency>
 ```
 
@@ -101,19 +101,19 @@ Configuration:
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
         .serializingAndDeserializing(ComplexPerson.class)
-        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(DynamoDbMarshallerAndUnmarshaller.dynamoDbMarshallerAndUnmarshaller()))
+        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(AttributeValueMarshallerAndUnmarshaller.attributeValueMarshallerAndUnmarshaller()))
         .build();
 ```
 Serialization:
 <!---[CodeSnippet](attributeValueSerialization)-->
 ```java
-final AttributeValue attributeValue = mapMaid.serializeTo(object, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+final AttributeValue attributeValue = mapMaid.serializeTo(object, AttributeValueMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
 ```
 
 Deserialization:
 <!---[CodeSnippet](attributeValueDeserialization)-->
 ```java
-final ComplexPerson deserialized = mapMaid.deserialize(attributeValue, ComplexPerson.class, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+final ComplexPerson deserialized = mapMaid.deserialize(attributeValue, ComplexPerson.class, AttributeValueMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
 ```
 
 ## Registering your own marshaller

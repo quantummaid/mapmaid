@@ -19,34 +19,32 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.recipes.urlencoded;
+package de.quantummaid.mapmaid.dynamodb.toplevelmap;
 
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerAndUnmarshaller.urlEncodedMarshallerAndUnmarshaller;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UrlEncodedMarshallerRecipe implements Recipe {
+public final class TopLevelMapUnmarshaller<T> implements Unmarshaller<Map<String, T>> {
+    private final Unmarshaller<T> lowerUnmarshaller;
 
-    public static MarshallingType<String> urlEncoded() {
-        return MarshallingType.marshallingType("urlencoded");
-    }
-
-    public static UrlEncodedMarshallerRecipe urlEncodedMarshaller() {
-        return new UrlEncodedMarshallerRecipe();
+    public static <T> TopLevelMapUnmarshaller<T> topLevelMapUnmarshaller(final Unmarshaller<T> lowerUnmarshaller) {
+        return new TopLevelMapUnmarshaller<>(lowerUnmarshaller);
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
-                .usingMarshaller(urlEncodedMarshallerAndUnmarshaller()));
+    public Object unmarshal(final Map<String, T> input) throws Exception {
+        final Map<String, Object> result = new LinkedHashMap<>();
+        for (final Map.Entry<String, T> entry : input.entrySet()) {
+            final String key = entry.getKey();
+            final T value = entry.getValue();
+            final Object unmarshalledValue = lowerUnmarshaller.unmarshal(value);
+            result.put(key, unmarshalledValue);
+        }
+        return result;
     }
 }

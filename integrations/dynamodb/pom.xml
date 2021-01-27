@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>integrations-parent</artifactId>
-        <version>0.9.108</version>
+        <version>0.9.109</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
@@ -115,6 +115,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>de.quantummaid.mapmaid.integrations</groupId>
+            <artifactId>mapmaid-minimal-json</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
