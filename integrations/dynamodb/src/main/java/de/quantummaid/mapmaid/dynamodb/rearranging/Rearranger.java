@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.dynamodb.rearranging;
 
 import java.util.Map;
 
+@SuppressWarnings("java:S112")
 public interface Rearranger {
 
     void rearrange(Map<String, Object> mutableMap) throws Exception;
