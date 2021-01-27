@@ -64,6 +64,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("java:S1604")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CustomDynamoDbMarshallerRecipe implements Recipe {
     private final List<Function<MarshallerAndUnmarshaller<String>, Rearranger>> rearrangerProviders = new ArrayList<>();
