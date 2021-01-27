@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.joining;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UrlEncodedMarshaller implements Marshaller<String> {
 
-    public static Marshaller<String> urlEncodedMarshaller() {
+    public static UrlEncodedMarshaller urlEncodedMarshaller() {
         return new UrlEncodedMarshaller();
     }
 
@@ -60,6 +60,9 @@ public final class UrlEncodedMarshaller implements Marshaller<String> {
     private void marshal(final Key keyPrefix,
                          final List<KeyValue> parts,
                          final Object object) {
+        if (object == null) {
+            return;
+        }
         if (object instanceof Map) {
             marshalMap(keyPrefix, parts, (Map<String, Object>) object);
         } else if (object instanceof List) {
@@ -69,6 +72,8 @@ public final class UrlEncodedMarshaller implements Marshaller<String> {
             marshalList(keyPrefix, parts, list);
         } else if (object instanceof String) {
             marshalString(keyPrefix, parts, (String) object);
+        } else if (object instanceof Long) {
+            marshalLong(keyPrefix, parts, (Long) object);
         } else {
             throw new IllegalArgumentException(
                     format("Unable to marshal for url-encoded because the type of '%s' is not supported", object));
@@ -98,5 +103,11 @@ public final class UrlEncodedMarshaller implements Marshaller<String> {
                                       final List<KeyValue> parts,
                                       final String string) {
         parts.add(KeyValue.keyValue(key, string));
+    }
+
+    private static void marshalLong(final Key key,
+                                    final List<KeyValue> parts,
+                                    final long l) {
+        parts.add(KeyValue.keyValue(key, Long.toString(l)));
     }
 }

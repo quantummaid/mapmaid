@@ -25,4 +25,6 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
     <suppress checks="IllegalCatchCheck" files="LocalDynamoDb"/>
+    <suppress checks="MagicNumber" files=".*Specs"/>
+    <suppress checks="NPathComplexity" files="AttributeValueMarshaller|AttributeValueUnmarshaller"/>
 </suppressions>

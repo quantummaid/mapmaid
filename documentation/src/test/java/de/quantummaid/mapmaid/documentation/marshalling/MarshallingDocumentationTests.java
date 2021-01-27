@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe;
 import de.quantummaid.mapmaid.documentation.marshalling.domain.*;
-import de.quantummaid.mapmaid.dynamodb.DynamoDbMarshallerAndUnmarshaller;
+import de.quantummaid.mapmaid.dynamodb.attributevalue.AttributeValueMarshallerAndUnmarshaller;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
@@ -87,7 +87,7 @@ public final class MarshallingDocumentationTests {
         //Showcase start attributeValue
         final MapMaid mapMaid = MapMaid.aMapMaid()
                 .serializingAndDeserializing(ComplexPerson.class)
-                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(DynamoDbMarshallerAndUnmarshaller.dynamoDbMarshallerAndUnmarshaller()))
+                .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(AttributeValueMarshallerAndUnmarshaller.attributeValueMarshallerAndUnmarshaller()))
                 .build();
         //Showcase end attributeValue
 
@@ -103,11 +103,11 @@ public final class MarshallingDocumentationTests {
                 )));
 
         //Showcase start attributeValueSerialization
-        final AttributeValue attributeValue = mapMaid.serializeTo(object, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+        final AttributeValue attributeValue = mapMaid.serializeTo(object, AttributeValueMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
         //Showcase end attributeValueSerialization
 
         //Showcase start attributeValueDeserialization
-        final ComplexPerson deserialized = mapMaid.deserialize(attributeValue, ComplexPerson.class, DynamoDbMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
+        final ComplexPerson deserialized = mapMaid.deserialize(attributeValue, ComplexPerson.class, AttributeValueMarshallerAndUnmarshaller.DYNAMODB_ATTRIBUTEVALUE);
         //Showcase end attributeValueDeserialization
 
         assertThat(deserialized.firstNames, is(object.firstNames));

@@ -19,11 +19,12 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.dynamodb;
+package de.quantummaid.mapmaid.dynamodb.attributevalue;
 
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.HashMap;
@@ -33,10 +34,10 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
+public final class AttributeValueMarshaller implements Marshaller<AttributeValue> {
 
-    public static DynamoDbMarshaller dynamoDbMarshaller() {
-        return new DynamoDbMarshaller();
+    public static AttributeValueMarshaller attributeValueMarshaller() {
+        return new AttributeValueMarshaller();
     }
 
     @SuppressWarnings("unchecked")
@@ -62,6 +63,9 @@ public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
         }
         if (input instanceof Integer) {
             return marshalInteger((Integer) input);
+        }
+        if (input instanceof byte[]) {
+            return marshalByteArray((byte[]) input);
         }
         throw new UnsupportedOperationException("unable to marshal object of type: " + input.getClass().getSimpleName());
     }
@@ -117,6 +121,13 @@ public final class DynamoDbMarshaller implements Marshaller<AttributeValue> {
     private AttributeValue marshalLong(final Long l) {
         return AttributeValue.builder()
                 .n(l.toString())
+                .build();
+    }
+
+    private AttributeValue marshalByteArray(final byte[] bytes) {
+        final SdkBytes sdkBytes = SdkBytes.fromByteArray(bytes);
+        return AttributeValue.builder()
+                .b(sdkBytes)
                 .build();
     }
 }

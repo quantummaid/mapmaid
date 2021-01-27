@@ -19,11 +19,12 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.dynamodb;
+package de.quantummaid.mapmaid.dynamodb.attributevalue;
 
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.HashMap;
@@ -34,14 +35,19 @@ import static java.lang.Long.parseLong;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DynamoDbUnmarshaller implements Unmarshaller<AttributeValue> {
+public final class AttributeValueUnmarshaller implements Unmarshaller<AttributeValue> {
 
-    public static DynamoDbUnmarshaller dynamoDbUnmarshaller() {
-        return new DynamoDbUnmarshaller();
+    public static AttributeValueUnmarshaller attributeValueUnmarshaller() {
+        return new AttributeValueUnmarshaller();
     }
 
     @Override
     public Object unmarshal(final AttributeValue attributeValue) {
+        if (attributeValue.b() != null) {
+            final SdkBytes sdkBytes = attributeValue.b();
+            return sdkBytes.asByteArray();
+        }
+
         if (attributeValue.hasM()) {
             final Map<String, AttributeValue> map = attributeValue.m();
             return unmarshalMap(map);

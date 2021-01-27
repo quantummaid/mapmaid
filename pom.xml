@@ -31,7 +31,7 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.108</version>
+    <version>0.9.109</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
@@ -68,7 +68,7 @@
             <dependency>
                 <groupId>de.quantummaid.mapmaid</groupId>
                 <artifactId>mapmaid-bom</artifactId>
-                <version>0.9.108</version>
+                <version>0.9.109</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
