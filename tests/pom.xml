@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.9.109</version>
+        <version>0.9.110</version>
     </parent>
 
     <artifactId>tests</artifactId>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.16</version>
+            <version>1.18.18</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
