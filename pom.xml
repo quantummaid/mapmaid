@@ -26,12 +26,12 @@
     <parent>
         <groupId>de.quantummaid</groupId>
         <artifactId>quantummaid-opensource-parent</artifactId>
-        <version>0.9.74</version>
+        <version>0.9.75</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.9.110</version>
+    <version>0.9.111</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
@@ -68,14 +68,14 @@
             <dependency>
                 <groupId>de.quantummaid.mapmaid</groupId>
                 <artifactId>mapmaid-bom</artifactId>
-                <version>0.9.110</version>
+                <version>0.9.111</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.7.0</version>
+                <version>5.7.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
