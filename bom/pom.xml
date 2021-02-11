@@ -31,7 +31,7 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-bom</artifactId>
-    <version>0.9.111</version>
+    <version>0.9.112</version>
     <packaging>pom</packaging>
 
     <name>MapMaid - BOM</name>
