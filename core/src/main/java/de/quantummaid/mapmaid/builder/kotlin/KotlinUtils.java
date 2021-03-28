@@ -21,16 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.kotlin;
 
-import de.quantummaid.reflectmaid.ResolvedType;
 import de.quantummaid.reflectmaid.ThirdPartyAnnotation;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 
-import static de.quantummaid.reflectmaid.ThirdPartyAnnotation.thirdPartyAnnotation;
-
 @SuppressWarnings("java:S1452")
 public final class KotlinUtils {
-    private static final ThirdPartyAnnotation KOTLIN_METADATA = thirdPartyAnnotation("kotlin.Metadata");
+    private static final ThirdPartyAnnotation KOTLIN_METADATA = ThirdPartyAnnotation.thirdPartyAnnotation("kotlin.Metadata");
 
     private KotlinUtils() {
     }

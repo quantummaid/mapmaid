@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.exa
 import de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {
@@ -50,13 +49,32 @@ public final class MultipleFactoriesExample {
                 .withDeserializationFailing("de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.multiple_factories.AddALotRequest: unable to detect")
                 .withSerializationSuccessful()
                 .withManual(
-                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities, serializedObject(AddALotRequest.class)
-                                .withField("name", Name.class, object -> object.name)
-                                .withField("townNameA", TownName.class, object -> object.townNameA)
-                                .withField("townNameB", TownName.class, object -> object.townNameB)
-                                .withField("townNameC", TownName.class, object -> object.townNameC)
-                                .deserializedUsing(AddALotRequest::factory1)
-                        ))
+                        (mapMaidBuilder, capabilities) -> {
+                            if (capabilities.hasDeserialization() && capabilities.hasSerialization()) {
+                                mapMaidBuilder.serializingAndDeserializingCustomObject(AddALotRequest.class, builder -> builder
+                                        .withField("name", Name.class, object -> object.name)
+                                        .withField("townNameA", TownName.class, object -> object.townNameA)
+                                        .withField("townNameB", TownName.class, object -> object.townNameB)
+                                        .withField("townNameC", TownName.class, object -> object.townNameC)
+                                        .deserializedUsing(AddALotRequest::factory1)
+                                );
+                            } else if (capabilities.hasSerialization()) {
+                                mapMaidBuilder.serializingCustomObject(AddALotRequest.class, builder -> builder
+                                        .withField("name", Name.class, object -> object.name)
+                                        .withField("townNameA", TownName.class, object -> object.townNameA)
+                                        .withField("townNameB", TownName.class, object -> object.townNameB)
+                                        .withField("townNameC", TownName.class, object -> object.townNameC)
+                                );
+                            } else if (capabilities.hasDeserialization()) {
+                                mapMaidBuilder.deserializingCustomObject(AddALotRequest.class, builder -> builder
+                                        .withField("name", Name.class)
+                                        .withField("townNameA", TownName.class)
+                                        .withField("townNameB", TownName.class)
+                                        .withField("townNameC", TownName.class)
+                                        .deserializedUsing(AddALotRequest::factory1)
+                                );
+                            }
+                        })
                 .run();
     }
 }

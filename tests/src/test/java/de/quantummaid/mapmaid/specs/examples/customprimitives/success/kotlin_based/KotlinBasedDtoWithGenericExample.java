@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.kotlin_based;
 
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.GenericType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -33,8 +33,8 @@ public final class KotlinBasedDtoWithGenericExample {
 
     @Test
     public void kotlinBasedDtoExample() {
-        final ResolvedType resolvedType = genericType(KotlinDtoWithGeneric.class, KotlinCustomPrimitive.class).toResolvedType();
-        scenarioBuilderFor(resolvedType)
+        final GenericType<?> genericType = genericType(KotlinDtoWithGeneric.class, KotlinCustomPrimitive.class);
+        scenarioBuilderFor(genericType)
                 .withSerializedForm("" +
                         "{\n" +
                         "  \"field1\": [\n" +

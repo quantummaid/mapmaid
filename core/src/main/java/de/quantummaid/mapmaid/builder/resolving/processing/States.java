@@ -32,6 +32,7 @@ import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -75,16 +76,18 @@ public final class States {
                 .collect(toList());
     }
 
-    public States apply(final Signal signal,
+    public States apply(final ReflectMaid reflectMaid,
+                        final Signal signal,
                         final Processor processor,
                         final MapMaidConfiguration configuration,
                         final StateLogBuilder stateLog) {
-        final States newStates = apply(signal, processor, configuration);
+        final States newStates = apply(reflectMaid, signal, processor, configuration);
         stateLog.log(signal, newStates.dumpForLogging());
         return newStates;
     }
 
-    private States apply(final Signal signal,
+    private States apply(final ReflectMaid reflectMaid,
+                         final Signal signal,
                          final Processor processor,
                          final MapMaidConfiguration configuration) {
         final Optional<TypeIdentifier> optionalTarget = signal.target();
@@ -99,7 +102,7 @@ public final class States {
 
             if (!contains(target, newStates)) {
                 final Context context = emptyContext(processor::dispatch, target);
-                final StateFactoryResult state = this.stateFactories.createState(target, context, configuration);
+                final StateFactoryResult state = this.stateFactories.createState(reflectMaid, target, context, configuration);
                 newStates.add(state.initialState());
                 state.signals().forEach(processor::dispatch);
             }

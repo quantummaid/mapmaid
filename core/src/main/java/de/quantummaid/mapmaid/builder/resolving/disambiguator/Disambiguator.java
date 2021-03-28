@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
 import java.util.List;
 

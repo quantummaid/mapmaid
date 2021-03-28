@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -60,13 +60,13 @@ public final class StaticMethodDeserializationDetector implements SerializedObje
         }
         final ClassType classType = (ClassType) type;
         return classType.methods().stream()
-                .filter(resolvedMethod -> isStatic(resolvedMethod.method().getModifiers()))
+                .filter(resolvedMethod -> isStatic(resolvedMethod.getMethod().getModifiers()))
                 .filter(resolvedMethod -> {
                     final Optional<ResolvedType> resolvedType = resolvedMethod.returnType();
                     final Optional<Boolean> optional = resolvedType.map(type::equals);
                     return optional.orElse(false);
                 })
-                .filter(resolvedMethod -> !resolvedMethod.parameters().isEmpty())
+                .filter(resolvedMethod -> !resolvedMethod.getParameters().isEmpty())
                 .collect(toList());
     }
 

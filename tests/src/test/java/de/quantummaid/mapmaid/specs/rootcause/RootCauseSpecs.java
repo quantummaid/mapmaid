@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.specs.rootcause.cyclic.LevelA;
 import de.quantummaid.mapmaid.specs.rootcause.normal.Level1;
 import de.quantummaid.mapmaid.specs.rootcause.wildcardusecase.UseCaseWithWildcardInReturnType;
 import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -34,9 +35,8 @@ import java.util.List;
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
-import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
-import static de.quantummaid.reflectmaid.WildcardedType.wildcardType;
+import static de.quantummaid.reflectmaid.GenericType.wildcard;
 
 public final class RootCauseSpecs {
 
@@ -67,7 +67,7 @@ public final class RootCauseSpecs {
     @SuppressWarnings("rawtypes")
     @Test
     public void rootCauseForRegistrationIsProvidedForWildcard() {
-        final GenericType<List> nestedTypeWithWildcard = genericType(List.class, genericType(ArrayList.class, genericType(LinkedList.class, fromResolvedType(wildcardType()))));
+        final GenericType<List> nestedTypeWithWildcard = genericType(List.class, genericType(ArrayList.class, genericType(LinkedList.class, wildcard())));
         given(
                 () -> aMapMaid()
                         .serializingAndDeserializing(nestedTypeWithWildcard)
@@ -79,9 +79,10 @@ public final class RootCauseSpecs {
 
     @Test
     public void rootCauseForUseCaseWithWildcardInReturnType() {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
         given(
-                () -> aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(UseCaseWithWildcardInReturnType.class))
+                () -> aMapMaid(reflectMaid)
+                        .usingRecipe(addAllReferencedClassesIn(reflectMaid, UseCaseWithWildcardInReturnType.class))
                         .build()
         )
                 .when().mapMaidIsInstantiated()

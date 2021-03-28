@@ -26,10 +26,11 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.specs.examples.system.expectation.Expectation;
 import de.quantummaid.mapmaid.specs.examples.system.mode.ExampleMode;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.specs.examples.system.Result.emptyResult;
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.DeserializationSuccessfulExpectation.deserializationWas;
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.Expectation.*;
@@ -49,15 +49,15 @@ import static de.quantummaid.mapmaid.specs.examples.system.expectation.Initializ
 import static de.quantummaid.mapmaid.specs.examples.system.expectation.SerializationSuccessfulExpectation.serializationWas;
 import static de.quantummaid.mapmaid.specs.examples.system.mode.FixedExampleMode.fixed;
 import static de.quantummaid.mapmaid.specs.examples.system.mode.NormalExampleMode.*;
-import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
-import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScenarioBuilder {
-    private final ResolvedType type;
+    private final GenericType<?> type;
+    private final ResolvedType resolvedType;
     private String serializedForm;
     private Object deserializedForm;
     private InjectorLambda injectorLambda = injector -> {
@@ -65,11 +65,13 @@ public final class ScenarioBuilder {
     private final Map<ExampleMode, List<Expectation>> scenarios = smallMap();
 
     public static ScenarioBuilder scenarioBuilderFor(final Class<?> type) {
-        return new ScenarioBuilder(resolvedType(type));
+        return scenarioBuilderFor(genericType(type));
     }
 
-    public static ScenarioBuilder scenarioBuilderFor(final ResolvedType type) {
-        return new ScenarioBuilder(type);
+    public static ScenarioBuilder scenarioBuilderFor(final GenericType<?> type) {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        return new ScenarioBuilder(type, resolvedType);
     }
 
     public ScenarioBuilder withSerializedForm(final String serializedForm) {
@@ -111,12 +113,12 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withManualSerialization(final Consumer<MapMaidBuilder> fix) {
-        withScenario(fixed(fix), serializationWas(this.serializedForm), deserializationFailedForNotSupported(this.type));
+        withScenario(fixed(fix), serializationWas(this.serializedForm), deserializationFailedForNotSupported(resolvedType));
         return this;
     }
 
     public ScenarioBuilder withManualDeserialization(final Consumer<MapMaidBuilder> fix) {
-        withScenario(fixed(fix), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(this.type));
+        withScenario(fixed(fix), deserializationWas(this.deserializedForm), serializationFailedForNotSupported(resolvedType));
         return this;
     }
 
@@ -128,7 +130,7 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withDuplexFailing() {
-        return withDuplexFailing(format("%s: unable to detect duplex", this.type.description()));
+        return withDuplexFailing(format("%s: unable to detect duplex", resolvedType.description()));
     }
 
     public ScenarioBuilder withDuplexFailing(final String message) {
@@ -137,7 +139,7 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withSerializationFailing() {
-        return withSerializationFailing(format("%s: unable to detect serialization-only", this.type.description()));
+        return withSerializationFailing(format("%s: unable to detect serialization-only", resolvedType.description()));
     }
 
     public ScenarioBuilder withSerializationFailing(final String message) {
@@ -146,7 +148,7 @@ public final class ScenarioBuilder {
     }
 
     public ScenarioBuilder withDeserializationFailing() {
-        return withDeserializationFailing(format("%s: unable to detect deserialization-only", this.type.description()));
+        return withDeserializationFailing(format("%s: unable to detect deserialization-only", resolvedType.description()));
     }
 
     public ScenarioBuilder withDeserializationFailing(final String message) {
@@ -185,7 +187,7 @@ public final class ScenarioBuilder {
         withScenario(serializationOnly(),
                 initializationWasSuccessfulExpectation(),
                 serializationWas(serializedForm),
-                deserializationFailedForNotSupported(this.type));
+                deserializationFailedForNotSupported(resolvedType));
         return this;
     }
 
@@ -197,7 +199,7 @@ public final class ScenarioBuilder {
         withScenario(deserializationOnly(),
                 initializationWasSuccessfulExpectation(),
                 deserializationWas(this.deserializedForm),
-                serializationFailedForNotSupported(this.type));
+                serializationFailedForNotSupported(resolvedType));
         return this;
     }
 
@@ -205,7 +207,7 @@ public final class ScenarioBuilder {
         withScenario(deserializationOnly(),
                 initializationWasSuccessfulExpectation(),
                 deserializationWas(deserializedForm),
-                serializationFailedForNotSupported(this.type));
+                serializationFailedForNotSupported(resolvedType));
         return this;
     }
 
@@ -213,7 +215,7 @@ public final class ScenarioBuilder {
         withScenario(deserializationOnly(),
                 initializationWasSuccessfulExpectation(),
                 deserializationWas(this.deserializedForm),
-                serializationFailedForNotSupported(this.type));
+                serializationFailedForNotSupported(resolvedType));
         withSerializationFailing();
         withDuplexFailing();
         return this;
@@ -223,8 +225,8 @@ public final class ScenarioBuilder {
         withScenario(serializationOnly(),
                 initializationWasSuccessfulExpectation(),
                 serializationWas(this.serializedForm),
-                deserializationFailedForNotSupported(this.type));
-        withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserialization-only", this.type.description())));
+                deserializationFailedForNotSupported(resolvedType));
+        withScenario(deserializationOnly(), initializationFailed(format("%s: unable to detect deserialization-only", resolvedType.description())));
         withDuplexFailing();
         return this;
     }
@@ -249,16 +251,15 @@ public final class ScenarioBuilder {
             return result;
         }
 
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(fromResolvedType(this.type));
         try {
-            final String serialized = mapMaid.serializeTo(this.deserializedForm, MarshallingType.JSON, typeIdentifier);
+            final String serialized = mapMaid.serializeTo(this.deserializedForm, MarshallingType.JSON, type);
             result.withSerializationResult(serialized);
         } catch (final Throwable throwable) {
             result.withSerializationException(throwable);
         }
 
         try {
-            final Object deserialized = mapMaid.deserialize(this.serializedForm, typeIdentifier, MarshallingType.JSON, this.injectorLambda);
+            final Object deserialized = mapMaid.deserialize(this.serializedForm, type, MarshallingType.JSON, this.injectorLambda);
             result.withDeserializationResult(deserialized);
         } catch (final Throwable throwable) {
             result.withDeserializationException(throwable);

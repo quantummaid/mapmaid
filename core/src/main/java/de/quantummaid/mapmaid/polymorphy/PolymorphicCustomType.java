@@ -26,6 +26,8 @@ import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 import lombok.AccessLevel;
@@ -51,33 +53,39 @@ import static java.util.stream.Collectors.toMap;
 public final class PolymorphicCustomType<T> implements CustomType<T> {
     private static final String DEFAULT_TYPE_FIELD = "type";
 
+    private final ReflectMaid reflectMaid;
     private final TypeIdentifier typeIdentifier;
     private final BiMap<String, TypeIdentifier> nameToType;
     private final String typeField;
 
-    public static <T> PolymorphicCustomType<T> fromKotlinSealedClass(final KClass<T> kotlinClass) {
+    public static <T> PolymorphicCustomType<T> fromKotlinSealedClass(final ReflectMaid reflectMaid,
+                                                                     final KClass<T> kotlinClass) {
         final Class<T> javaClass = JvmClassMappingKt.getJavaClass(kotlinClass);
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(javaClass);
+        final ResolvedType resolvedType = reflectMaid.resolve(javaClass);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         final List<TypeIdentifier> implementations = kotlinClass.getSealedSubclasses().stream()
                 .map(JvmClassMappingKt::getJavaClass)
+                .map(reflectMaid::resolve)
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
-        return polymorphicCustomType(typeIdentifier, implementations, TypeIdentifier::description, DEFAULT_TYPE_FIELD);
+        return polymorphicCustomType(reflectMaid, typeIdentifier, implementations, TypeIdentifier::description, DEFAULT_TYPE_FIELD);
     }
 
-    public static <T> PolymorphicCustomType<T> polymorphicCustomType(final TypeIdentifier typeIdentifier,
+    public static <T> PolymorphicCustomType<T> polymorphicCustomType(final ReflectMaid reflectMaid,
+                                                                     final TypeIdentifier typeIdentifier,
                                                                      final List<TypeIdentifier> implementations,
                                                                      final Function<TypeIdentifier, String> nameExtractor,
                                                                      final String typeField) {
         final Map<String, TypeIdentifier> nameToTypeMap = implementations.stream()
                 .collect(toMap(nameExtractor, type -> type));
-        return polymorphicCustomType(typeIdentifier, biMap(nameToTypeMap), typeField);
+        return polymorphicCustomType(reflectMaid, typeIdentifier, biMap(nameToTypeMap), typeField);
     }
 
-    public static <T> PolymorphicCustomType<T> polymorphicCustomType(final TypeIdentifier typeIdentifier,
+    public static <T> PolymorphicCustomType<T> polymorphicCustomType(final ReflectMaid reflectMaid,
+                                                                     final TypeIdentifier typeIdentifier,
                                                                      final BiMap<String, TypeIdentifier> nameToType,
                                                                      final String typeField) {
-        return new PolymorphicCustomType<>(typeIdentifier, nameToType, typeField);
+        return new PolymorphicCustomType<>(reflectMaid, typeIdentifier, nameToType, typeField);
     }
 
     @Override
@@ -98,6 +106,7 @@ public final class PolymorphicCustomType<T> implements CustomType<T> {
     @Override
     public Optional<TypeSerializer> serializer() {
         final PolymorphicSerializer serializer = polymorphicSerializer(
+                reflectMaid,
                 typeIdentifier,
                 nameToType,
                 typeField

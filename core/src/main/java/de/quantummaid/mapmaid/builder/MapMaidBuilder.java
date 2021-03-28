@@ -22,13 +22,24 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.builder.CustomTypesBuilder;
-import de.quantummaid.mapmaid.builder.builder.DetectedTypesBuilder;
-import de.quantummaid.mapmaid.builder.builder.InjectingBuilder;
-import de.quantummaid.mapmaid.builder.builder.ProgrammaticTypeBuilder;
+import de.quantummaid.mapmaid.builder.builder.*;
+import de.quantummaid.mapmaid.builder.builder.customobjects.CustomObjectsBuilder;
+import de.quantummaid.mapmaid.builder.builder.customobjects.DeserializationOnlyBuilder;
+import de.quantummaid.mapmaid.builder.builder.customobjects.DuplexBuilder;
+import de.quantummaid.mapmaid.builder.builder.customobjects.SerializationOnlyBuilder;
 import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionFactory;
+import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionListExtractor;
 import de.quantummaid.mapmaid.builder.customtypes.CustomType;
+import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
+import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
+import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveDeserializer;
+import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Builder00;
+import de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
+import de.quantummaid.mapmaid.builder.injection.FixedInjector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -44,6 +55,7 @@ import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.*;
+import de.quantummaid.mapmaid.mapper.injector.InjectorFactory;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
@@ -51,6 +63,8 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +77,8 @@ import static de.quantummaid.mapmaid.MapMaid.mapMaid;
 import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Builder00.serializedObjectBuilder00;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.processing.Processor.processor;
@@ -95,7 +111,11 @@ public final class MapMaidBuilder implements
         DetectedTypesBuilder,
         InjectingBuilder,
         ProgrammaticTypeBuilder,
-        CustomTypesBuilder {
+        CustomTypesBuilder,
+        CustomPrimitivesBuilder,
+        CustomObjectsBuilder,
+        CustomCollectionBuilder {
+    private final ReflectMaid reflectMaid;
     private final List<ManuallyAddedState> manuallyAddedStates = new ArrayList<>();
     private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
     private final Processor processor = processor();
@@ -106,12 +126,12 @@ public final class MapMaidBuilder implements
         throw AggregatedValidationException.fromList(validationErrors);
     };
 
-    public static MapMaidBuilder mapMaidBuilder() {
-        return new MapMaidBuilder();
+    public static MapMaidBuilder mapMaidBuilder(final ReflectMaid reflectMaid) {
+        return new MapMaidBuilder(reflectMaid);
     }
 
     @SafeVarargs
-    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    @SuppressWarnings({"varargs", "rawtypes", "unchecked"})
     public final <T> MapMaidBuilder serializingSubtypes(final Class<T> superType,
                                                         final Class<? extends T>... subTypes) {
         final GenericType<T> genericSuperType = genericType(superType);
@@ -122,11 +142,13 @@ public final class MapMaidBuilder implements
     }
 
     @SafeVarargs
-    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    @SuppressWarnings("varargs")
     public final <T> MapMaidBuilder serializingSubtypes(final GenericType<T> superType,
                                                         final GenericType<? extends T>... subTypes) {
-        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(superType);
+        final ResolvedType resolvedSupertype = reflectMaid.resolve(superType);
+        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(resolvedSupertype);
         final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+                .map(reflectMaid::resolve)
                 .map(TypeIdentifier::typeIdentifierFor)
                 .toArray(TypeIdentifier[]::new);
         return serializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
@@ -138,7 +160,7 @@ public final class MapMaidBuilder implements
     }
 
     @SafeVarargs
-    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    @SuppressWarnings({"varargs", "rawtypes", "unchecked"})
     public final <T> MapMaidBuilder deserializingSubtypes(final Class<T> superType,
                                                           final Class<? extends T>... subTypes) {
         final GenericType<T> genericSuperType = genericType(superType);
@@ -149,11 +171,13 @@ public final class MapMaidBuilder implements
     }
 
     @SafeVarargs
-    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    @SuppressWarnings("varargs")
     public final <T> MapMaidBuilder deserializingSubtypes(final GenericType<T> superType,
                                                           final GenericType<? extends T>... subTypes) {
-        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(superType);
+        final ResolvedType resolvedSuperType = reflectMaid.resolve(superType);
+        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(resolvedSuperType);
         final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+                .map(reflectMaid::resolve)
                 .map(TypeIdentifier::typeIdentifierFor)
                 .toArray(TypeIdentifier[]::new);
         return deserializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
@@ -165,7 +189,7 @@ public final class MapMaidBuilder implements
     }
 
     @SafeVarargs
-    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    @SuppressWarnings({"varargs", "rawtypes", "unchecked"})
     public final <T> MapMaidBuilder serializingAndDeserializingSubtypes(final Class<T> superType,
                                                                         final Class<? extends T>... subTypes) {
         final GenericType<T> genericSuperType = genericType(superType);
@@ -176,11 +200,13 @@ public final class MapMaidBuilder implements
     }
 
     @SafeVarargs
-    @SuppressWarnings({"varargs", "unchecked", "rawtypes"})
+    @SuppressWarnings("varargs")
     public final <T> MapMaidBuilder serializingAndDeserializingSubtypes(final GenericType<T> superType,
                                                                         final GenericType<? extends T>... subTypes) {
-        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(superType);
+        final ResolvedType resolvedSuperType = reflectMaid.resolve(superType);
+        final TypeIdentifier superTypeIdentifier = typeIdentifierFor(resolvedSuperType);
         final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+                .map(reflectMaid::resolve)
                 .map(TypeIdentifier::typeIdentifierFor)
                 .toArray(TypeIdentifier[]::new);
         return serializingAndDeserializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
@@ -201,7 +227,7 @@ public final class MapMaidBuilder implements
             final StatefulDefinition statefulDefinition = unreasoned(context);
             this.processor.addState(statefulDefinition);
             if (capabilities.hasSerialization()) {
-                final TypeSerializer serializer = polymorphicSerializer(superType, nameToType, typeIdentifierKey);
+                final TypeSerializer serializer = polymorphicSerializer(reflectMaid, superType, nameToType, typeIdentifierKey);
                 processor.dispatch(addManualSerializer(superType, serializer));
                 processor.dispatch(addSerialization(superType, manuallyAdded()));
             }
@@ -228,6 +254,20 @@ public final class MapMaidBuilder implements
     }
 
     @Override
+    public MapMaidBuilder injecting(final GenericType<?> genericType) {
+        final ResolvedType resolvedType = reflectMaid.resolve(genericType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return injecting(typeIdentifier);
+    }
+
+    @Override
+    public <T> MapMaidBuilder injecting(final GenericType<T> genericType, final FixedInjector<T> injector) {
+        final ResolvedType resolvedType = reflectMaid.resolve(genericType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return injecting(typeIdentifier, injector);
+    }
+
+    @Override
     public MapMaidBuilder withType(final GenericType<?> type,
                                    final RequiredCapabilities capabilities) {
         return withType(type, capabilities, manuallyAdded());
@@ -241,7 +281,8 @@ public final class MapMaidBuilder implements
         validateNotNull(capabilities, "capabilities");
         validateNotNull(reason, "reason");
         manuallyAddedStates.add(configuration -> {
-            final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+            final ResolvedType resolvedType = reflectMaid.resolve(type);
+            final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
             if (capabilities.hasSerialization()) {
                 this.processor.dispatch(addSerialization(typeIdentifier, reason));
             }
@@ -282,6 +323,130 @@ public final class MapMaidBuilder implements
             }
         });
         return this;
+    }
+
+    @Override
+    public <T, B> MapMaidBuilder serializingCustomPrimitive(final GenericType<T> type,
+                                                            final Class<B> baseType,
+                                                            final CustomCustomPrimitiveSerializer<T, B> serializer) {
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return serializingCustomPrimitive(typeIdentifier, baseType, serializer);
+    }
+
+    public <T, B> MapMaidBuilder serializingCustomPrimitive(final TypeIdentifier typeIdentifier,
+                                                            final Class<B> baseType,
+                                                            final CustomCustomPrimitiveSerializer<T, B> serializer) {
+        final SerializationOnlyType<T> serializationOnlyType = SerializationOnlyType.createCustomPrimitive(typeIdentifier, serializer, baseType);
+        return serializing(serializationOnlyType);
+    }
+
+    @Override
+    public <T, B> MapMaidBuilder deserializingCustomPrimitive(final GenericType<T> type,
+                                                              final Class<B> baseType,
+                                                              final CustomCustomPrimitiveDeserializer<T, B> deserializer) {
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return deserializingCustomPrimitive(typeIdentifier, baseType, deserializer);
+    }
+
+    public <T, B> MapMaidBuilder deserializingCustomPrimitive(final TypeIdentifier typeIdentifier,
+                                                              final Class<B> baseType,
+                                                              final CustomCustomPrimitiveDeserializer<T, B> deserializer) {
+        final DeserializationOnlyType<T> deserializationOnlyType = DeserializationOnlyType.createCustomPrimitive(typeIdentifier, deserializer, baseType);
+        return deserializing(deserializationOnlyType);
+    }
+
+    @Override
+    public <T, B> MapMaidBuilder serializingAndDeserializingCustomPrimitive(final GenericType<T> type,
+                                                                            final Class<B> baseType,
+                                                                            final CustomCustomPrimitiveSerializer<T, B> serializer,
+                                                                            final CustomCustomPrimitiveDeserializer<T, B> deserializer) {
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return serializingAndDeserializingCustomPrimitive(typeIdentifier, baseType, serializer, deserializer);
+    }
+
+    public <T, B> MapMaidBuilder serializingAndDeserializingCustomPrimitive(final TypeIdentifier typeIdentifier,
+                                                                            final Class<B> baseType,
+                                                                            final CustomCustomPrimitiveSerializer<T, B> serializer,
+                                                                            final CustomCustomPrimitiveDeserializer<T, B> deserializer) {
+        final DuplexType<?> duplexType = DuplexType.createCustomPrimitive(typeIdentifier, serializer, deserializer, baseType);
+        return serializingAndDeserializing(duplexType);
+    }
+
+    @Override
+    public <T> MapMaidBuilder serializingCustomObject(final GenericType<T> type,
+                                                      final SerializationOnlyBuilder<T> builder) {
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        final SerializationOnlySerializedObject<T> serializationOnlyType = serializationOnlySerializedObject(reflectMaid, typeIdentifier);
+        builder.build(serializationOnlyType);
+        return serializing(serializationOnlyType);
+    }
+
+    @Override
+    public <T> MapMaidBuilder deserializingCustomObject(final GenericType<T> type,
+                                                        final DeserializationOnlyBuilder<T> builder) {
+        final DeserializationOnlyType<T> deserializationOnlyType = builder.build(serializedObjectBuilder00(reflectMaid, type));
+        return deserializing(deserializationOnlyType);
+    }
+
+    @Override
+    public <T> MapMaidBuilder serializingAndDeserializingCustomObject(final GenericType<T> type,
+                                                                      final DuplexBuilder<T> builder) {
+        final DuplexType<T> duplexType = builder.build(Builder00.serializedObjectBuilder00(reflectMaid, type));
+        return serializingAndDeserializing(duplexType);
+    }
+
+    @Override
+    public <C, T> MapMaidBuilder serializingInlinedCollection(final GenericType<C> collectionType,
+                                                              final GenericType<T> contentType,
+                                                              final InlinedCollectionListExtractor<C, T> listExtractor) {
+        final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(reflectMaid.resolve(collectionType));
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(reflectMaid.resolve(contentType));
+        return serializingInlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, listExtractor);
+    }
+
+    public <C, T> MapMaidBuilder serializingInlinedCollection(final TypeIdentifier collectionType,
+                                                              final TypeIdentifier contentType,
+                                                              final InlinedCollectionListExtractor<C, T> listExtractor) {
+        final SerializationOnlyType<Object> serializationOnlyType = SerializationOnlyType.inlinedCollection(collectionType, contentType, listExtractor);
+        return serializing(serializationOnlyType);
+    }
+
+    @Override
+    public <C, T> MapMaidBuilder deserializingInlinedCollection(final GenericType<C> collectionType,
+                                                                final GenericType<T> contentType,
+                                                                final InlinedCollectionFactory<C, T> collectionFactory) {
+        final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(reflectMaid.resolve(collectionType));
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(reflectMaid.resolve(contentType));
+        return deserializingInlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, collectionFactory);
+    }
+
+    public <C, T> MapMaidBuilder deserializingInlinedCollection(final TypeIdentifier collectionType,
+                                                                final TypeIdentifier contentType,
+                                                                final InlinedCollectionFactory<C, T> collectionFactory) {
+        final DeserializationOnlyType<Object> deserializationOnlyType = DeserializationOnlyType.inlinedCollection(collectionType, contentType, collectionFactory);
+        return deserializing(deserializationOnlyType);
+    }
+
+    @Override
+    public <C, T> MapMaidBuilder serializingAndDeserializingInlinedCollection(final GenericType<C> collectionType,
+                                                                              final GenericType<T> contentType,
+                                                                              final InlinedCollectionListExtractor<C, T> listExtractor,
+                                                                              final InlinedCollectionFactory<C, T> collectionFactory) {
+        final TypeIdentifier collectionTypeIdentifier = typeIdentifierFor(reflectMaid.resolve(collectionType));
+        final TypeIdentifier contentTypeIdentifier = typeIdentifierFor(reflectMaid.resolve(contentType));
+        return serializingAndDeserializingInlinedCollection(collectionTypeIdentifier, contentTypeIdentifier, listExtractor, collectionFactory);
+    }
+
+    public <C, T> MapMaidBuilder serializingAndDeserializingInlinedCollection(final TypeIdentifier collectionType,
+                                                                              final TypeIdentifier contentType,
+                                                                              final InlinedCollectionListExtractor<C, T> listExtractor,
+                                                                              final InlinedCollectionFactory<C, T> collectionFactory) {
+        final DuplexType<?> duplexType = DuplexType.inlinedCollection(collectionType, contentType, listExtractor, collectionFactory);
+        return serializingAndDeserializing(duplexType);
     }
 
     public MapMaidBuilder usingRecipe(final Recipe recipe) {
@@ -329,6 +494,7 @@ public final class MapMaidBuilder implements
 
         final Disambiguators disambiguators = this.advancedBuilder.buildDisambiguators();
         final Map<TypeIdentifier, CollectionResult> result = this.processor.collect(
+                reflectMaid,
                 this.detector,
                 disambiguators,
                 mapMaidConfiguration
@@ -341,7 +507,7 @@ public final class MapMaidBuilder implements
             scanInformationMap.put(type, collectionResult.scanInformation());
         });
 
-        final DebugInformation debugInformation = debugInformation(scanInformationMap, processor.log());
+        final DebugInformation debugInformation = debugInformation(scanInformationMap, processor.log(), reflectMaid);
         final Definitions definitions = definitions(definitionsMap, debugInformation);
 
         final MarshallerRegistry marshallerRegistry = this.advancedBuilder.buildMarshallerRegistry();
@@ -353,14 +519,16 @@ public final class MapMaidBuilder implements
         );
 
         final UnmarshallerRegistry unmarshallerRegistry = this.advancedBuilder.buildUnmarshallerRegistry();
+        final InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory(reflectMaid);
         final Deserializer deserializer = theDeserializer(
                 unmarshallerRegistry,
                 definitions,
                 CUSTOM_PRIMITIVE_MAPPINGS,
                 this.validationMappings,
                 this.validationErrorsMapping,
-                debugInformation
+                debugInformation,
+                injectorFactory
         );
-        return mapMaid(serializer, deserializer, debugInformation);
+        return mapMaid(reflectMaid, serializer, deserializer, debugInformation);
     }
 }

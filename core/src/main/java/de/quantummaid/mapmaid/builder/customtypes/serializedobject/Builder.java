@@ -26,7 +26,9 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +36,10 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializationField.deserializationField;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomDeserializer.userProvidedDeserializer;
-import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomSerializationField.serializationField;
+import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.CustomSerializationField.customSerializationField;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField.serializationField;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
@@ -48,13 +50,15 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Builder {
+    private final ReflectMaid reflectMaid;
     private final TypeIdentifier type;
     private final List<CustomDeserializationField> deserializationFields;
     private final List<CustomSerializationField> serializationFields;
     private InvocableDeserializer<?> deserializer;
 
-    public static Builder emptyBuilder(final TypeIdentifier type) {
-        return new Builder(type, smallList(), smallList());
+    public static Builder emptyBuilder(final ReflectMaid reflectMaid,
+                                       final TypeIdentifier type) {
+        return new Builder(reflectMaid, type, smallList(), smallList());
     }
 
     public void addDuplexField(final GenericType<?> type, final String name, final Query<Object, Object> query) {
@@ -65,14 +69,16 @@ public final class Builder {
     public void with(final GenericType<?> type, final String name) {
         validateNotNull(type, "type");
         validateNotNull(name, "name");
-        final CustomDeserializationField deserializationField = deserializationField(type, name);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final CustomDeserializationField deserializationField = deserializationField(resolvedType, name);
         this.deserializationFields.add(deserializationField);
     }
 
     public void addSerializationField(final GenericType<?> type, final String name, final Query<Object, Object> query) {
         validateNotNull(type, "type");
         validateNotNull(name, "name");
-        final CustomSerializationField serializationField = serializationField(type, name, query);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final CustomSerializationField serializationField = customSerializationField(resolvedType, name, query);
         this.serializationFields.add(serializationField);
     }
 

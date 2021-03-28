@@ -30,8 +30,6 @@ import de.quantummaid.mapmaid.builder.models.customconvention.Subject;
 import de.quantummaid.mapmaid.builder.validation.CustomTypeValidationException;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -89,16 +87,15 @@ public final class IndividuallyAddedModelsBuilderTest {
         final Class<Body>
                 customConventionBody = Body.class;
         return MapMaid.aMapMaid()
-                .serializingAndDeserializing(serializedObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class)
+                .serializingAndDeserializingCustomObject(de.quantummaid.mapmaid.builder.models.customconvention.Email.class, builder -> builder
                         .withField("sender", EmailAddress.class, object -> object.sender)
                         .withField("receiver", EmailAddress.class, object -> object.receiver)
                         .withField("subject", Subject.class, object -> object.subject)
                         .withField("body", Body.class, object -> object.body)
-                        .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore)
-                )
-                .serializingAndDeserializing(customPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize))
-                .serializingAndDeserializing(customPrimitive(Subject.class, Subject::serialize, Subject::deserialize))
-                .serializingAndDeserializing(customPrimitive(customConventionBody, Body::serialize, Body::deserialize))
+                        .deserializedUsing(de.quantummaid.mapmaid.builder.models.customconvention.Email::restore))
+                .serializingAndDeserializingCustomPrimitive(EmailAddress.class, EmailAddress::serialize, EmailAddress::deserialize)
+                .serializingAndDeserializingCustomPrimitive(Subject.class, Subject::serialize, Subject::deserialize)
+                .serializingAndDeserializingCustomPrimitive(customConventionBody, Body::serialize, Body::deserialize)
                 .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingJsonMarshaller(GSON::toJson, input -> GSON.fromJson(input, Object.class)))
                 .withExceptionIndicatingValidationError(CustomTypeValidationException.class)
                 .build();

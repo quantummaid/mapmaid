@@ -29,11 +29,16 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
@@ -46,18 +51,25 @@ import static de.quantummaid.reflectmaid.GenericType.genericType;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings({"java:S1448", "java:S1192"})
 public final class MapMaid {
+    private final ReflectMaid reflectMaid;
     private final Serializer serializer;
     private final Deserializer deserializer;
     private final DebugInformation debugInformation;
 
     public static MapMaidBuilder aMapMaid() {
-        return MapMaidBuilder.mapMaidBuilder();
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
+        return MapMaidBuilder.mapMaidBuilder(reflectMaid);
     }
 
-    public static MapMaid mapMaid(final Serializer serializer,
+    public static MapMaidBuilder aMapMaid(final ReflectMaid reflectMaid) {
+        return MapMaidBuilder.mapMaidBuilder(reflectMaid);
+    }
+
+    public static MapMaid mapMaid(final ReflectMaid reflectMaid,
+                                  final Serializer serializer,
                                   final Deserializer deserializer,
                                   final DebugInformation debugInformation) {
-        return new MapMaid(serializer, deserializer, debugInformation);
+        return new MapMaid(reflectMaid, serializer, deserializer, debugInformation);
     }
 
     public Serializer serializer() {
@@ -82,7 +94,8 @@ public final class MapMaid {
 
     public String serializeToJson(final Object object,
                                   final GenericType<?> type) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return serializeToJson(object, typeIdentifier);
     }
 
@@ -105,7 +118,8 @@ public final class MapMaid {
 
     public String serializeToYaml(final Object object,
                                   final GenericType<?> type) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return serializeToYaml(object, typeIdentifier);
     }
 
@@ -128,7 +142,8 @@ public final class MapMaid {
 
     public String serializeToXml(final Object object,
                                  final GenericType<?> type) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return serializeToXml(object, typeIdentifier);
     }
 
@@ -154,7 +169,8 @@ public final class MapMaid {
     public <T> T serializeTo(final Object object,
                              final MarshallingType<T> marshallingType,
                              final GenericType<?> type) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return serializeTo(object, marshallingType, typeIdentifier);
     }
 
@@ -162,6 +178,37 @@ public final class MapMaid {
                              final MarshallingType<T> marshallingType,
                              final TypeIdentifier type) {
         return this.serializer.serialize(object, type, marshallingType, input -> input);
+    }
+
+    public <T> T serialize(final Object object,
+                           final GenericType<?> type,
+                           final MarshallingType<T> marshallingType,
+                           final UnaryOperator<Map<String, Object>> serializedPropertyInjector) {
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return serialize(object, typeIdentifier, marshallingType, serializedPropertyInjector);
+    }
+
+    public <T> T serialize(final Object object,
+                           final TypeIdentifier type,
+                           final MarshallingType<T> marshallingType,
+                           final UnaryOperator<Map<String, Object>> serializedPropertyInjector) {
+        return serializer.serialize(object, type, marshallingType, serializedPropertyInjector);
+    }
+
+    public Object serializeToUniversalObject(final Object object, final Class<?> type) {
+        final GenericType<?> genericType = genericType(type);
+        return serializeToUniversalObject(object, genericType);
+    }
+
+    public Object serializeToUniversalObject(final Object object, final GenericType<?> type) {
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return serializeToUniversalObject(object, typeIdentifier);
+    }
+
+    public Object serializeToUniversalObject(final Object object, final TypeIdentifier typeIdentifier) {
+        return serializer.serializeToUniversalObject(object, typeIdentifier);
     }
 
     public <T> T deserializeJson(final String json,
@@ -172,7 +219,8 @@ public final class MapMaid {
 
     public <T> T deserializeJson(final String json,
                                  final GenericType<T> targetType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserializeJson(json, typeIdentifier);
     }
 
@@ -191,7 +239,8 @@ public final class MapMaid {
     public <T> T deserializeJson(final String json,
                                  final GenericType<T> targetType,
                                  final InjectorLambda injector) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserializeJson(json, typeIdentifier, injector);
     }
 
@@ -210,7 +259,8 @@ public final class MapMaid {
 
     public <T> T deserializeYaml(final String yaml,
                                  final GenericType<T> targetType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserializeYaml(yaml, typeIdentifier);
     }
 
@@ -229,7 +279,8 @@ public final class MapMaid {
     public <T> T deserializeYaml(final String yaml,
                                  final GenericType<T> targetType,
                                  final InjectorLambda injector) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserializeYaml(yaml, typeIdentifier, injector);
     }
 
@@ -248,7 +299,8 @@ public final class MapMaid {
 
     public <T> T deserializeXml(final String xml,
                                 final GenericType<T> targetType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserializeXml(xml, typeIdentifier);
     }
 
@@ -267,7 +319,8 @@ public final class MapMaid {
     public <T> T deserializeXml(final String xml,
                                 final GenericType<T> targetType,
                                 final InjectorLambda injector) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserializeXml(xml, typeIdentifier, injector);
     }
 
@@ -288,7 +341,8 @@ public final class MapMaid {
     public <T, M> T deserialize(final M input,
                                 final GenericType<T> targetType,
                                 final MarshallingType<M> marshallingType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return this.deserialize(input, typeIdentifier, marshallingType);
     }
 
@@ -310,7 +364,8 @@ public final class MapMaid {
                                 final GenericType<T> targetType,
                                 final MarshallingType<M> marshallingType,
                                 final InjectorLambda injector) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(targetType);
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return deserialize(input, typeIdentifier, marshallingType, injector);
     }
 
@@ -320,6 +375,20 @@ public final class MapMaid {
                                 final MarshallingType<M> marshallingType,
                                 final InjectorLambda injector) {
         return (T) this.deserializer.deserialize(input, targetType, marshallingType, injector);
+    }
+
+    public <T> T deserializeFromUniversalObject(final Object input,
+                                                final GenericType<T> targetType,
+                                                final InjectorLambda injectorProducer) {
+        final ResolvedType resolvedType = reflectMaid.resolve(targetType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return deserializer.deserializeFromUniversalObject(input, typeIdentifier, injectorProducer);
+    }
+
+    public <T> T deserializeFromUniversalObject(final Object input,
+                                                final TypeIdentifier targetType,
+                                                final InjectorLambda injectorProducer) {
+        return deserializer.deserializeFromUniversalObject(input, targetType, injectorProducer);
     }
 
     public DebugInformation debugInformation() {
@@ -334,7 +403,8 @@ public final class MapMaid {
 
     public <M> M deserializationSchemaFor(final GenericType<?> type,
                                           final MarshallingType<M> marshallingType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return deserializationSchemaFor(typeIdentifier, marshallingType);
     }
 
@@ -352,7 +422,8 @@ public final class MapMaid {
 
     public <M> M serializationSchemaFor(final GenericType<?> type,
                                         final MarshallingType<M> marshallingType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         return serializationSchemaFor(typeIdentifier, marshallingType);
     }
 
@@ -360,5 +431,9 @@ public final class MapMaid {
                                         final MarshallingType<M> marshallingType) {
         final Universal schema = this.serializer.schema(type);
         return serializer.marshalFromUniversalObject(schema.toNativeJava(), marshallingType);
+    }
+
+    public ReflectMaid reflectMaid() {
+        return reflectMaid;
     }
 }

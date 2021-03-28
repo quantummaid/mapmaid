@@ -24,7 +24,9 @@ package de.quantummaid.mapmaid.debug;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ import java.util.*;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
 import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.joining;
@@ -43,12 +45,14 @@ import static java.util.stream.Collectors.joining;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DebugInformation {
+    private final ReflectMaid reflectMaid;
     private final Map<TypeIdentifier, ScanInformation> scanInformations;
     private final StateLog stateLog;
 
     public static DebugInformation debugInformation(
             final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders,
-            final StateLog stateLog
+            final StateLog stateLog,
+            final ReflectMaid reflectMaid
     ) {
         final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(scanInformationBuilders.size());
         final SubReasonProvider serializationSubReasonProvider =
@@ -62,11 +66,15 @@ public final class DebugInformation {
                     scanInformations.put(typeIdentifier, scanInformation);
                 }
         );
-        return new DebugInformation(scanInformations, stateLog);
+        return new DebugInformation(reflectMaid, scanInformations, stateLog);
     }
 
     public ScanInformation scanInformationFor(final Class<?> type) {
-        return scanInformationFor(resolvedType(type));
+        return scanInformationFor(genericType(type));
+    }
+
+    public ScanInformation scanInformationFor(final GenericType<?> type) {
+        return scanInformationFor(reflectMaid.resolve(type));
     }
 
     public ScanInformation scanInformationFor(final ResolvedType type) {
@@ -79,7 +87,7 @@ public final class DebugInformation {
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final Class<?> type) {
-        return optionalScanInformationFor(resolvedType(type));
+        return optionalScanInformationFor(reflectMaid.resolve(type));
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final ResolvedType type) {

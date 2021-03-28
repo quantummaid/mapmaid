@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.specs.examples.special.annotation;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class AnnotationExample {
@@ -50,8 +49,15 @@ public final class AnnotationExample {
                         "cannot be detected because it is an annotation (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.annotation.Annotation' " +
                         "cannot be detected because it is an annotation (you can still register it manually)")
-                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
-                        .withCustomType(requiredCapabilities, customPrimitive(Annotation.class, object -> "foo", value -> instance)))
+                .withManual((mapMaidBuilder, requiredCapabilities) -> {
+                    if (requiredCapabilities.hasDeserialization() && requiredCapabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingAndDeserializingCustomPrimitive(Annotation.class, object -> "foo", value -> instance);
+                    } else if (requiredCapabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingCustomPrimitive(Annotation.class, object -> "foo");
+                    } else if (requiredCapabilities.hasDeserialization()) {
+                        mapMaidBuilder.deserializingCustomPrimitive(Annotation.class, value -> instance);
+                    }
+                })
                 .run();
     }
 }

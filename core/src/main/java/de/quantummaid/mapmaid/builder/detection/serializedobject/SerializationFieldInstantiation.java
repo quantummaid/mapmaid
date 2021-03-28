@@ -29,7 +29,7 @@ import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

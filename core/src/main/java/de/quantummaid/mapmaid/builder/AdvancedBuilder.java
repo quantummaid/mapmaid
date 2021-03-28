@@ -33,7 +33,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

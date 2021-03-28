@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
-import de.quantummaid.reflectmaid.ResolvedType;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +43,12 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
 
     public static CustomPrimitiveSerializer createSerializer(final ResolvedType type,
                                                              final ResolvedMethod serializationMethod) {
-        final int serializationMethodModifiers = serializationMethod.method().getModifiers();
+        final int serializationMethodModifiers = serializationMethod.getMethod().getModifiers();
         if (Modifier.isStatic(serializationMethodModifiers)) {
             throw mapMaidException(format("The serialization method %s configured for the custom primitive of type %s must not be static",
                     serializationMethod, type.description()));
         }
-        if (!serializationMethod.parameters().isEmpty()) {
+        if (!serializationMethod.getParameters().isEmpty()) {
             throw mapMaidException(format(
                     "The serialization method %s configured for the custom primitive of type %s must " +
                             "not accept any parameters", serializationMethod.describe(), type.description()));
@@ -62,7 +62,7 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
     @Override
     public Object serialize(final Object object) {
         try {
-            return this.serializationMethod.method().invoke(object);
+            return this.serializationMethod.getMethod().invoke(object);
         } catch (final IllegalAccessException e) {
             throw mapMaidException(format("This should never happen. Called serialization method %s for custom type %s on instance %s",
                     this.serializationMethod, object.getClass(), object), e);

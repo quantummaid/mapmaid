@@ -28,6 +28,7 @@ import de.quantummaid.mapmaid.testsupport.domain.half.ASerializationOnlyComplexT
 import de.quantummaid.mapmaid.testsupport.domain.parameterized.AComplexParameterizedType;
 import de.quantummaid.mapmaid.testsupport.domain.valid.APrimitiveBoolean;
 import de.quantummaid.mapmaid.testsupport.domain.valid.APrimitiveInteger;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
@@ -40,8 +41,9 @@ public final class RepositoryScanningSpecs {
 
     @Test
     public void classScannerRecipeRegistersReturnTypesAsSerializationOnly() {
-        given(aMapMaid()
-                .usingRecipe(addAllReferencedClassesIn(RepositoryWithSerializationOnlyType.class))
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
+        given(aMapMaid(reflectMaid)
+                .usingRecipe(addAllReferencedClassesIn(reflectMaid, RepositoryWithSerializationOnlyType.class))
                 .build()
         )
                 .when().mapMaidSerializes(ASerializationOnlyComplexType.init()).withMarshallingType(JSON)
@@ -51,9 +53,10 @@ public final class RepositoryScanningSpecs {
 
     @Test
     public void classScannerRecipeRegistersParametersAsDeserializationOnly() {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
         given(
-                aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(RepositoryWithDeserializationOnlyType.class))
+                aMapMaid(reflectMaid)
+                        .usingRecipe(addAllReferencedClassesIn(reflectMaid, RepositoryWithDeserializationOnlyType.class))
                         .build()
         )
                 .when().mapMaidDeserializes("" +
@@ -67,9 +70,10 @@ public final class RepositoryScanningSpecs {
 
     @Test
     public void referencesInClassesCanBeScanned() {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
         given(
-                aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(MyRepository.class))
+                aMapMaid(reflectMaid)
+                        .usingRecipe(addAllReferencedClassesIn(reflectMaid, MyRepository.class))
                         .build()
         )
                 .when().theDefinitionsAreQueried()
@@ -79,12 +83,14 @@ public final class RepositoryScanningSpecs {
 
     @Test
     public void aSerializedObjectWithTypeVariableCanBeFoundAsAReferenceOfAScannedClass() {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
         given(
-                aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(RepositoryWithTypeVariableReference.class))
+                aMapMaid(reflectMaid)
+                        .usingRecipe(addAllReferencedClassesIn(reflectMaid, RepositoryWithTypeVariableReference.class))
                         .build()
         )
-                .when().mapMaidSerializes(AComplexParameterizedType.deserialize(AString.fromStringValue("foo")), genericType(AComplexParameterizedType.class, AString.class))
+                .when().mapMaidSerializes(AComplexParameterizedType.deserialize(AString.fromStringValue("foo")),
+                genericType(AComplexParameterizedType.class, AString.class))
                 .withMarshallingType(JSON)
                 .noExceptionHasBeenThrown()
                 .theSerializationResultWas("{\"value\":\"foo\"}");

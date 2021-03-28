@@ -21,8 +21,6 @@
 
 package de.quantummaid.mapmaid.specs;
 
-import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.domain.ACustomCollection;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import org.junit.jupiter.api.Test;
@@ -30,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.inlinedCollection;
 import static de.quantummaid.mapmaid.domain.ACustomCollection.aCustomCollection;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
@@ -40,8 +37,8 @@ public class CustomCollectionSpecs {
     public void customCollectionRegisteredDuplexCanBeSerialized() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(DuplexType.inlinedCollection(
-                                ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
+                        .serializingAndDeserializingInlinedCollection(
+                                ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection)
                         .build()
         )
                 .when().mapMaidSerializes(aCustomCollection(List.of("a", "b", "c")))
@@ -54,8 +51,8 @@ public class CustomCollectionSpecs {
     public void customCollectionRegisteredDuplexCanBeDeserialized() {
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(DuplexType.inlinedCollection(
-                                ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection))
+                        .serializingAndDeserializingInlinedCollection(
+                                ACustomCollection.class, String.class, ACustomCollection::getValues, ACustomCollection::aCustomCollection)
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")
@@ -69,7 +66,7 @@ public class CustomCollectionSpecs {
     public void customCollectionCanBeRegisteredSerializingOnly() {
         given(
                 aMapMaid()
-                        .serializing(inlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues))
+                        .serializingInlinedCollection(ACustomCollection.class, String.class, ACustomCollection::getValues)
                         .build()
         )
                 .when().mapMaidSerializes(aCustomCollection(List.of("a", "b", "c")))
@@ -82,8 +79,8 @@ public class CustomCollectionSpecs {
     public void customCollectionCanBeRegisteredDeserializingOnly() {
         given(
                 aMapMaid()
-                        .deserializing(DeserializationOnlyType.inlinedCollection(
-                                ACustomCollection.class, String.class, ACustomCollection::aCustomCollection))
+                        .deserializingInlinedCollection(
+                                ACustomCollection.class, String.class, ACustomCollection::aCustomCollection)
                         .build()
         )
                 .when().mapMaidDeserializes("[\n  \"a\",\n  \"b\",\n  \"c\"\n]")

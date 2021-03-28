@@ -25,7 +25,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class LocalClassExample {
@@ -55,8 +54,15 @@ public final class LocalClassExample {
                         "cannot be detected because it is a local class (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.local_class.LocalClassExample$1LocalClass' " +
                         "cannot be detected because it is a local class (you can still register it manually)")
-                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
-                        .withCustomType(requiredCapabilities, customPrimitive(LocalClass.class, object -> "foo", LocalClass::new)))
+                .withManual((mapMaidBuilder, requiredCapabilities) -> {
+                    if (requiredCapabilities.hasDeserialization() && requiredCapabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingAndDeserializingCustomPrimitive(LocalClass.class, object -> "foo", LocalClass::new);
+                    } else if (requiredCapabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingCustomPrimitive(LocalClass.class, object -> "foo");
+                    } else if (requiredCapabilities.hasDeserialization()) {
+                        mapMaidBuilder.deserializingCustomPrimitive(LocalClass.class, LocalClass::new);
+                    }
+                })
                 .run();
     }
 }

@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,8 @@ public final class UndetectedFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier type,
+    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
+                                               final TypeIdentifier type,
                                                final Context context,
                                                final MapMaidConfiguration configuration) {
         return of(StateFactoryResult.stateFactoryResult(unreasoned(context), List.of()));

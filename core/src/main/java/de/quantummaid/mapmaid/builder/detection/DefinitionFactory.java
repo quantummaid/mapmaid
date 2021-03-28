@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.detection;
 
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
 import java.util.Optional;
 

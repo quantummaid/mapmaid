@@ -24,18 +24,13 @@ package de.quantummaid.mapmaid.testsupport.givenwhenthen;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
-
 public interface ToStage {
     default Then toTheType(final Class<?> type) {
         final GenericType<?> genericType = GenericType.genericType(type);
         return toTheType(genericType);
     }
 
-    default Then toTheType(final GenericType<?> genericType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(genericType);
-        return toTheType(typeIdentifier);
-    }
+    Then toTheType(GenericType<?> genericType);
 
     Then toTheType(TypeIdentifier fullType);
 }

@@ -23,13 +23,11 @@ package de.quantummaid.mapmaid.builder.customtypes;
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
@@ -38,12 +36,6 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 public final class SimpleSerializationOnlyType<T> implements SerializationOnlyType<T> {
     private final TypeIdentifier type;
     private final TypeSerializer serializer;
-
-    static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final GenericType<T> type,
-                                                                          final TypeSerializer serializer) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
-        return simpleSerializationOnlyType(typeIdentifier, serializer);
-    }
 
     static <T> SimpleSerializationOnlyType<T> simpleSerializationOnlyType(final TypeIdentifier typeIdentifier,
                                                                           final TypeSerializer serializer) {

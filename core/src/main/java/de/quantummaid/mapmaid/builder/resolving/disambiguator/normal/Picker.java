@@ -27,7 +27,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
 import java.util.List;
 import java.util.Optional;

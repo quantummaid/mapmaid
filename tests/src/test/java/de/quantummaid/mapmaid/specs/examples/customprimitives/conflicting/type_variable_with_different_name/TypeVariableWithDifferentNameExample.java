@@ -24,24 +24,28 @@ package de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.type_
 import de.quantummaid.reflectmaid.GenericType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.specs.examples.Util.registerCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.type_variable_with_different_name.Street.street;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class TypeVariableWithDifferentNameExample {
 
-    @SuppressWarnings("rawtypes")
     @Test
     public void typeVariableWithDifferentNameExample() {
-        final GenericType<Street> genericType = GenericType.genericType(Street.class, Object.class);
-        scenarioBuilderFor(genericType.toResolvedType())
+        final GenericType<Street<Object>> genericType = GenericType.genericType(Street.class, Object.class);
+        scenarioBuilderFor(genericType)
                 .withDeserializedForm(street("foo"))
                 .withSerializedForm("\"foo\"")
                 .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
-                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
-                        customPrimitive(genericType, Street::stringValue, Street::street)))
+                .withManual((mapMaidBuilder, capabilities) -> registerCustomPrimitive(
+                        capabilities,
+                        mapMaidBuilder,
+                        genericType,
+                        Street::stringValue,
+                        Street::street)
+                )
                 .run();
     }
 }

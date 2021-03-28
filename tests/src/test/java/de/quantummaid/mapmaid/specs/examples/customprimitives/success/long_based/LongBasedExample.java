@@ -21,11 +21,8 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.long_based;
 
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.longBasedCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class LongBasedExample {
@@ -37,13 +34,12 @@ public final class LongBasedExample {
                 .withDeserializedForm(Quantity.fromStringValue(1L))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(longBasedCustomPrimitive(Quantity.class, Quantity::fromStringValue)))
+                        mapMaidBuilder.deserializingLongBasedCustomPrimitive(Quantity.class, Quantity::fromStringValue))
                 .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(SerializationOnlyType.longBasedCustomPrimitive(Quantity.class, Quantity::stringValue)))
+                        mapMaidBuilder.serializingLongBasedCustomPrimitive(Quantity.class, Quantity::stringValue))
                 .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                DuplexType.longBasedCustomPrimitive(Quantity.class, Quantity::stringValue, Quantity::fromStringValue)
-                        ))
+                        mapMaidBuilder.serializingAndDeserializingLongBasedCustomPrimitive(Quantity.class, Quantity::stringValue, Quantity::fromStringValue)
+                        )
                 .run();
     }
 }

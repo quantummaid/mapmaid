@@ -24,11 +24,10 @@ package de.quantummaid.mapmaid.minimaljson.bug;
 import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.MapMaidBuilder.mapMaidBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class BugThatDidNotAllowForNullToBeUnmarshalledSpecs {
-    private static final MapMaid MAP_MAID = mapMaidBuilder()
+    private static final MapMaid MAP_MAID = MapMaid.aMapMaid()
             .serializingAndDeserializingSubtypes(Message.class, Command.class, CommandResponse.class)
             .serializingAndDeserializing(ObjectWithNullableField.class)
             .build();

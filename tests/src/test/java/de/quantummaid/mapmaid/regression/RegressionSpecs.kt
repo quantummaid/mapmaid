@@ -4,6 +4,7 @@ import de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller.m
 import de.quantummaid.mapmaid.regression.domain.*
 import de.quantummaid.mapmaid.regression.tests.GsonSerializerFactory
 import de.quantummaid.mapmaid.regression.tests.MapMaidSerializerFactory
+import de.quantummaid.reflectmaid.ReflectMaid
 import org.junit.jupiter.api.Test
 
 interface TestSerializerFactory {
@@ -16,9 +17,11 @@ interface TestSerializer {
     fun serialize(value: Any): String
 }
 
+val REFLECT_MAID = ReflectMaid.aReflectMaid()
+
 val SERIALIZERS = listOf(
         GsonSerializerFactory(),
-        MapMaidSerializerFactory(minimalJsonMarshallerAndUnmarshaller())
+        MapMaidSerializerFactory(REFLECT_MAID, minimalJsonMarshallerAndUnmarshaller())
 )
 
 val stringOf16k = String(ByteArray(16*1000) { 1 })

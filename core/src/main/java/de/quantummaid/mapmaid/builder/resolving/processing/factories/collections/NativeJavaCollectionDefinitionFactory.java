@@ -26,8 +26,9 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,8 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier typeIdentifier,
+    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
+                                               final TypeIdentifier typeIdentifier,
                                                final Context context,
                                                final MapMaidConfiguration configuration) {
         if (typeIdentifier.isVirtual()) {

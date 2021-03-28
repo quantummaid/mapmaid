@@ -30,6 +30,8 @@ import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -44,14 +46,16 @@ import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PolymorphicSerializer implements TypeSerializer {
+    private final ReflectMaid reflectMaid;
     private final TypeIdentifier superType;
     private final BiMap<String, TypeIdentifier> nameToType;
     private final String typeField;
 
-    public static PolymorphicSerializer polymorphicSerializer(final TypeIdentifier superType,
+    public static PolymorphicSerializer polymorphicSerializer(final ReflectMaid reflectMaid,
+                                                              final TypeIdentifier superType,
                                                               final BiMap<String, TypeIdentifier> nameToType,
                                                               final String typeField) {
-        return new PolymorphicSerializer(superType, nameToType, typeField);
+        return new PolymorphicSerializer(reflectMaid, superType, nameToType, typeField);
     }
 
     @Override
@@ -66,7 +70,8 @@ public final class PolymorphicSerializer implements TypeSerializer {
                                final SerializationTracker tracker,
                                final CustomPrimitiveMappings customPrimitiveMappings,
                                final DebugInformation debugInformation) {
-        final TypeIdentifier implementationType = typeIdentifierFor(object.getClass());
+        final ResolvedType resolvedType = reflectMaid.resolve(object.getClass());
+        final TypeIdentifier implementationType = typeIdentifierFor(resolvedType);
         final Universal universal = callback.serializeDefinition(implementationType, object, serializationTracker());
         final Map<String, Object> immutableMap = (Map<String, Object>) universal.toNativeJava();
         final Map<String, Object> mutableMap = new LinkedHashMap<>(immutableMap);

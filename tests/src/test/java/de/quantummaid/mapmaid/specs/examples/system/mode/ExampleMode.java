@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.specs.examples.system.mode;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.GenericType;
 
 public interface ExampleMode {
-    MapMaid provideMapMaid(ResolvedType type);
+    MapMaid provideMapMaid(GenericType<?> type);
 }

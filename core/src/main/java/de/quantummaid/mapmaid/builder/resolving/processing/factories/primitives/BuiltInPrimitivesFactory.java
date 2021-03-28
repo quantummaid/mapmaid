@@ -28,7 +28,8 @@ import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactor
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,8 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier type,
+    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
+                                               final TypeIdentifier type,
                                                final Context context,
                                                final MapMaidConfiguration configuration) {
         if (type.isVirtual()) {

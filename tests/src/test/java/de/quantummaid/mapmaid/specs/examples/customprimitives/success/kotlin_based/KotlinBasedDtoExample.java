@@ -21,9 +21,6 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.kotlin_based;
 
-import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -47,27 +44,26 @@ public final class KotlinBasedDtoExample {
                         new KotlinCustomPrimitive("bar")
                 ))
                 .withAllScenariosSuccessful()
-                .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(DeserializationOnlyType.serializedObject(KotlinDto.class)
-                                .withField("field1", KotlinCustomPrimitive.class)
-                                .withField("field2", String.class)
-                                .withField("field3", int.class)
-                                .withField("field4", KotlinCustomPrimitive.class)
-                                .deserializedUsing(KotlinDto::new)))
-                .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(SerializationOnlyType.serializedObject(KotlinDto.class)
-                                .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
-                                .withField("field2", String.class, KotlinDto::getField2)
-                                .withField("field3", int.class, KotlinDto::getField3)
-                                .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)))
-                .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                DuplexType.serializedObject(KotlinDto.class)
-                                        .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
-                                        .withField("field2", String.class, KotlinDto::getField2)
-                                        .withField("field3", int.class, KotlinDto::getField3)
-                                        .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)
-                                        .deserializedUsing(KotlinDto::new)))
+                .withManualDeserialization(builder -> builder.deserializingCustomObject(KotlinDto.class, x -> x
+                        .withField("field1", KotlinCustomPrimitive.class)
+                        .withField("field2", String.class)
+                        .withField("field3", int.class)
+                        .withField("field4", KotlinCustomPrimitive.class)
+                        .deserializedUsing(KotlinDto::new))
+                )
+                .withManualSerialization(builder -> builder.serializingCustomObject(KotlinDto.class, x -> x
+                        .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
+                        .withField("field2", String.class, KotlinDto::getField2)
+                        .withField("field3", int.class, KotlinDto::getField3)
+                        .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4))
+                )
+                .withManualDuplex(builder -> builder.serializingAndDeserializingCustomObject(KotlinDto.class, x -> x
+                        .withField("field1", KotlinCustomPrimitive.class, KotlinDto::getField1)
+                        .withField("field2", String.class, KotlinDto::getField2)
+                        .withField("field3", int.class, KotlinDto::getField3)
+                        .withField("field4", KotlinCustomPrimitive.class, KotlinDto::getField4)
+                        .deserializedUsing(KotlinDto::new))
+                )
                 .run();
     }
 }

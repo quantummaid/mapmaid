@@ -26,8 +26,9 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ArrayType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddMan
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ArrayCollectionSerializer.arraySerializer;
+import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static java.util.Optional.empty;
 
 @ToString
@@ -54,7 +56,8 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier typeIdentifier,
+    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
+                                               final TypeIdentifier typeIdentifier,
                                                final Context context,
                                                final MapMaidConfiguration configuration) {
         if (typeIdentifier.isVirtual()) {
@@ -65,10 +68,11 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
         if (!(type instanceof ArrayType)) {
             return empty();
         }
-        final ResolvedType genericType = ((ArrayType) type).componentType();
+        final ResolvedType componentType = ((ArrayType) type).componentType();
+        final TypeIdentifier componentTypeIdentifier = typeIdentifierFor(componentType);
         return Optional.of(stateFactoryResult(unreasoned(context), List.of(
-                addManualSerializer(typeIdentifier, arraySerializer(genericType)),
-                addManualDeserializer(typeIdentifier, arrayDeserializer(genericType))
+                addManualSerializer(typeIdentifier, arraySerializer(componentTypeIdentifier)),
+                addManualDeserializer(typeIdentifier, arrayDeserializer(componentTypeIdentifier, componentType))
         )));
     }
 }

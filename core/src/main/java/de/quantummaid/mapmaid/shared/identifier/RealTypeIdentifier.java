@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.shared.identifier;
 
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +42,12 @@ public final class RealTypeIdentifier implements TypeIdentifier {
 
     @Override
     public ResolvedType getRealType() {
-        return this.resolvedType;
+        return resolvedType;
     }
 
     @Override
     public String description() {
-        return this.resolvedType.description();
+        return resolvedType.description();
     }
 
     @Override

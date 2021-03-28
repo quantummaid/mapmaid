@@ -26,7 +26,9 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,6 @@ import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @ToString
 @EqualsAndHashCode
@@ -43,23 +44,26 @@ public final class SerializationOnlySerializedObject<T> implements Serialization
     private final Builder builder;
 
     public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(
+            final ReflectMaid reflectMaid,
             final GenericType<T> type
     ) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(type);
-        return serializationOnlySerializedObject(typeIdentifier);
+        final ResolvedType resolvedType = reflectMaid.resolve(type);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
+        return serializationOnlySerializedObject(reflectMaid, typeIdentifier);
     }
 
     public static <T> SerializationOnlySerializedObject<T> serializationOnlySerializedObject(
+            final ReflectMaid reflectMaid,
             final TypeIdentifier typeIdentifier
     ) {
-        final Builder builder = emptyBuilder(typeIdentifier);
+        final Builder builder = emptyBuilder(reflectMaid, typeIdentifier);
         return new SerializationOnlySerializedObject<>(builder);
     }
 
     public <B> SerializationOnlySerializedObject<T> withField(final String name,
                                                               final Class<B> type,
                                                               final Query<T, B> query) {
-        return withField(name, genericType(type), query);
+        return withField(name, GenericType.genericType(type), query);
     }
 
     @SuppressWarnings("unchecked")

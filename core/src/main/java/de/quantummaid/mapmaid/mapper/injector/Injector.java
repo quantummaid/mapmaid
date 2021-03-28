@@ -24,8 +24,8 @@ package de.quantummaid.mapmaid.mapper.injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalPrimitive;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,18 +39,18 @@ import static de.quantummaid.mapmaid.mapper.injector.NamedDirectInjection.namedD
 import static de.quantummaid.mapmaid.mapper.injector.PropertyName.propertyName;
 import static de.quantummaid.mapmaid.mapper.injector.TypedDirectInjection.typedDirectInjection;
 import static de.quantummaid.mapmaid.mapper.injector.UniversalInjection.universalInjection;
-import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Injector {
+    private final ReflectMaid reflectMaid;
     private final List<UniversalInjection> universalInjections = smallList();
     private final List<NamedDirectInjection> namedDirectInjections = smallList();
     private final List<TypedDirectInjection> typedDirectInjections = smallList();
 
-    static Injector empty() {
-        return new Injector();
+    static Injector empty(final ReflectMaid reflectMaid) {
+        return new Injector(reflectMaid);
     }
 
     public Injector put(final String propertyName, final String value) {
@@ -64,12 +64,12 @@ public final class Injector {
     }
 
     public Injector put(final Object instance) {
-        final ResolvedType type = resolvedType(instance.getClass());
+        final ResolvedType type = reflectMaid.resolve(instance.getClass());
         return put(type, instance);
     }
 
     public Injector put(final Class<?> type, final Object instance) {
-        return put(ClassType.fromClassWithoutGenerics(type), instance);
+        return put(reflectMaid.resolve(type), instance);
     }
 
     public Injector put(final ResolvedType type, final Object instance) {

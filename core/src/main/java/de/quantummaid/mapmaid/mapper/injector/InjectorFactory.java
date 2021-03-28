@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.injector;
 
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +31,15 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class InjectorFactory {
+    private final ReflectMaid reflectMaid;
     private final InjectorLambda initializer;
 
-    public static InjectorFactory emptyInjectorFactory() {
-        return new InjectorFactory(InjectorLambda.noop());
+    public static InjectorFactory emptyInjectorFactory(final ReflectMaid reflectMaid) {
+        return new InjectorFactory(reflectMaid, InjectorLambda.noop());
     }
 
     public Injector create() {
-        final Injector injector = Injector.empty();
+        final Injector injector = Injector.empty(reflectMaid);
         this.initializer.setupInjector(injector);
         return injector;
     }

@@ -23,8 +23,8 @@ package de.quantummaid.mapmaid.builder.detection.serializedobject.fields;
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -56,13 +56,13 @@ public final class GetterFieldDetector implements FieldDetector {
             return emptyList();
         }
         return ((ClassType) type).methods().stream()
-                .filter(resolvedMethod -> resolvedMethod.method().getName().startsWith("get"))
-                .filter(resolvedMethod -> !isStatic(resolvedMethod.method().getModifiers()))
-                .filter(resolvedMethod -> resolvedMethod.method().getReturnType() != TYPE)
-                .filter(resolvedMethod -> resolvedMethod.parameters().isEmpty())
+                .filter(resolvedMethod -> resolvedMethod.getMethod().getName().startsWith("get"))
+                .filter(resolvedMethod -> !isStatic(resolvedMethod.getMethod().getModifiers()))
+                .filter(resolvedMethod -> resolvedMethod.getMethod().getReturnType() != TYPE)
+                .filter(resolvedMethod -> resolvedMethod.getParameters().isEmpty())
                 .map(resolvedMethod -> {
                     final ResolvedType resolvedType = resolvedMethod.returnType().orElseThrow();
-                    final Method method = resolvedMethod.method();
+                    final Method method = resolvedMethod.getMethod();
                     final String name = extractGetterFieldName(method.getName());
                     final SerializationFieldQuery query = getterFieldQuery(method);
                     return SerializationField.serializationField(resolvedType, name, query);

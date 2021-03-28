@@ -25,7 +25,6 @@ import de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.exa
 import de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example2.TownName;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class TransientFieldExample {
@@ -45,12 +44,26 @@ public final class TransientFieldExample {
                         "}")
                 .withDuplexFailing()
                 .withDeserializationSuccessful()
-                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
-                        serializedObject(AddALotRequest.class)
+                .withManual((mapMaidBuilder, capabilities) -> {
+                    if (capabilities.hasDeserialization() && capabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingAndDeserializingCustomObject(AddALotRequest.class, builder -> builder
                                 .withField("name", Name.class, object -> object.name)
                                 .withField("townName", TownName.class, object -> object.townName)
                                 .deserializedUsing(AddALotRequest::addALotRequest)
-                ))
+                        );
+                    } else if (capabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingCustomObject(AddALotRequest.class, builder -> builder
+                                .withField("name", Name.class, object -> object.name)
+                                .withField("townName", TownName.class, object -> object.townName)
+                        );
+                    } else if (capabilities.hasDeserialization()) {
+                        mapMaidBuilder.deserializingCustomObject(AddALotRequest.class, builder -> builder
+                                .withField("name", Name.class)
+                                .withField("townName", TownName.class)
+                                .deserializedUsing(AddALotRequest::addALotRequest)
+                        );
+                    }
+                })
                 .run();
     }
 }

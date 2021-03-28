@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedob
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
-import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -60,15 +60,15 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
     }
 
     private static MethodSerializedObjectDeserializer verifiedDeserializationDTOMethod(final ResolvedMethod factoryMethod) {
-        final List<ResolvedParameter> parameters = factoryMethod.parameters();
+        final List<ResolvedParameter> parameters = factoryMethod.getParameters();
         final List<String> parameterNames = parameters.stream()
-                .map(ResolvedParameter::parameter)
+                .map(ResolvedParameter::getParameter)
                 .map(Parameter::getName)
                 .collect(toList());
         final Map<String, TypeIdentifier> parameterFields = parameters.stream()
                 .collect(Collectors.toMap(
                         ResolvedParameter::name,
-                        resolvedParameter -> realTypeIdentifier(resolvedParameter.type())
+                        resolvedParameter -> realTypeIdentifier(resolvedParameter.getType())
                 ));
         return new MethodSerializedObjectDeserializer(deserializationFields(parameterFields), factoryMethod, parameterNames);
     }
@@ -79,7 +79,7 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         for (int i = 0; i < arguments.length; i++) {
             arguments[i] = elements.get(this.parameterNames.get(i));
         }
-        return this.factoryMethod.method().invoke(null, arguments);
+        return this.factoryMethod.getMethod().invoke(null, arguments);
     }
 
     @Override
@@ -97,7 +97,7 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
     }
 
     private static void validateDeserializerModifiers(final ClassType type, final ResolvedMethod deserializationMethod) {
-        final int deserializationMethodModifiers = deserializationMethod.method().getModifiers();
+        final int deserializationMethodModifiers = deserializationMethod.getMethod().getModifiers();
 
         if (!isStatic(deserializationMethodModifiers)) {
             throw mapMaidException(format("The deserialization method %s configured for the object " + // NOSONAR

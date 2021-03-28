@@ -40,9 +40,9 @@ import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.YAML;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Then.then;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.ThenData.thenData;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class When {
@@ -72,14 +72,32 @@ public final class When {
 
     @SuppressWarnings({"unchecked", "CastToConcreteClass"})
     public AsStage mapMaidDeserializes(final String input) {
-        return marshallingType -> type ->
-                doDeserialization(() -> mapMaid.deserialize(input, type, (MarshallingType<String>) marshallingType));
+        return marshallingType -> new ToStage() {
+            @Override
+            public Then toTheType(final GenericType<?> genericType) {
+                return doDeserialization(() -> mapMaid.deserialize(input, genericType, (MarshallingType<String>) marshallingType));
+            }
+
+            @Override
+            public Then toTheType(final TypeIdentifier fullType) {
+                return doDeserialization(() -> mapMaid.deserialize(input, fullType, (MarshallingType<String>) marshallingType));
+            }
+        };
     }
 
     @SuppressWarnings({"unchecked", "CastToConcreteClass"})
     public AsStage mapMaidDeserializesWithInjection(final String input, final InjectorLambda injector) {
-        return marshallingType -> type ->
-                doDeserialization(() -> mapMaid.deserialize(input, type, (MarshallingType<String>) marshallingType, injector));
+        return marshallingType -> new ToStage() {
+            @Override
+            public Then toTheType(final GenericType<?> genericType) {
+                return doDeserialization(() -> mapMaid.deserialize(input, genericType, (MarshallingType<String>) marshallingType, injector));
+            }
+
+            @Override
+            public Then toTheType(final TypeIdentifier type) {
+                return doDeserialization(() -> mapMaid.deserialize(input, type, (MarshallingType<String>) marshallingType, injector));
+            }
+        };
     }
 
     @SuppressWarnings("unchecked")
@@ -89,7 +107,17 @@ public final class When {
     }
 
     public ToStage mapMaidDeserializesTheMap(final Map<String, Object> map) {
-        return type -> doDeserialization(() -> this.mapMaid.deserializer().deserializeFromUniversalObject(map, type, noop()));
+        return new ToStage() {
+            @Override
+            public Then toTheType(final GenericType<?> genericType) {
+                return doDeserialization(() -> mapMaid.deserializeFromUniversalObject(map, genericType, noop()));
+            }
+
+            @Override
+            public Then toTheType(final TypeIdentifier fullType) {
+                return doDeserialization(() -> mapMaid.deserializeFromUniversalObject(map, fullType, noop()));
+            }
+        };
     }
 
     public WithMarshallingType mapMaidSerializes(final Object object) {
@@ -104,7 +132,7 @@ public final class When {
     }
 
     public WithMarshallingType mapMaidSerializes(final Object object, final Class<?> type) {
-        final GenericType<?> genericType = GenericType.genericType(type);
+        final GenericType<?> genericType = genericType(type);
         return mapMaidSerializes(object, genericType);
     }
 
@@ -116,8 +144,14 @@ public final class When {
     }
 
     public Then mapMaidSerializesToUniversalObject(final Object object,
+                                                   final Class<?> type) {
+        final Object serialized = this.mapMaid.serializeToUniversalObject(object, type);
+        return then(this.thenData.withSerializationResult(serialized));
+    }
+
+    public Then mapMaidSerializesToUniversalObject(final Object object,
                                                    final TypeIdentifier typeIdentifier) {
-        final Object serialized = this.mapMaid.serializer().serializeToUniversalObject(object, typeIdentifier);
+        final Object serialized = this.mapMaid.serializeToUniversalObject(object, typeIdentifier);
         return then(this.thenData.withSerializationResult(serialized));
     }
 
@@ -146,8 +180,8 @@ public final class When {
     public WithMarshallingType mapMaidSerializesWithInjector(final Object object,
                                                              final UnaryOperator<Map<String, Object>> injector) {
         return marshallingType -> {
-            final TypeIdentifier typeIdentifier = typeIdentifierFor(object.getClass());
-            final Object serialized = mapMaid.serializer().serialize(object, typeIdentifier, marshallingType, injector);
+            final GenericType<?> genericType = genericType(object.getClass());
+            final Object serialized = mapMaid.serialize(object, genericType, marshallingType, injector);
             return then(thenData.withSerializationResult(serialized));
         };
     }
