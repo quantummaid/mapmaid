@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.detection;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
 import java.util.List;
 

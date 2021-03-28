@@ -22,9 +22,6 @@
 package de.quantummaid.mapmaid.documentation.registration.registercustomtypes;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -36,12 +33,10 @@ public final class RegisterCustomTypesDocumentationTests {
     public void registeringDuplexCustomCustomPrimitive() {
         //Showcase start duplexCustomCustomPrimitiveConfig
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .serializingAndDeserializing(
-                        DuplexType.customPrimitive(
-                                MyCustomPrimitive.class,
-                                MyCustomPrimitive::value,
-                                MyCustomPrimitive::new
-                        )
+                .serializingAndDeserializingCustomPrimitive(
+                        MyCustomPrimitive.class,
+                        MyCustomPrimitive::value,
+                        MyCustomPrimitive::new
                 )
                 .build();
         //Showcase end duplexCustomCustomPrimitiveConfig
@@ -55,12 +50,11 @@ public final class RegisterCustomTypesDocumentationTests {
     public void registeringDuplexCustomSerializedObject() {
         //Showcase start duplexCustomSerializedObjectConfig
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .serializingAndDeserializing(
-                        DuplexType.serializedObject(MySerializedObject.class)
-                                .withField("field1", String.class, MySerializedObject::getField1)
-                                .withField("field2", String.class, MySerializedObject::getField2)
-                                .withField("field3", String.class, MySerializedObject::getField3)
-                                .deserializedUsing(MySerializedObject::new)
+                .serializingAndDeserializingCustomObject(MySerializedObject.class, builder -> builder
+                        .withField("field1", String.class, MySerializedObject::getField1)
+                        .withField("field2", String.class, MySerializedObject::getField2)
+                        .withField("field3", String.class, MySerializedObject::getField3)
+                        .deserializedUsing(MySerializedObject::new)
                 )
                 .build();
         //Showcase end duplexCustomSerializedObjectConfig
@@ -79,11 +73,9 @@ public final class RegisterCustomTypesDocumentationTests {
     public void registeringSerializationCustomCustomPrimitive() {
         //Showcase start serializationCustomCustomPrimitiveConfig
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .serializing(
-                        SerializationOnlyType.customPrimitive(
-                                MyCustomPrimitive.class,
-                                MyCustomPrimitive::value
-                        )
+                .serializingCustomPrimitive(
+                        MyCustomPrimitive.class,
+                        MyCustomPrimitive::value
                 )
                 .build();
         //Showcase end serializationCustomCustomPrimitiveConfig
@@ -95,11 +87,10 @@ public final class RegisterCustomTypesDocumentationTests {
     public void registeringSerializationCustomSerializedObject() {
         //Showcase start serializationCustomSerializedObjectConfig
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .serializing(
-                        SerializationOnlyType.serializedObject(MySerializedObject.class)
-                                .withField("field1", String.class, MySerializedObject::getField1)
-                                .withField("field2", String.class, MySerializedObject::getField2)
-                                .withField("field3", String.class, MySerializedObject::getField3)
+                .serializingCustomObject(MySerializedObject.class, builder -> builder
+                        .withField("field1", String.class, MySerializedObject::getField1)
+                        .withField("field2", String.class, MySerializedObject::getField2)
+                        .withField("field3", String.class, MySerializedObject::getField3)
                 )
                 .build();
         //Showcase end serializationCustomSerializedObjectConfig
@@ -114,11 +105,9 @@ public final class RegisterCustomTypesDocumentationTests {
     public void registeringDeserializationCustomCustomPrimitive() {
         //Showcase start deserializationCustomCustomPrimitiveConfig
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .deserializing(
-                        DeserializationOnlyType.customPrimitive(
-                                MyCustomPrimitive.class,
-                                MyCustomPrimitive::new
-                        )
+                .deserializingCustomPrimitive(
+                        MyCustomPrimitive.class,
+                        MyCustomPrimitive::new
                 )
                 .build();
         //Showcase end deserializationCustomCustomPrimitiveConfig
@@ -130,12 +119,11 @@ public final class RegisterCustomTypesDocumentationTests {
     public void registeringDeserializationCustomSerializedObject() {
         //Showcase start deserializationCustomSerializedObjectConfig
         final MapMaid mapMaid = MapMaid.aMapMaid()
-                .deserializing(
-                        DeserializationOnlyType.serializedObject(MySerializedObject.class)
-                                .withField("field1", String.class)
-                                .withField("field2", String.class)
-                                .withField("field3", String.class)
-                                .deserializedUsing(MySerializedObject::new)
+                .deserializingCustomObject(MySerializedObject.class, builder -> builder
+                        .withField("field1", String.class)
+                        .withField("field2", String.class)
+                        .withField("field3", String.class)
+                        .deserializedUsing(MySerializedObject::new)
                 )
                 .build();
         //Showcase end deserializationCustomSerializedObjectConfig

@@ -22,7 +22,6 @@
 package de.quantummaid.mapmaid.documentation.registration.recipes;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,7 +32,7 @@ public final class RecipeDocumentationTests {
     @Test
     public void recipes() {
         //Showcase start recipeConfig
-        final MapMaid mapMaid = MapMaidBuilder.mapMaidBuilder()
+        final MapMaid mapMaid = MapMaid.aMapMaid()
                 .usingRecipe(new MyRecipe())
                 .build();
         //Showcase end recipeConfig

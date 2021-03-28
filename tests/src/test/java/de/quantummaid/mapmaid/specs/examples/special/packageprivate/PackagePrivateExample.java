@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.specs.examples.special.packageprivate;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.specs.examples.Util.registerCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.special.packageprivate.PackagePrivateClass.packagePrivateClass;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
@@ -40,8 +40,13 @@ public final class PackagePrivateExample {
                         "cannot be detected because it is not public (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.packageprivate.PackagePrivateClass' " +
                         "cannot be detected because it is not public (you can still register it manually)")
-                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
-                        .withCustomType(requiredCapabilities, customPrimitive(PackagePrivateClass.class, object -> "foo", PackagePrivateClass::packagePrivateClass)))
+                .withManual((mapMaidBuilder, requiredCapabilities) -> registerCustomPrimitive(
+                        requiredCapabilities,
+                        mapMaidBuilder,
+                        PackagePrivateClass.class,
+                        object -> "foo",
+                        PackagePrivateClass::packagePrivateClass
+                ))
                 .run();
     }
 }

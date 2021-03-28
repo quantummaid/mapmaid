@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.customtypes.serializedobject;
 
-import de.quantummaid.reflectmaid.GenericType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -31,10 +30,9 @@ public final class CustomDeserializationField {
     private final ResolvedType type;
     private final String name;
 
-    public static CustomDeserializationField deserializationField(final GenericType<?> type,
+    public static CustomDeserializationField deserializationField(final ResolvedType type,
                                                                   final String name) {
-        final ResolvedType resolvedType = type.toResolvedType();
-        return new CustomDeserializationField(resolvedType, name);
+        return new CustomDeserializationField(type, name);
     }
 
     public String name() {

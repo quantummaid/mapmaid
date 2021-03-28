@@ -15,23 +15,13 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.GenericType
-import de.quantummaid.reflectmaid.TypeToken
+import de.quantummaid.reflectmaid.ReflectMaid
 import java.util.*
 
-inline fun<reified T> genericType(): GenericType<T> {
-    return GenericType.genericType(object : TypeToken<T>() {})
-}
-
-class ClassSeAndDeserializer : CustomType<Class<*>> {
-
-    companion object {
-        fun classSeAndDeserializer(): ClassSeAndDeserializer {
-            return ClassSeAndDeserializer()
-        }
-    }
+class ClassSeAndDeserializer(val reflectMaid: ReflectMaid) : CustomType<Class<*>> {
 
     override fun type(): TypeIdentifier {
-        return typeIdentifierFor(genericType<Class<Any>>())
+        return typeIdentifierFor(reflectMaid.resolve(GenericType.genericType<Class<Any>>()))
     }
 
     override fun serializer(): Optional<TypeSerializer> {

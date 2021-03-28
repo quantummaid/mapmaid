@@ -21,9 +21,6 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.kotlin_based;
 
-import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -37,13 +34,13 @@ public final class KotlinBasedCustomPrimitiveExample {
                 .withDeserializedForm(new KotlinCustomPrimitive("abcdefg"))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(DeserializationOnlyType.customPrimitive(KotlinCustomPrimitive.class, KotlinCustomPrimitive::new)))
+                        mapMaidBuilder.deserializingCustomPrimitive(KotlinCustomPrimitive.class, KotlinCustomPrimitive::new))
                 .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(SerializationOnlyType.customPrimitive(KotlinCustomPrimitive.class, KotlinCustomPrimitive::getValue)))
+                        mapMaidBuilder.serializingCustomPrimitive(KotlinCustomPrimitive.class, KotlinCustomPrimitive::getValue))
                 .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                DuplexType.customPrimitive(KotlinCustomPrimitive.class, KotlinCustomPrimitive::getValue, KotlinCustomPrimitive::new)
-                        ))
+                        mapMaidBuilder.serializingAndDeserializingCustomPrimitive(
+                                KotlinCustomPrimitive.class, KotlinCustomPrimitive::getValue, KotlinCustomPrimitive::new)
+                        )
                 .run();
     }
 }

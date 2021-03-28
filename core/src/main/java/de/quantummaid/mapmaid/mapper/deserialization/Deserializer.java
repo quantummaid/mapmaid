@@ -60,14 +60,15 @@ public final class Deserializer {
     private final Unmarshallers unmarshallers;
     private final InternalDeserializer internalDeserializer;
     private final DebugInformation debugInformation;
-    private final InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory();
+    private final InjectorFactory injectorFactory;
 
     public static Deserializer theDeserializer(final UnmarshallerRegistry unmarshallerRegistry,
                                                final Definitions definitions,
                                                final CustomPrimitiveMappings customPrimitiveMappings,
                                                final ValidationMappings exceptionMapping,
                                                final ValidationErrorsMapping onValidationErrors,
-                                               final DebugInformation debugInformation) {
+                                               final DebugInformation debugInformation,
+                                               final InjectorFactory injectorFactory) {
         validateNotNull(unmarshallerRegistry, "unmarshallerRegistry");
         validateNotNull(definitions, "definitions");
         validateNotNull(customPrimitiveMappings, "customPrimitiveMappings");
@@ -77,7 +78,14 @@ public final class Deserializer {
         final Unmarshallers unmarshallers = unmarshallers(unmarshallerRegistry);
         final InternalDeserializer internalDeserializer = internalDeserializer(
                 definitions, customPrimitiveMappings, onValidationErrors);
-        return new Deserializer(definitions, exceptionMapping, unmarshallers, internalDeserializer, debugInformation);
+        return new Deserializer(
+                definitions,
+                exceptionMapping,
+                unmarshallers,
+                internalDeserializer,
+                debugInformation,
+                injectorFactory
+        );
     }
 
     public <T> T deserializeFromUniversalObject(final Object input,

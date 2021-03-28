@@ -22,22 +22,21 @@
 package de.quantummaid.mapmaid.minimaljson;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.TypeToken;
+import de.quantummaid.reflectmaid.GenericType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
-import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class AutoloadingSpecs {
 
     @Test
     public void minimalJsonMarshallerIsAutoloadable() {
-        final GenericType<List<String>> type = genericType(new TypeToken<>() {
+        final GenericType<List<String>> type = GenericType.genericType(new TypeToken<>() {
         });
         final MapMaid mapMaid = aMapMaid()
                 .serializingAndDeserializing(type)

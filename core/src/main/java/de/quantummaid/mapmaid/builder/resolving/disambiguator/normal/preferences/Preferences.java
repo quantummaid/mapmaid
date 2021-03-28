@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
 
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

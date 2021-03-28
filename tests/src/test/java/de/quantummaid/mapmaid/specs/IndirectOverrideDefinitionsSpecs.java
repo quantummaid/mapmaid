@@ -30,9 +30,6 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
-
 public final class IndirectOverrideDefinitionsSpecs {
 
     @Test
@@ -40,7 +37,7 @@ public final class IndirectOverrideDefinitionsSpecs {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexType.class)
-                        .serializingAndDeserializing(customPrimitive(ANumber.class, object -> "23", value -> ANumber.fromInt(23)))
+                        .serializingAndDeserializingCustomPrimitive(ANumber.class, object -> "23", value -> ANumber.fromInt(23))
                         .build()
         )
                 .when().mapMaidDeserializes("42").from(MarshallingType.JSON).toTheType(ANumber.class)
@@ -53,15 +50,16 @@ public final class IndirectOverrideDefinitionsSpecs {
         Given.given(
                 MapMaid.aMapMaid()
                         .serializingAndDeserializing(AComplexNestedType.class)
-                        .serializingAndDeserializing(serializedObject(AComplexType.class)
-                                .withField("foo", AString.class, object -> AString.fromStringValue("bar"))
-                                .deserializedUsing(foo -> AComplexType.deserialize(
-                                        AString.fromStringValue("custom1"),
-                                        AString.fromStringValue("custom2"),
-                                        ANumber.fromInt(100),
-                                        ANumber.fromInt(200)
-                                ))
-                        )
+                        .serializingAndDeserializingCustomObject(AComplexType.class, aComplexTypeBuilder00 -> {
+                            return aComplexTypeBuilder00
+                                    .withField("foo", AString.class, object -> AString.fromStringValue("bar"))
+                                    .deserializedUsing(foo -> AComplexType.deserialize(
+                                            AString.fromStringValue("custom1"),
+                                            AString.fromStringValue("custom2"),
+                                            ANumber.fromInt(100),
+                                            ANumber.fromInt(200)
+                                    ));
+                        })
                         .build()
         )
                 .when().mapMaidDeserializes("{\"foo\": \"qwer\"}").from(MarshallingType.JSON).toTheType(AComplexType.class)

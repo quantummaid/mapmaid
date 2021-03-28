@@ -38,12 +38,11 @@ you can do so by registering a custom type:
 <!---[CodeSnippet](duplexCustomSerializedObjectConfig)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .serializingAndDeserializing(
-                DuplexType.serializedObject(MySerializedObject.class)
-                        .withField("field1", String.class, MySerializedObject::getField1)
-                        .withField("field2", String.class, MySerializedObject::getField2)
-                        .withField("field3", String.class, MySerializedObject::getField3)
-                        .deserializedUsing(MySerializedObject::new)
+        .serializingAndDeserializingCustomObject(MySerializedObject.class, builder -> builder
+                .withField("field1", String.class, MySerializedObject::getField1)
+                .withField("field2", String.class, MySerializedObject::getField2)
+                .withField("field3", String.class, MySerializedObject::getField3)
+                .deserializedUsing(MySerializedObject::new)
         )
         .build();
 ```
@@ -53,11 +52,10 @@ If you only need MapMaid to serialize the custom type, the respective configurat
 <!---[CodeSnippet](serializationCustomSerializedObjectConfig)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .serializing(
-                SerializationOnlyType.serializedObject(MySerializedObject.class)
-                        .withField("field1", String.class, MySerializedObject::getField1)
-                        .withField("field2", String.class, MySerializedObject::getField2)
-                        .withField("field3", String.class, MySerializedObject::getField3)
+        .serializingCustomObject(MySerializedObject.class, builder -> builder
+                .withField("field1", String.class, MySerializedObject::getField1)
+                .withField("field2", String.class, MySerializedObject::getField2)
+                .withField("field3", String.class, MySerializedObject::getField3)
         )
         .build();
 ```
@@ -66,12 +64,11 @@ Vice versa, to only deserialize the custom type, the configuration looks like th
 <!---[CodeSnippet](deserializationCustomSerializedObjectConfig)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .deserializing(
-                DeserializationOnlyType.serializedObject(MySerializedObject.class)
-                        .withField("field1", String.class)
-                        .withField("field2", String.class)
-                        .withField("field3", String.class)
-                        .deserializedUsing(MySerializedObject::new)
+        .deserializingCustomObject(MySerializedObject.class, builder -> builder
+                .withField("field1", String.class)
+                .withField("field2", String.class)
+                .withField("field3", String.class)
+                .deserializedUsing(MySerializedObject::new)
         )
         .build();
 ```
@@ -85,12 +82,10 @@ You can register a custom type as an inlined primitive like this:
 <!---[CodeSnippet](duplexCustomCustomPrimitiveConfig)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .serializingAndDeserializing(
-                DuplexType.customPrimitive(
-                        MyCustomPrimitive.class,
-                        MyCustomPrimitive::value,
-                        MyCustomPrimitive::new
-                )
+        .serializingAndDeserializingCustomPrimitive(
+                MyCustomPrimitive.class,
+                MyCustomPrimitive::value,
+                MyCustomPrimitive::new
         )
         .build();
 ```
@@ -98,11 +93,9 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 <!---[CodeSnippet](deserializationCustomCustomPrimitiveConfig)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .deserializing(
-                DeserializationOnlyType.customPrimitive(
-                        MyCustomPrimitive.class,
-                        MyCustomPrimitive::new
-                )
+        .deserializingCustomPrimitive(
+                MyCustomPrimitive.class,
+                MyCustomPrimitive::new
         )
         .build();
 ```
@@ -110,11 +103,9 @@ final MapMaid mapMaid = MapMaid.aMapMaid()
 <!---[CodeSnippet](serializationCustomCustomPrimitiveConfig)-->
 ```java
 final MapMaid mapMaid = MapMaid.aMapMaid()
-        .serializing(
-                SerializationOnlyType.customPrimitive(
-                        MyCustomPrimitive.class,
-                        MyCustomPrimitive::value
-                )
+        .serializingCustomPrimitive(
+                MyCustomPrimitive.class,
+                MyCustomPrimitive::value
         )
         .build();
 ```
@@ -144,12 +135,11 @@ public final class MyCustomCollection {
 <!---[CodeSnippet](inlineCollectionDuplexConfig)-->
 ```java
 final MapMaid mapMaid = aMapMaid()
-        .serializingAndDeserializing(
-                DuplexType.inlinedCollection(
-                        MyCustomCollection.class,
-                        String.class,
-                        MyCustomCollection::getValues,
-                        MyCustomCollection::new)
+        .serializingAndDeserializingInlinedCollection(
+                MyCustomCollection.class,
+                String.class,
+                MyCustomCollection::getValues,
+                MyCustomCollection::new
         )
         .build();
 ```
@@ -158,11 +148,10 @@ final MapMaid mapMaid = aMapMaid()
 <!---[CodeSnippet](inlineCollectionSerializingConfig)-->
 ```java
 final MapMaid mapMaid = aMapMaid()
-        .serializing(
-                SerializationOnlyType.inlinedCollection(
-                        MyCustomCollection.class,
-                        String.class,
-                        MyCustomCollection::getValues)
+        .serializingInlinedCollection(
+                MyCustomCollection.class,
+                String.class,
+                MyCustomCollection::getValues
         )
         .build();
 ```
@@ -171,11 +160,10 @@ final MapMaid mapMaid = aMapMaid()
 <!---[CodeSnippet](inlineCollectionDeserializingConfig)-->
 ```java
 final MapMaid mapMaid = aMapMaid()
-        .deserializing(
-                DeserializationOnlyType.inlinedCollection(
-                        MyCustomCollection.class,
-                        String.class,
-                        MyCustomCollection::new)
+        .deserializingInlinedCollection(
+                MyCustomCollection.class,
+                String.class,
+                MyCustomCollection::new
         )
         .build();
 ```
@@ -221,7 +209,7 @@ Once created, you can use it to configure a MapMaid instance like this:
 
 <!---[CodeSnippet](recipeConfig)-->
 ```java
-final MapMaid mapMaid = MapMaidBuilder.mapMaidBuilder()
+final MapMaid mapMaid = MapMaid.aMapMaid()
         .usingRecipe(new MyRecipe())
         .build();
 ```

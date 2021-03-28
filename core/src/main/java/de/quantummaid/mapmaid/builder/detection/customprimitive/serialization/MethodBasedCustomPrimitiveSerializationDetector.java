@@ -23,8 +23,8 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.serialization;
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -55,10 +55,10 @@ public final class MethodBasedCustomPrimitiveSerializationDetector implements Cu
             return emptyList();
         }
         return ((ClassType) type).methods().stream()
-                .filter(method -> !isStatic(method.method().getModifiers()))
+                .filter(method -> !isStatic(method.getMethod().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> this.mappings.isPrimitiveType(method.returnType().get().assignableType()))
-                .filter(method -> method.parameters().isEmpty())
+                .filter(method -> method.getParameters().isEmpty())
                 .map(method -> createSerializer(type, method))
                 .collect(toList());
     }

@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.multi
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.specs.examples.Util.registerCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class MultipleFactoriesExample {
@@ -34,8 +34,14 @@ public final class MultipleFactoriesExample {
                 .withDeserializedForm(Name.anotherName("foo"))
                 .withSerializedForm("\"foo\"")
                 .withAllScenariosFailing("de.quantummaid.mapmaid.specs.examples.customprimitives.conflicting.multiple_factories.Name: unable to detect",
-                        (mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
-                                customPrimitive(Name.class, name -> name.value, Name::anotherName)))
+                        (mapMaidBuilder, capabilities) -> registerCustomPrimitive(
+                                capabilities,
+                                mapMaidBuilder,
+                                Name.class,
+                                name -> name.value,
+                                Name::anotherName
+                        )
+                )
                 .run();
     }
 }

@@ -24,10 +24,10 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByConstructorDeserializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
-import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
-import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -63,10 +63,10 @@ public final class ConstructorBasedCustomPrimitiveDeserializationDetector
 
     private List<ResolvedConstructor> fittingConstructors(final ClassType type) {
         return type.constructors().stream()
-                .filter(constructor -> constructor.parameters().size() == 1)
+                .filter(constructor -> constructor.getParameters().size() == 1)
                 .filter(constructor -> {
-                    final ResolvedParameter parameterType = constructor.parameters().get(0);
-                    return this.mappings.isPrimitiveType(parameterType.type().assignableType());
+                    final ResolvedParameter parameterType = constructor.getParameters().get(0);
+                    return this.mappings.isPrimitiveType(parameterType.getType().assignableType());
                 })
                 .collect(toList());
     }

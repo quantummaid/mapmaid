@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.specs;
 
+import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.virtualTypeIdentifier;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
@@ -35,9 +35,14 @@ public final class VirtualTypeSpecs {
     @Test
     public void virtualTypeCanBeRegistered() {
         final TypeIdentifier typeIdentifier = virtualTypeIdentifier("foo");
+
         given(
                 aMapMaid()
-                        .serializingAndDeserializing(customPrimitive(typeIdentifier, object -> object, value -> value))
+                        .serializingAndDeserializingCustomPrimitive(
+                                typeIdentifier,
+                                String.class,
+                                (CustomCustomPrimitiveSerializer<String, String>) object -> object,
+                                value -> value)
                         .build()
         )
                 .when().mapMaidDeserializes("\"asdf\"").from(MarshallingType.JSON).toTheType(typeIdentifier)

@@ -23,7 +23,6 @@ package de.quantummaid.mapmaid.specs.examples.special.anonymous_class;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class AnonymousClassExample {
@@ -43,8 +42,15 @@ public final class AnonymousClassExample {
                         "cannot be detected because it is an anonymous class (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.anonymous_class.AnonymousClassExample$1' " +
                         "cannot be detected because it is an anonymous class (you can still register it manually)")
-                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
-                        .withCustomType(requiredCapabilities, customPrimitive((Class<BaseInterface>) instance.getClass(), object -> "foo", value -> instance)))
+                .withManual((mapMaidBuilder, requiredCapabilities) -> {
+                    if (requiredCapabilities.hasDeserialization() && requiredCapabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingAndDeserializingCustomPrimitive((Class<BaseInterface>) instance.getClass(), object -> "foo", value -> instance);
+                    } else if (requiredCapabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingCustomPrimitive((Class<BaseInterface>) instance.getClass(), object -> "foo");
+                    } else if (requiredCapabilities.hasDeserialization()) {
+                        mapMaidBuilder.deserializingCustomPrimitive((Class<BaseInterface>) instance.getClass(), value -> instance);
+                    }
+                })
                 .run();
     }
 }

@@ -23,9 +23,9 @@ package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedob
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
-import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -60,15 +60,15 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
 
     private static ConstructorSerializedObjectDeserializer verifiedDeserializationDTOConstructor(
             final ResolvedConstructor factoryConstructor) {
-        final List<ResolvedParameter> parameters = factoryConstructor.parameters();
+        final List<ResolvedParameter> parameters = factoryConstructor.getParameters();
         final List<String> parameterNames = parameters.stream()
-                .map(ResolvedParameter::parameter)
+                .map(ResolvedParameter::getParameter)
                 .map(Parameter::getName)
                 .collect(toList());
         final Map<String, TypeIdentifier> parameterFields = parameters.stream()
                 .collect(toMap(
                         ResolvedParameter::name,
-                        parameter -> realTypeIdentifier(parameter.type())
+                        parameter -> realTypeIdentifier(parameter.getType())
                 ));
         return new ConstructorSerializedObjectDeserializer(deserializationFields(parameterFields), factoryConstructor, parameterNames);
     }
@@ -79,7 +79,7 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
         for (int i = 0; i < arguments.length; i++) {
             arguments[i] = elements.get(this.parameterNames.get(i));
         }
-        return this.factoryConstructor.constructor().newInstance(arguments);
+        return this.factoryConstructor.getConstructor().newInstance(arguments);
     }
 
     @Override
@@ -88,12 +88,12 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
     }
 
     private static void validateDeserializerModifiers(final ClassType type, final ResolvedConstructor deserializationConstructor) {
-        final int deserializationMethodModifiers = deserializationConstructor.constructor().getModifiers();
+        final int deserializationMethodModifiers = deserializationConstructor.getConstructor().getModifiers();
         if (isAbstract(deserializationMethodModifiers)) {
             throw mapMaidException(format("The deserialization constructor %s configured for the SerializedObject " +
                             "of type %s must not be abstract", deserializationConstructor, type));
         }
-        if (deserializationConstructor.constructor().getDeclaringClass() != type.assignableType()) {
+        if (deserializationConstructor.getConstructor().getDeclaringClass() != type.assignableType()) {
             throw mapMaidException(format("The deserialization constructor %s configured for the SerializedObject " +
                             "of type %s must return the DTO", deserializationConstructor, type));
         }

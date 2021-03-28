@@ -26,8 +26,6 @@ import de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.exa
 import de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.serializedObject;
-
 public final class PackagePrivateFactoryExample {
 
     @Test
@@ -43,12 +41,26 @@ public final class PackagePrivateFactoryExample {
                 .withSerializationSuccessful()
                 .withDeserializationFailing()
                 .withDuplexFailing()
-                .withManual((mapMaidBuilder, capabilities) -> mapMaidBuilder.withCustomType(capabilities,
-                        serializedObject(AddALotRequest.class)
+                .withManual((mapMaidBuilder, capabilities) -> {
+                    if (capabilities.hasDeserialization() && capabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingAndDeserializingCustomObject(AddALotRequest.class, builder -> builder
                                 .withField("name", Name.class, object -> object.name)
                                 .withField("townName", TownName.class, object -> object.townName)
                                 .deserializedUsing(AddALotRequest::addALotRequest)
-                ))
+                        );
+                    } else if (capabilities.hasSerialization()) {
+                        mapMaidBuilder.serializingCustomObject(AddALotRequest.class, builder -> builder
+                                .withField("name", Name.class, object -> object.name)
+                                .withField("townName", TownName.class, object -> object.townName)
+                        );
+                    } else if (capabilities.hasDeserialization()) {
+                        mapMaidBuilder.deserializingCustomObject(AddALotRequest.class, builder -> builder
+                                .withField("name", Name.class)
+                                .withField("townName", TownName.class)
+                                .deserializedUsing(AddALotRequest::addALotRequest)
+                        );
+                    }
+                })
                 .run();
     }
 }

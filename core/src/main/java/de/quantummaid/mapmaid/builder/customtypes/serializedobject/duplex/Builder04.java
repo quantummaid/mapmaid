@@ -26,8 +26,6 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer0
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
 import de.quantummaid.reflectmaid.GenericType;
 
-import static de.quantummaid.reflectmaid.GenericType.genericType;
-
 public final class Builder04<X, A, B, C, D> extends AbstractBuilder<X, Deserializer04<X, A, B, C, D>> {
 
     public Builder04(final Builder builder) {
@@ -37,7 +35,7 @@ public final class Builder04<X, A, B, C, D> extends AbstractBuilder<X, Deseriali
     public <E> Builder05<X, A, B, C, D, E> withField(final String name,
                                                      final Class<E> type,
                                                      final Query<X, E> query) {
-        return withField(name, genericType(type), query);
+        return withField(name, GenericType.genericType(type), query);
     }
 
     @SuppressWarnings("unchecked")

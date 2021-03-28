@@ -29,7 +29,8 @@ import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 
@@ -55,7 +56,8 @@ public final class KotlinSealedClassFactory implements StateFactory {
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final TypeIdentifier type,
+    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
+                                               final TypeIdentifier type,
                                                final Context context,
                                                final MapMaidConfiguration mapMaidConfiguration) {
         if (type.isVirtual()) {
@@ -72,11 +74,12 @@ public final class KotlinSealedClassFactory implements StateFactory {
 
         final List<TypeIdentifier> subtypes = kotlinClass.getSealedSubclasses().stream()
                 .map(JvmClassMappingKt::getJavaClass)
+                .map(reflectMaid::resolve)
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
         final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subtypes, mapMaidConfiguration);
 
-        final PolymorphicSerializer serializer = polymorphicSerializer(type, nameToType, "type");
+        final PolymorphicSerializer serializer = polymorphicSerializer(reflectMaid, type, nameToType, "type");
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
         return Optional.of(stateFactoryResult(unreasoned(context), List.of(
                 addManualSerializer(type, serializer),

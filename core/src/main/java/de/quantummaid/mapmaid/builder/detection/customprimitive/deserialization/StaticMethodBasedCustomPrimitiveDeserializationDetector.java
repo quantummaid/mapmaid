@@ -24,9 +24,9 @@ package de.quantummaid.mapmaid.builder.detection.customprimitive.deserialization
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.reflectmaid.ClassType;
-import de.quantummaid.reflectmaid.ResolvedType;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -63,11 +63,11 @@ public final class StaticMethodBasedCustomPrimitiveDeserializationDetector
 
     private List<ResolvedMethod> findDeserializerMethod(final ClassType type) {
         return type.methods().stream()
-                .filter(method -> isStatic(method.method().getModifiers()))
+                .filter(method -> isStatic(method.getMethod().getModifiers()))
                 .filter(method -> method.returnType().isPresent())
                 .filter(method -> method.returnType().get().equals(type))
-                .filter(method -> method.parameters().size() == 1)
-                .filter(method -> this.mappings.isPrimitiveType(method.parameters().get(0).type().assignableType()))
+                .filter(method -> method.getParameters().size() == 1)
+                .filter(method -> this.mappings.isPrimitiveType(method.getParameters().get(0).getType().assignableType()))
                 .collect(toList());
     }
 }

@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -31,27 +31,27 @@ import lombok.ToString;
 import java.lang.reflect.Array;
 import java.util.List;
 
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ArrayCollectionDeserializer implements CollectionDeserializer {
+    private final TypeIdentifier componentTypeIdentifier;
     private final ResolvedType componentType;
 
-    public static CollectionDeserializer arrayDeserializer(final ResolvedType componentType) {
-        return new ArrayCollectionDeserializer(componentType);
+    public static CollectionDeserializer arrayDeserializer(final TypeIdentifier componentTypeIdentifier,
+                                                           final ResolvedType componentType) {
+        return new ArrayCollectionDeserializer(componentTypeIdentifier, componentType);
     }
 
     @Override
     public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.componentType);
+        return componentTypeIdentifier;
     }
 
     @Override
     public Object listToCollection(final List<Object> deserializedElements) {
         final int size = deserializedElements.size();
-        final Object[] array = (Object[]) Array.newInstance(this.componentType.assignableType(), size);
+        final Object[] array = (Object[]) Array.newInstance(componentType.assignableType(), size);
         for (int i = 0; i < size; ++i) {
             array[i] = deserializedElements.get(i);
         }

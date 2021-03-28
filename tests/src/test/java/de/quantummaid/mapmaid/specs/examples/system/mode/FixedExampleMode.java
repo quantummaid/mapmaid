@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.specs.examples.system.mode;
 
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.reflectmaid.ResolvedType;
+import de.quantummaid.reflectmaid.GenericType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public final class FixedExampleMode implements ExampleMode {
     }
 
     @Override
-    public MapMaid provideMapMaid(final ResolvedType type) {
+    public MapMaid provideMapMaid(final GenericType<?> type) {
         final MapMaidBuilder mapMaidBuilder = aMapMaid();
         this.fix.accept(mapMaidBuilder);
         return mapMaidBuilder.build();

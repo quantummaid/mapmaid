@@ -26,6 +26,7 @@ import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.builder.recipes.scanner.ClassScannerRecipe.addAllReferencedClassesIn;
@@ -34,9 +35,10 @@ public final class UseCaseScanningSpecs {
 
     @Test
     public void twoScannedUseCasesCanProvideTheSameType() {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
         Given.given(() ->
-                MapMaid.aMapMaid()
-                        .usingRecipe(addAllReferencedClassesIn(UseCase1.class, UseCase2.class))
+                MapMaid.aMapMaid(reflectMaid)
+                        .usingRecipe(addAllReferencedClassesIn(reflectMaid, UseCase1.class, UseCase2.class))
                         .build()
         )
                 .when().theDefinitionsAreQueried()

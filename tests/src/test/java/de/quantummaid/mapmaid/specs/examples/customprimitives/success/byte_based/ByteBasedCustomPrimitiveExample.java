@@ -21,11 +21,8 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.byte_based;
 
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.byteBasedCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class ByteBasedCustomPrimitiveExample {
@@ -37,13 +34,12 @@ public final class ByteBasedCustomPrimitiveExample {
                 .withDeserializedForm(ByteCustomPrimitive.fromStringValue((byte) 1))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(byteBasedCustomPrimitive(ByteCustomPrimitive.class, ByteCustomPrimitive::fromStringValue)))
+                        mapMaidBuilder.deserializingByteBasedCustomPrimitive(ByteCustomPrimitive.class, ByteCustomPrimitive::fromStringValue))
                 .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(SerializationOnlyType.byteBasedCustomPrimitive(ByteCustomPrimitive.class, ByteCustomPrimitive::stringValue)))
+                        mapMaidBuilder.serializingByteBasedCustomPrimitive(ByteCustomPrimitive.class, ByteCustomPrimitive::stringValue))
                 .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                DuplexType.byteBasedCustomPrimitive(ByteCustomPrimitive.class, ByteCustomPrimitive::stringValue, ByteCustomPrimitive::fromStringValue)
-                        ))
+                        mapMaidBuilder.serializingAndDeserializingByteBasedCustomPrimitive(ByteCustomPrimitive.class, ByteCustomPrimitive::stringValue, ByteCustomPrimitive::fromStringValue)
+                        )
                 .run();
     }
 }

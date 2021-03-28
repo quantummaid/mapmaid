@@ -25,14 +25,13 @@ import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.specs.examples.customprimitives.success.deserialization_method_with_generics.Street.street;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
-import static de.quantummaid.reflectmaid.ResolvedType.resolvedType;
-import static de.quantummaid.reflectmaid.unresolved.UnresolvedType.unresolvedType;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 public final class DeserializationMethodWithGenericsExample {
 
     @Test
     public void deserializationMethodWithGenericsExample() {
-        scenarioBuilderFor(unresolvedType(Street.class).resolve(resolvedType(Object.class)))
+        scenarioBuilderFor(genericType(Street.class, Object.class))
                 .withSerializedForm("\"foo\"")
                 .withDeserializedForm(street("foo"))
                 .withAllScenariosSuccessful()

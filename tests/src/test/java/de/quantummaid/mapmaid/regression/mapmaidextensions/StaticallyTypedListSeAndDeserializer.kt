@@ -15,24 +15,32 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.GenericType
-import java.util.Optional
+import de.quantummaid.reflectmaid.ReflectMaid
+import java.util.*
 
-class StaticallyTypedListSeAndDeserializer(private val typeIdentifier: TypeIdentifier) : CustomType<List<*>> {
+class StaticallyTypedListSeAndDeserializer(private val genericType: GenericType<*>,
+                                           private val typeIdentifier: TypeIdentifier,
+                                           private val reflectMaid: ReflectMaid) : CustomType<List<*>> {
 
     companion object {
-        fun staticallyTypedListSeAndDeserializer(clazz: Class<*>): StaticallyTypedListSeAndDeserializer {
+        fun staticallyTypedListSeAndDeserializer(clazz: Class<*>, reflectMaid: ReflectMaid): StaticallyTypedListSeAndDeserializer {
+            val genericType = GenericType.genericType(clazz)
             return StaticallyTypedListSeAndDeserializer(
-                typeIdentifierFor(clazz),
+                    genericType,
+                    typeIdentifierFor(reflectMaid.resolve(genericType)),
+                    reflectMaid
             )
         }
     }
 
     override fun type(): TypeIdentifier {
         return typeIdentifierFor(
-            GenericType.genericType<Any>(
-                List::class.java,
-                GenericType.fromResolvedType<Any>(typeIdentifier.realType),
-            )
+                reflectMaid.resolve(
+                        GenericType.genericType<Any>(
+                                List::class.java,
+                                listOf(genericType)
+                        )
+                )
         )
     }
 
@@ -44,11 +52,11 @@ class StaticallyTypedListSeAndDeserializer(private val typeIdentifier: TypeIdent
 
             @Suppress("UNCHECKED_CAST")
             override fun serialize(
-                `object`: Any,
-                callback: SerializationCallback,
-                tracker: SerializationTracker,
-                customPrimitiveMappings: CustomPrimitiveMappings,
-                debugInformation: DebugInformation
+                    `object`: Any,
+                    callback: SerializationCallback,
+                    tracker: SerializationTracker,
+                    customPrimitiveMappings: CustomPrimitiveMappings,
+                    debugInformation: DebugInformation
             ): Universal {
                 val list = `object` as List<Any>
                 val serializedList = list.map {
@@ -72,13 +80,13 @@ class StaticallyTypedListSeAndDeserializer(private val typeIdentifier: TypeIdent
 
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any?> deserialize(
-                input: Universal,
-                exceptionTracker: ExceptionTracker,
-                injector: Injector,
-                callback: DeserializerCallback,
-                customPrimitiveMappings: CustomPrimitiveMappings,
-                typeIdentifier: TypeIdentifier,
-                debugInformation: DebugInformation
+                    input: Universal,
+                    exceptionTracker: ExceptionTracker,
+                    injector: Injector,
+                    callback: DeserializerCallback,
+                    customPrimitiveMappings: CustomPrimitiveMappings,
+                    typeIdentifier: TypeIdentifier,
+                    debugInformation: DebugInformation
             ): T {
                 val universalCollection = input as UniversalCollection
                 val list = universalCollection.content()

@@ -30,7 +30,6 @@ import de.quantummaid.reflectmaid.GenericType;
 
 import static de.quantummaid.mapmaid.builder.injection.FixedInjectionDeserializer.diDeserializer;
 import static de.quantummaid.mapmaid.builder.injection.InjectionDeserializer.injectionDeserializer;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 
 public interface InjectingBuilder {
@@ -40,10 +39,7 @@ public interface InjectingBuilder {
         return injecting(genericType);
     }
 
-    default MapMaidBuilder injecting(final GenericType<?> genericType) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(genericType);
-        return injecting(typeIdentifier);
-    }
+    MapMaidBuilder injecting(GenericType<?> genericType);
 
     default MapMaidBuilder injecting(final TypeIdentifier typeIdentifier) {
         final InjectionDeserializer deserializer = injectionDeserializer(typeIdentifier);
@@ -55,10 +51,7 @@ public interface InjectingBuilder {
         return injecting(genericType, injector);
     }
 
-    default <T> MapMaidBuilder injecting(final GenericType<T> genericType, final FixedInjector<T> injector) {
-        final TypeIdentifier typeIdentifier = typeIdentifierFor(genericType);
-        return injecting(typeIdentifier, injector);
-    }
+    <T> MapMaidBuilder injecting(GenericType<T> genericType, FixedInjector<T> injector);
 
     default MapMaidBuilder injecting(final TypeIdentifier typeIdentifier, final FixedInjector<?> injector) {
         final TypeDeserializer deserializer = diDeserializer(injector);

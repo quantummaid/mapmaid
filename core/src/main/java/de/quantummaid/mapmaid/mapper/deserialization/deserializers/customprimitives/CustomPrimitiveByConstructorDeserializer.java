@@ -22,9 +22,9 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.reflectmaid.ResolvedType;
-import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
-import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -48,22 +48,22 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
 
     public static TypeDeserializer createDeserializer(final ResolvedType type,
                                                       final ResolvedConstructor constructor) {
-        final int modifiers = constructor.constructor().getModifiers();
+        final int modifiers = constructor.getConstructor().getModifiers();
         if (isAbstract(modifiers)) {
             throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
                             "of type %s must not be abstract", constructor, type.description()));
         }
-        final List<ResolvedParameter> parameterTypes = constructor.parameters();
+        final List<ResolvedParameter> parameterTypes = constructor.getParameters();
         if (parameterTypes.size() != 1) {
             throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
                             "of type %s must only have one parameter", constructor, type.description()));
         }
-        if (constructor.constructor().getDeclaringClass() != type.assignableType()) {
+        if (constructor.getConstructor().getDeclaringClass() != type.assignableType()) {
             throw mapMaidException(format("The deserialization constructor %s configured for the custom primitive " +
                     "of type %s must return the custom primitive", constructor, type.description()));
         }
 
-        final ResolvedType baseType = parameterTypes.get(0).type();
+        final ResolvedType baseType = parameterTypes.get(0).getType();
         return new CustomPrimitiveByConstructorDeserializer(baseType, constructor);
     }
 
@@ -75,7 +75,7 @@ public final class CustomPrimitiveByConstructorDeserializer implements CustomPri
     @Override
     public Object deserialize(final Object value) throws Exception {
         try {
-            return this.constructor.constructor().newInstance(value);
+            return this.constructor.getConstructor().newInstance(value);
         } catch (final IllegalAccessException | IllegalArgumentException e) {
             throw mapMaidException(
                     format("Unexpected error invoking deserialization constructor %s for serialized custom primitive %s",

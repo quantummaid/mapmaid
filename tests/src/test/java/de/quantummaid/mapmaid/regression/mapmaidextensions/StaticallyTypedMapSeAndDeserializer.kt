@@ -12,41 +12,51 @@ import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker
 import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.GenericType
+import de.quantummaid.reflectmaid.ReflectMaid
 import java.util.*
 
 class StaticallyTypedMapSeAndDeserializer private constructor(
-    private val typeIdentifierKey: TypeIdentifier,
-    private val typeIdentifierValue: TypeIdentifier
+        private val key: GenericType<*>,
+        private val value: GenericType<*>,
+        private val typeIdentifierKey: TypeIdentifier,
+        private val typeIdentifierValue: TypeIdentifier,
+        private val reflectMaid: ReflectMaid
 ) : CustomType<Pair<*, *>> {
 
     companion object {
         fun staticallyTypedMapSeAndDeserializer(
-            keyClass: Class<*>,
-            valueClass: Class<*>
+                keyClass: Class<*>,
+                valueClass: Class<*>,
+                reflectMaid: ReflectMaid
         ): StaticallyTypedMapSeAndDeserializer {
-            return StaticallyTypedMapSeAndDeserializer(
-                TypeIdentifier.typeIdentifierFor(keyClass),
-                TypeIdentifier.typeIdentifierFor(valueClass)
-            )
+            val key = GenericType.genericType(keyClass)
+            val value = GenericType.genericType(valueClass)
+            return staticallyTypedMapSeAndDeserializer(key, value, reflectMaid)
         }
 
         fun staticallyTypedMapSeAndDeserializer(
-            typeIdentifierKey: TypeIdentifier,
-            typeIdentifierValue: TypeIdentifier
+                key: GenericType<*>,
+                value: GenericType<*>,
+                reflectMaid: ReflectMaid
         ): StaticallyTypedMapSeAndDeserializer {
-            return StaticallyTypedMapSeAndDeserializer(typeIdentifierKey, typeIdentifierValue)
+            return StaticallyTypedMapSeAndDeserializer(
+                    key,
+                    value,
+                    typeIdentifierFor(reflectMaid.resolve(key)),
+                    typeIdentifierFor(reflectMaid.resolve(value)),
+                    reflectMaid)
         }
     }
 
     override fun type(): TypeIdentifier {
-        return TypeIdentifier.typeIdentifierFor(
-            GenericType.genericType<Any>(
-                Map::class.java,
-                GenericType.fromResolvedType<Any>(typeIdentifierKey.realType),
-                GenericType.fromResolvedType<Any>(typeIdentifierValue.realType),
-            )
+        return typeIdentifierFor(
+                reflectMaid.resolve(GenericType.genericType<Any>(
+                        Map::class.java,
+                        listOf(key, value)
+                ))
         )
     }
 
@@ -58,26 +68,26 @@ class StaticallyTypedMapSeAndDeserializer private constructor(
 
             @Suppress("UNCHECKED_CAST")
             override fun serialize(
-                `object`: Any,
-                callback: SerializationCallback,
-                tracker: SerializationTracker,
-                customPrimitiveMappings: CustomPrimitiveMappings,
-                debugInformation: DebugInformation
+                    `object`: Any,
+                    callback: SerializationCallback,
+                    tracker: SerializationTracker,
+                    customPrimitiveMappings: CustomPrimitiveMappings,
+                    debugInformation: DebugInformation
             ): Universal {
                 val map = `object` as Map<Any, Any>
                 val serializedMap = map.entries
-                    .map {
-                        val universalKey = callback.serializeDefinition(typeIdentifierKey, it.key, tracker)
-                        val universalValue = callback.serializeDefinition(typeIdentifierValue, it.value, tracker)
-                        universalKey.toNativeJava().toString() to universalValue
-                    }
-                    .toMap()
+                        .map {
+                            val universalKey = callback.serializeDefinition(typeIdentifierKey, it.key, tracker)
+                            val universalValue = callback.serializeDefinition(typeIdentifierValue, it.value, tracker)
+                            universalKey.toNativeJava().toString() to universalValue
+                        }
+                        .toMap()
                 return UniversalObject.universalObject(serializedMap)
             }
 
             override fun description(): String {
                 return "Serializer for Map" +
-                    "<${typeIdentifierKey.description()}, ${typeIdentifierValue.description()}>"
+                        "<${typeIdentifierKey.description()}, ${typeIdentifierValue.description()}>"
             }
         })
     }
@@ -90,43 +100,43 @@ class StaticallyTypedMapSeAndDeserializer private constructor(
 
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any?> deserialize(
-                input: Universal,
-                exceptionTracker: ExceptionTracker,
-                injector: Injector,
-                callback: DeserializerCallback,
-                customPrimitiveMappings: CustomPrimitiveMappings,
-                typeIdentifier: TypeIdentifier,
-                debugInformation: DebugInformation
+                    input: Universal,
+                    exceptionTracker: ExceptionTracker,
+                    injector: Injector,
+                    callback: DeserializerCallback,
+                    customPrimitiveMappings: CustomPrimitiveMappings,
+                    typeIdentifier: TypeIdentifier,
+                    debugInformation: DebugInformation
             ): T {
                 val universalObject = input as UniversalObject
                 val serializedMap = universalObject.toNativeJava() as Map<String, Any>
                 val map = serializedMap.entries
-                    .map {
-                        val keyUniversal = Universal.fromNativeJava(it.key)
-                        val deserializedKey = callback.deserializeRecursive(
-                            keyUniversal,
-                            typeIdentifierKey,
-                            exceptionTracker,
-                            injector,
-                            debugInformation
-                        )
-                        val valueUniversal = Universal.fromNativeJava(it.value)
-                        val deserializedValue = callback.deserializeRecursive(
-                            valueUniversal,
-                            typeIdentifierValue,
-                            exceptionTracker,
-                            injector,
-                            debugInformation
-                        )
-                        deserializedKey to deserializedValue
-                    }
-                    .toMap()
+                        .map {
+                            val keyUniversal = Universal.fromNativeJava(it.key)
+                            val deserializedKey = callback.deserializeRecursive(
+                                    keyUniversal,
+                                    typeIdentifierKey,
+                                    exceptionTracker,
+                                    injector,
+                                    debugInformation
+                            )
+                            val valueUniversal = Universal.fromNativeJava(it.value)
+                            val deserializedValue = callback.deserializeRecursive(
+                                    valueUniversal,
+                                    typeIdentifierValue,
+                                    exceptionTracker,
+                                    injector,
+                                    debugInformation
+                            )
+                            deserializedKey to deserializedValue
+                        }
+                        .toMap()
                 return map as T
             }
 
             override fun description(): String {
                 return "Deserializer for Map" +
-                    "<${typeIdentifierKey.description()}, ${typeIdentifierValue.description()}>"
+                        "<${typeIdentifierKey.description()}, ${typeIdentifierValue.description()}>"
             }
         })
     }

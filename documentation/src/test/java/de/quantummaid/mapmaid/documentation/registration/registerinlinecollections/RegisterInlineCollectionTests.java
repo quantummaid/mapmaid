@@ -22,9 +22,6 @@
 package de.quantummaid.mapmaid.documentation.registration.registerinlinecollections;
 
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -39,12 +36,11 @@ public class RegisterInlineCollectionTests {
     void registeringDuplexInlineCollections() {
         //Showcase start inlineCollectionDuplexConfig
         final MapMaid mapMaid = aMapMaid()
-                .serializingAndDeserializing(
-                        DuplexType.inlinedCollection(
-                                MyCustomCollection.class,
-                                String.class,
-                                MyCustomCollection::getValues,
-                                MyCustomCollection::new)
+                .serializingAndDeserializingInlinedCollection(
+                        MyCustomCollection.class,
+                        String.class,
+                        MyCustomCollection::getValues,
+                        MyCustomCollection::new
                 )
                 .build();
         //Showcase end inlineCollectionDuplexConfig
@@ -58,11 +54,10 @@ public class RegisterInlineCollectionTests {
     void registeringSerializingOnlyInlineCollections() {
         //Showcase start inlineCollectionSerializingConfig
         final MapMaid mapMaid = aMapMaid()
-                .serializing(
-                        SerializationOnlyType.inlinedCollection(
-                                MyCustomCollection.class,
-                                String.class,
-                                MyCustomCollection::getValues)
+                .serializingInlinedCollection(
+                        MyCustomCollection.class,
+                        String.class,
+                        MyCustomCollection::getValues
                 )
                 .build();
         //Showcase end inlineCollectionSerializingConfig
@@ -74,11 +69,10 @@ public class RegisterInlineCollectionTests {
     void registeringDeserializingInlineCollections() {
         //Showcase start inlineCollectionDeserializingConfig
         final MapMaid mapMaid = aMapMaid()
-                .deserializing(
-                        DeserializationOnlyType.inlinedCollection(
-                                MyCustomCollection.class,
-                                String.class,
-                                MyCustomCollection::new)
+                .deserializingInlinedCollection(
+                        MyCustomCollection.class,
+                        String.class,
+                        MyCustomCollection::new
                 )
                 .build();
         //Showcase end inlineCollectionDeserializingConfig

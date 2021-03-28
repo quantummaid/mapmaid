@@ -23,10 +23,11 @@ package de.quantummaid.mapmaid.builder.recipes.scanner;
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.reflectmaid.ClassType;
 import de.quantummaid.reflectmaid.GenericType;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
-import de.quantummaid.reflectmaid.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ClassType;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,6 @@ import java.util.List;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.deserialization;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.serialization;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static de.quantummaid.reflectmaid.ClassType.fromClassWithoutGenerics;
-import static de.quantummaid.reflectmaid.GenericType.fromResolvedType;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
@@ -55,13 +54,16 @@ public final class ClassScannerRecipe implements Recipe {
             .map(Method::getName)
             .collect(toList());
 
+    private final ReflectMaid reflectMaid;
     private final Collection<Class<?>> classes;
     private final Collection<Class<?>> serializationExclusions;
     private final Collection<Class<?>> deserializationExclusions;
 
-    public static ClassScannerRecipe addAllReferencedClassesIn(final Class<?>... classes) {
+    public static ClassScannerRecipe addAllReferencedClassesIn(final ReflectMaid reflectMaid,
+                                                               final Class<?>... classes) {
         validateNotNull(classes, "classes");
-        return new ClassScannerRecipe(asList(classes), emptyList(), emptyList());
+        validateNotNull(reflectMaid, "reflectMaid");
+        return new ClassScannerRecipe(reflectMaid, asList(classes), emptyList(), emptyList());
     }
 
     @Override
@@ -71,15 +73,15 @@ public final class ClassScannerRecipe implements Recipe {
 
     private void addReferencesIn(final Class<?> clazz,
                                  final MapMaidBuilder builder) {
-        final ClassType fullType = fromClassWithoutGenerics(clazz);
+        final ClassType fullType = (ClassType) reflectMaid.resolve(clazz);
         final List<ResolvedMethod> methods = fullType.methods();
         for (final ResolvedMethod method : methods) {
             if (!method.isPublic()) {
                 continue;
             }
-            if (!OBJECT_METHODS.contains(method.method().getName())) {
-                method.parameters().stream()
-                        .map(ResolvedParameter::type)
+            if (!OBJECT_METHODS.contains(method.getMethod().getName())) {
+                method.getParameters().stream()
+                        .map(ResolvedParameter::getType)
                         .filter(type -> !this.deserializationExclusions.contains(type.assignableType()))
                         .map(GenericType::fromResolvedType)
                         .forEach(type -> builder.withType(
@@ -89,7 +91,7 @@ public final class ClassScannerRecipe implements Recipe {
                     if (this.serializationExclusions.contains(type.assignableType())) {
                         return;
                     }
-                    final GenericType<?> genericType = fromResolvedType(type);
+                    final GenericType<?> genericType = GenericType.fromResolvedType(type);
                     builder.withType(
                             genericType,
                             serialization(),

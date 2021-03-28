@@ -14,50 +14,66 @@ import de.quantummaid.mapmaid.mapper.universal.UniversalObject
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.GenericType
-import java.util.Optional
+import de.quantummaid.reflectmaid.ReflectMaid
+import java.util.*
 
 class PairSeAndDeserializer(
-    private val typeIdentifierFirst: TypeIdentifier,
-    private val typeIdentifierSecond: TypeIdentifier
+        private val first: GenericType<*>,
+        private val second: GenericType<*>,
+        private val typeIdentifierFirst: TypeIdentifier,
+        private val typeIdentifierSecond: TypeIdentifier,
+        private val reflectMaid: ReflectMaid
 ) : CustomType<Pair<*, *>> {
+
+    companion object {
+        fun pairSeAndDeserializer(first: GenericType<*>, second: GenericType<*>, reflectMaid: ReflectMaid): PairSeAndDeserializer {
+            val typeIdentifierFirst = TypeIdentifier.typeIdentifierFor(reflectMaid.resolve(first))
+            val typeIdentifierSecond = TypeIdentifier.typeIdentifierFor(reflectMaid.resolve(second))
+            return PairSeAndDeserializer(first, second, typeIdentifierFirst, typeIdentifierSecond, reflectMaid)
+        }
+    }
+
     override fun type(): TypeIdentifier {
-        return TypeIdentifier.typeIdentifierFor(
-            GenericType.genericType<Pair<*, *>>(
+        val genericType: GenericType<*> = GenericType.genericType<Pair<*, *>>(
                 Pair::class.java,
-                GenericType.fromResolvedType<Any>(typeIdentifierFirst.realType),
-                GenericType.fromResolvedType<Any>(typeIdentifierSecond.realType),
-            )
+                listOf(first, second)
         )
+        val resolvedType = reflectMaid.resolve(genericType)
+        return TypeIdentifier.typeIdentifierFor(resolvedType)
     }
 
     override fun serializer(): Optional<TypeSerializer> {
         return Optional.of(object : TypeSerializer {
+
             override fun requiredTypes(): MutableList<TypeIdentifier> {
-                return mutableListOf(typeIdentifierFirst, typeIdentifierSecond)
+                return mutableListOf(
+                        typeIdentifierFirst,
+                        typeIdentifierSecond
+                )
             }
 
             @Suppress("UNCHECKED_CAST")
             override fun serialize(
-                `object`: Any,
-                callback: SerializationCallback,
-                tracker: SerializationTracker,
-                customPrimitiveMappings: CustomPrimitiveMappings,
-                debugInformation: DebugInformation
+                    `object`: Any,
+                    callback: SerializationCallback,
+                    tracker: SerializationTracker,
+                    customPrimitiveMappings: CustomPrimitiveMappings,
+                    debugInformation: DebugInformation
             ): Universal {
                 val (first, second) = `object` as Pair<Any, Any>
                 val serializedFirst = callback.serializeDefinition(typeIdentifierFirst, first, tracker)
                 val serializedSecond = callback.serializeDefinition(typeIdentifierSecond, second, tracker)
                 return Universal.fromNativeJava(
-                    mapOf(
-                        "first" to serializedFirst.toNativeJava().toString(),
-                        "second" to serializedSecond.toNativeJava().toString()
-                    )
+                        mapOf(
+                                "first" to serializedFirst.toNativeJava().toString(),
+                                "second" to serializedSecond.toNativeJava().toString()
+                        )
                 )
             }
 
             override fun description(): String {
                 return "Serializer for pair of type " +
-                    "<${typeIdentifierFirst.description()}, ${typeIdentifierSecond.description()}>"
+                        "<${typeIdentifierFirst.description()}, ${typeIdentifierSecond.description()}>"
             }
         })
     }
@@ -70,43 +86,43 @@ class PairSeAndDeserializer(
 
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any?> deserialize(
-                input: Universal,
-                exceptionTracker: ExceptionTracker,
-                injector: Injector,
-                callback: DeserializerCallback,
-                customPrimitiveMappings: CustomPrimitiveMappings,
-                typeIdentifier: TypeIdentifier,
-                debugInformation: DebugInformation
+                    input: Universal,
+                    exceptionTracker: ExceptionTracker,
+                    injector: Injector,
+                    callback: DeserializerCallback,
+                    customPrimitiveMappings: CustomPrimitiveMappings,
+                    typeIdentifier: TypeIdentifier,
+                    debugInformation: DebugInformation
             ): T {
                 val universalObject = TypeDeserializer.castSafely(
-                    input,
-                    UniversalObject::class.java,
-                    exceptionTracker,
-                    typeIdentifier,
-                    debugInformation
+                        input,
+                        UniversalObject::class.java,
+                        exceptionTracker,
+                        typeIdentifier,
+                        debugInformation
                 )
                 val serializedFirst = universalObject.getField("first").orElseThrow()
                 val first = callback.deserializeRecursive(
-                    serializedFirst,
-                    typeIdentifierFirst,
-                    exceptionTracker,
-                    injector,
-                    debugInformation
+                        serializedFirst,
+                        typeIdentifierFirst,
+                        exceptionTracker,
+                        injector,
+                        debugInformation
                 )
                 val serializedSecond = universalObject.getField("second").orElseThrow()
                 val second = callback.deserializeRecursive(
-                    serializedSecond,
-                    typeIdentifierSecond,
-                    exceptionTracker,
-                    injector,
-                    debugInformation
+                        serializedSecond,
+                        typeIdentifierSecond,
+                        exceptionTracker,
+                        injector,
+                        debugInformation
                 )
                 return Pair(first, second) as T
             }
 
             override fun description(): String {
                 return "Deserializer for pair of type " +
-                    "<${typeIdentifierFirst.description()}, ${typeIdentifierSecond.description()}>"
+                        "<${typeIdentifierFirst.description()}, ${typeIdentifierSecond.description()}>"
             }
         })
     }

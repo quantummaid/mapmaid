@@ -21,11 +21,8 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.short_based;
 
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.shortBasedCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class ShortBasedCustomPrimitiveExample {
@@ -37,13 +34,12 @@ public final class ShortBasedCustomPrimitiveExample {
                 .withDeserializedForm(ShortCustomPrimitive.fromStringValue((short) 1))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(shortBasedCustomPrimitive(ShortCustomPrimitive.class, ShortCustomPrimitive::fromStringValue)))
+                        mapMaidBuilder.deserializingShortBasedCustomPrimitive(ShortCustomPrimitive.class, ShortCustomPrimitive::fromStringValue))
                 .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(SerializationOnlyType.shortBasedCustomPrimitive(ShortCustomPrimitive.class, ShortCustomPrimitive::stringValue)))
+                        mapMaidBuilder.serializingShortBasedCustomPrimitive(ShortCustomPrimitive.class, ShortCustomPrimitive::stringValue))
                 .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                DuplexType.shortBasedCustomPrimitive(ShortCustomPrimitive.class, ShortCustomPrimitive::stringValue, ShortCustomPrimitive::fromStringValue)
-                        ))
+                        mapMaidBuilder.serializingAndDeserializingShortBasedCustomPrimitive(ShortCustomPrimitive.class, ShortCustomPrimitive::stringValue, ShortCustomPrimitive::fromStringValue)
+                        )
                 .run();
     }
 }

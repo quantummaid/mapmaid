@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.specs.examples.special.non_static_inner_class;
 import de.quantummaid.mapmaid.specs.examples.special.non_static_inner_class.OuterClass.NonStaticInnerClass;
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.customPrimitive;
+import static de.quantummaid.mapmaid.specs.examples.Util.registerCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class NonStaticInnerClassExample {
@@ -41,8 +41,13 @@ public final class NonStaticInnerClassExample {
                         "cannot be detected because it is a non-static inner class (you can still register it manually)")
                 .withDuplexFailing("type 'de.quantummaid.mapmaid.specs.examples.special.non_static_inner_class.OuterClass$NonStaticInnerClass' " +
                         "cannot be detected because it is a non-static inner class (you can still register it manually)")
-                .withManual((mapMaidBuilder, requiredCapabilities) -> mapMaidBuilder
-                        .withCustomType(requiredCapabilities, customPrimitive(NonStaticInnerClass.class, object -> "foo", value -> outerClass.new NonStaticInnerClass(value))))
+                .withManual((mapMaidBuilder, requiredCapabilities) -> registerCustomPrimitive(
+                        requiredCapabilities,
+                        mapMaidBuilder,
+                        NonStaticInnerClass.class,
+                        object -> "foo",
+                        value -> outerClass.new NonStaticInnerClass(value))
+                )
                 .run();
     }
 }

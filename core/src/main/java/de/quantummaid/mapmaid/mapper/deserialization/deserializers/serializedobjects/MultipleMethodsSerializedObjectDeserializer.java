@@ -25,8 +25,8 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
-import de.quantummaid.reflectmaid.resolver.ResolvedConstructor;
-import de.quantummaid.reflectmaid.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -57,18 +57,18 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
                 .stream().collect(
                         toMap(
                                 Entry::getKey,
-                                e -> RealTypeIdentifier.realTypeIdentifier(e.getValue().parameters().get(0).type())));
+                                e -> RealTypeIdentifier.realTypeIdentifier(e.getValue().getParameters().get(0).getType())));
         final DeserializationFields deserializationFields = deserializationFields(fieldMap);
         return new MultipleMethodsSerializedObjectDeserializer(deserializationFields, constructor, methods);
     }
 
     @Override
     public Object deserialize(final Map<String, Object> elements) throws Exception {
-        final Constructor<?> realConstructor = this.constructor.constructor();
+        final Constructor<?> realConstructor = this.constructor.getConstructor();
         final Object instance = realConstructor.newInstance();
         for (final Entry<String, Object> entry : elements.entrySet()) {
             final ResolvedMethod method = this.methods.get(entry.getKey());
-            final Method realMethod = method.method();
+            final Method realMethod = method.getMethod();
             realMethod.invoke(instance, entry.getValue());
         }
         return instance;

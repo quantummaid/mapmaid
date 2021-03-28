@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.specs.examples.customprimitives.success.hashcode;
 
 import org.junit.jupiter.api.Test;
 
-import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.intBasedCustomPrimitive;
+import static de.quantummaid.mapmaid.specs.examples.Util.registerIntBasedCustomPrimitive;
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
 public final class HashCodeExample {
@@ -34,13 +34,13 @@ public final class HashCodeExample {
                 .withSerializedForm("7")
                 .withDeserializedForm(HashCodeCustomPrimitive.hashCodeCustomPrimitive(7))
                 .withDeserializationOnly()
-                .withManual((mapMaidBuilder, capabilities) -> {
-                    mapMaidBuilder.withCustomType(capabilities, intBasedCustomPrimitive(
-                            HashCodeCustomPrimitive.class,
-                            HashCodeCustomPrimitive::hashCode,
-                            HashCodeCustomPrimitive::hashCodeCustomPrimitive
-                    ));
-                })
+                .withManual((mapMaidBuilder, capabilities) -> registerIntBasedCustomPrimitive(
+                        capabilities,
+                        mapMaidBuilder,
+                        HashCodeCustomPrimitive.class,
+                        HashCodeCustomPrimitive::hashCode,
+                        HashCodeCustomPrimitive::hashCodeCustomPrimitive
+                ))
                 .run();
     }
 }

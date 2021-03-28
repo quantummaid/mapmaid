@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class UniversalTypeSpecs {
@@ -40,7 +39,7 @@ public final class UniversalTypeSpecs {
                         .serializing(ANumber.class)
                         .build()
         )
-                .when().mapMaidSerializesToUniversalObject(ANumber.fromInt(2), typeIdentifierFor(ANumber.class))
+                .when().mapMaidSerializesToUniversalObject(ANumber.fromInt(2), ANumber.class)
                 .theSerializationResultWas("2");
     }
 

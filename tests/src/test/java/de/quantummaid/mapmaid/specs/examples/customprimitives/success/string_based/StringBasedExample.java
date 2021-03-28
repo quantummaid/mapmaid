@@ -21,9 +21,6 @@
 
 package de.quantummaid.mapmaid.specs.examples.customprimitives.success.string_based;
 
-import de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType;
-import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
-import de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
@@ -37,13 +34,12 @@ public final class StringBasedExample {
                 .withDeserializedForm(Quantity.fromStringValue("1.0"))
                 .withAllScenariosSuccessful()
                 .withManualDeserialization(mapMaidBuilder ->
-                        mapMaidBuilder.deserializing(DeserializationOnlyType.stringBasedCustomPrimitive(Quantity.class, Quantity::fromStringValue)))
+                        mapMaidBuilder.deserializingStringBasedCustomPrimitive(Quantity.class, Quantity::fromStringValue))
                 .withManualSerialization(mapMaidBuilder ->
-                        mapMaidBuilder.serializing(SerializationOnlyType.stringBasedCustomPrimitive(Quantity.class, Quantity::stringValue)))
+                        mapMaidBuilder.serializingStringBasedCustomPrimitive(Quantity.class, Quantity::stringValue))
                 .withManualDuplex(mapMaidBuilder ->
-                        mapMaidBuilder.serializingAndDeserializing(
-                                DuplexType.stringBasedCustomPrimitive(Quantity.class, Quantity::stringValue, Quantity::fromStringValue)
-                        ))
+                        mapMaidBuilder.serializingAndDeserializingStringBasedCustomPrimitive(Quantity.class, Quantity::stringValue, Quantity::fromStringValue)
+                        )
                 .run();
     }
 }
