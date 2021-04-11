@@ -48,7 +48,7 @@ public final class ModifierFieldDetector implements FieldDetector {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        return ((ClassType) type).fields().stream()
+        return type.fields().stream()
                 .map(resolvedField -> SerializationField.fromField(type, resolvedField))
                 .collect(toList());
     }

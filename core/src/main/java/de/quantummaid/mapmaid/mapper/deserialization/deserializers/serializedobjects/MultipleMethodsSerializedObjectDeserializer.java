@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
@@ -32,8 +33,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -47,7 +48,9 @@ import static java.util.stream.Collectors.toMap;
 public final class MultipleMethodsSerializedObjectDeserializer implements SerializedObjectDeserializer {
     private final DeserializationFields deserializationFields;
     private final ResolvedConstructor constructor;
+    private final Executor constructorExecutor;
     private final Map<String, ResolvedMethod> methods;
+    private final Map<String, Executor> methodExecutors;
 
     public static SerializedObjectDeserializer multipleMethodsSerializedObjectDeserializer(final ResolvedConstructor constructor,
                                                                                            final Map<String, ResolvedMethod> methods) {
@@ -59,17 +62,18 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
                                 Entry::getKey,
                                 e -> RealTypeIdentifier.realTypeIdentifier(e.getValue().getParameters().get(0).getType())));
         final DeserializationFields deserializationFields = deserializationFields(fieldMap);
-        return new MultipleMethodsSerializedObjectDeserializer(deserializationFields, constructor, methods);
+        final Map<String, Executor> methodExecutors = new LinkedHashMap<>(methods.size());
+        methods.forEach((name, method) -> methodExecutors.put(name, method.createExecutor()));
+        final Executor constructorExecutor = constructor.createExecutor();
+        return new MultipleMethodsSerializedObjectDeserializer(deserializationFields, constructor, constructorExecutor, methods, methodExecutors);
     }
 
     @Override
     public Object deserialize(final Map<String, Object> elements) throws Exception {
-        final Constructor<?> realConstructor = this.constructor.getConstructor();
-        final Object instance = realConstructor.newInstance();
+        final Object instance = constructorExecutor.execute(null, List.of());
         for (final Entry<String, Object> entry : elements.entrySet()) {
-            final ResolvedMethod method = this.methods.get(entry.getKey());
-            final Method realMethod = method.getMethod();
-            realMethod.invoke(instance, entry.getValue());
+            final Executor method = this.methodExecutors.get(entry.getKey());
+            method.execute(instance, List.of(entry.getValue()));
         }
         return instance;
     }
@@ -81,10 +85,10 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
 
     @Override
     public String description() {
-        final String joinedMethods = this.methods.values().stream()
+        final String joinedMethods = methods.values().stream()
                 .map(ResolvedMethod::describe)
                 .collect(joining(", ", "[", "]"));
         return "as serialized object by calling the constructor '" +
-                this.constructor.describe() + "' and then calling the methods: " + joinedMethods;
+                constructor.describe() + "' and then calling the methods: " + joinedMethods;
     }
 }

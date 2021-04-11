@@ -22,40 +22,37 @@
 package de.quantummaid.mapmaid.builder.detection.serializedobject.fields;
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.reflectmaid.Executor;
+import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GetterFieldQuery implements SerializationFieldQuery {
-    private final Method method;
+    private final ResolvedMethod method;
+    private final Executor executor;
 
-    public static SerializationFieldQuery getterFieldQuery(final Method method) {
-        NotNullValidator.validateNotNull(method, "method");
-        return new GetterFieldQuery(method);
+    public static SerializationFieldQuery getterFieldQuery(final ResolvedMethod method) {
+        validateNotNull(method, "method");
+        final Executor executor = method.createExecutor();
+        return new GetterFieldQuery(method, executor);
     }
 
     @Override
     public Object query(final Object object) {
-        try {
-            return this.method.invoke(object);
-        } catch (final InvocationTargetException | IllegalAccessException e) {
-            throw mapMaidException(format("Unable to call '%s' on object '%s'", this.method.getName(), object), e);
-        }
+        return executor.execute(object, emptyList());
     }
 
     @Override
     public String describe() {
-        return format("getter method '%s'", this.method.getName());
+        return format("getter method '%s'", this.method.describe());
     }
 }

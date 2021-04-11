@@ -119,7 +119,7 @@ public final class MapMaidBuilder implements
     private final List<ManuallyAddedState> manuallyAddedStates = new ArrayList<>();
     private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
     private final Processor processor = processor();
-    private final AdvancedBuilder advancedBuilder = advancedBuilder();
+    private final AdvancedBuilder advancedBuilder;
     private final List<Recipe> recipes = smallList();
     private final ValidationMappings validationMappings = ValidationMappings.empty();
     private final ValidationErrorsMapping validationErrorsMapping = validationErrors -> {
@@ -127,7 +127,8 @@ public final class MapMaidBuilder implements
     };
 
     public static MapMaidBuilder mapMaidBuilder(final ReflectMaid reflectMaid) {
-        return new MapMaidBuilder(reflectMaid);
+        final AdvancedBuilder advancedBuilder = advancedBuilder(reflectMaid);
+        return new MapMaidBuilder(reflectMaid, advancedBuilder);
     }
 
     @SafeVarargs

@@ -30,13 +30,11 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldQuery.getterFieldQuery;
 import static java.lang.String.valueOf;
 import static java.lang.Void.TYPE;
-import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.US;
 import static java.util.stream.Collectors.toList;
@@ -55,16 +53,15 @@ public final class GetterFieldDetector implements FieldDetector {
         if (!(type instanceof ClassType)) {
             return emptyList();
         }
-        return ((ClassType) type).methods().stream()
-                .filter(resolvedMethod -> resolvedMethod.getMethod().getName().startsWith("get"))
-                .filter(resolvedMethod -> !isStatic(resolvedMethod.getMethod().getModifiers()))
+        return type.methods().stream()
+                .filter(resolvedMethod -> resolvedMethod.name().startsWith("get"))
+                .filter(resolvedMethod -> !resolvedMethod.isStatic())
                 .filter(resolvedMethod -> resolvedMethod.getMethod().getReturnType() != TYPE)
                 .filter(resolvedMethod -> resolvedMethod.getParameters().isEmpty())
                 .map(resolvedMethod -> {
                     final ResolvedType resolvedType = resolvedMethod.returnType().orElseThrow();
-                    final Method method = resolvedMethod.getMethod();
-                    final String name = extractGetterFieldName(method.getName());
-                    final SerializationFieldQuery query = getterFieldQuery(method);
+                    final String name = extractGetterFieldName(resolvedMethod.name());
+                    final SerializationFieldQuery query = getterFieldQuery(resolvedMethod);
                     return SerializationField.serializationField(resolvedType, name, query);
                 })
                 .collect(toList());

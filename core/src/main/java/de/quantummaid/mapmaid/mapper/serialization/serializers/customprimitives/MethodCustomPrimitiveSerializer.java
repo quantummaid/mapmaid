@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives;
 
+import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import lombok.AccessLevel;
@@ -28,11 +29,11 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 
 @ToString
 @EqualsAndHashCode
@@ -40,6 +41,7 @@ import static java.lang.String.format;
 public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSerializer {
     private final ResolvedType baseType;
     private final ResolvedMethod serializationMethod;
+    private final Executor executor;
 
     public static CustomPrimitiveSerializer createSerializer(final ResolvedType type,
                                                              final ResolvedMethod serializationMethod) {
@@ -56,20 +58,13 @@ public final class MethodCustomPrimitiveSerializer implements CustomPrimitiveSer
         final ResolvedType baseType = serializationMethod.returnType()
                 .orElseThrow(() -> mapMaidException(format("The serialization method %s configured for the custom primitive " +
                         "of type %s must not be void", serializationMethod, type.description())));
-        return new MethodCustomPrimitiveSerializer(baseType, serializationMethod);
+        final Executor executor = serializationMethod.createExecutor();
+        return new MethodCustomPrimitiveSerializer(baseType, serializationMethod, executor);
     }
 
     @Override
     public Object serialize(final Object object) {
-        try {
-            return this.serializationMethod.getMethod().invoke(object);
-        } catch (final IllegalAccessException e) {
-            throw mapMaidException(format("This should never happen. Called serialization method %s for custom type %s on instance %s",
-                    this.serializationMethod, object.getClass(), object), e);
-        } catch (final InvocationTargetException e) {
-            throw mapMaidException(format("Got exception calling serialization method %s for custom type %s on instance %s",
-                    this.serializationMethod, object.getClass(), object), e);
-        }
+        return executor.execute(object, emptyList());
     }
 
     @Override

@@ -21,13 +21,13 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries;
 
+import de.quantummaid.reflectmaid.Getter;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedField;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @ToString
@@ -35,18 +35,16 @@ import static java.lang.String.format;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PublicFieldQuery implements SerializationFieldQuery {
     private final ResolvedField field;
+    private final Getter getter;
 
     public static SerializationFieldQuery publicFieldQuery(final ResolvedField field) {
-        return new PublicFieldQuery(field);
+        final Getter getter = field.createGetter();
+        return new PublicFieldQuery(field, getter);
     }
 
     @Override
     public Object query(final Object object) {
-        try {
-            return this.field.getField().get(object);
-        } catch (final IllegalAccessException e) {
-            throw mapMaidException(format("Failed to query field '%s'", this.field.describe()), e);
-        }
+        return getter.get(object);
     }
 
     public ResolvedField field() {

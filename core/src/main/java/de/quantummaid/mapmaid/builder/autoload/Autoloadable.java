@@ -21,9 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.autoload;
 
+import de.quantummaid.reflectmaid.ReflectMaid;
+
 import java.util.Optional;
 
 @FunctionalInterface
 public interface Autoloadable<T> {
-    Optional<T> autoload();
+    Optional<T> autoload(ReflectMaid reflectMaid);
 }
