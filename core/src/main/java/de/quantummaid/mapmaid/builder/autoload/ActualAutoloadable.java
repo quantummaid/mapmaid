@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.autoload;
 
+import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public final class ActualAutoloadable<T> implements Autoloadable<T> {
     }
 
     @Override
-    public Optional<T> autoload() {
-        return Autoloader.autoload(this.fullyQualifiedDomainName);
+    public Optional<T> autoload(final ReflectMaid reflectMaid) {
+        return Autoloader.autoload(this.fullyQualifiedDomainName, reflectMaid);
     }
 }

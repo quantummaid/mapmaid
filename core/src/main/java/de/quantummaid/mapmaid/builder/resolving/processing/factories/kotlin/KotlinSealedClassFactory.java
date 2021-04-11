@@ -29,16 +29,12 @@ import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.ReflectMaid;
-import kotlin.jvm.JvmClassMappingKt;
-import kotlin.reflect.KClass;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.kotlin.KotlinUtils.isKotlinClass;
-import static de.quantummaid.mapmaid.builder.kotlin.KotlinUtils.kotlinClassOf;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
@@ -64,17 +60,12 @@ public final class KotlinSealedClassFactory implements StateFactory {
             return empty();
         }
         final ResolvedType resolvedType = type.getRealType();
-        if (!isKotlinClass(resolvedType)) {
-            return empty();
-        }
-        final KClass<?> kotlinClass = kotlinClassOf(resolvedType);
-        if (!kotlinClass.isSealed()) {
+        final List<ResolvedType> sealedSubclasses = resolvedType.sealedSubclasses();
+        if (sealedSubclasses.isEmpty()) {
             return empty();
         }
 
-        final List<TypeIdentifier> subtypes = kotlinClass.getSealedSubclasses().stream()
-                .map(JvmClassMappingKt::getJavaClass)
-                .map(reflectMaid::resolve)
+        final List<TypeIdentifier> subtypes = sealedSubclasses.stream()
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
         final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subtypes, mapMaidConfiguration);

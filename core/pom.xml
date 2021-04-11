@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.10.1</version>
+        <version>0.10.2</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -65,13 +65,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.18</version>
+            <version>1.18.20</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.reflectmaid</groupId>
-            <artifactId>reflectmaid-parent</artifactId>
-            <version>0.2.3</version>
+            <artifactId>reflectmaid-core</artifactId>
+            <version>0.2.7</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

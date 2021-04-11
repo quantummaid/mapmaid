@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedob
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +53,7 @@ import static java.util.stream.Collectors.toList;
 public final class MethodSerializedObjectDeserializer implements SerializedObjectDeserializer {
     private final DeserializationFields fields;
     private final ResolvedMethod factoryMethod;
+    private final Executor executor;
     private final List<String> parameterNames;
 
     public static SerializedObjectDeserializer methodDeserializer(final ClassType type,
@@ -70,16 +73,18 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
                         ResolvedParameter::name,
                         resolvedParameter -> realTypeIdentifier(resolvedParameter.getType())
                 ));
-        return new MethodSerializedObjectDeserializer(deserializationFields(parameterFields), factoryMethod, parameterNames);
+        final Executor executor = factoryMethod.createExecutor();
+        return new MethodSerializedObjectDeserializer(deserializationFields(parameterFields), factoryMethod, executor, parameterNames);
     }
 
     @Override
     public Object deserialize(final Map<String, Object> elements) throws Exception {
-        final Object[] arguments = new Object[this.parameterNames.size()];
-        for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = elements.get(this.parameterNames.get(i));
+        final List<Object> parameters = new ArrayList<>(parameterNames.size());
+        for (final String parameterName : parameterNames) {
+            final Object parameter = elements.get(parameterName);
+            parameters.add(parameter);
         }
-        return this.factoryMethod.getMethod().invoke(null, arguments);
+        return executor.execute(null, parameters);
     }
 
     @Override

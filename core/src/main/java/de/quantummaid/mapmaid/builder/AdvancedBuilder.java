@@ -33,6 +33,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -61,6 +62,7 @@ public final class AdvancedBuilder {
     private static final List<Autoloadable<MarshallerAndUnmarshaller<?>>> AUTOLOADABLE_MARSHALLERS = List.of(
             autoloadIfClassPresent("de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller")
     );
+    private final ReflectMaid reflectMaid;
     private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
     private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
     private Map<MarshallingType<?>, Marshaller<?>> marshallerMap = smallMap();
@@ -69,8 +71,8 @@ public final class AdvancedBuilder {
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
 
-    public static AdvancedBuilder advancedBuilder() {
-        return new AdvancedBuilder();
+    public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
+        return new AdvancedBuilder(reflectMaid);
     }
 
     public AdvancedBuilder withTypeIdentifierKey(final String typeIdentifierKey) {
@@ -197,7 +199,7 @@ public final class AdvancedBuilder {
     private List<MarshallerAndUnmarshaller<?>> autoloadMarshallers() {
         final Map<MarshallingType<?>, List<MarshallerAndUnmarshaller<?>>> foundByMarshallingTypes =
                 AUTOLOADABLE_MARSHALLERS.stream()
-                        .map(Autoloadable::autoload)
+                        .map(autoloadable -> autoloadable.autoload(reflectMaid))
                         .flatMap(Optional::stream)
                         .collect(groupingBy(MarshallerAndUnmarshaller::marshallingType));
 

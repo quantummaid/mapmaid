@@ -86,7 +86,7 @@ public final class RootCauseSpecs {
                         .build()
         )
                 .when().mapMaidIsInstantiated()
-                .anExceptionIsThrownWithAMessageContainingLine("- java.util.List<?> -> because return type of method 'List method()' " +
+                .anExceptionIsThrownWithAMessageContainingLine("- java.util.List<?> -> because return type of method 'List<?> method()' " +
                         "[public java.util.List<? super java.lang.String> de.quantummaid.mapmaid.specs.rootcause.wildcardusecase.UseCaseWithWildcardInReturnType.method()]");
     }
 }

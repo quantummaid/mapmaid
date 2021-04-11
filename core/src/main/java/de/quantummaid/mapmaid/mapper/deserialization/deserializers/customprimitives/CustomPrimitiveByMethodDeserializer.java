@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
@@ -45,6 +46,7 @@ import static java.lang.String.format;
 public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiveDeserializer {
     private final ResolvedType baseType;
     private final ResolvedMethod deserializationMethod;
+    private final Executor executor;
 
     public static TypeDeserializer createDeserializer(final ResolvedType type,
                                                       final ResolvedMethod deserializationMethod) {
@@ -71,7 +73,8 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
         }
 
         final ResolvedType baseType = parameters.get(0).getType();
-        return new CustomPrimitiveByMethodDeserializer(baseType, deserializationMethod);
+        final Executor executor = deserializationMethod.createExecutor();
+        return new CustomPrimitiveByMethodDeserializer(baseType, deserializationMethod, executor);
     }
 
     @Override
@@ -81,15 +84,7 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
 
     @Override
     public Object deserialize(final Object value) throws Exception {
-        try {
-            return this.deserializationMethod.getMethod().invoke(null, value);
-        } catch (final IllegalAccessException e) {
-            throw mapMaidException(format(
-                    "Unexpected error invoking deserialization method %s for serialized custom primitive %s",
-                    this.deserializationMethod, value), e);
-        } catch (final InvocationTargetException e) {
-            throw handleInvocationTargetException(e, value);
-        }
+        return executor.execute(null, List.of(value));
     }
 
     public ResolvedMethod method() {
