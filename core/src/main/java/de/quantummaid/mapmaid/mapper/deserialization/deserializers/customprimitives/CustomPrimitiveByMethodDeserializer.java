@@ -31,7 +31,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
@@ -94,15 +93,5 @@ public final class CustomPrimitiveByMethodDeserializer implements CustomPrimitiv
     @Override
     public String description() {
         return createDescription(this, this.deserializationMethod.describe());
-    }
-
-    private Exception handleInvocationTargetException(final InvocationTargetException e, final Object value) {
-        final Throwable targetException = e.getTargetException();
-        if (targetException instanceof Exception) {
-            return (Exception) targetException;
-        } else {
-            throw mapMaidException(format("Unexpected error invoking deserialization method %s for serialized custom primitive %s",
-                    this.deserializationMethod, value), e);
-        }
     }
 }
