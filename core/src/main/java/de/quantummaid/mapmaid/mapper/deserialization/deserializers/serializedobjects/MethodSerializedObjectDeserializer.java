@@ -33,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,12 +78,7 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
 
     @Override
     public Object deserialize(final Map<String, Object> elements) throws Exception {
-        final List<Object> parameters = new ArrayList<>(parameterNames.size());
-        for (final String parameterName : parameterNames) {
-            final Object parameter = elements.get(parameterName);
-            parameters.add(parameter);
-        }
-        return executor.execute(null, parameters);
+        return Util.deserialize(elements, parameterNames, executor);
     }
 
     @Override
