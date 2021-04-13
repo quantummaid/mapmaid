@@ -53,7 +53,7 @@ In order to support YAML, you need to add this dependency to your project:
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-snakeyaml</artifactId>
-    <version>0.10.2</version>
+    <version>0.10.3</version>
 </dependency>
 ```
 
@@ -92,7 +92,7 @@ data structures that are used in the AWS DynamoDB SDK. To use it, add the follow
 <dependency>
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
     <artifactId>mapmaid-dynamodb</artifactId>
-    <version>0.10.2</version>
+    <version>0.10.3</version>
 </dependency>
 ```
 

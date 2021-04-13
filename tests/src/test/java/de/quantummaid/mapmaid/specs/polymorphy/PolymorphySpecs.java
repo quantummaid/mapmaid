@@ -150,4 +150,16 @@ public final class PolymorphySpecs {
                     assertThat(e.input(), equalTo(Map.of("__type__", "UnknownClass")));
                 });
     }
+
+    @Test
+    public void nullCanBeDeserializedPolymorphically() {
+        given(() ->
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, AnImplementation1.class)
+                        .build()
+        )
+                .when().mapMaidDeserializes("null").from(JSON).toTheType(AnInterface.class)
+                .noExceptionHasBeenThrown()
+                .theDeserializedObjectIs(null);
+    }
 }

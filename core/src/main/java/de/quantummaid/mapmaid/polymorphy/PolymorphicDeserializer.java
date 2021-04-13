@@ -30,6 +30,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
+import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
@@ -71,6 +72,9 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
                              final CustomPrimitiveMappings customPrimitiveMappings,
                              final TypeIdentifier typeIdentifier,
                              final DebugInformation debugInformation) {
+        if (input instanceof UniversalNull) {
+            return null;
+        }
         final UniversalObject universalObject = asUniversalObject(input, exceptionTracker, debugInformation);
         final Universal typeAsUniversal = universalObject.getField(typeField)
                 .orElseThrow(() -> {
