@@ -486,6 +486,10 @@ public final class MapMaidBuilder implements
         return this;
     }
 
+    public ReflectMaid reflectMaid() {
+        return reflectMaid;
+    }
+
     public MapMaid build() {
         this.recipes.forEach(Recipe::init);
         this.recipes.forEach(recipe -> recipe.cook(this));
