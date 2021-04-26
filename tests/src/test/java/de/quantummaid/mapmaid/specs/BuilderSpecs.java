@@ -21,14 +21,18 @@
 
 package de.quantummaid.mapmaid.specs;
 
+import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithDifferentCollections;
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class BuilderSpecs {
 
@@ -64,5 +68,19 @@ public final class BuilderSpecs {
                 .when().theDefinitionsAreQueried()
                 .theDefinitionsContainExactlyTheSerializedObjects(AComplexTypeWithDifferentCollections.class)
                 .theDefinitionsContainExactlyTheCustomPrimitives(ANumber.class);
+    }
+
+    @Test
+    public void reflectMaidCanBeQueriedInBuilder() {
+        final ReflectMaid reflectMaid = ReflectMaid.aReflectMaid();
+        final MapMaid mapMaid = MapMaid.aMapMaid(reflectMaid)
+                .usingRecipe(mapMaidBuilder -> {
+                    final ReflectMaid internalReflectMaid = mapMaidBuilder.reflectMaid();
+                    mapMaidBuilder.deserializingCustomPrimitive(ReflectMaid.class, value -> internalReflectMaid);
+                })
+                .build();
+        final ReflectMaid deserializedReflectMaid = mapMaid.deserializeFromUniversalObject("abc", genericType(ReflectMaid.class), injector -> {
+        });
+        assertSame(reflectMaid, deserializedReflectMaid);
     }
 }
