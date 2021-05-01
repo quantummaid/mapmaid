@@ -35,6 +35,7 @@ import static java.util.stream.Collectors.toList;
 
 public final class SchemaSupport {
     private static final String PROPERTIES = "properties";
+    private static final String ONE_OF = "oneOf";
 
     private SchemaSupport() {
     }
@@ -56,19 +57,19 @@ public final class SchemaSupport {
             final Map<String, Object> updated = addProperty(typeField, stringConstant(name), implementationSchemaMap);
             schemas.add(updated);
         });
-        return UniversalObject.universalObjectFromNativeMap(Map.of("oneOf", schemas));
+        return UniversalObject.universalObjectFromNativeMap(Map.of(ONE_OF, schemas));
     }
 
     @SuppressWarnings("unchecked")
     private static Map<String, Object> addProperty(final String key,
                                                    final Map<String, Object> childSchema,
                                                    final Map<String, Object> objectSchema) {
-        if (objectSchema.containsKey("oneOf")) {
-            final List<Map<String, Object>> polymorphicChildren = (List<Map<String, Object>>) objectSchema.get("oneOf");
+        if (objectSchema.containsKey(ONE_OF)) {
+            final List<Map<String, Object>> polymorphicChildren = (List<Map<String, Object>>) objectSchema.get(ONE_OF);
             final List<Map<String, Object>> updated = polymorphicChildren.stream()
                     .map(schema -> addProperty(key, childSchema, schema))
                     .collect(toList());
-            return Map.of("oneOf", updated);
+            return Map.of(ONE_OF, updated);
         }
         final Map<String, Object> properties = new LinkedHashMap<>((Map<String, Object>) objectSchema.get(PROPERTIES));
         final String normalizedKey = determineTypeField(key, properties.keySet());
