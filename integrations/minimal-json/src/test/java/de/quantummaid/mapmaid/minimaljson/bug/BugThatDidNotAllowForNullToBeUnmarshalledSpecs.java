@@ -35,7 +35,7 @@ public final class BugThatDidNotAllowForNullToBeUnmarshalledSpecs {
     @Test
     public void polymorphicScenario() {
         final String json = MAP_MAID.serializeToJson(new Command(null), Message.class);
-        assertEquals("{\"nullable\":null,\"__type__\":\"de.quantummaid.mapmaid.minimaljson.bug.Command\"}", json);
+        assertEquals("{\"nullable\":null,\"type\":\"de.quantummaid.mapmaid.minimaljson.bug.Command\"}", json);
         final var deserialized = MAP_MAID.deserializeJson(json, Message.class);
         assertEquals(new Command(null), deserialized);
     }

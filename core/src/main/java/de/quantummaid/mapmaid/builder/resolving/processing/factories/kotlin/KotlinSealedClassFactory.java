@@ -70,7 +70,7 @@ public final class KotlinSealedClassFactory implements StateFactory {
                 .collect(toList());
         final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subtypes, mapMaidConfiguration);
 
-        final PolymorphicSerializer serializer = polymorphicSerializer(reflectMaid, type, nameToType, "type");
+        final PolymorphicSerializer serializer = polymorphicSerializer(type, sealedSubclasses, nameToType, "type");
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
         return Optional.of(stateFactoryResult(unreasoned(context), List.of(
                 addManualSerializer(type, serializer),

@@ -19,26 +19,16 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder;
+package de.quantummaid.mapmaid.domain;
 
-import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MapMaidConfiguration {
-    public static final String DEFAULT_TYPE_KEY_IDENTIFIER = "type";
-    @Getter
-    @Setter
-    private String typeIdentifierKey = DEFAULT_TYPE_KEY_IDENTIFIER;
-    @Getter
-    @Setter
-    private PolymorphicTypeIdentifierExtractor typeIdentifierExtractor = TypeIdentifier::description;
-
-    public static MapMaidConfiguration emptyMapMaidConfiguration() {
-        return new MapMaidConfiguration();
-    }
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public final class SubImplementation2 implements SubInterface {
+    public final String c;
+    public final String d;
 }

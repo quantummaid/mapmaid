@@ -19,26 +19,26 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder;
+package de.quantummaid.mapmaid.polymorphy.finiteresolver;
 
-import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MapMaidConfiguration {
-    public static final String DEFAULT_TYPE_KEY_IDENTIFIER = "type";
-    @Getter
-    @Setter
-    private String typeIdentifierKey = DEFAULT_TYPE_KEY_IDENTIFIER;
-    @Getter
-    @Setter
-    private PolymorphicTypeIdentifierExtractor typeIdentifierExtractor = TypeIdentifier::description;
+final class MappedType {
+    private final Class<?> baseType;
+    private final ResolvedType type;
 
-    public static MapMaidConfiguration emptyMapMaidConfiguration() {
-        return new MapMaidConfiguration();
+    static MappedType mappedType(final Class<?> baseType, final ResolvedType type) {
+        return new MappedType(baseType, type);
+    }
+
+    boolean matches(final Object candidate) {
+        return baseType.isInstance(candidate);
+    }
+
+    ResolvedType type() {
+        return type;
     }
 }

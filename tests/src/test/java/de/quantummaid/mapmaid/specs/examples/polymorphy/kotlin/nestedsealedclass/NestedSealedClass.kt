@@ -19,26 +19,11 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder;
+package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin.nestedsealedclass
 
-import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+sealed class MyKotlinSealedClass
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MapMaidConfiguration {
-    public static final String DEFAULT_TYPE_KEY_IDENTIFIER = "type";
-    @Getter
-    @Setter
-    private String typeIdentifierKey = DEFAULT_TYPE_KEY_IDENTIFIER;
-    @Getter
-    @Setter
-    private PolymorphicTypeIdentifierExtractor typeIdentifierExtractor = TypeIdentifier::description;
+sealed class MyKotlinSealedSubclass : MyKotlinSealedClass()
 
-    public static MapMaidConfiguration emptyMapMaidConfiguration() {
-        return new MapMaidConfiguration();
-    }
-}
+data class KotlinSealedSubclass1(val field1: String,
+                                 val field2: String) : MyKotlinSealedSubclass()

@@ -30,6 +30,8 @@ import java.util.*;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
+import static de.quantummaid.mapmaid.polymorphy.TypeFieldNormalizer.determineTypeField;
+import static java.util.stream.Collectors.toList;
 
 public final class SchemaSupport {
     private static final String PROPERTIES = "properties";
@@ -61,8 +63,16 @@ public final class SchemaSupport {
     private static Map<String, Object> addProperty(final String key,
                                                    final Map<String, Object> childSchema,
                                                    final Map<String, Object> objectSchema) {
+        if (objectSchema.containsKey("oneOf")) {
+            final List<Map<String, Object>> polymorphicChildren = (List<Map<String, Object>>) objectSchema.get("oneOf");
+            final List<Map<String, Object>> updated = polymorphicChildren.stream()
+                    .map(schema -> addProperty(key, childSchema, schema))
+                    .collect(toList());
+            return Map.of("oneOf", updated);
+        }
         final Map<String, Object> properties = new LinkedHashMap<>((Map<String, Object>) objectSchema.get(PROPERTIES));
-        properties.put(key, childSchema);
+        final String normalizedKey = determineTypeField(key, properties.keySet());
+        properties.put(normalizedKey, childSchema);
         final Map<String, Object> copy = new LinkedHashMap<>(objectSchema);
         copy.put(PROPERTIES, properties);
         return copy;
