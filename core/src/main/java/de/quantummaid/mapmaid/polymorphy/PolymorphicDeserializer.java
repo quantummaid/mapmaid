@@ -88,7 +88,7 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
         });
         final String type = universalObject.getField(normalizedTypeField)
                 .map(Universal::toNativeJava)
-                .map(o -> (String) o)
+                .map(String.class::cast)
                 .orElseThrow(() -> new IllegalStateException("this should never happen"));
         final TypeIdentifier implementation = nameToType.lookup(type)
                 .orElseThrow(() -> {
