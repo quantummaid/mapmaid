@@ -31,7 +31,7 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-parent</artifactId>
-    <version>0.10.4</version>
+    <version>0.10.5</version>
     <packaging>pom</packaging>
 
     <name>MapMaid</name>
