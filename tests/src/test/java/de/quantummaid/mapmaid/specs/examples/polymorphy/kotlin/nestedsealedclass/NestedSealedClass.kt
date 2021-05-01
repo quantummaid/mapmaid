@@ -19,26 +19,11 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.polymorphy.finiteresolver;
+package de.quantummaid.mapmaid.specs.examples.polymorphy.kotlin.nestedsealedclass
 
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+sealed class MyKotlinSealedClass
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-final class MappedType {
-    private final Class<?> baseType;
-    private final ResolvedType type;
+sealed class MyKotlinSealedSubclass : MyKotlinSealedClass()
 
-    static MappedType mappedType(final Class<?> baseType, final ResolvedType type) {
-        return new MappedType(baseType, type);
-    }
-
-    boolean matches(final Object candidate) {
-        return baseType.isInstance(candidate);
-    }
-
-    ResolvedType type() {
-        return type;
-    }
-}
+data class KotlinSealedSubclass1(val field1: String,
+                                 val field2: String) : MyKotlinSealedSubclass()

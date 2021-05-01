@@ -133,17 +133,17 @@ public final class SchemaSpecs {
                         "  properties:\n" +
                         "    d:\n" +
                         "      type: string\n" +
-                        "    __type__:\n" +
+                        "    type:\n" +
                         "      pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
                         "      type: string\n" +
                         "    c:\n" +
                         "      type: string\n" +
                         "- type: object\n" +
                         "  properties:\n" +
-                        "    a:\n" +
-                        "      type: string\n" +
-                        "    __type__:\n" +
+                        "    type:\n" +
                         "      pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
+                        "      type: string\n" +
+                        "    a:\n" +
                         "      type: string\n" +
                         "    b:\n" +
                         "      type: string\n");
@@ -164,19 +164,97 @@ public final class SchemaSpecs {
                         "  properties:\n" +
                         "    d:\n" +
                         "      type: string\n" +
-                        "    __type__:\n" +
+                        "    type:\n" +
                         "      pattern: de.quantummaid.mapmaid.domain.AnImplementation2\n" +
                         "      type: string\n" +
                         "    c:\n" +
                         "      type: string\n" +
                         "- type: object\n" +
                         "  properties:\n" +
-                        "    a:\n" +
-                        "      type: string\n" +
-                        "    __type__:\n" +
+                        "    type:\n" +
                         "      pattern: de.quantummaid.mapmaid.domain.AnImplementation1\n" +
+                        "      type: string\n" +
+                        "    a:\n" +
                         "      type: string\n" +
                         "    b:\n" +
                         "      type: string\n");
+    }
+
+    @Test
+    public void mapMaidCanGenerateDeserializationSchemaForNestedPolymorphicHierarchy() {
+        given(
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, SubInterface.class)
+                        .deserializingSubtypes(SubInterface.class, SubImplementation1.class, SubImplementation2.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
+                        .build()
+        )
+                .when().theDeserializationSchemaIsQueriedFor(AnInterface.class)
+                .theSchemaWas("" +
+                        "oneOf:\n" +
+                        "- oneOf:\n" +
+                        "  - type: object\n" +
+                        "    properties:\n" +
+                        "      _type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubInterface\n" +
+                        "        type: string\n" +
+                        "      c:\n" +
+                        "        type: string\n" +
+                        "      d:\n" +
+                        "        type: string\n" +
+                        "      type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubImplementation2\n" +
+                        "        type: string\n" +
+                        "  - type: object\n" +
+                        "    properties:\n" +
+                        "      _type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubInterface\n" +
+                        "        type: string\n" +
+                        "      a:\n" +
+                        "        type: string\n" +
+                        "      b:\n" +
+                        "        type: string\n" +
+                        "      type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubImplementation1\n" +
+                        "        type: string\n");
+    }
+
+    @Test
+    public void mapMaidCanGenerateSerializationSchemaForNestedPolymorphicHierarchy() {
+        given(
+                aMapMaid()
+                        .serializingSubtypes(AnInterface.class, SubInterface.class)
+                        .serializingSubtypes(SubInterface.class, SubImplementation1.class, SubImplementation2.class)
+                        .withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(snakeYamlMarshallerAndUnmarshaller()))
+                        .build()
+        )
+                .when().theSerializationSchemaIsQueriedFor(AnInterface.class)
+                .theSchemaWas("" +
+                        "oneOf:\n" +
+                        "- oneOf:\n" +
+                        "  - type: object\n" +
+                        "    properties:\n" +
+                        "      _type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubInterface\n" +
+                        "        type: string\n" +
+                        "      c:\n" +
+                        "        type: string\n" +
+                        "      d:\n" +
+                        "        type: string\n" +
+                        "      type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubImplementation2\n" +
+                        "        type: string\n" +
+                        "  - type: object\n" +
+                        "    properties:\n" +
+                        "      _type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubInterface\n" +
+                        "        type: string\n" +
+                        "      a:\n" +
+                        "        type: string\n" +
+                        "      b:\n" +
+                        "        type: string\n" +
+                        "      type:\n" +
+                        "        pattern: de.quantummaid.mapmaid.domain.SubImplementation1\n" +
+                        "        type: string\n");
     }
 }

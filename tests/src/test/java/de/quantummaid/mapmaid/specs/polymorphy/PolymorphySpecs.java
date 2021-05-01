@@ -21,19 +21,20 @@
 
 package de.quantummaid.mapmaid.specs.polymorphy;
 
-import de.quantummaid.mapmaid.domain.AnImplementation1;
-import de.quantummaid.mapmaid.domain.AnImplementation2;
-import de.quantummaid.mapmaid.domain.AnInterface;
+import de.quantummaid.mapmaid.domain.*;
 import de.quantummaid.mapmaid.polymorphy.MissingPolymorphicTypeFieldException;
 import de.quantummaid.mapmaid.polymorphy.UnknownPolymorphicSubtypeException;
+import de.quantummaid.reflectmaid.TypeToken;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype.primitiveSubtype;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -76,7 +77,7 @@ public final class PolymorphySpecs {
         )
                 .when().mapMaidDeserializes("" +
                 "{\n" +
-                "  \"__type__\": \"impl1\",\n" +
+                "  \"type\": \"impl1\",\n" +
                 "  \"a\": \"foo\",\n" +
                 "  \"b\": \"bar\"\n" +
                 "}").from(JSON).toTheType(AnInterface.class)
@@ -91,7 +92,7 @@ public final class PolymorphySpecs {
                         .build()
         )
                 .when().mapMaidSerializes(primitiveSubtype("abc"), Supertype.class).withMarshallingType(JSON)
-                .theSerializationResultWas("{\"__type__\":\"de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype\",\"internalValue\":\"abc\"}");
+                .theSerializationResultWas("{\"type\":\"de.quantummaid.mapmaid.specs.polymorphy.PrimitiveSubtype\",\"internalValue\":\"abc\"}");
     }
 
     @Test
@@ -124,7 +125,7 @@ public final class PolymorphySpecs {
                         .build()
         )
                 .when().mapMaidDeserializes("{}").from(JSON).toTheType(AnInterface.class)
-                .anExceptionIsThrownWithAMessageContaining("Missing '__type__' field to identify polymorphic subtype " +
+                .anExceptionIsThrownWithAMessageContaining("Missing 'type' field to identify polymorphic subtype " +
                         "for type de.quantummaid.mapmaid.domain.AnInterface")
                 .anExceptionOfClassIsThrownFulfilling(MissingPolymorphicTypeFieldException.class, e -> {
                     assertThat(e.input, equalTo(emptyMap()));
@@ -134,7 +135,7 @@ public final class PolymorphySpecs {
     @Test
     public void failsForUnknownSubTypeDuringDeserialization() {
         final String input = "{" +
-                "\"__type__\":\"UnknownClass\"" +
+                "\"type\":\"UnknownClass\"" +
                 "}";
         given(() ->
                 aMapMaid()
@@ -147,7 +148,7 @@ public final class PolymorphySpecs {
                         "known subtype identifiers: [de.quantummaid.mapmaid.domain.AnImplementation1])"
                 )
                 .anExceptionOfClassIsThrownFulfilling(UnknownPolymorphicSubtypeException.class, e -> {
-                    assertThat(e.input(), equalTo(Map.of("__type__", "UnknownClass")));
+                    assertThat(e.input(), equalTo(Map.of("type", "UnknownClass")));
                 });
     }
 
@@ -161,5 +162,84 @@ public final class PolymorphySpecs {
                 .when().mapMaidDeserializes("null").from(JSON).toTheType(AnInterface.class)
                 .noExceptionHasBeenThrown()
                 .theDeserializedObjectIs(null);
+    }
+
+    @Test
+    public void serializationWorksForParameterizedSubtypes() {
+        given(() ->
+                aMapMaid()
+                        .serializingSubtypes(
+                                genericType(new TypeToken<GenericInterface<String>>() {
+                                }),
+                                genericType(new TypeToken<GenericImplementation<String>>() {
+                                })
+                        )
+                        .build()
+        )
+                .when().mapMaidSerializesToUniversalObject(
+                new GenericImplementation<String>("a", "b", "c"),
+                genericType(new TypeToken<GenericInterface<String>>() {
+                }))
+                .theSerializationResultWas(Map.of(
+                        "field0", "a",
+                        "field1", "b",
+                        "field2", "c",
+                        "type", "de.quantummaid.mapmaid.domain.GenericImplementation<java.lang.String>"
+                ));
+    }
+
+    @Test
+    public void serializationFailsAtBuildTimeIfTypeCannotBeDeterminedAtRuntime() {
+        given(() ->
+                aMapMaid()
+                        .serializingSubtypes(
+                                genericType(Object.class),
+                                genericType(new TypeToken<List<String>>() {
+                                }),
+                                genericType(new TypeToken<List<Boolean>>() {
+                                })
+                        )
+                        .build()
+        )
+                .when().mapMaidIsInstantiated()
+                .anExceptionIsThrownWithAMessageContaining("not possible to reliably determine the generic type " +
+                        "of objects of type 'java.util.List' based on pool of possible types: " +
+                        "[java.util.List<java.lang.String>, java.util.List<java.lang.Boolean>]");
+    }
+
+    @Test
+    public void nestedInterfacesCanBeSerialized() {
+        given(
+                aMapMaid()
+                        .serializingSubtypes(AnInterface.class, SubInterface.class)
+                        .serializingSubtypes(SubInterface.class, SubImplementation1.class)
+                        .build()
+        )
+                .when().mapMaidSerializesToUniversalObject(new SubImplementation1("a", "b"), AnInterface.class)
+                .theSerializationResultWas(Map.of(
+                        "a", "a",
+                        "b", "b",
+                        "type", "de.quantummaid.mapmaid.domain.SubImplementation1",
+                        "_type", "de.quantummaid.mapmaid.domain.SubInterface"
+                ));
+    }
+
+    @Test
+    public void nestedInterfacesCanBeDeserialized() {
+        given(
+                aMapMaid()
+                        .deserializingSubtypes(AnInterface.class, SubInterface.class)
+                        .deserializingSubtypes(SubInterface.class, SubImplementation1.class)
+                        .build()
+        )
+                .when().mapMaidDeserializesTheMap(
+                Map.of(
+                        "a", "a",
+                        "b", "b",
+                        "type", "de.quantummaid.mapmaid.domain.SubImplementation1",
+                        "_type", "de.quantummaid.mapmaid.domain.SubInterface"
+                )).toTheType(AnInterface.class)
+                .noExceptionHasBeenThrown()
+                .theDeserializedObjectIs(new SubImplementation1("a", "b"));
     }
 }

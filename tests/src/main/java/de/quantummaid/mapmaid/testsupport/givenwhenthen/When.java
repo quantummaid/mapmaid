@@ -150,6 +150,12 @@ public final class When {
     }
 
     public Then mapMaidSerializesToUniversalObject(final Object object,
+                                                   final GenericType<?> genericType) {
+        final Object serialized = this.mapMaid.serializeToUniversalObject(object, genericType);
+        return then(this.thenData.withSerializationResult(serialized));
+    }
+
+    public Then mapMaidSerializesToUniversalObject(final Object object,
                                                    final TypeIdentifier typeIdentifier) {
         final Object serialized = this.mapMaid.serializeToUniversalObject(object, typeIdentifier);
         return then(this.thenData.withSerializationResult(serialized));

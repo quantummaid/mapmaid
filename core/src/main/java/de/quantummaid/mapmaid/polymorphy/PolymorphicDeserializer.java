@@ -42,6 +42,7 @@ import java.util.List;
 import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForPolymorphicParent;
 import static de.quantummaid.mapmaid.polymorphy.MissingPolymorphicTypeFieldException.missingPolymorphicTypeFieldException;
+import static de.quantummaid.mapmaid.polymorphy.TypeFieldNormalizer.findTypeField;
 import static de.quantummaid.mapmaid.polymorphy.UnknownPolymorphicSubtypeException.unknownPolymorphicSubtypeException;
 import static java.lang.String.format;
 
@@ -76,29 +77,32 @@ public final class PolymorphicDeserializer implements TypeDeserializer {
             return null;
         }
         final UniversalObject universalObject = asUniversalObject(input, exceptionTracker, debugInformation);
-        final Universal typeAsUniversal = universalObject.getField(typeField)
-                .orElseThrow(() -> {
-                    final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
-                    return missingPolymorphicTypeFieldException(
-                            input,
-                            typeIdentifier,
-                            typeField,
-                            scanInformation
-                    );
-                });
-        final String type = (String) typeAsUniversal.toNativeJava();
+        final String normalizedTypeField = findTypeField(this.typeField, universalObject.fields()).orElseThrow(() -> {
+            final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
+            return missingPolymorphicTypeFieldException(
+                    input,
+                    typeIdentifier,
+                    typeField,
+                    scanInformation
+            );
+        });
+        final String type = universalObject.getField(normalizedTypeField)
+                .map(Universal::toNativeJava)
+                .map(o -> (String) o)
+                .orElseThrow(() -> new IllegalStateException("this should never happen"));
         final TypeIdentifier implementation = nameToType.lookup(type)
                 .orElseThrow(() -> {
                     final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
                     throw unknownPolymorphicSubtypeException(input, typeIdentifier, type, nameToType.keys(), scanInformation);
                 });
-
+        final UniversalObject withoutTypeField = universalObject.withoutField(normalizedTypeField);
         return (T) callback.deserializeRecursive(
-                input,
+                withoutTypeField,
                 implementation,
                 exceptionTracker,
                 injector,
-                debugInformation);
+                debugInformation
+        );
     }
 
     private UniversalObject asUniversalObject(final Universal input,

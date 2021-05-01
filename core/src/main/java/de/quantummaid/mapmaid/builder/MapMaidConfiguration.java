@@ -30,7 +30,7 @@ import lombok.Setter;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MapMaidConfiguration {
-    public static final String DEFAULT_TYPE_KEY_IDENTIFIER = "__type__";
+    public static final String DEFAULT_TYPE_KEY_IDENTIFIER = "type";
     @Getter
     @Setter
     private String typeIdentifierKey = DEFAULT_TYPE_KEY_IDENTIFIER;

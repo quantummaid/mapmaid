@@ -41,6 +41,7 @@ import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForPolymorphicParent;
 import static de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker.serializationTracker;
+import static de.quantummaid.mapmaid.polymorphy.TypeFieldNormalizer.determineTypeField;
 import static de.quantummaid.mapmaid.polymorphy.finiteresolver.FiniteTypeResolver.finiteTypeResolver;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static java.lang.String.format;
@@ -79,7 +80,8 @@ public final class PolymorphicSerializer implements TypeSerializer {
         final Map<String, Object> mutableMap = new LinkedHashMap<>(immutableMap);
         final String type = nameToType.reverseLookup(implementationType)
                 .orElseThrow(() -> new IllegalArgumentException(format("Unknown event of type '%s'", implementationType.description())));
-        mutableMap.put(typeField, type);
+        final String normalizedTypeField = determineTypeField(typeField, mutableMap.keySet());
+        mutableMap.put(normalizedTypeField, type);
         return Universal.fromNativeJava(mutableMap);
     }
 

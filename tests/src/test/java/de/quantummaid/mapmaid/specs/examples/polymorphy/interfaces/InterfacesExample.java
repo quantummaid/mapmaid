@@ -32,21 +32,21 @@ public final class InterfacesExample {
         scenarioBuilderFor(MyInterface.class)
                 .withSerializedForm("" +
                         "{\n" +
-                        "  \"__type__\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation1\",\n" +
+                        "  \"type\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation1\",\n" +
                         "  \"field2\": {\n" +
                         "    \"field1\": \"d\",\n" +
                         "    \"field3\": \"f\",\n" +
-                        "    \"__type__\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation3\",\n" +
+                        "    \"type\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation3\",\n" +
                         "    \"field2\": \"e\"\n" +
                         "  },\n" +
                         "  \"field1\": {\n" +
                         "    \"field\": {\n" +
                         "      \"field1\": \"a\",\n" +
                         "      \"field3\": \"c\",\n" +
-                        "      \"__type__\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation3\",\n" +
+                        "      \"type\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation3\",\n" +
                         "      \"field2\": \"b\"\n" +
                         "    },\n" +
-                        "    \"__type__\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation2\"\n" +
+                        "    \"type\": \"de.quantummaid.mapmaid.specs.examples.polymorphy.interfaces.MyImplementation2\"\n" +
                         "  }\n" +
                         "}")
                 .withDeserializedForm(

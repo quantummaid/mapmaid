@@ -21,18 +21,16 @@
 
 package de.quantummaid.mapmaid.mapper.universal;
 
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toMap;
@@ -44,24 +42,35 @@ public final class UniversalObject implements Universal {
     private final Map<String, Universal> map;
 
     public static UniversalObject universalObjectFromNativeMap(final Map<String, Object> map) {
-        NotNullValidator.validateNotNull(map, "map");
+        validateNotNull(map, "map");
         final Map<String, Universal> mappedMap = map.entrySet().stream()
                 .collect(toMap(Entry::getKey, entry -> fromNativeJava(entry.getValue())));
         return universalObject(mappedMap);
     }
 
     public static UniversalObject universalObject(final Map<String, Universal> map) {
-        NotNullValidator.validateNotNull(map, "map");
-        map.forEach((key, value) -> NotNullValidator.validateNotNull(value, key));
+        validateNotNull(map, "map");
+        map.forEach((key, value) -> validateNotNull(value, key));
         return new UniversalObject(map);
     }
 
+    public Collection<String> fields() {
+        return map.keySet();
+    }
+
     public Optional<Universal> getField(final String name) {
-        NotNullValidator.validateNotNull(name, "name");
-        if (!this.map.containsKey(name)) {
+        validateNotNull(name, "name");
+        if (!map.containsKey(name)) {
             return empty();
         }
-        return of(this.map.get(name));
+        return of(map.get(name));
+    }
+
+    public UniversalObject withoutField(final String name) {
+        validateNotNull(name, "name");
+        final Map<String, Universal> copy = new LinkedHashMap<>(map);
+        copy.remove(name);
+        return universalObject(copy);
     }
 
     @Override

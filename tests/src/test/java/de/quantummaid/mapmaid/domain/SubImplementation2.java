@@ -19,26 +19,16 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.polymorphy.finiteresolver;
+package de.quantummaid.mapmaid.domain;
 
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
-import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-final class MappedType {
-    private final Class<?> baseType;
-    private final ResolvedType type;
-
-    static MappedType mappedType(final Class<?> baseType, final ResolvedType type) {
-        return new MappedType(baseType, type);
-    }
-
-    boolean matches(final Object candidate) {
-        return baseType.isInstance(candidate);
-    }
-
-    ResolvedType type() {
-        return type;
-    }
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public final class SubImplementation2 implements SubInterface {
+    public final String c;
+    public final String d;
 }

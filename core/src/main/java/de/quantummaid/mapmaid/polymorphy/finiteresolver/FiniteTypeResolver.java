@@ -47,8 +47,9 @@ public final class FiniteTypeResolver {
                 final String typesString = types.stream()
                         .map(ResolvedType::description)
                         .collect(joining(", "));
-                throw mapMaidException("it is not possible to reliably determine the type of an object" +
-                        " from pool of possible types: [" + typesString + "]");
+                throw mapMaidException("not possible to reliably determine the generic type of objects " +
+                        "of type '" + baseType.getName() + "'" +
+                        " based on pool of possible types: [" + typesString + "]");
             }
             seenBaseTypes.add(baseType);
             final MappedType mappedType = mappedType(baseType, type);
@@ -59,9 +60,8 @@ public final class FiniteTypeResolver {
 
     public ResolvedType determineType(final Object object) {
         validateNotNull(object, "object");
-        final Class<?> queriedClass = object.getClass();
         final Optional<ResolvedType> type = types.stream()
-                .filter(mappedType -> mappedType.matches(queriedClass))
+                .filter(mappedType -> mappedType.matches(object))
                 .map(MappedType::type)
                 .findFirst();
         if (type.isEmpty()) {
@@ -69,7 +69,7 @@ public final class FiniteTypeResolver {
                     .map(MappedType::type)
                     .map(ResolvedType::description)
                     .collect(joining(", "));
-            throw mapMaidException("class " + queriedClass.getName() + " is not part of possible classes [" + typesString + "]");
+            throw mapMaidException("class " + object.getClass().getName() + " is not part of possible classes [" + typesString + "]");
         }
         return type.get();
     }
