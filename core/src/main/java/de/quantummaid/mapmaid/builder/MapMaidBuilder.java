@@ -102,6 +102,7 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -148,15 +149,14 @@ public final class MapMaidBuilder implements
                                                         final GenericType<? extends T>... subTypes) {
         final ResolvedType resolvedSupertype = reflectMaid.resolve(superType);
         final TypeIdentifier superTypeIdentifier = typeIdentifierFor(resolvedSupertype);
-        final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+        final ResolvedType[] subTypeIdentifiers = Arrays.stream(subTypes)
                 .map(reflectMaid::resolve)
-                .map(TypeIdentifier::typeIdentifierFor)
-                .toArray(TypeIdentifier[]::new);
+                .toArray(ResolvedType[]::new);
         return serializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
     }
 
     public MapMaidBuilder serializingSubtypes(final TypeIdentifier superType,
-                                              final TypeIdentifier... subTypes) {
+                                              final ResolvedType... subTypes) {
         return withSubtypes(serialization(), superType, asList(subTypes));
     }
 
@@ -177,15 +177,14 @@ public final class MapMaidBuilder implements
                                                           final GenericType<? extends T>... subTypes) {
         final ResolvedType resolvedSuperType = reflectMaid.resolve(superType);
         final TypeIdentifier superTypeIdentifier = typeIdentifierFor(resolvedSuperType);
-        final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+        final ResolvedType[] subTypeIdentifiers = Arrays.stream(subTypes)
                 .map(reflectMaid::resolve)
-                .map(TypeIdentifier::typeIdentifierFor)
-                .toArray(TypeIdentifier[]::new);
+                .toArray(ResolvedType[]::new);
         return deserializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
     }
 
     public MapMaidBuilder deserializingSubtypes(final TypeIdentifier superType,
-                                                final TypeIdentifier... subTypes) {
+                                                final ResolvedType... subTypes) {
         return withSubtypes(deserialization(), superType, asList(subTypes));
     }
 
@@ -206,29 +205,31 @@ public final class MapMaidBuilder implements
                                                                         final GenericType<? extends T>... subTypes) {
         final ResolvedType resolvedSuperType = reflectMaid.resolve(superType);
         final TypeIdentifier superTypeIdentifier = typeIdentifierFor(resolvedSuperType);
-        final TypeIdentifier[] subTypeIdentifiers = Arrays.stream(subTypes)
+        final ResolvedType[] subTypeIdentifiers = Arrays.stream(subTypes)
                 .map(reflectMaid::resolve)
-                .map(TypeIdentifier::typeIdentifierFor)
-                .toArray(TypeIdentifier[]::new);
+                .toArray(ResolvedType[]::new);
         return serializingAndDeserializingSubtypes(superTypeIdentifier, subTypeIdentifiers);
     }
 
     public MapMaidBuilder serializingAndDeserializingSubtypes(final TypeIdentifier superType,
-                                                              final TypeIdentifier... subTypes) {
+                                                              final ResolvedType... subTypes) {
         return withSubtypes(duplex(), superType, asList(subTypes));
     }
 
     public MapMaidBuilder withSubtypes(final RequiredCapabilities capabilities,
                                        final TypeIdentifier superType,
-                                       final List<TypeIdentifier> subTypes) {
+                                       final List<ResolvedType> subTypes) {
         manuallyAddedStates.add(configuration -> {
-            final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subTypes, configuration);
+            final List<TypeIdentifier> subTypeIdentifiers = subTypes.stream()
+                    .map(TypeIdentifier::typeIdentifierFor)
+                    .collect(toList());
+            final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subTypeIdentifiers, configuration);
             final String typeIdentifierKey = configuration.getTypeIdentifierKey();
             final Context context = emptyContext(this.processor::dispatch, superType);
             final StatefulDefinition statefulDefinition = unreasoned(context);
             this.processor.addState(statefulDefinition);
             if (capabilities.hasSerialization()) {
-                final TypeSerializer serializer = polymorphicSerializer(reflectMaid, superType, nameToType, typeIdentifierKey);
+                final TypeSerializer serializer = polymorphicSerializer(superType, subTypes, nameToType, typeIdentifierKey);
                 processor.dispatch(addManualSerializer(superType, serializer));
                 processor.dispatch(addSerialization(superType, manuallyAdded()));
             }
