@@ -81,8 +81,7 @@ public final class Serializer implements SerializationCallback {
         if (normalized instanceof Map) {
             normalized = serializedPropertyInjector.apply((Map<String, Object>) normalized);
         }
-        final T marshalled = marshallers.marshal(marshallingType, normalized);
-        return marshalled;
+        return marshallers.marshal(marshallingType, normalized);
     }
 
     public <T> T marshalFromUniversalObject(final Object object,
