@@ -37,7 +37,7 @@ public final class DeactivationDocumentationTests {
                 .withAdvancedSettings(AdvancedBuilder::doNotAutoloadMarshallers)
                 .build();
         //Showcase end deactivateDefaultMarshallers
-        assertThat(mapMaid.deserializer().supportedMarshallingTypes().size(), is(0));
-        assertThat(mapMaid.serializer().supportedMarshallingTypes().size(), is(0));
+        assertThat(mapMaid.deserializer().supportedMarshallingTypes().size(), is(1));
+        assertThat(mapMaid.serializer().supportedMarshallingTypes().size(), is(1));
     }
 }

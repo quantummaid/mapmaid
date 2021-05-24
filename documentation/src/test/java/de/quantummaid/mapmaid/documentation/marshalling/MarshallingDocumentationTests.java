@@ -36,6 +36,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import java.util.Map;
 
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.UNIVERSAL_OBJECT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,6 +45,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public final class MarshallingDocumentationTests {
 
+    @SuppressWarnings("unchecked")
     @Test
     public void urlEncodedConfig() {
         //Showcase start urlencoded
@@ -51,8 +53,8 @@ public final class MarshallingDocumentationTests {
                 .usingRecipe(UrlEncodedMarshallerRecipe.urlEncodedMarshaller())
                 .build();
         //Showcase end urlencoded
-        assertThat(mapMaid.deserializer().supportedMarshallingTypes(), containsInAnyOrder(urlEncoded()));
-        assertThat(mapMaid.serializer().supportedMarshallingTypes(), containsInAnyOrder(urlEncoded()));
+        assertThat(mapMaid.deserializer().supportedMarshallingTypes(), containsInAnyOrder(urlEncoded(), UNIVERSAL_OBJECT));
+        assertThat(mapMaid.serializer().supportedMarshallingTypes(), containsInAnyOrder(urlEncoded(), UNIVERSAL_OBJECT));
     }
 
     @Test
