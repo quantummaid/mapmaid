@@ -25,9 +25,9 @@ import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
-import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
@@ -38,12 +38,12 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker.serializationTracker;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
@@ -54,12 +54,12 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @SuppressWarnings("java:S1452")
 public final class Serializer implements SerializationCallback {
-    private final MarshallerRegistry marshallers;
+    private final Marshallers marshallers;
     private final Definitions definitions;
     private final CustomPrimitiveMappings customPrimitiveMappings;
     private final DebugInformation debugInformation;
 
-    public static Serializer serializer(final MarshallerRegistry marshallers,
+    public static Serializer serializer(final Marshallers marshallers,
                                         final Definitions definitions,
                                         final CustomPrimitiveMappings customPrimitiveMappings,
                                         final DebugInformation debugInformation) {
@@ -67,7 +67,8 @@ public final class Serializer implements SerializationCallback {
     }
 
     public Set<MarshallingType<?>> supportedMarshallingTypes() {
-        return this.marshallers.supportedTypes();
+        final MarshallerRegistry marshallerRegistry = marshallers.marshallerRegistry();
+        return marshallerRegistry.supportedTypes();
     }
 
     @SuppressWarnings("unchecked")
@@ -80,36 +81,22 @@ public final class Serializer implements SerializationCallback {
         if (normalized instanceof Map) {
             normalized = serializedPropertyInjector.apply((Map<String, Object>) normalized);
         }
-        final Marshaller<T> marshaller = marshallers.getForType(marshallingType);
-        try {
-            return marshaller.marshal(normalized);
-        } catch (final Exception e) {
-            throw UnexpectedExceptionThrownDuringMarshallingException.fromException(e, object);
-        }
+        final T marshalled = marshallers.marshal(marshallingType, normalized);
+        return marshalled;
     }
 
     public <T> T marshalFromUniversalObject(final Object object,
                                             final MarshallingType<T> marshallingType) {
-        final Marshaller<T> marshaller = marshallers.getForType(marshallingType);
-        try {
-            return marshaller.marshal(object);
-        } catch (final Exception e) {
-            throw UnexpectedExceptionThrownDuringMarshallingException.fromException(e, object);
-        }
-    }
-
-    public Object serializeToUniversalObject(final Object object, final TypeIdentifier type) {
-        if (isNull(object)) {
-            return new HashMap<>(0);
-        }
-        return normalize(object, type);
+        return marshallers.marshal(marshallingType, object);
     }
 
     private Object normalize(final Object object, final TypeIdentifier type) {
         if (isNull(object)) {
             return null;
         }
-        return serializeDefinition(type, object, SerializationTracker.serializationTracker()).toNativeJava();
+        final SerializationTracker tracker = serializationTracker();
+        final Universal universal = serializeDefinition(type, object, tracker);
+        return universal.toNativeJava();
     }
 
     @Override

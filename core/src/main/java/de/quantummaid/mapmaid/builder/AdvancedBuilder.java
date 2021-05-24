@@ -26,11 +26,16 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.NormalDisambiguator;
+import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.mapper.marshalling.UniversalObjectMarshallerAndUnmarshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.Unmarshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.modifier.MarshallingModifier;
 import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ReflectMaid;
@@ -49,9 +54,19 @@ import static de.quantummaid.mapmaid.builder.MarshallerAutoloadingException.conf
 import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloadIfClassPresent;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.UndetectedFactory.undetectedFactory;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.UNIVERSAL_OBJECT;
+import static de.quantummaid.mapmaid.mapper.marshalling.UniversalObjectMarshallerAndUnmarshaller.universalObjectMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry.marshallerRegistry;
+import static de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers.marshallers;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry.unmarshallerRegistry;
+import static de.quantummaid.mapmaid.mapper.marshalling.registry.modifier.EmptyCollectionStrippingMarshallingModifier.emptyCollectionStrippingMarshallingModifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -66,13 +81,19 @@ public final class AdvancedBuilder {
     private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
     private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
     private Map<MarshallingType<?>, Marshaller<?>> marshallerMap = smallMap();
+    private final List<MarshallingModifier> marshallingModifiers = smallList();
     private Map<MarshallingType<?>, Unmarshaller<?>> unmarshallerMap = smallMap();
     private boolean autoloadMarshallers = true;
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
+    private final List<StateFactory> stateFactories = new ArrayList<>();
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
-        return new AdvancedBuilder(reflectMaid);
+        final AdvancedBuilder advancedBuilder = new AdvancedBuilder(reflectMaid);
+        final UniversalObjectMarshallerAndUnmarshaller universalObjectMarshallerAndUnmarshaller = universalObjectMarshallerAndUnmarshaller();
+        advancedBuilder.marshallerMap.put(UNIVERSAL_OBJECT, universalObjectMarshallerAndUnmarshaller);
+        advancedBuilder.unmarshallerMap.put(UNIVERSAL_OBJECT, universalObjectMarshallerAndUnmarshaller);
+        return advancedBuilder;
     }
 
     public AdvancedBuilder withTypeIdentifierKey(final String typeIdentifierKey) {
@@ -104,6 +125,12 @@ public final class AdvancedBuilder {
 
     public AdvancedBuilder doNotAutoloadMarshallers() {
         this.autoloadMarshallers = false;
+        return this;
+    }
+
+    public AdvancedBuilder withStateFactory(final StateFactory stateFactory) {
+        validateNotNull(stateFactory, "stateFactory");
+        stateFactories.add(stateFactory);
         return this;
     }
 
@@ -156,13 +183,24 @@ public final class AdvancedBuilder {
         return usingMarshaller(MarshallingType.XML, marshaller, unmarshaller);
     }
 
+    public AdvancedBuilder withMarshallingModifier(final MarshallingModifier marshallingModifier) {
+        validateNotNull(marshallingModifier, "marshallingModifier");
+        marshallingModifiers.add(marshallingModifier);
+        return this;
+    }
+
+    public AdvancedBuilder strippingEmptyCollectionsWhenMarshalling() {
+        final MarshallingModifier modifier = emptyCollectionStrippingMarshallingModifier();
+        return withMarshallingModifier(modifier);
+    }
+
     Disambiguators buildDisambiguators() {
         final NormalDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
         final Map<ResolvedType, Disambiguator> specialDisambiguators = smallMap();
         return disambiguators(defaultDisambiguator, specialDisambiguators);
     }
 
-    MarshallerRegistry buildMarshallerRegistry() {
+    Marshallers buildMarshallers() {
         if (autoloadMarshallers) {
             autoload();
             autoloadedMarshallers.forEach(autoloadableMarshaller -> {
@@ -171,7 +209,8 @@ public final class AdvancedBuilder {
                 marshallerMap.put(marshallingType, marshaller);
             });
         }
-        return marshallerRegistry(marshallerMap);
+        final MarshallerRegistry marshallerRegistry = marshallerRegistry(marshallerMap);
+        return marshallers(marshallerRegistry, marshallingModifiers);
     }
 
     UnmarshallerRegistry buildUnmarshallerRegistry() {
@@ -188,6 +227,18 @@ public final class AdvancedBuilder {
 
     MapMaidConfiguration mapMaidConfiguration() {
         return mapMaidConfiguration;
+    }
+
+    Processor processor() {
+        List.of(
+                builtInPrimitivesFactory(),
+                arrayFactory(),
+                nativeJavaCollectionsFactory(),
+                kotlinSealedClassFactory(),
+                undetectedFactory()
+        )
+                .forEach(this::withStateFactory);
+        return Processor.processor(stateFactories);
     }
 
     private void autoload() {

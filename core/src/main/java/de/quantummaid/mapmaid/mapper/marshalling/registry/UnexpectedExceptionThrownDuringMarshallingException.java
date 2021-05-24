@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.serialization;
+package de.quantummaid.mapmaid.mapper.marshalling.registry;
 
 import de.quantummaid.mapmaid.debug.MapMaidException;
 

@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.10.7</version>
+        <version>0.10.8</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -52,7 +52,7 @@
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
-                <version>1.5.0</version>
+                <version>1.4.32</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>

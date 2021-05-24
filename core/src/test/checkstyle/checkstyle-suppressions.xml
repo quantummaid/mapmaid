@@ -33,6 +33,7 @@
     <suppress checks="IllegalCatchCheck" files="ReflectionMethodSerializationCPMethod.java"/>
     <suppress checks="ParameterNumber" files="SerializedObjectWithPrimitives.java"/>
     <suppress checks="IllegalCatchCheck" files="Unmarshallers.java"/>
+    <suppress checks="IllegalCatchCheck" files="Marshallers"/>
     <suppress checks="IllegalCatchCheck" files="Serializer.java"/>
     <suppress checks="IllegalCatchCheck" files="Deserializer|When"/>
     <suppress checks="MethodLength" files="Deserializer"/>

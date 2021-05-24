@@ -19,15 +19,21 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.detection;
+package de.quantummaid.mapmaid.mapper.marshalling;
 
-import de.quantummaid.mapmaid.builder.RequiredCapabilities;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+public final class UniversalObjectMarshallerAndUnmarshaller implements Marshaller<Object>, Unmarshaller<Object> {
 
-import java.util.Optional;
+    public static UniversalObjectMarshallerAndUnmarshaller universalObjectMarshallerAndUnmarshaller() {
+        return new UniversalObjectMarshallerAndUnmarshaller();
+    }
 
-@FunctionalInterface
-public interface DefinitionFactory {
-    Optional<Definition> analyze(ResolvedType type, RequiredCapabilities capabilities);
+    @Override
+    public Object marshal(final Object object) throws Exception {
+        return object;
+    }
+
+    @Override
+    public Object unmarshal(final Object input) throws Exception {
+        return input;
+    }
 }

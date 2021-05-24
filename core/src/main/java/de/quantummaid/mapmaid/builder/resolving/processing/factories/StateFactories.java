@@ -33,11 +33,7 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.UndetectedFactory.undetectedFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
@@ -45,14 +41,8 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.factories.prim
 public final class StateFactories {
     private final List<StateFactory> stateFactories;
 
-    public static StateFactories defaultStateFactories() {
-        final List<StateFactory> stateFactories = List.of(
-                builtInPrimitivesFactory(),
-                arrayFactory(),
-                nativeJavaCollectionsFactory(),
-                kotlinSealedClassFactory(),
-                undetectedFactory()
-        );
+    public static StateFactories stateFactories(final List<StateFactory> stateFactories) {
+        validateNotNull(stateFactories, "stateFactories");
         return new StateFactories(stateFactories);
     }
 
@@ -60,7 +50,7 @@ public final class StateFactories {
                                           final TypeIdentifier type,
                                           final Context context,
                                           final MapMaidConfiguration mapMaidConfiguration) {
-        for (final StateFactory stateFactory : this.stateFactories) {
+        for (final StateFactory stateFactory : stateFactories) {
             final Optional<StateFactoryResult> statefulDefinition = stateFactory.create(reflectMaid, type, context, mapMaidConfiguration);
             if (statefulDefinition.isPresent()) {
                 return statefulDefinition.get();
