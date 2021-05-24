@@ -19,10 +19,28 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder;
+package de.quantummaid.mapmaid.mapper.marshalling.registry.modifier;
 
-import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import java.util.List;
+import java.util.Map;
 
-public interface ManuallyAddedState {
-    void addState(MapMaidConfiguration configuration, Processor processor);
+public interface DestructuringMarshallingModifier extends MarshallingModifier {
+
+    Object modifyMap(Map<String, Object> input);
+
+    Object modifyList(List<Object> input);
+
+    Object modifyScalar(Object input);
+
+    @SuppressWarnings("unchecked")
+    @Override
+    default Object modify(final Object input) {
+        if (input instanceof Map) {
+            return modifyMap((Map<String, Object>) input);
+        }
+        if (input instanceof List) {
+            return modifyList((List<Object>) input);
+        }
+        return modifyScalar(input);
+    }
 }

@@ -29,9 +29,9 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +42,7 @@ import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
+import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.UNIVERSAL_OBJECT;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
@@ -208,7 +209,7 @@ public final class MapMaid {
     }
 
     public Object serializeToUniversalObject(final Object object, final TypeIdentifier typeIdentifier) {
-        return serializer.serializeToUniversalObject(object, typeIdentifier);
+        return serializeTo(object, UNIVERSAL_OBJECT, typeIdentifier);
     }
 
     public <T> T deserializeJson(final String json,
@@ -378,17 +379,23 @@ public final class MapMaid {
     }
 
     public <T> T deserializeFromUniversalObject(final Object input,
+                                                final GenericType<T> targetType) {
+        return deserializeFromUniversalObject(input, targetType, injector -> {
+        });
+    }
+
+    public <T> T deserializeFromUniversalObject(final Object input,
                                                 final GenericType<T> targetType,
                                                 final InjectorLambda injectorProducer) {
         final ResolvedType resolvedType = reflectMaid.resolve(targetType);
         final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
-        return deserializer.deserializeFromUniversalObject(input, typeIdentifier, injectorProducer);
+        return deserializeFromUniversalObject(input, typeIdentifier, injectorProducer);
     }
 
     public <T> T deserializeFromUniversalObject(final Object input,
                                                 final TypeIdentifier targetType,
                                                 final InjectorLambda injectorProducer) {
-        return deserializer.deserializeFromUniversalObject(input, targetType, injectorProducer);
+        return deserialize(input, targetType, UNIVERSAL_OBJECT, injectorProducer);
     }
 
     public DebugInformation debugInformation() {

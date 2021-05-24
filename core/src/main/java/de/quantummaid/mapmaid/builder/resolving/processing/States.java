@@ -41,7 +41,6 @@ import lombok.ToString;
 import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories.defaultStateFactories;
 import static de.quantummaid.mapmaid.builder.resolving.processing.log.LoggedState.loggedState;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -53,9 +52,9 @@ public final class States {
     private final StateFactories stateFactories;
     private final List<StatefulDefinition> states;
 
-    public static States states(final List<StatefulDefinition> initialDefinitions) {
+    public static States states(final List<StatefulDefinition> initialDefinitions, final StateFactories stateFactories) {
         final List<StatefulDefinition> states = new ArrayList<>(initialDefinitions);
-        return new States(defaultStateFactories(), states);
+        return new States(stateFactories, states);
     }
 
     public States addState(final StatefulDefinition statefulDefinition) {

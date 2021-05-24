@@ -19,14 +19,8 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.detection;
+package de.quantummaid.mapmaid.mapper.marshalling.registry.modifier;
 
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
-
-import java.util.List;
-
-@FunctionalInterface
-public interface DeserializerFactory {
-    List<TypeDeserializer> analyseForDeserializer(ResolvedType type);
+public interface MarshallingModifier {
+    Object modify(Object input);
 }

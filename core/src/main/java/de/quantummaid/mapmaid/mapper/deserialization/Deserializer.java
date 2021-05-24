@@ -47,7 +47,6 @@ import java.util.Set;
 import static de.quantummaid.mapmaid.mapper.deserialization.InternalDeserializer.internalDeserializer;
 import static de.quantummaid.mapmaid.mapper.deserialization.UnexpectedExceptionThrownDuringUnmarshallingException.unexpectedExceptionThrownDuringUnmarshallingException;
 import static de.quantummaid.mapmaid.mapper.deserialization.Unmarshallers.unmarshallers;
-import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
@@ -86,13 +85,6 @@ public final class Deserializer {
                 debugInformation,
                 injectorFactory
         );
-    }
-
-    public <T> T deserializeFromUniversalObject(final Object input,
-                                                final TypeIdentifier targetType,
-                                                final InjectorLambda injectorProducer) {
-        final Universal universal = fromNativeJava(input);
-        return deserialize(universal, targetType, injectorProducer);
     }
 
     public <M> Object deserializeToUniversalObject(final M input,

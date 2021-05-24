@@ -26,9 +26,11 @@ import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AComplexTypeWithArray;
 import de.quantummaid.mapmaid.domain.Instances;
 import de.quantummaid.mapmaid.mapper.deserialization.UnexpectedExceptionThrownDuringUnmarshallingException;
-import de.quantummaid.mapmaid.mapper.serialization.UnexpectedExceptionThrownDuringMarshallingException;
+import de.quantummaid.mapmaid.mapper.marshalling.registry.UnexpectedExceptionThrownDuringMarshallingException;
 import de.quantummaid.mapmaid.specs.exceptions.TestException;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.builder.recipes.urlencoded.UrlEncodedMarshallerRecipe.urlEncoded;
@@ -197,7 +199,12 @@ public final class MarshallerSpecs {
                 .anExceptionIsThrownWithAMessageContaining("Unexpected exception thrown during marshalling: TestException")
                 .anExceptionOfClassIsThrownFulfilling(UnexpectedExceptionThrownDuringMarshallingException.class, e -> {
                     assertThat(e.exception(), instanceOf(TestException.class));
-                    assertThat(e.objectToBeMarshalled(), equalTo(input));
+                    assertThat(e.objectToBeMarshalled(), equalTo(Map.of(
+                            "number1", "1",
+                            "number2", "5",
+                            "stringA", "asdf",
+                            "stringB", "qwer"
+                    )));
                 });
     }
 

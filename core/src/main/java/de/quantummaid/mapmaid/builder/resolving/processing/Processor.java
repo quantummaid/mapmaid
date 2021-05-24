@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
@@ -42,6 +43,7 @@ import lombok.ToString;
 import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.States.states;
+import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactories.stateFactories;
 import static de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder.stateLogBuilder;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.DetectSignal.detect;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.ResolveSignal.resolve;
@@ -60,9 +62,9 @@ public final class Processor {
     private final Queue<Signal> pendingSignals;
     private final StateLogBuilder log;
 
-    public static Processor processor() {
+    public static Processor processor(final List<StateFactory> stateFactories) {
         final Queue<Signal> pendingSignals = new LinkedList<>();
-        final States states = states(smallList());
+        final States states = states(smallList(), stateFactories(stateFactories));
         final StateLogBuilder log = stateLogBuilder();
         return new Processor(states, pendingSignals, log);
     }

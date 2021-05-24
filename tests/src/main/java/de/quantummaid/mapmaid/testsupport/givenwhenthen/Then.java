@@ -83,8 +83,9 @@ public final class Then {
     }
 
     public Then anExceptionIsThrownWithAMessageContaining(final String message) {
-        assertThat(this.thenData.getException(), not(is(nullValue())));
-        assertThat(this.thenData.getException().getMessage(), StringContains.containsString(message));
+        final Exception exception = thenData.getException();
+        assertThat(exception, not(is(nullValue())));
+        assertThat(exception.getMessage(), StringContains.containsString(message));
         return this;
     }
 
@@ -115,7 +116,7 @@ public final class Then {
     @SuppressWarnings("unchecked")
     public <T> Then anExceptionOfClassIsThrownFulfilling(final Class<T> expectedExceptionClass,
                                                          final Consumer<T> verificationLogic) {
-        final Exception exception = this.thenData.getException();
+        final Exception exception = thenData.getException();
         assertThat(exception, not(is(nullValue())));
         assertThat(exception, instanceOf(expectedExceptionClass));
         verificationLogic.accept((T) exception);
@@ -123,7 +124,7 @@ public final class Then {
     }
 
     public Then noExceptionHasBeenThrown() {
-        final Exception exception = this.thenData.getException();
+        final Exception exception = thenData.getException();
         if (exception != null) {
             final IllegalStateException illegalStateException = new IllegalStateException("Unexpected exception thrown", exception);
             fail(illegalStateException);

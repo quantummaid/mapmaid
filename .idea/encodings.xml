@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/integrations/dynamodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/integrations/minimal-json/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/integrations/snakeyaml/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/integrations/standardtypes-kotlin/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tests/src/main/java" charset="UTF-8" />
   </component>
 </project>
