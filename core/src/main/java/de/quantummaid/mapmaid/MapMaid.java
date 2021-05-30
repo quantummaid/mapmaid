@@ -178,7 +178,7 @@ public final class MapMaid {
     public <T> T serializeTo(final Object object,
                              final MarshallingType<T> marshallingType,
                              final TypeIdentifier type) {
-        return this.serializer.serialize(object, type, marshallingType, input -> input);
+        return serializer.serialize(object, type, marshallingType, input -> input);
     }
 
     public <T> T serialize(final Object object,

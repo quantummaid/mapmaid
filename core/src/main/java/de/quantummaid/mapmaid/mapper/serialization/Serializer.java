@@ -106,7 +106,7 @@ public final class Serializer implements SerializationCallback {
             return universalNull();
         }
         final SerializationTracker childTracker = tracker.trackToProhibitCyclicReferences(object);
-        final Definition definition = definitions.getDefinitionForType(type);
+        final Definition definition = lookupDefinition(type);
         return definition.serializer()
                 .orElseThrow(() -> {
                     final ScanInformation scanInformation = debugInformation.scanInformationFor(type);
@@ -114,6 +114,13 @@ public final class Serializer implements SerializationCallback {
                             format("No serializer configured for type '%s'", definition.type().description()), scanInformation);
                 })
                 .serialize(object, this, childTracker, customPrimitiveMappings, debugInformation);
+    }
+
+    private Definition lookupDefinition(final TypeIdentifier type) {
+        final Definition definition = definitions.getDefinitionForType(type);
+        return definition.parent()
+                .map(this::lookupDefinition)
+                .orElse(definition);
     }
 
     public Definitions getDefinitions() {

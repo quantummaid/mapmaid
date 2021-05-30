@@ -69,4 +69,9 @@ public final class GeneralDefinition implements Definition {
     public TypeIdentifier type() {
         return this.type;
     }
+
+    @Override
+    public Optional<TypeIdentifier> parent() {
+        return Optional.empty();
+    }
 }
