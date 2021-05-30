@@ -61,6 +61,8 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.factories.kotl
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
+import static de.quantummaid.mapmaid.exceptions.StackTraceStateFactory.stackTraceStateFactory;
+import static de.quantummaid.mapmaid.exceptions.ThrowableStateFactory.throwableStateFactory;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.UNIVERSAL_OBJECT;
 import static de.quantummaid.mapmaid.mapper.marshalling.UniversalObjectMarshallerAndUnmarshaller.universalObjectMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry.marshallerRegistry;
@@ -74,6 +76,8 @@ import static java.util.stream.Collectors.groupingBy;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AdvancedBuilder {
+    private static final int DEFAULT_MAX_STACK_FRAME_COUNT = 32;
+
     private static final List<Autoloadable<MarshallerAndUnmarshaller<?>>> AUTOLOADABLE_MARSHALLERS = List.of(
             autoloadIfClassPresent("de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller")
     );
@@ -87,6 +91,7 @@ public final class AdvancedBuilder {
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
     private final List<StateFactory> stateFactories = new ArrayList<>();
+    private int maxStackFrameCount = DEFAULT_MAX_STACK_FRAME_COUNT;
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
         final AdvancedBuilder advancedBuilder = new AdvancedBuilder(reflectMaid);
@@ -94,6 +99,10 @@ public final class AdvancedBuilder {
         advancedBuilder.marshallerMap.put(UNIVERSAL_OBJECT, universalObjectMarshallerAndUnmarshaller);
         advancedBuilder.unmarshallerMap.put(UNIVERSAL_OBJECT, universalObjectMarshallerAndUnmarshaller);
         return advancedBuilder;
+    }
+
+    public ReflectMaid reflectMaid() {
+        return reflectMaid;
     }
 
     public AdvancedBuilder withTypeIdentifierKey(final String typeIdentifierKey) {
@@ -131,6 +140,11 @@ public final class AdvancedBuilder {
     public AdvancedBuilder withStateFactory(final StateFactory stateFactory) {
         validateNotNull(stateFactory, "stateFactory");
         stateFactories.add(stateFactory);
+        return this;
+    }
+
+    public AdvancedBuilder withMaximumNumberOfStackFramesWhenSerializingExceptions(final int maxStackFrameCount) {
+        this.maxStackFrameCount = maxStackFrameCount;
         return this;
     }
 
@@ -231,6 +245,8 @@ public final class AdvancedBuilder {
 
     Processor processor() {
         List.of(
+                throwableStateFactory(reflectMaid),
+                stackTraceStateFactory(reflectMaid, maxStackFrameCount),
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),

@@ -33,4 +33,6 @@ public interface Definition {
     Optional<TypeDeserializer> deserializer();
 
     TypeIdentifier type();
+
+    Optional<TypeIdentifier> parent();
 }
