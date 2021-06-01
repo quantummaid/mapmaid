@@ -22,13 +22,12 @@
 package de.quantummaid.mapmaid.builder.resolving.processing;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
@@ -79,10 +78,9 @@ public final class Processor {
     }
 
     public Map<TypeIdentifier, CollectionResult> collect(final ReflectMaid reflectMaid,
-                                                         final SimpleDetector detector,
-                                                         final Disambiguators disambiguators,
+                                                         final Detector detector,
                                                          final MapMaidConfiguration configuration) {
-        resolveRecursively(reflectMaid, detector, disambiguators, configuration);
+        resolveRecursively(reflectMaid, detector, configuration);
         final Map<TypeIdentifier, Report> reports = this.states.collect();
 
         final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders = new HashMap<>(reports.size());
@@ -115,20 +113,18 @@ public final class Processor {
     }
 
     private void resolveRecursively(final ReflectMaid reflectMaid,
-                                    final SimpleDetector detector,
-                                    final Disambiguators disambiguators,
+                                    final Detector detector,
                                     final MapMaidConfiguration configuration) {
-        final List<TypeIdentifier> injectedTypes = this.states.injections();
         while (!pendingSignals.isEmpty()) {
             final Signal signal = pendingSignals.remove();
             states = states.apply(reflectMaid, signal, this, configuration, log);
         }
-        final States detected = states.apply(reflectMaid, detect(detector, disambiguators, injectedTypes), this, configuration, log);
+        final States detected = states.apply(reflectMaid, detect(detector), this, configuration, log);
         final States resolved = detected.apply(reflectMaid, resolve(), this, configuration, log);
         states = resolved;
 
         if (!pendingSignals.isEmpty()) {
-            resolveRecursively(reflectMaid, detector, disambiguators, configuration);
+            resolveRecursively(reflectMaid, detector, configuration);
         }
     }
 

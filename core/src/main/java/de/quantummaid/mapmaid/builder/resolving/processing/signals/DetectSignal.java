@@ -21,8 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
-import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -30,26 +29,21 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Optional;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DetectSignal implements Signal {
-    private final SimpleDetector detector;
-    private final Disambiguators disambiguators;
-    private final List<TypeIdentifier> injectedTypes;
+    private final Detector detector;
 
-    public static Signal detect(final SimpleDetector detector,
-                                final Disambiguators disambiguators,
-                                final List<TypeIdentifier> injectedTypes) {
-        return new DetectSignal(detector, disambiguators, injectedTypes);
+    public static Signal detect(final Detector detector) {
+        return new DetectSignal(detector);
     }
 
     @Override
     public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.detect(detector, disambiguators, injectedTypes);
+        return definition.detect(detector);
     }
 
     @Override

@@ -50,7 +50,7 @@ public final class Resolving extends StatefulDefinition {
         super(context);
     }
 
-    public static Resolving resolvingDuplex(final Context context) {
+    public static Resolving resolving(final Context context) {
         return new Resolving(context);
     }
 

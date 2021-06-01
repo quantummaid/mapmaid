@@ -45,6 +45,7 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import de.quantummaid.mapmaid.builder.resolving.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.debug.DebugInformation;
@@ -81,8 +82,10 @@ import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deseri
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddReasonSignal.addReason;
+import static de.quantummaid.mapmaid.builder.resolving.states.MapMaidDetector.mapMaidDetector;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
@@ -115,6 +118,7 @@ public final class MapMaidBuilder implements
     private final ReflectMaid reflectMaid;
     private final List<ManuallyAddedState> manuallyAddedStates = new ArrayList<>();
     private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
+    private final List<TypeIdentifier> injectionTypes = new ArrayList<>();
     private final AdvancedBuilder advancedBuilder;
     private final List<Recipe> recipes = smallList();
     private final ValidationMappings validationMappings = ValidationMappings.empty();
@@ -239,8 +243,9 @@ public final class MapMaidBuilder implements
 
     @Override
     public MapMaidBuilder injecting(final TypeIdentifier typeIdentifier, final TypeDeserializer deserializer) {
+        injectionTypes.add(typeIdentifier);
         manuallyAddedStates.add((configuration, processor) -> {
-            final Context context = emptyContext(processor::dispatch, typeIdentifier, true);
+            final Context context = emptyContext(processor::dispatch, typeIdentifier);
             final TypeSerializer serializer = injectionSerializer(typeIdentifier);
             context.setManuallyConfiguredSerializer(serializer);
             context.setManuallyConfiguredDeserializer(deserializer);
@@ -497,10 +502,10 @@ public final class MapMaidBuilder implements
         manuallyAddedStates.forEach(manuallyAddedState -> manuallyAddedState.addState(mapMaidConfiguration, processor));
 
         final Disambiguators disambiguators = this.advancedBuilder.buildDisambiguators();
+        final Detector detector = mapMaidDetector(this.detector, disambiguators, injectionTypes);
         final Map<TypeIdentifier, CollectionResult> result = processor.collect(
                 reflectMaid,
-                this.detector,
-                disambiguators,
+                detector,
                 mapMaidConfiguration
         );
 

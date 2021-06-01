@@ -22,22 +22,18 @@
 package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.List;
-
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolving.resolvingDuplex;
+import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolving.resolving;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Undetectable.undetectable;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
@@ -70,17 +66,10 @@ public final class ToBeDetected extends StatefulDefinition {
     }
 
     @Override
-    public StatefulDefinition detect(final SimpleDetector detector,
-                                     final Disambiguators disambiguators,
-                                     final List<TypeIdentifier> injectedTypes) {
+    public StatefulDefinition detect(final Detector detector) {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
-        final DetectionResult<DisambiguationResult> result = context.fixedResult().orElseGet(() -> detector.detect(
-                context.type(),
-                scanInformationBuilder,
-                disambiguators,
-                injectedTypes
-        ));
+        final DetectionResult<DisambiguationResult> result = detector.detect(requirements, context);
         if (result.isFailure()) {
             return undetectable(context, format("no %s detected:%n%s",
                     requirements.describe(),
@@ -93,6 +82,6 @@ public final class ToBeDetected extends StatefulDefinition {
         if (requirements.deserialization) {
             context.setDeserializer(result.result().deserializer());
         }
-        return resolvingDuplex(context);
+        return resolving(context);
     }
 }

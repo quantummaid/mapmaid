@@ -68,13 +68,6 @@ public final class States {
         return new States(this.stateFactories, newStates);
     }
 
-    public List<TypeIdentifier> injections() {
-        return this.states.stream()
-                .filter(statefulDefinition -> statefulDefinition.context.isInjection())
-                .map(StatefulDefinition::type)
-                .collect(toList());
-    }
-
     public States apply(final ReflectMaid reflectMaid,
                         final Signal signal,
                         final Processor processor,

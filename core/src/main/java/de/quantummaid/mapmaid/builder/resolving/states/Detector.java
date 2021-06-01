@@ -21,36 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.states;
 
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 
-import java.util.Optional;
+public interface Detector {
 
-public abstract class StatefulDefinition {
-    public final Context context;
-
-    protected StatefulDefinition(final Context context) {
-        this.context = context;
-    }
-
-    public abstract StatefulDefinition changeRequirements(RequirementsReducer reducer);
-
-    public TypeIdentifier type() {
-        return context.type();
-    }
-
-    @SuppressWarnings("java:S1172")
-    public StatefulDefinition detect(final Detector detector) {
-        return this;
-    }
-
-    public StatefulDefinition resolve() {
-        return this;
-    }
-
-    public Optional<Report> getDefinition() {
-        throw new UnsupportedOperationException(this.getClass() + " " + this.context.toString());
-    }
+    DetectionResult<DisambiguationResult> detect(DetectionRequirements detectionRequirements, Context context);
 }

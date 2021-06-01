@@ -51,18 +51,11 @@ public final class Context {
     private final ScanInformationBuilder scanInformationBuilder;
     private TypeSerializer manuallyConfiguredSerializer;
     private TypeDeserializer manuallyConfiguredDeserializer;
-    private final boolean injection;
 
     public static Context emptyContext(final Consumer<Signal> dispatcher,
                                        final TypeIdentifier type) {
-        return emptyContext(dispatcher, type, false);
-    }
-
-    public static Context emptyContext(final Consumer<Signal> dispatcher,
-                                       final TypeIdentifier type,
-                                       final boolean injection) {
         final ScanInformationBuilder scanInformationBuilder = ScanInformationBuilder.scanInformationBuilder(type);
-        return new Context(dispatcher, type, scanInformationBuilder, injection);
+        return new Context(dispatcher, type, scanInformationBuilder);
     }
 
     public TypeIdentifier type() {
@@ -99,10 +92,6 @@ public final class Context {
         } else {
             return Optional.empty();
         }
-    }
-
-    public boolean isInjection() {
-        return injection;
     }
 
     public Optional<TypeDeserializer> deserializer() {
