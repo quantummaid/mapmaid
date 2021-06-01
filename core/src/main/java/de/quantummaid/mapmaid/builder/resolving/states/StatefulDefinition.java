@@ -44,10 +44,6 @@ public abstract class StatefulDefinition {
         return context.type();
     }
 
-    public boolean isInjection() {
-        return false;
-    }
-
     @SuppressWarnings("java:S1172")
     public StatefulDefinition detect(final SimpleDetector detector,
                                      final Disambiguators disambiguators,

@@ -81,11 +81,9 @@ import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deseri
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddReasonSignal.addReason;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
-import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
 import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
@@ -242,11 +240,11 @@ public final class MapMaidBuilder implements
     @Override
     public MapMaidBuilder injecting(final TypeIdentifier typeIdentifier, final TypeDeserializer deserializer) {
         manuallyAddedStates.add((configuration, processor) -> {
-            final Context context = emptyContext(processor::dispatch, typeIdentifier);
+            final Context context = emptyContext(processor::dispatch, typeIdentifier, true);
             final TypeSerializer serializer = injectionSerializer(typeIdentifier);
-            context.setSerializer(serializer);
-            context.setDeserializer(deserializer);
-            final StatefulDefinition statefulDefinition = injectedDefinition(context);
+            context.setManuallyConfiguredSerializer(serializer);
+            context.setManuallyConfiguredDeserializer(deserializer);
+            final StatefulDefinition statefulDefinition = unreasoned(context);
             processor.addState(statefulDefinition);
             processor.dispatch(addReason(SERIALIZATION, typeIdentifier, manuallyAdded()));
             processor.dispatch(addReason(DESERIALIZATION, typeIdentifier, manuallyAdded()));

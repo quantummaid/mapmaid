@@ -70,7 +70,7 @@ public final class States {
 
     public List<TypeIdentifier> injections() {
         return this.states.stream()
-                .filter(StatefulDefinition::isInjection)
+                .filter(statefulDefinition -> statefulDefinition.context.isInjection())
                 .map(StatefulDefinition::type)
                 .collect(toList());
     }
