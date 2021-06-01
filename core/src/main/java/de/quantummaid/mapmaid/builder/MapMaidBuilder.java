@@ -81,10 +81,9 @@ import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deseri
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.Context.emptyContext;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddDeserializationSignal.addDeserialization;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddSerializationSignal.addSerialization;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddReasonSignal.addReason;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.builder.resolving.states.injecting.InjectedDefinition.injectedDefinition;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
@@ -224,18 +223,18 @@ public final class MapMaidBuilder implements
             final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subTypeIdentifiers, configuration);
             final String typeIdentifierKey = configuration.getTypeIdentifierKey();
             final Context context = emptyContext(processor::dispatch, superType);
-            final StatefulDefinition statefulDefinition = unreasoned(context);
-            processor.addState(statefulDefinition);
             if (capabilities.hasSerialization()) {
                 final TypeSerializer serializer = polymorphicSerializer(superType, subTypes, nameToType, typeIdentifierKey);
-                processor.dispatch(addManualSerializer(superType, serializer));
-                processor.dispatch(addSerialization(superType, manuallyAdded()));
+                context.setManuallyConfiguredSerializer(serializer);
+                processor.dispatch(addReason(SERIALIZATION, superType, manuallyAdded()));
             }
             if (capabilities.hasDeserialization()) {
                 final PolymorphicDeserializer deserializer = polymorphicDeserializer(superType, nameToType, typeIdentifierKey);
-                processor.dispatch(addManualDeserializer(superType, deserializer));
-                processor.dispatch(addDeserialization(superType, manuallyAdded()));
+                context.setManuallyConfiguredDeserializer(deserializer);
+                processor.dispatch(addReason(DESERIALIZATION, superType, manuallyAdded()));
             }
+            final StatefulDefinition statefulDefinition = unreasoned(context);
+            processor.addState(statefulDefinition);
         });
         return this;
     }
@@ -249,8 +248,8 @@ public final class MapMaidBuilder implements
             context.setDeserializer(deserializer);
             final StatefulDefinition statefulDefinition = injectedDefinition(context);
             processor.addState(statefulDefinition);
-            processor.dispatch(addSerialization(typeIdentifier, manuallyAdded()));
-            processor.dispatch(addDeserialization(typeIdentifier, manuallyAdded()));
+            processor.dispatch(addReason(SERIALIZATION, typeIdentifier, manuallyAdded()));
+            processor.dispatch(addReason(DESERIALIZATION, typeIdentifier, manuallyAdded()));
         });
         return this;
     }
@@ -286,10 +285,10 @@ public final class MapMaidBuilder implements
             final ResolvedType resolvedType = reflectMaid.resolve(type);
             final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
             if (capabilities.hasSerialization()) {
-                processor.dispatch(addSerialization(typeIdentifier, reason));
+                processor.dispatch(addReason(SERIALIZATION, typeIdentifier, reason));
             }
             if (capabilities.hasDeserialization()) {
-                processor.dispatch(addDeserialization(typeIdentifier, reason));
+                processor.dispatch(addReason(DESERIALIZATION, typeIdentifier, reason));
             }
         });
         return this;
@@ -311,8 +310,8 @@ public final class MapMaidBuilder implements
                     throw new IllegalArgumentException(format(
                             "serializer is missing for type '%s'", typeIdentifier.description()));
                 }
-                processor.dispatch(addManualSerializer(typeIdentifier, serializer.get()));
-                processor.dispatch(addSerialization(typeIdentifier, manuallyAdded()));
+                context.setManuallyConfiguredSerializer(serializer.get());
+                processor.dispatch(addReason(SERIALIZATION, typeIdentifier, manuallyAdded()));
             }
             if (capabilities.hasDeserialization()) {
                 final Optional<TypeDeserializer> deserializer = customType.deserializer();
@@ -320,8 +319,8 @@ public final class MapMaidBuilder implements
                     throw new IllegalArgumentException(format("deserializer is missing for type '%s'",
                             typeIdentifier.description()));
                 }
-                processor.dispatch(addManualDeserializer(typeIdentifier, deserializer.get()));
-                processor.dispatch(addDeserialization(typeIdentifier, manuallyAdded()));
+                context.setManuallyConfiguredDeserializer(deserializer.get());
+                processor.dispatch(addReason(DESERIALIZATION, typeIdentifier, manuallyAdded()));
             }
         });
         return this;

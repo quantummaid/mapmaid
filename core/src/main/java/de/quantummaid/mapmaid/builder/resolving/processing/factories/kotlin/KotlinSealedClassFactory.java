@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
@@ -71,10 +69,9 @@ public final class KotlinSealedClassFactory implements StateFactory {
         final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subtypes, mapMaidConfiguration);
 
         final PolymorphicSerializer serializer = polymorphicSerializer(type, sealedSubclasses, nameToType, "type");
+        context.setManuallyConfiguredSerializer(serializer);
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of(
-                addManualSerializer(type, serializer),
-                addManualDeserializer(type, deserializer)
-        )));
+        context.setManuallyConfiguredDeserializer(deserializer);
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
     }
 }

@@ -22,157 +22,83 @@
 package de.quantummaid.mapmaid.builder.resolving.requirements;
 
 import de.quantummaid.mapmaid.debug.Reason;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
-import static java.util.Collections.emptyList;
+import static de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirement.primaryRequirement;
+import static de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirement.secondaryRequirement;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DetectionRequirementReasons {
-    public final List<Reason> serializationReasons;
-    public final List<Reason> deserializationReasons;
-    private final List<Reason> objectEnforcingReasons;
-    private final List<Reason> inlinedPrimitiveReasons;
-    private final TypeSerializer manuallyConfiguredSerializer;
-    private final TypeDeserializer manuallyConfiguredDeserializer;
+    private final Map<RequirementName, DetectionRequirement> detectionRequirements;
 
-    public static DetectionRequirementReasons empty() {
-        return new DetectionRequirementReasons(
-                emptyList(),
-                emptyList(),
-                emptyList(),
-                emptyList(),
-                null,
-                null
-        );
+    public static DetectionRequirementReasons empty(final List<RequirementName> primaryRequirements,
+                                                    final List<RequirementName> secondaryRequirements) {
+        final Map<RequirementName, DetectionRequirement> requirementMap = new LinkedHashMap<>();
+        primaryRequirements.forEach(name -> {
+            final DetectionRequirement requirement = primaryRequirement(name);
+            requirementMap.put(name, requirement);
+        });
+        secondaryRequirements.forEach(name -> {
+            final DetectionRequirement requirement = secondaryRequirement(name);
+            requirementMap.put(name, requirement);
+        });
+        return new DetectionRequirementReasons(requirementMap);
     }
 
-    public DetectionRequirementReasons setManuallyConfiguredSerializer(final TypeSerializer manuallyConfiguredSerializer) {
-        return new DetectionRequirementReasons(
-                this.serializationReasons,
-                this.deserializationReasons,
-                this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
+    public DetectionRequirementReasons addReason(final RequirementName requirement, final Reason reason) {
+        return reduce(requirement, detectionRequirement -> detectionRequirement.addReason(reason));
     }
 
-    public DetectionRequirementReasons setManuallyConfiguredDeserializer(final TypeDeserializer manuallyConfiguredDeserializer) {
-        return new DetectionRequirementReasons(
-                this.serializationReasons,
-                this.deserializationReasons,
-                this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                this.manuallyConfiguredSerializer,
-                manuallyConfiguredDeserializer
-        );
+    public DetectionRequirementReasons removeReason(final RequirementName requirement, final Reason reason) {
+        return reduce(requirement, detectionRequirement -> detectionRequirement.removeReason(reason));
     }
 
-    public DetectionRequirementReasons addSerialization(final Reason reason) {
-        final List<Reason> newSerializationReasons = new ArrayList<>(this.serializationReasons);
-        newSerializationReasons.add(reason);
-        return new DetectionRequirementReasons(
-                newSerializationReasons,
-                this.deserializationReasons,
-                this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                this.manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
-    }
-
-    public DetectionRequirementReasons removeSerialization(final Reason reason) {
-        final List<Reason> newSerializationReasons = new ArrayList<>(this.serializationReasons);
-        newSerializationReasons.remove(reason);
-        return new DetectionRequirementReasons(
-                newSerializationReasons,
-                this.deserializationReasons,
-                this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                this.manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
-    }
-
-    public DetectionRequirementReasons addDeserialization(final Reason reason) {
-        final List<Reason> newDeserializationReasons = new ArrayList<>(this.deserializationReasons);
-        newDeserializationReasons.add(reason);
-        return new DetectionRequirementReasons(
-                this.serializationReasons,
-                newDeserializationReasons,
-                this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                this.manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
-    }
-
-    public DetectionRequirementReasons removeDeserialization(final Reason reason) {
-        final List<Reason> newDeserializationReasons = new ArrayList<>(this.deserializationReasons);
-        newDeserializationReasons.remove(reason);
-        return new DetectionRequirementReasons(
-                this.serializationReasons,
-                newDeserializationReasons,
-                this.objectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                this.manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
-    }
-
-    public DetectionRequirementReasons enforceObject(final Reason reason) {
-        final List<Reason> newObjectEnforcingReasons = new ArrayList<>(this.objectEnforcingReasons);
-        newObjectEnforcingReasons.add(reason);
-        return new DetectionRequirementReasons(
-                this.serializationReasons,
-                this.deserializationReasons,
-                newObjectEnforcingReasons,
-                this.inlinedPrimitiveReasons,
-                this.manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
+    private DetectionRequirementReasons reduce(final RequirementName requirement,
+                                               final Function<DetectionRequirement, DetectionRequirement> reducer) {
+        final Map<RequirementName, DetectionRequirement> newRequirements = new LinkedHashMap<>(detectionRequirements);
+        final DetectionRequirement detectionRequirement = newRequirements.get(requirement);
+        final DetectionRequirement changedRequirement = reducer.apply(detectionRequirement);
+        newRequirements.put(requirement, changedRequirement);
+        return new DetectionRequirementReasons(newRequirements);
     }
 
     public boolean hasChanged(final DetectionRequirementReasons old) {
-        final DetectionRequirements currentDetectionRequirements = detectionRequirements();
-        final DetectionRequirements oldDetectionRequirements = old.detectionRequirements();
+        final Map<RequirementName, Boolean> currentDetectionRequirements = currentRequirements();
+        final Map<RequirementName, Boolean> oldDetectionRequirements = old.currentRequirements();
         return !currentDetectionRequirements.equals(oldDetectionRequirements);
     }
 
-    public DetectionRequirements detectionRequirements() {
-        return DetectionRequirements.detectionRequirements(
-                !this.serializationReasons.isEmpty(),
-                !this.deserializationReasons.isEmpty(),
-                !this.objectEnforcingReasons.isEmpty(),
-                !this.inlinedPrimitiveReasons.isEmpty(),
-                this.manuallyConfiguredSerializer,
-                this.manuallyConfiguredDeserializer
-        );
+    public Map<RequirementName, Boolean> currentRequirements() {
+        return detectionRequirements.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().isRequired()));
     }
 
     public boolean isUnreasoned() {
-        return this.serializationReasons.isEmpty() && this.deserializationReasons.isEmpty();
+        return detectionRequirements.values().stream()
+                .filter(DetectionRequirement::isPrimary)
+                .noneMatch(DetectionRequirement::isRequired);
+    }
+
+    public List<Reason> reasonsFor(final RequirementName requirementName) {
+        final DetectionRequirement requirement = detectionRequirements.get(requirementName);
+        return requirement.reasons();
     }
 
     public String summary() {
-        return String.format(
-                "serialization: %d, deserialization: %d, object: %d, primitive: %d, manual serializer: %s, manual deserializer: %s",
-                serializationReasons.size(),
-                deserializationReasons.size(),
-                objectEnforcingReasons.size(),
-                inlinedPrimitiveReasons.size(),
-                manuallyConfiguredSerializer != null,
-                manuallyConfiguredDeserializer != null
-        );
+        return detectionRequirements.values().stream()
+                .map(detectionRequirement -> detectionRequirement.name().value() + ": " + detectionRequirement.numberOfReasons())
+                .collect(joining(", "));
     }
 }

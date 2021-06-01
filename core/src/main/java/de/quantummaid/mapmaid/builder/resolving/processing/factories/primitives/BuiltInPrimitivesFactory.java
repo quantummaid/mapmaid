@@ -28,8 +28,8 @@ import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactor
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +42,6 @@ import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinition
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static java.util.Optional.empty;
 
@@ -71,10 +69,9 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
             return empty();
         }
         final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType);
+        context.setManuallyConfiguredSerializer(serializer);
         final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType);
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of(
-                addManualSerializer(type, serializer),
-                addManualDeserializer(type, deserializer)
-        )));
+        context.setManuallyConfiguredDeserializer(deserializer);
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
     }
 }

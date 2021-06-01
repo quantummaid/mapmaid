@@ -6,8 +6,6 @@ import de.quantummaid.mapmaid.builder.resolving.Context
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer
 import de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer
@@ -108,14 +106,8 @@ private class CustomFactory(
         if (type != targetType) {
             return Optional.empty()
         }
-        return Optional.of(
-            stateFactoryResult(
-                unreasoned(context),
-                listOf(
-                    addManualSerializer(typeIdentifier, serializer),
-                    addManualDeserializer(typeIdentifier, deserializer)
-                )
-            )
-        )
+        context.setManuallyConfiguredSerializer(serializer)
+        context.setManuallyConfiguredDeserializer(deserializer)
+        return Optional.of(stateFactoryResult(unreasoned(context), listOf()))
     }
 }

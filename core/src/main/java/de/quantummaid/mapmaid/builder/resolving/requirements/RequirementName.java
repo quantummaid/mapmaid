@@ -19,41 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.processing.signals;
+package de.quantummaid.mapmaid.builder.resolving.requirements;
 
-import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Reason;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Optional;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AddDeserializationSignal implements Signal {
-    private final TypeIdentifier target;
-    private final Reason reason;
+public final class RequirementName {
+    private final String name;
 
-    public static Signal addDeserialization(final TypeIdentifier target, final Reason reason) {
-        return new AddDeserializationSignal(target, reason);
+    public static RequirementName requirementName(final String name) {
+        return new RequirementName(name);
     }
 
-    @Override
-    public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.changeRequirements(current -> current.addDeserialization(reason));
-    }
-
-    @Override
-    public Optional<TypeIdentifier> target() {
-        return Optional.of(target);
-    }
-
-    @Override
-    public String description() {
-        return String.format("add deserialization to %s", target.simpleDescription());
+    public String value() {
+        return name;
     }
 }

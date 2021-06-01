@@ -38,9 +38,10 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.RemoveDeserializationSignal.removeDeserialization;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.RemoveSerializationSignal.removeSerialization;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.RemoveReasonSignal.removeReasonSignal;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
@@ -76,8 +77,8 @@ public final class Resolved extends StatefulDefinition {
 
     private void removeTransitiveReasons() {
         final Reason transitiveReason = becauseOf(context.type());
-        context.dispatch(removeSerialization(transitiveReason));
-        context.dispatch(removeDeserialization(transitiveReason));
+        context.dispatch(removeReasonSignal(SERIALIZATION, transitiveReason));
+        context.dispatch(removeReasonSignal(DESERIALIZATION, transitiveReason));
     }
 
     @Override

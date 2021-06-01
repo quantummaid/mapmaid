@@ -26,9 +26,9 @@ import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
-import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +38,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ArrayCollectionSerializer.arraySerializer;
@@ -70,9 +68,8 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
         }
         final ResolvedType componentType = ((ArrayType) type).componentType();
         final TypeIdentifier componentTypeIdentifier = typeIdentifierFor(componentType);
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of(
-                addManualSerializer(typeIdentifier, arraySerializer(componentTypeIdentifier)),
-                addManualDeserializer(typeIdentifier, arrayDeserializer(componentTypeIdentifier, componentType))
-        )));
+        context.setManuallyConfiguredSerializer(arraySerializer(componentTypeIdentifier));
+        context.setManuallyConfiguredDeserializer(arrayDeserializer(componentTypeIdentifier, componentType));
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
     }
 }

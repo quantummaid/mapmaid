@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.ThrowableSerializer.throwableSerializer;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
@@ -67,11 +66,7 @@ public final class ThrowableStateFactory implements StateFactory {
             return empty();
         }
         final ThrowableSerializer serializer = throwableSerializer(stackTraceType);
-        return Optional.of(
-                stateFactoryResult(
-                        unreasoned(context),
-                        List.of(addManualSerializer(type, serializer))
-                )
-        );
+        context.setManuallyConfiguredSerializer(serializer);
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
     }
 }

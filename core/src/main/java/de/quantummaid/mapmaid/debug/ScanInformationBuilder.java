@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementName;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
@@ -39,6 +40,8 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
+import static de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons.empty;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.debug.RequiredAction.*;
@@ -50,7 +53,11 @@ import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScanInformationBuilder {
     private final TypeIdentifier type;
-    private DetectionRequirementReasons detectionRequirementReasons = DetectionRequirementReasons.empty();
+    private DetectionRequirementReasons detectionRequirementReasons =
+            empty(
+                    List.of(SERIALIZATION, DESERIALIZATION),
+                    List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
+            );
     private final Map<TypeSerializer, List<String>> serializers;
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> deserializers;
@@ -97,7 +104,13 @@ public final class ScanInformationBuilder {
     }
 
     public DetectionRequirements detectionRequirements() {
-        return this.detectionRequirementReasons.detectionRequirements();
+        final Map<RequirementName, Boolean> currentRequirements = detectionRequirementReasons.currentRequirements();
+        return DetectionRequirements.detectionRequirements(
+                currentRequirements.get(SERIALIZATION),
+                currentRequirements.get(DESERIALIZATION),
+                currentRequirements.get(OBJECT_ENFORCING),
+                currentRequirements.get(INLINED_PRIMITIVE)
+        );
     }
 
     public void ignoreAllOtherSerializers(final TypeSerializer serializer,
@@ -187,18 +200,18 @@ public final class ScanInformationBuilder {
             this.deserializers.remove(this.deserializer);
         }
         final Reasons reasons = reasons(
-                this.detectionRequirementReasons.deserializationReasons,
-                this.detectionRequirementReasons.serializationReasons,
+                detectionRequirementReasons.reasonsFor(DESERIALIZATION),
+                detectionRequirementReasons.reasonsFor(SERIALIZATION),
                 serializationSubReasonProvider,
                 deserializationSubReasonProvider);
         return actualScanInformation(
-                this.type,
+                type,
                 reasons,
-                this.serializer,
-                this.deserializer,
-                this.serializers,
-                this.serializationFields,
-                this.deserializers
+                serializer,
+                deserializer,
+                serializers,
+                serializationFields,
+                deserializers
         );
     }
 }

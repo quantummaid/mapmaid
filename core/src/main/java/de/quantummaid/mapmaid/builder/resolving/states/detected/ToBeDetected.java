@@ -75,7 +75,7 @@ public final class ToBeDetected extends StatefulDefinition {
                                      final List<TypeIdentifier> injectedTypes) {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
         final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
-        final DetectionResult<DisambiguationResult> result = requirements.fixedResult().orElseGet(() -> detector.detect(
+        final DetectionResult<DisambiguationResult> result = context.fixedResult().orElseGet(() -> detector.detect(
                 context.type(),
                 scanInformationBuilder,
                 disambiguators,

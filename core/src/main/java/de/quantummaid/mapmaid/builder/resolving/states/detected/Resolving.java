@@ -35,9 +35,8 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddDeserializationSignal.addDeserialization;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddSerializationSignal.addSerialization;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.EnforceObjectSignal.enforceObject;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
+import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddReasonSignal.addReason;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolved.resolved;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
@@ -72,17 +71,17 @@ public final class Resolving extends StatefulDefinition {
         if (detectionRequirements.serialization) {
             final TypeSerializer serializer = context.serializer().orElseThrow();
             final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
-            requiredTypes.forEach(type -> context.dispatch(addSerialization(type, reason)));
+            requiredTypes.forEach(type -> context.dispatch(addReason(SERIALIZATION, type, reason)));
             if (serializer.forcesDependenciesToBeObjects()) {
-                requiredTypes.forEach(type -> context.dispatch(enforceObject(type, reason)));
+                requiredTypes.forEach(type -> context.dispatch(addReason(OBJECT_ENFORCING, type, reason)));
             }
         }
         if (detectionRequirements.deserialization) {
             final TypeDeserializer deserializer = context.deserializer().orElseThrow();
             final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
-            requiredTypes.forEach(type -> context.dispatch(addDeserialization(type, reason)));
+            requiredTypes.forEach(type -> context.dispatch(addReason(DESERIALIZATION, type, reason)));
             if (deserializer.forcesDependenciesToBeObjects()) {
-                requiredTypes.forEach(type -> context.dispatch(enforceObject(type, reason)));
+                requiredTypes.forEach(type -> context.dispatch(addReason(OBJECT_ENFORCING, type, reason)));
             }
         }
         return resolved(context);

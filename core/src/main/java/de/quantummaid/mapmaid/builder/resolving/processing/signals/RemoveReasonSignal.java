@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementName;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -31,29 +32,32 @@ import lombok.ToString;
 
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class EnforceObjectSignal implements Signal {
-    private final TypeIdentifier target;
+public final class RemoveReasonSignal implements Signal {
+    private final RequirementName requirement;
     private final Reason reason;
 
-    public static Signal enforceObject(final TypeIdentifier target, final Reason reason) {
-        return new EnforceObjectSignal(target, reason);
+    public static Signal removeReasonSignal(final RequirementName requirement,
+                                            final Reason reason) {
+        return new RemoveReasonSignal(requirement, reason);
     }
 
     @Override
     public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.changeRequirements(current -> current.enforceObject(reason));
+        return definition.changeRequirements(current -> current.removeReason(requirement, reason));
     }
 
     @Override
     public Optional<TypeIdentifier> target() {
-        return Optional.of(target);
+        return Optional.empty();
     }
 
     @Override
     public String description() {
-        return String.format("enforce object for %s", target.simpleDescription());
+        return format("remove %s resulting from '%s'", requirement.value(), reason.reason());
     }
 }

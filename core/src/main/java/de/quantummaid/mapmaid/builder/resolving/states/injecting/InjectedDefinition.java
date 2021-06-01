@@ -57,12 +57,12 @@ public final class InjectedDefinition extends StatefulDefinition {
 
     @Override
     public Optional<Report> getDefinition() {
-        final TypeSerializer serializer = this.context.serializer().orElseThrow();
-        final TypeDeserializer deserializer = this.context.deserializer().orElseThrow();
-        final ScanInformationBuilder scanInformationBuilder = this.context.scanInformationBuilder();
+        final TypeSerializer serializer = context.serializer().orElseThrow();
+        final TypeDeserializer deserializer = context.deserializer().orElseThrow();
+        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
         scanInformationBuilder.setSerializer(serializer);
         scanInformationBuilder.setDeserializer(deserializer);
-        final Definition definition = generalDefinition(this.context.type(), serializer, deserializer);
+        final Definition definition = generalDefinition(context.type(), serializer, deserializer);
         return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
     }
 

@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
@@ -62,11 +61,7 @@ public final class StackTraceStateFactory implements StateFactory {
             return empty();
         }
         final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
-        return Optional.of(
-                stateFactoryResult(
-                        unreasoned(context),
-                        List.of(addManualSerializer(targetType, serializer))
-                )
-        );
+        context.setManuallyConfiguredSerializer(serializer);
+        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
     }
 }

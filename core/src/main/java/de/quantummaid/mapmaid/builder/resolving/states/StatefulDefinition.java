@@ -41,7 +41,7 @@ public abstract class StatefulDefinition {
     public abstract StatefulDefinition changeRequirements(RequirementsReducer reducer);
 
     public TypeIdentifier type() {
-        return this.context.type();
+        return context.type();
     }
 
     public boolean isInjection() {

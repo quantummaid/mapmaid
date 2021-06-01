@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
+import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -34,6 +36,8 @@ import lombok.ToString;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
 import static java.util.Optional.ofNullable;
 
 @ToString
@@ -45,10 +49,13 @@ public final class Context {
     private TypeSerializer serializer;
     private TypeDeserializer deserializer;
     private final ScanInformationBuilder scanInformationBuilder;
+    private TypeSerializer manuallyConfiguredSerializer;
+    private TypeDeserializer manuallyConfiguredDeserializer;
 
     public static Context emptyContext(final Consumer<Signal> dispatcher,
                                        final TypeIdentifier type) {
-        return new Context(dispatcher, type, ScanInformationBuilder.scanInformationBuilder(type));
+        final ScanInformationBuilder scanInformationBuilder = ScanInformationBuilder.scanInformationBuilder(type);
+        return new Context(dispatcher, type, scanInformationBuilder);
     }
 
     public TypeIdentifier type() {
@@ -69,6 +76,22 @@ public final class Context {
 
     public void setSerializer(final TypeSerializer serializer) {
         this.serializer = serializer;
+    }
+
+    public void setManuallyConfiguredSerializer(final TypeSerializer manuallyConfiguredSerializer) {
+        this.manuallyConfiguredSerializer = manuallyConfiguredSerializer;
+    }
+
+    public void setManuallyConfiguredDeserializer(final TypeDeserializer manuallyConfiguredDeserializer) {
+        this.manuallyConfiguredDeserializer = manuallyConfiguredDeserializer;
+    }
+
+    public Optional<DetectionResult<DisambiguationResult>> fixedResult() {
+        if (manuallyConfiguredSerializer != null || manuallyConfiguredDeserializer != null) {
+            return Optional.of(success(disambiguationResult(manuallyConfiguredSerializer, manuallyConfiguredDeserializer)));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public Optional<TypeDeserializer> deserializer() {

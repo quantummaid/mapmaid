@@ -4,9 +4,8 @@ import de.quantummaid.mapmaid.builder.MapMaidConfiguration
 import de.quantummaid.mapmaid.builder.resolving.Context
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal
-import de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned
+import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult
+import de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned
 import de.quantummaid.mapmaid.debug.DebugInformation
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer
@@ -129,15 +128,9 @@ class PairFactory : StateFactory {
         val typeIdentifierFirst = TypeIdentifier.typeIdentifierFor(first)
         val typeIdentifierSecond = TypeIdentifier.typeIdentifierFor(second)
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
+        context.setManuallyConfiguredSerializer(serializer)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
-        return Optional.of(
-            StateFactoryResult.stateFactoryResult(
-                Unreasoned.unreasoned(context),
-                listOf(
-                    AddManualSerializerSignal.addManualSerializer(typeIdentifier, serializer),
-                    AddManualDeserializerSignal.addManualDeserializer(typeIdentifier, deserializer)
-                )
-            )
-        )
+        context.setManuallyConfiguredDeserializer(deserializer)
+        return Optional.of(stateFactoryResult(unreasoned(context), listOf()))
     }
 }

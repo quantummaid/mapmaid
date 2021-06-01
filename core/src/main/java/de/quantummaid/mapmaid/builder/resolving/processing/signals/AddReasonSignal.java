@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementName;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -31,28 +32,34 @@ import lombok.ToString;
 
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RemoveDeserializationSignal implements Signal {
+public final class AddReasonSignal implements Signal {
+    private final TypeIdentifier target;
+    private final RequirementName requirement;
     private final Reason reason;
 
-    public static Signal removeDeserialization(final Reason reason) {
-        return new RemoveDeserializationSignal(reason);
+    public static Signal addReason(final RequirementName requirement,
+                                   final TypeIdentifier target,
+                                   final Reason reason) {
+        return new AddReasonSignal(target, requirement, reason);
     }
 
     @Override
     public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.changeRequirements(current -> current.removeDeserialization(reason));
+        return definition.changeRequirements(current -> current.addReason(requirement, reason));
     }
 
     @Override
     public Optional<TypeIdentifier> target() {
-        return Optional.empty();
+        return Optional.of(target);
     }
 
     @Override
     public String description() {
-        return String.format("remove deserialization resulting from '%s'", reason.reason());
+        return format("add %s to %s", requirement.value(), target.simpleDescription());
     }
 }
