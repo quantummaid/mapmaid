@@ -38,8 +38,6 @@ import lombok.ToString;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.RemoveReasonSignal.removeReasonSignal;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
@@ -77,8 +75,7 @@ public final class Resolved extends StatefulDefinition {
 
     private void removeTransitiveReasons() {
         final Reason transitiveReason = becauseOf(context.type());
-        context.dispatch(removeReasonSignal(SERIALIZATION, transitiveReason));
-        context.dispatch(removeReasonSignal(DESERIALIZATION, transitiveReason));
+        context.dispatch(removeReasonSignal(transitiveReason));
     }
 
     @Override

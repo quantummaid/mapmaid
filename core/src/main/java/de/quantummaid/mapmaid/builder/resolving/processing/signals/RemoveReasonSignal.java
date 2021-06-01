@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
-import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementName;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -38,17 +37,15 @@ import static java.lang.String.format;
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RemoveReasonSignal implements Signal {
-    private final RequirementName requirement;
     private final Reason reason;
 
-    public static Signal removeReasonSignal(final RequirementName requirement,
-                                            final Reason reason) {
-        return new RemoveReasonSignal(requirement, reason);
+    public static Signal removeReasonSignal(final Reason reason) {
+        return new RemoveReasonSignal(reason);
     }
 
     @Override
     public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.changeRequirements(current -> current.removeReason(requirement, reason));
+        return definition.changeRequirements(current -> current.removeReason(reason));
     }
 
     @Override
@@ -58,6 +55,6 @@ public final class RemoveReasonSignal implements Signal {
 
     @Override
     public String description() {
-        return format("remove %s resulting from '%s'", requirement.value(), reason.reason());
+        return format("remove requirements resulting from '%s'", reason.reason());
     }
 }

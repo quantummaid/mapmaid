@@ -61,8 +61,10 @@ public final class DetectionRequirementReasons {
         return reduce(requirement, detectionRequirement -> detectionRequirement.addReason(reason));
     }
 
-    public DetectionRequirementReasons removeReason(final RequirementName requirement, final Reason reason) {
-        return reduce(requirement, detectionRequirement -> detectionRequirement.removeReason(reason));
+    public DetectionRequirementReasons removeReason(final Reason reason) {
+        final Map<RequirementName, DetectionRequirement> newRequirements = detectionRequirements.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().removeReason(reason)));
+        return new DetectionRequirementReasons(newRequirements);
     }
 
     private DetectionRequirementReasons reduce(final RequirementName requirement,
