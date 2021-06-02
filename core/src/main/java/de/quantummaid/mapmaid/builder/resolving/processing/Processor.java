@@ -28,10 +28,8 @@ import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.states.Detector;
+import de.quantummaid.mapmaid.builder.resolving.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.DebugInformation;
-import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
@@ -48,47 +46,45 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.signals.Detect
 import static de.quantummaid.mapmaid.builder.resolving.processing.signals.ResolveSignal.resolve;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
-import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Processor {
-    private States states;
-    private final Queue<Signal> pendingSignals;
-    private final StateLogBuilder log;
+public final class Processor<T> {
+    private States<T> states;
+    private final Queue<Signal<T>> pendingSignals;
+    private final StateLogBuilder<T> log;
 
-    public static Processor processor(final List<StateFactory> stateFactories) {
-        final Queue<Signal> pendingSignals = new LinkedList<>();
-        final States states = states(smallList(), stateFactories(stateFactories));
-        final StateLogBuilder log = stateLogBuilder();
-        return new Processor(states, pendingSignals, log);
+    public static <T> Processor<T> processor(final List<StateFactory<T>> stateFactories) {
+        final Queue<Signal<T>> pendingSignals = new LinkedList<>();
+        final States<T> states = states(smallList(), stateFactories(stateFactories));
+        final StateLogBuilder<T> log = stateLogBuilder();
+        return new Processor<>(states, pendingSignals, log);
     }
 
-    public void dispatch(final Signal signal) {
+    public void dispatch(final Signal<T> signal) {
         this.pendingSignals.add(signal);
     }
 
-    public void addState(final StatefulDefinition statefulDefinition) {
+    public void addState(final StatefulDefinition<T> statefulDefinition) {
         validateNotNull(statefulDefinition, "statefulDefinition");
         this.states = this.states.addState(statefulDefinition);
     }
 
-    public Map<TypeIdentifier, CollectionResult> collect(final ReflectMaid reflectMaid,
-                                                         final Detector detector,
-                                                         final MapMaidConfiguration configuration) {
-        resolveRecursively(reflectMaid, detector, configuration);
-        final Map<TypeIdentifier, Report> reports = this.states.collect();
-
-        final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders = new HashMap<>(reports.size());
-        final Map<TypeIdentifier, CollectionResult> definitions = new HashMap<>(reports.size());
-        final Map<TypeIdentifier, Report> failures = smallMap();
+    public Map<TypeIdentifier, CollectionResult<T>> collect(final ReflectMaid reflectMaid,
+                                                            final Detector<T> detector,
+                                                            final Resolver<T> resolver,
+                                                            final MapMaidConfiguration configuration,
+                                                            final OnCollectionError<T> onError) {
+        resolveRecursively(reflectMaid, detector, resolver, configuration);
+        final Map<TypeIdentifier, Report<T>> reports = states.collect();
+        final Map<TypeIdentifier, CollectionResult<T>> definitions = new HashMap<>(reports.size());
+        final Map<TypeIdentifier, CollectionResult<T>> all = new HashMap<>(reports.size());
+        final Map<TypeIdentifier, Report<T>> failures = smallMap();
         reports.forEach((type, report) -> {
-            final CollectionResult result = report.result();
-            scanInformationBuilders.put(type, result.scanInformation());
+            final CollectionResult<T> result = report.result();
+            all.put(type, result);
             if (report.isSuccess()) {
                 definitions.put(type, result);
             } else {
@@ -97,38 +93,29 @@ public final class Processor {
         });
 
         if (!failures.isEmpty()) {
-            final DebugInformation debugInformation = debugInformation(scanInformationBuilders, log.build(), reflectMaid);
-            final StringJoiner errorMessageJoiner = new StringJoiner("\n\n");
-            final List<ScanInformation> scanInformations = new ArrayList<>(failures.size());
-            failures.forEach((typeIdentifier, report) -> {
-                errorMessageJoiner.add(typeIdentifier.description() + ": " + report.errorMessage());
-                final ScanInformation scanInformation = debugInformation.scanInformationFor(typeIdentifier);
-                scanInformations.add(scanInformation);
-            });
-            final String errorMessage = format("The following classes could not be detected properly:%n%n%s",
-                    errorMessageJoiner.toString());
-            throw mapMaidException(errorMessage, scanInformations);
+            onError.onCollectionError(all, log.build(), failures);
         }
         return definitions;
     }
 
     private void resolveRecursively(final ReflectMaid reflectMaid,
-                                    final Detector detector,
+                                    final Detector<T> detector,
+                                    final Resolver<T> resolver,
                                     final MapMaidConfiguration configuration) {
         while (!pendingSignals.isEmpty()) {
-            final Signal signal = pendingSignals.remove();
+            final Signal<T> signal = pendingSignals.remove();
             states = states.apply(reflectMaid, signal, this, configuration, log);
         }
-        final States detected = states.apply(reflectMaid, detect(detector), this, configuration, log);
-        final States resolved = detected.apply(reflectMaid, resolve(), this, configuration, log);
+        final States<T> detected = states.apply(reflectMaid, detect(detector), this, configuration, log);
+        final States<T> resolved = detected.apply(reflectMaid, resolve(resolver), this, configuration, log);
         states = resolved;
 
         if (!pendingSignals.isEmpty()) {
-            resolveRecursively(reflectMaid, detector, configuration);
+            resolveRecursively(reflectMaid, detector, resolver, configuration);
         }
     }
 
-    public StateLog log() {
+    public StateLog<T> log() {
         return log.build();
     }
 }

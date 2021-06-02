@@ -22,11 +22,13 @@
 package de.quantummaid.mapmaid.builder.resolving.states;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
-public interface Detector {
+public interface Detector<T> {
 
-    DetectionResult<DisambiguationResult> detect(DetectionRequirements detectionRequirements, Context context);
+    DetectionResult<T> detect(TypeIdentifier type,
+                              DetectionRequirementReasons detectionRequirements,
+                              ScanInformationBuilder scanInformationBuilder);
 }

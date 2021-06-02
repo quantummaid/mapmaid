@@ -21,28 +21,19 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.factories;
 
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StateFactoryResult {
-    private final StatefulDefinition initialState;
-    private final List<Signal> signals;
+public final class StateFactoryResult<T> {
+    private final StatefulDefinition<T> initialState;
 
-    public static StateFactoryResult stateFactoryResult(final StatefulDefinition initialState,
-                                                        final List<Signal> signals) {
-        return new StateFactoryResult(initialState, signals);
+    public static <T> StateFactoryResult<T> stateFactoryResult(final StatefulDefinition<T> initialState) {
+        return new StateFactoryResult<>(initialState);
     }
 
-    public StatefulDefinition initialState() {
+    public StatefulDefinition<T> initialState() {
         return initialState;
-    }
-
-    public List<Signal> signals() {
-        return signals;
     }
 }

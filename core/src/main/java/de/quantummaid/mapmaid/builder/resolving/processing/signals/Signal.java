@@ -26,8 +26,8 @@ import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 import java.util.Optional;
 
-public interface Signal {
-    StatefulDefinition handleState(StatefulDefinition definition);
+public interface Signal<T> {
+    StatefulDefinition<T> handleState(StatefulDefinition<T> definition);
 
     Optional<TypeIdentifier> target();
 

@@ -30,17 +30,17 @@ import java.util.List;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LogEntry {
+public final class LogEntry<T> {
     public static final String DELIMITER = "----------------\n";
-    private final Signal signal;
+    private final Signal<T> signal;
     private final List<LoggedState> changedStates;
 
-    public static LogEntry logEntry(final Signal signal,
-                                    final List<LoggedState> changedStates) {
-        return new LogEntry(signal, changedStates);
+    public static <T> LogEntry<T> logEntry(final Signal<T> signal,
+                                           final List<LoggedState> changedStates) {
+        return new LogEntry<>(signal, changedStates);
     }
 
-    public Signal getSignal() {
+    public Signal<T> getSignal() {
         return signal;
     }
 

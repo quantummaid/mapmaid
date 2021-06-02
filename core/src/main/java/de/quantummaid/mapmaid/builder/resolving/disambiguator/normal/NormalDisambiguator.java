@@ -34,7 +34,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.se
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SymmetryBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreaker;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
@@ -53,6 +53,7 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.combine;
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext.disambiguationContext;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.Picker.*;
@@ -97,44 +98,40 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializedObjectOptions serializedObjectOptions,
             final SerializersAndDeserializers serializersAndDeserializers,
             final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements,
             final List<TypeIdentifier> injectedTypes) {
         if (type.assignableType().getPackageName().startsWith("java.")) {
             return failure("Native java classes cannot be detected");
         }
         final DisambiguationContext context = disambiguationContext(injectedTypes);
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final SerializedObjectOptions filteredSerializedObjectOptions = filterSerializedObjectOptions(
-                type, serializedObjectOptions, scanInformationBuilder, context);
-
+                type, serializedObjectOptions, scanInformationBuilder, detectionRequirements, context);
         final SerializersAndDeserializers preferredCustomPrimitiveSerializersAndDeserializers;
-        if (!detectionRequirements.hasToBeObject) {
+        if (!detectionRequirements.requires(OBJECT_ENFORCING)) {
             preferredCustomPrimitiveSerializersAndDeserializers =
                     filterCustomPrimitiveOptions(
-                            type,
-                            serializersAndDeserializers,
-                            scanInformationBuilder,
-                            context
-                    );
+                            type, serializersAndDeserializers, scanInformationBuilder, detectionRequirements, context);
         } else {
             preferredCustomPrimitiveSerializersAndDeserializers = SerializersAndDeserializers.empty();
         }
-        if (detectionRequirements.isSerializationOnly()) {
+        if (detectionRequirements.requires(SERIALIZATION) && !detectionRequirements.requires(DESERIALIZATION)) {
             return serializationOnly(
                     type,
                     preferredCustomPrimitiveSerializersAndDeserializers,
                     filteredSerializedObjectOptions,
                     scanInformationBuilder,
+                    detectionRequirements,
                     context
             );
         }
-        if (detectionRequirements.isDeserializationOnly()) {
+        if (detectionRequirements.requires(DESERIALIZATION) && !detectionRequirements.requires(SERIALIZATION)) {
             return deserializationOnly(
                     type,
                     preferredCustomPrimitiveSerializersAndDeserializers,
-                    filteredSerializedObjectOptions, scanInformationBuilder);
+                    filteredSerializedObjectOptions, scanInformationBuilder, detectionRequirements);
         }
         return duplex(type, preferredCustomPrimitiveSerializersAndDeserializers,
-                filteredSerializedObjectOptions, scanInformationBuilder, context
+                filteredSerializedObjectOptions, scanInformationBuilder, detectionRequirements, context
         );
     }
 
@@ -143,6 +140,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements,
             final DisambiguationContext context) {
         final List<TypeSerializer> customPrimitiveSerializers = customPrimitiveSerializersAndDeserializers.serializers(type);
         final DetectionResult<TypeSerializer> customPrimitiveSerializer =
@@ -150,12 +148,13 @@ public final class NormalDisambiguator implements Disambiguator {
                         .orElseGet(() -> failure("No serializers to choose from"));
 
         final DetectionResult<TypeSerializer> serializedObjectSerializer = serializedObjectOptions.determineSerializer(
-                type, this.postSymmetrySerializationFieldPreferences, scanInformationBuilder, context);
+                type, postSymmetrySerializationFieldPreferences, scanInformationBuilder, detectionRequirements, context);
 
         return this.tieBreaker.breakTieForSerializationOnly(
                 customPrimitiveSerializer,
                 serializedObjectSerializer,
-                scanInformationBuilder
+                scanInformationBuilder,
+                detectionRequirements
         )
                 .map(DisambiguationResult::serializationOnlyResult);
     }
@@ -164,7 +163,8 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType type,
             final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
             final SerializedObjectOptions serializedObjectOptions,
-            final ScanInformationBuilder scanInformationBuilder) {
+            final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements) {
         final List<TypeDeserializer> deserializers = customPrimitiveSerializersAndDeserializers.deserializers(type);
         final DetectionResult<TypeDeserializer> customPrimitiveDeserializer = pickDeserializer(deserializers);
         final DetectionResult<TypeDeserializer> serializedObjectDeserializer =
@@ -172,7 +172,8 @@ public final class NormalDisambiguator implements Disambiguator {
         return this.tieBreaker.breakTieForDeserializationOnly(
                 customPrimitiveDeserializer,
                 serializedObjectDeserializer,
-                scanInformationBuilder
+                scanInformationBuilder,
+                detectionRequirements
         )
                 .map(DisambiguationResult::deserializationOnlyResult);
     }
@@ -182,6 +183,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements,
             final DisambiguationContext context) {
         final CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder = customPrimitiveSymmetryBuilder();
         customPrimitiveSerializersAndDeserializers.serializers(type).forEach(serializer ->
@@ -194,7 +196,7 @@ public final class NormalDisambiguator implements Disambiguator {
         if (customPrimitiveResult.isPresent()) {
             return symmetricCustomPrimitive(type, customPrimitiveResult.get(), scanInformationBuilder);
         }
-        return symmetricSerializedObject(type, serializedObjectOptions, scanInformationBuilder, context);
+        return symmetricSerializedObject(type, serializedObjectOptions, scanInformationBuilder, detectionRequirements, context);
     }
 
     private DetectionResult<DisambiguationResult> symmetricCustomPrimitive(
@@ -219,6 +221,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType type,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements,
             final DisambiguationContext context) {
         final SymmetryBuilder symmetryBuilder = symmetryBuilder();
         final List<TypeDeserializer> deserializers = serializedObjectOptions.deserializers();
@@ -238,6 +241,7 @@ public final class NormalDisambiguator implements Disambiguator {
                 type,
                 this.postSymmetrySerializationFieldPreferences,
                 scanInformationBuilder,
+                detectionRequirements,
                 context
         );
         if (!serializer.isFailure()) {
@@ -256,8 +260,8 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType type,
             final SerializersAndDeserializers serializersAndDeserializers,
             final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements,
             final DisambiguationContext context) {
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final List<TypeSerializer> preferredCustomPrimitiveSerializers;
         if (serializersAndDeserializers.hasSerializers()) {
             final List<TypeSerializer> customPrimitiveSerializers = serializersAndDeserializers.serializers(type);
@@ -272,7 +276,7 @@ public final class NormalDisambiguator implements Disambiguator {
         }
 
         final List<TypeDeserializer> preferredCustomPrimitiveDeserializers;
-        if(serializersAndDeserializers.hasDeserializers()) {
+        if (serializersAndDeserializers.hasDeserializers()) {
             final List<TypeDeserializer> customPrimitiveDeserializers = serializersAndDeserializers.deserializers(type);
             preferredCustomPrimitiveDeserializers = this.customPrimitiveDeserializerPreferences.preferred(
                     customPrimitiveDeserializers,
@@ -291,6 +295,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType containingType,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements,
             final DisambiguationContext context) {
         final SerializationFieldOptions serializationFieldOptions = serializedObjectOptions.serializationFieldOptions();
         final SerializationFieldOptions filteredSerializationFields;
@@ -310,7 +315,6 @@ public final class NormalDisambiguator implements Disambiguator {
         final List<TypeDeserializer> filteredSerializedObjectDeserializers;
         if (serializedObjectOptions.deserializers() != null) {
             final List<TypeDeserializer> serializedObjectDeserializers = serializedObjectOptions.deserializers();
-            final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
             filteredSerializedObjectDeserializers = this.serializedObjectDeserializerPreferences.preferred(
                     serializedObjectDeserializers,
                     context,

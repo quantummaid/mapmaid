@@ -38,20 +38,20 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StateFactories {
-    private final List<StateFactory> stateFactories;
+public final class StateFactories<T> {
+    private final List<StateFactory<T>> stateFactories;
 
-    public static StateFactories stateFactories(final List<StateFactory> stateFactories) {
+    public static <T> StateFactories<T> stateFactories(final List<StateFactory<T>> stateFactories) {
         validateNotNull(stateFactories, "stateFactories");
-        return new StateFactories(stateFactories);
+        return new StateFactories<>(stateFactories);
     }
 
-    public StateFactoryResult createState(final ReflectMaid reflectMaid,
-                                          final TypeIdentifier type,
-                                          final Context context,
-                                          final MapMaidConfiguration mapMaidConfiguration) {
-        for (final StateFactory stateFactory : stateFactories) {
-            final Optional<StateFactoryResult> statefulDefinition = stateFactory.create(reflectMaid, type, context, mapMaidConfiguration);
+    public StateFactoryResult<T> createState(final ReflectMaid reflectMaid,
+                                             final TypeIdentifier type,
+                                             final Context<T> context,
+                                             final MapMaidConfiguration mapMaidConfiguration) {
+        for (final StateFactory<T> stateFactory : stateFactories) {
+            final Optional<StateFactoryResult<T>> statefulDefinition = stateFactory.create(reflectMaid, type, context, mapMaidConfiguration);
             if (statefulDefinition.isPresent()) {
                 return statefulDefinition.get();
             }

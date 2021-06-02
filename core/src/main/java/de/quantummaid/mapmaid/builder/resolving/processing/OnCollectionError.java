@@ -19,11 +19,17 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder;
+package de.quantummaid.mapmaid.builder.resolving.processing;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import de.quantummaid.mapmaid.builder.resolving.Report;
+import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
-public interface ManuallyAddedState {
-    void addState(MapMaidConfiguration configuration, Processor<DisambiguationResult> processor);
+import java.util.Map;
+
+public interface OnCollectionError<T> {
+
+    void onCollectionError(Map<TypeIdentifier, CollectionResult<T>> results,
+                           StateLog<T> log,
+                           Map<TypeIdentifier, Report<T>> failures);
 }

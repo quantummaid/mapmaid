@@ -36,15 +36,15 @@ import static java.lang.String.format;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class RemoveReasonSignal implements Signal {
+public final class RemoveReasonSignal<T> implements Signal<T> {
     private final Reason reason;
 
-    public static Signal removeReasonSignal(final Reason reason) {
-        return new RemoveReasonSignal(reason);
+    public static <T> Signal<T> removeReasonSignal(final Reason reason) {
+        return new RemoveReasonSignal<>(reason);
     }
 
     @Override
-    public StatefulDefinition handleState(final StatefulDefinition definition) {
+    public StatefulDefinition<T> handleState(final StatefulDefinition<T> definition) {
         return definition.changeRequirements(current -> current.removeReason(reason));
     }
 

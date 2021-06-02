@@ -3,6 +3,8 @@ package de.quantummaid.mapmaid.standardtypeskotlin
 import de.quantummaid.mapmaid.builder.MapMaidBuilder
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration
 import de.quantummaid.mapmaid.builder.resolving.Context
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult
@@ -80,7 +82,7 @@ private class CustomFactory(
     private val targetType: ResolvedType,
     private val serializer: TypeSerializer,
     private val deserializer: TypeDeserializer
-) : StateFactory {
+) : StateFactory<DisambiguationResult> {
 
     companion object {
         inline fun <reified T : Any> createCustomFactory(
@@ -96,9 +98,9 @@ private class CustomFactory(
     override fun create(
         reflectMaid: ReflectMaid,
         typeIdentifier: TypeIdentifier,
-        context: Context,
+        context: Context<DisambiguationResult>,
         mapMaidConfiguration: MapMaidConfiguration
-    ): Optional<StateFactoryResult> {
+    ): Optional<StateFactoryResult<DisambiguationResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()
         }
@@ -106,8 +108,7 @@ private class CustomFactory(
         if (type != targetType) {
             return Optional.empty()
         }
-        context.setManuallyConfiguredSerializer(serializer)
-        context.setManuallyConfiguredDeserializer(deserializer)
-        return Optional.of(stateFactoryResult(unreasoned(context), listOf()))
+        context.setManuallyConfiguredResult(duplexResult(serializer, deserializer))
+        return Optional.of(stateFactoryResult(unreasoned(context)))
     }
 }

@@ -29,25 +29,23 @@ import de.quantummaid.mapmaid.debug.RequiredAction;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class Unreasoned extends StatefulDefinition {
+public final class Unreasoned<T> extends StatefulDefinition<T> {
 
-    private Unreasoned(final Context context) {
+    private Unreasoned(final Context<T> context) {
         super(context);
     }
 
-    public static StatefulDefinition unreasoned(final Context context) {
-        return new Unreasoned(context);
+    public static <T> StatefulDefinition<T> unreasoned(final Context<T> context) {
+        return new Unreasoned<>(context);
     }
 
     @Override
-    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final RequiredAction requiredAction = this.context.scanInformationBuilder().changeRequirements(reducer);
+    public StatefulDefinition<T> changeRequirements(final RequirementsReducer reducer) {
+        final RequiredAction requiredAction = context.changeRequirements(reducer);
         return requiredAction.map(
                 () -> this,
                 () -> toBeDetected(context),
@@ -56,7 +54,7 @@ public final class Unreasoned extends StatefulDefinition {
     }
 
     @Override
-    public Optional<Report> getDefinition() {
-        return Optional.empty();
+    public Report<T> getDefinition() {
+        return Report.empty();
     }
 }

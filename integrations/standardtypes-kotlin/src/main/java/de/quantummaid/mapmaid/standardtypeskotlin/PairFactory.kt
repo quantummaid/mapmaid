@@ -2,6 +2,7 @@ package de.quantummaid.mapmaid.standardtypeskotlin
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration
 import de.quantummaid.mapmaid.builder.resolving.Context
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult
@@ -105,14 +106,14 @@ private class PairDeserializer(
     }
 }
 
-class PairFactory : StateFactory {
+class PairFactory : StateFactory<DisambiguationResult> {
 
     override fun create(
         reflectMaid: ReflectMaid,
         typeIdentifier: TypeIdentifier,
-        context: Context,
+        context: Context<DisambiguationResult>,
         mapMaidConfiguration: MapMaidConfiguration
-    ): Optional<StateFactoryResult> {
+    ): Optional<StateFactoryResult<DisambiguationResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()
         }
@@ -128,9 +129,8 @@ class PairFactory : StateFactory {
         val typeIdentifierFirst = TypeIdentifier.typeIdentifierFor(first)
         val typeIdentifierSecond = TypeIdentifier.typeIdentifierFor(second)
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
-        context.setManuallyConfiguredSerializer(serializer)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
-        context.setManuallyConfiguredDeserializer(deserializer)
-        return Optional.of(stateFactoryResult(unreasoned(context), listOf()))
+        context.setManuallyConfiguredResult(DisambiguationResult.duplexResult(serializer, deserializer))
+        return Optional.of(stateFactoryResult(unreasoned(context)))
     }
 }

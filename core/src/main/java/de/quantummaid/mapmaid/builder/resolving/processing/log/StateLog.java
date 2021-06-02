@@ -27,14 +27,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StateLog {
-    private final List<LogEntry> entries;
+public final class StateLog<T> {
+    private final List<LogEntry<T>> entries;
 
-    public static StateLog stateLog(final List<LogEntry> entries) {
-        return new StateLog(entries);
+    public static <T> StateLog<T> stateLog(final List<LogEntry<T>> entries) {
+        return new StateLog<>(entries);
     }
 
-    public List<LogEntry> entries() {
+    public List<LogEntry<T>> entries() {
         return entries;
     }
 

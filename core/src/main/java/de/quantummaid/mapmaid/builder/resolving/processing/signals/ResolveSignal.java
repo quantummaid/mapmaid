@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.processing.signals;
 
+import de.quantummaid.mapmaid.builder.resolving.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -33,15 +34,16 @@ import java.util.Optional;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ResolveSignal implements Signal {
+public final class ResolveSignal<T> implements Signal<T> {
+    private final Resolver<T> resolver;
 
-    public static Signal resolve() {
-        return new ResolveSignal();
+    public static <T> Signal<T> resolve(final Resolver<T> resolver) {
+        return new ResolveSignal<>(resolver);
     }
 
     @Override
-    public StatefulDefinition handleState(final StatefulDefinition definition) {
-        return definition.resolve();
+    public StatefulDefinition<T> handleState(final StatefulDefinition<T> definition) {
+        return definition.resolve(resolver);
     }
 
     @Override

@@ -31,7 +31,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -48,6 +48,8 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions.serializationFieldOptions;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions.serializedObjectOptions;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -84,6 +86,7 @@ public final class SimpleDetector {
 
     public DetectionResult<DisambiguationResult> detect(final TypeIdentifier typeIdentifier,
                                                         final ScanInformationBuilder scanInformationBuilder,
+                                                        final DetectionRequirementReasons detectionRequirements,
                                                         final Disambiguators disambiguators,
                                                         final List<TypeIdentifier> injectedTypes) {
         if (typeIdentifier.isVirtual()) {
@@ -95,10 +98,9 @@ public final class SimpleDetector {
             return isNotSupported.get();
         }
         scanInformationBuilder.resetScan();
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final List<TypeSerializer> customPrimitiveSerializers;
         final SerializationFieldOptions serializationFieldOptions;
-        if (detectionRequirements.serialization) {
+        if (detectionRequirements.requires(SERIALIZATION)) {
             customPrimitiveSerializers = detectCustomPrimitiveSerializers(type);
             customPrimitiveSerializers.forEach(scanInformationBuilder::addSerializer);
             serializationFieldOptions = detectSerializationFieldOptionsList(type);
@@ -109,7 +111,7 @@ public final class SimpleDetector {
         }
         final List<TypeDeserializer> serializedObjectDeserializers;
         final List<TypeDeserializer> customPrimitiveDeserializers;
-        if (detectionRequirements.deserialization) {
+        if (detectionRequirements.requires(DESERIALIZATION)) {
             serializedObjectDeserializers = detectSerializedObjectDeserializers(type);
             serializedObjectDeserializers.forEach(scanInformationBuilder::addDeserializer);
             customPrimitiveDeserializers = detectCustomPrimitiveDeserializers(type);
@@ -123,7 +125,7 @@ public final class SimpleDetector {
         final SerializersAndDeserializers customPrimitiveOptions =
                 serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
         return disambiguate(type, disambiguators, serializedObjectOptions,
-                customPrimitiveOptions, scanInformationBuilder, injectedTypes);
+                customPrimitiveOptions, scanInformationBuilder, detectionRequirements, injectedTypes);
     }
 
     private DetectionResult<DisambiguationResult> disambiguate(final ResolvedType type,
@@ -131,6 +133,7 @@ public final class SimpleDetector {
                                                                final SerializedObjectOptions serializedObjectOptions,
                                                                final SerializersAndDeserializers customPrimitiveOptions,
                                                                final ScanInformationBuilder scanInformationBuilder,
+                                                               final DetectionRequirementReasons detectionRequirements,
                                                                final List<TypeIdentifier> injectedTypes) {
         final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
         return disambiguator.disambiguate(
@@ -138,6 +141,7 @@ public final class SimpleDetector {
                 serializedObjectOptions,
                 customPrimitiveOptions,
                 scanInformationBuilder,
+                detectionRequirements,
                 injectedTypes);
     }
 

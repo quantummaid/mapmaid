@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -67,15 +67,17 @@ public final class TieBreaker {
     public DetectionResult<TypeSerializer> breakTieForSerializationOnly(
             final DetectionResult<TypeSerializer> customPrimitive,
             final DetectionResult<TypeSerializer> serializedObject,
-            final ScanInformationBuilder scanInformationBuilder) {
+            final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements) {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
-            customPrimitiveBreaking = this.customPrimitiveSerializationHints.isTieBreaking(customPrimitive.result(),
-                    detectionRequirements);
+            customPrimitiveBreaking = customPrimitiveSerializationHints.isTieBreaking(
+                    customPrimitive.result(),
+                    detectionRequirements
+            );
         } else {
             customPrimitiveBreaking = notATieBreakingReason();
         }
@@ -109,11 +111,11 @@ public final class TieBreaker {
     public DetectionResult<TypeDeserializer> breakTieForDeserializationOnly(
             final DetectionResult<TypeDeserializer> customPrimitive,
             final DetectionResult<TypeDeserializer> serializedObject,
-            final ScanInformationBuilder scanInformationBuilder) {
+            final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirementReasons detectionRequirements) {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
             customPrimitiveBreaking = this.customPrimitiveDeserializationHints.isTieBreaking(

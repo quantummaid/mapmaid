@@ -19,11 +19,16 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder;
+package de.quantummaid.mapmaid.builder.resolving.states;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
-public interface ManuallyAddedState {
-    void addState(MapMaidConfiguration configuration, Processor<DisambiguationResult> processor);
+import java.util.List;
+
+public interface Resolver<T> {
+    List<Signal<T>> resolve(T result,
+                         TypeIdentifier type,
+                         DetectionRequirementReasons detectionRequirements);
 }

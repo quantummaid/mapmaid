@@ -21,7 +21,10 @@
 
 package de.quantummaid.mapmaid.debug;
 
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
@@ -47,22 +50,29 @@ import static java.util.stream.Collectors.joining;
 public final class DebugInformation {
     private final ReflectMaid reflectMaid;
     private final Map<TypeIdentifier, ScanInformation> scanInformations;
-    private final StateLog stateLog;
+    private final StateLog<DisambiguationResult> stateLog;
 
     public static DebugInformation debugInformation(
-            final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders,
-            final StateLog stateLog,
+            final Map<TypeIdentifier, CollectionResult<DisambiguationResult>> results,
+            final StateLog<DisambiguationResult> stateLog,
             final ReflectMaid reflectMaid
     ) {
-        final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(scanInformationBuilders.size());
+        final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(results.size());
         final SubReasonProvider serializationSubReasonProvider =
                 typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
         final SubReasonProvider deserializationSubReasonProvider =
                 typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
-        scanInformationBuilders.forEach(
-                (typeIdentifier, scanInformationBuilder) -> {
+        results.forEach(
+                (typeIdentifier, result) -> {
+                    final ScanInformationBuilder scanInformationBuilder = result.scanInformation();
+                    final DetectionRequirementReasons detectionRequirements = result.detectionRequirements();
                     final ScanInformation scanInformation =
-                            scanInformationBuilder.build(serializationSubReasonProvider, deserializationSubReasonProvider);
+                            scanInformationBuilder.build(
+                                    serializationSubReasonProvider,
+                                    deserializationSubReasonProvider,
+                                    detectionRequirements,
+                                    result.definition()
+                            );
                     scanInformations.put(typeIdentifier, scanInformation);
                 }
         );
@@ -105,7 +115,7 @@ public final class DebugInformation {
         return new ArrayList<>(this.scanInformations.values());
     }
 
-    public StateLog stateLog() {
+    public StateLog<DisambiguationResult> stateLog() {
         return stateLog;
     }
 

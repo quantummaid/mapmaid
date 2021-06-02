@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.autoload.Autoloadable;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
@@ -90,7 +91,7 @@ public final class AdvancedBuilder {
     private boolean autoloadMarshallers = true;
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
-    private final List<StateFactory> stateFactories = new ArrayList<>();
+    private final List<StateFactory<DisambiguationResult>> stateFactories = new ArrayList<>();
     private int maxStackFrameCount = DEFAULT_MAX_STACK_FRAME_COUNT;
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
@@ -137,7 +138,7 @@ public final class AdvancedBuilder {
         return this;
     }
 
-    public AdvancedBuilder withStateFactory(final StateFactory stateFactory) {
+    public AdvancedBuilder withStateFactory(final StateFactory<DisambiguationResult> stateFactory) {
         validateNotNull(stateFactory, "stateFactory");
         stateFactories.add(stateFactory);
         return this;
@@ -243,7 +244,7 @@ public final class AdvancedBuilder {
         return mapMaidConfiguration;
     }
 
-    Processor processor() {
+    Processor<DisambiguationResult> processor() {
         List.of(
                 throwableStateFactory(reflectMaid),
                 stackTraceStateFactory(reflectMaid, maxStackFrameCount),

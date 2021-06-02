@@ -22,41 +22,35 @@
 package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.RequiredAction;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddReasonSignal.addReason;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolved.resolved;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
-import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class Resolving extends StatefulDefinition {
+public final class Resolving<T> extends StatefulDefinition<T> {
 
-    private Resolving(final Context context) {
+    private Resolving(final Context<T> context) {
         super(context);
     }
 
-    public static Resolving resolving(final Context context) {
-        return new Resolving(context);
+    public static <T> Resolving<T> resolving(final Context<T> context) {
+        return new Resolving<>(context);
     }
 
     @Override
-    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+    public StatefulDefinition<T> changeRequirements(final RequirementsReducer reducer) {
+        final RequiredAction requiredAction = context.changeRequirements(reducer);
         return requiredAction.map(
                 () -> this,
                 () -> toBeDetected(context),
@@ -65,25 +59,10 @@ public final class Resolving extends StatefulDefinition {
     }
 
     @Override
-    public StatefulDefinition resolve() {
-        final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
-        final Reason reason = becauseOf(context.type());
-        if (detectionRequirements.serialization) {
-            final TypeSerializer serializer = context.serializer().orElseThrow();
-            final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
-            requiredTypes.forEach(type -> context.dispatch(addReason(SERIALIZATION, type, reason)));
-            if (serializer.forcesDependenciesToBeObjects()) {
-                requiredTypes.forEach(type -> context.dispatch(addReason(OBJECT_ENFORCING, type, reason)));
-            }
-        }
-        if (detectionRequirements.deserialization) {
-            final TypeDeserializer deserializer = context.deserializer().orElseThrow();
-            final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
-            requiredTypes.forEach(type -> context.dispatch(addReason(DESERIALIZATION, type, reason)));
-            if (deserializer.forcesDependenciesToBeObjects()) {
-                requiredTypes.forEach(type -> context.dispatch(addReason(OBJECT_ENFORCING, type, reason)));
-            }
-        }
+    public StatefulDefinition<T> resolve(final Resolver<T> resolver) {
+        final T detectionResult = context.detectionResult().get();
+        final List<Signal<T>> signals = resolver.resolve(detectionResult, type(), context.detectionRequirements());
+        signals.forEach(context::dispatch);
         return resolved(context);
     }
 }

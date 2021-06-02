@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories.collection
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -30,7 +31,6 @@ import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,7 +43,7 @@ import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 
-public final class NativeJavaCollectionDefinitionFactory implements StateFactory {
+public final class NativeJavaCollectionDefinitionFactory implements StateFactory<DisambiguationResult> {
     private final Map<Class<?>, CollectionInformation> collectionInformations = collectionInformations();
 
     public static NativeJavaCollectionDefinitionFactory nativeJavaCollectionsFactory() {
@@ -51,10 +51,10 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
-                                               final TypeIdentifier typeIdentifier,
-                                               final Context context,
-                                               final MapMaidConfiguration configuration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
+                                                                     final TypeIdentifier typeIdentifier,
+                                                                     final Context<DisambiguationResult> context,
+                                                                     final MapMaidConfiguration configuration) {
         if (typeIdentifier.isVirtual()) {
             return empty();
         }
@@ -69,9 +69,11 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
                     type.description()));
         }
         final ResolvedType genericType = ((ClassType) type).typeParameter(typeVariableName("E"));
-        final CollectionInformation collectionInformation = this.collectionInformations.get(type.assignableType());
-        context.setManuallyConfiguredSerializer(listSerializer(genericType));
-        context.setManuallyConfiguredDeserializer(listDeserializer(genericType, collectionInformation.mapper()));
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
+        final CollectionInformation collectionInformation = collectionInformations.get(type.assignableType());
+        context.setManuallyConfiguredResult(DisambiguationResult.duplexResult(
+                listSerializer(genericType),
+                listDeserializer(genericType, collectionInformation.mapper())
+        ));
+        return Optional.of(stateFactoryResult(unreasoned(context)));
     }
 }

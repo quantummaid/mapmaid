@@ -34,15 +34,15 @@ import java.util.Optional;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DetectSignal implements Signal {
-    private final Detector detector;
+public final class DetectSignal<T> implements Signal<T> {
+    private final Detector<T> detector;
 
-    public static Signal detect(final Detector detector) {
-        return new DetectSignal(detector);
+    public static <T> Signal<T> detect(final Detector<T> detector) {
+        return new DetectSignal<>(detector);
     }
 
     @Override
-    public StatefulDefinition handleState(final StatefulDefinition definition) {
+    public StatefulDefinition<T> handleState(final StatefulDefinition<T> definition) {
         return definition.detect(detector);
     }
 

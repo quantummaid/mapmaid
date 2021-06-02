@@ -48,55 +48,55 @@ import static java.util.stream.Collectors.toList;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class States {
-    private final StateFactories stateFactories;
-    private final List<StatefulDefinition> states;
+public final class States<T> {
+    private final StateFactories<T> stateFactories;
+    private final List<StatefulDefinition<T>> states;
 
-    public static States states(final List<StatefulDefinition> initialDefinitions, final StateFactories stateFactories) {
-        final List<StatefulDefinition> states = new ArrayList<>(initialDefinitions);
-        return new States(stateFactories, states);
+    public static <T> States<T> states(final List<StatefulDefinition<T>> initialDefinitions,
+                                       final StateFactories<T> stateFactories) {
+        final List<StatefulDefinition<T>> states = new ArrayList<>(initialDefinitions);
+        return new States<>(stateFactories, states);
     }
 
-    public States addState(final StatefulDefinition statefulDefinition) {
-        if (contains(statefulDefinition.type(), this.states)) {
+    public States<T> addState(final StatefulDefinition<T> statefulDefinition) {
+        if (contains(statefulDefinition.type(), states)) {
             throw new IllegalArgumentException(format(
                     "state for type '%s' is already registered",
                     statefulDefinition.type().description()));
         }
-        final List<StatefulDefinition> newStates = new ArrayList<>(this.states);
+        final List<StatefulDefinition<T>> newStates = new ArrayList<>(this.states);
         newStates.add(statefulDefinition);
-        return new States(this.stateFactories, newStates);
+        return new States<>(this.stateFactories, newStates);
     }
 
-    public States apply(final ReflectMaid reflectMaid,
-                        final Signal signal,
-                        final Processor processor,
-                        final MapMaidConfiguration configuration,
-                        final StateLogBuilder stateLog) {
-        final States newStates = apply(reflectMaid, signal, processor, configuration);
+    public States<T> apply(final ReflectMaid reflectMaid,
+                           final Signal<T> signal,
+                           final Processor<T> processor,
+                           final MapMaidConfiguration configuration,
+                           final StateLogBuilder<T> stateLog) {
+        final States<T> newStates = apply(reflectMaid, signal, processor, configuration);
         stateLog.log(signal, newStates.dumpForLogging());
         return newStates;
     }
 
-    private States apply(final ReflectMaid reflectMaid,
-                         final Signal signal,
-                         final Processor processor,
-                         final MapMaidConfiguration configuration) {
+    private States<T> apply(final ReflectMaid reflectMaid,
+                            final Signal<T> signal,
+                            final Processor<T> processor,
+                            final MapMaidConfiguration configuration) {
         final Optional<TypeIdentifier> optionalTarget = signal.target();
         if (optionalTarget.isEmpty()) {
-            final List<StatefulDefinition> newStates = this.states.stream()
+            final List<StatefulDefinition<T>> newStates = states.stream()
                     .map(signal::handleState)
                     .collect(toList());
-            return new States(this.stateFactories, newStates);
+            return new States<>(this.stateFactories, newStates);
         } else {
             final TypeIdentifier target = optionalTarget.get();
-            final List<StatefulDefinition> newStates = new ArrayList<>(this.states);
+            final List<StatefulDefinition<T>> newStates = new ArrayList<>(states);
 
             if (!contains(target, newStates)) {
-                final Context context = emptyContext(processor::dispatch, target);
-                final StateFactoryResult state = this.stateFactories.createState(reflectMaid, target, context, configuration);
+                final Context<T> context = emptyContext(processor::dispatch, target);
+                final StateFactoryResult<T> state = stateFactories.createState(reflectMaid, target, context, configuration);
                 newStates.add(state.initialState());
-                state.signals().forEach(processor::dispatch);
             }
 
             newStates.replaceAll(statefulDefinition -> {
@@ -106,22 +106,25 @@ public final class States {
                     return statefulDefinition;
                 }
             });
-            return new States(this.stateFactories, newStates);
+            return new States<>(this.stateFactories, newStates);
         }
     }
 
-    public Map<TypeIdentifier, Report> collect() {
-        final Map<TypeIdentifier, Report> reports = new HashMap<>();
-        this.states.forEach(statefulDefinition ->
-                statefulDefinition.getDefinition().ifPresent(report -> {
-                    final TypeIdentifier type = statefulDefinition.context.type();
-                    reports.put(type, report);
-                }));
+    public Map<TypeIdentifier, Report<T>> collect() {
+        final Map<TypeIdentifier, Report<T>> reports = new HashMap<>();
+        states.forEach(statefulDefinition -> {
+            final Report<T> report = statefulDefinition.getDefinition();
+            if (!report.isEmpty()) {
+                final TypeIdentifier type = statefulDefinition.context.type();
+                reports.put(type, report);
+
+            }
+        });
         return reports;
     }
 
-    private static boolean contains(final TypeIdentifier type,
-                                    final List<StatefulDefinition> states) {
+    private boolean contains(final TypeIdentifier type,
+                             final List<StatefulDefinition<T>> states) {
         return states.stream()
                 .anyMatch(statefulDefinition -> statefulDefinition.context.type().equals(type));
     }
@@ -132,8 +135,7 @@ public final class States {
                     final TypeIdentifier type = statefulDefinition.type();
                     final DetectionRequirementReasons detectionRequirementReasons = statefulDefinition
                             .context
-                            .scanInformationBuilder()
-                            .detectionRequirementReasons();
+                            .detectionRequirements();
                     return loggedState(type, statefulDefinition.getClass(), detectionRequirementReasons);
                 })
                 .collect(toList());

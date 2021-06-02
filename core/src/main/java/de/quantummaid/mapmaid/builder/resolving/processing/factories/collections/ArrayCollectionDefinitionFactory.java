@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories.collection
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -34,9 +35,9 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
@@ -47,17 +48,17 @@ import static java.util.Optional.empty;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArrayCollectionDefinitionFactory implements StateFactory {
+public final class ArrayCollectionDefinitionFactory implements StateFactory<DisambiguationResult> {
 
     public static ArrayCollectionDefinitionFactory arrayFactory() {
         return new ArrayCollectionDefinitionFactory();
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
-                                               final TypeIdentifier typeIdentifier,
-                                               final Context context,
-                                               final MapMaidConfiguration configuration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
+                                                                     final TypeIdentifier typeIdentifier,
+                                                                     final Context<DisambiguationResult> context,
+                                                                     final MapMaidConfiguration configuration) {
         if (typeIdentifier.isVirtual()) {
             return empty();
         }
@@ -68,8 +69,10 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory {
         }
         final ResolvedType componentType = ((ArrayType) type).componentType();
         final TypeIdentifier componentTypeIdentifier = typeIdentifierFor(componentType);
-        context.setManuallyConfiguredSerializer(arraySerializer(componentTypeIdentifier));
-        context.setManuallyConfiguredDeserializer(arrayDeserializer(componentTypeIdentifier, componentType));
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
+        context.setManuallyConfiguredResult(duplexResult(
+                arraySerializer(componentTypeIdentifier),
+                arrayDeserializer(componentTypeIdentifier, componentType)
+        ));
+        return Optional.of(stateFactoryResult(unreasoned(context)));
     }
 }

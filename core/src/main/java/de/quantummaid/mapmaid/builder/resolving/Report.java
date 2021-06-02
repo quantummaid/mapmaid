@@ -33,25 +33,33 @@ import static java.util.Objects.isNull;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Report {
-    private final CollectionResult result;
+public final class Report<T> {
+    private final CollectionResult<T> result;
     private final String errorMessage;
 
-    public static Report success(final CollectionResult result) {
+    public static <T> Report<T> success(final CollectionResult<T> result) {
         validateNotNull(result, "result");
-        return new Report(result, null);
+        return new Report<>(result, null);
     }
 
-    public static Report failure(final CollectionResult result, final String errorMessage) {
+    public static <T> Report<T> failure(final CollectionResult<T> result, final String errorMessage) {
         validateNotNull(errorMessage, "errorMessage");
-        return new Report(result, errorMessage);
+        return new Report<>(result, errorMessage);
+    }
+
+    public static <T> Report<T> empty() {
+        return new Report<>(null, null);
     }
 
     public boolean isSuccess() {
-        return isNull(this.errorMessage);
+        return isNull(errorMessage) && !isNull(result);
     }
 
-    public CollectionResult result() {
+    public boolean isEmpty() {
+        return isNull(errorMessage) && isNull(result);
+    }
+
+    public CollectionResult<T> result() {
         validateNotNull(this.result, "result");
         return this.result;
     }

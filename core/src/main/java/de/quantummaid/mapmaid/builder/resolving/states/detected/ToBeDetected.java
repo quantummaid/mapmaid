@@ -23,16 +23,18 @@ package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
+import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Resolving.resolving;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Undetectable.undetectable;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
@@ -41,23 +43,23 @@ import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class ToBeDetected extends StatefulDefinition {
+public final class ToBeDetected<T> extends StatefulDefinition<T> {
 
-    private ToBeDetected(final Context context) {
+    private ToBeDetected(final Context<T> context) {
         super(context);
     }
 
-    public static ToBeDetected toBeDetected(final Context context) {
-        if (context.scanInformationBuilder().detectionRequirements().isUnreasoned()) {
+    public static <T> ToBeDetected<T> toBeDetected(final Context<T> context) {
+        if (context.detectionRequirements().isUnreasoned()) {
             throw mapMaidException(format("type %s has entered state %s but has no reasons to be detected" +
                     " - this should never happen", context.type().description(), ToBeDetected.class.getSimpleName()));
         }
-        return new ToBeDetected(context);
+        return new ToBeDetected<>(context);
     }
 
     @Override
-    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+    public StatefulDefinition<T> changeRequirements(final RequirementsReducer reducer) {
+        final RequiredAction requiredAction = context.changeRequirements(reducer);
         return requiredAction.map(
                 () -> this,
                 () -> this,
@@ -66,22 +68,20 @@ public final class ToBeDetected extends StatefulDefinition {
     }
 
     @Override
-    public StatefulDefinition detect(final Detector detector) {
+    public StatefulDefinition<T> detect(final Detector<T> detector) {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
-        final DetectionResult<DisambiguationResult> result = detector.detect(requirements, context);
+        final DetectionRequirementReasons requirements = context.detectionRequirements();
+        final DetectionResult<T> result = context
+                .manuallyConfiguredResult()
+                .map(DetectionResult::success)
+                .orElseGet(() -> detector.detect(type(), requirements, scanInformationBuilder));
         if (result.isFailure()) {
             return undetectable(context, format("no %s detected:%n%s",
-                    requirements.describe(),
+                    Lingo.mode2(requirements.requires(SERIALIZATION), requirements.requires(DESERIALIZATION)),
                     result.reasonForFailure())
             );
         }
-        if (requirements.serialization) {
-            context.setSerializer(result.result().serializer());
-        }
-        if (requirements.deserialization) {
-            context.setDeserializer(result.result().deserializer());
-        }
+        context.setDetectionResult(result.result());
         return resolving(context);
     }
 }

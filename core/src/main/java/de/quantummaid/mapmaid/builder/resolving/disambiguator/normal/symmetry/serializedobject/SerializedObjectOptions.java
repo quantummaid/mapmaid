@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -62,6 +63,7 @@ public final class SerializedObjectOptions {
     public DetectionResult<TypeSerializer> determineSerializer(final ResolvedType containingType,
                                                                final Preferences<SerializationField, DisambiguationContext> preferences,
                                                                final ScanInformationBuilder scanInformationBuilder,
+                                                               final DetectionRequirementReasons detectionRequirementReasons,
                                                                final DisambiguationContext context) {
         if (this.serializationFieldOptions == null) {
             throw new UnsupportedOperationException("This should never happen");
@@ -70,6 +72,12 @@ public final class SerializedObjectOptions {
             return failure("No serialization fields");
         }
         return this.serializationFieldOptions.instantiateAll()
-                .flatMap(instantiation -> instantiation.instantiate(containingType, preferences, scanInformationBuilder, context));
+                .flatMap(instantiation -> instantiation.instantiate(
+                        containingType,
+                        preferences,
+                        scanInformationBuilder,
+                        detectionRequirementReasons,
+                        context)
+                );
     }
 }

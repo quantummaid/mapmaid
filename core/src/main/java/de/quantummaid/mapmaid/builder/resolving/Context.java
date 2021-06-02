@@ -21,48 +21,52 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
-import static java.util.Optional.ofNullable;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
+import static de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons.empty;
+import static de.quantummaid.mapmaid.debug.RequiredAction.*;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Context {
-    private final Consumer<Signal> dispatcher;
+public final class Context<T> {
+    private final Consumer<Signal<T>> dispatcher;
     private final TypeIdentifier type;
-    private TypeSerializer serializer;
-    private TypeDeserializer deserializer;
+    private T detectionResult;
+    private T manuallyConfiguredResult;
+    private DetectionRequirementReasons detectionRequirementReasons;
     private final ScanInformationBuilder scanInformationBuilder;
-    private TypeSerializer manuallyConfiguredSerializer;
-    private TypeDeserializer manuallyConfiguredDeserializer;
 
-    public static Context emptyContext(final Consumer<Signal> dispatcher,
-                                       final TypeIdentifier type) {
+    public static <T> Context<T> emptyContext(final Consumer<Signal<T>> dispatcher,
+                                              final TypeIdentifier type) {
         final ScanInformationBuilder scanInformationBuilder = ScanInformationBuilder.scanInformationBuilder(type);
-        return new Context(dispatcher, type, scanInformationBuilder);
+        final Context<T> context = new Context<>(dispatcher, type, scanInformationBuilder);
+        context.detectionRequirementReasons = empty(
+                List.of(SERIALIZATION, DESERIALIZATION),
+                List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
+        );
+        return context;
     }
 
     public TypeIdentifier type() {
         return this.type;
     }
 
-    public void dispatch(final Signal signal) {
+    public void dispatch(final Signal<T> signal) {
         this.dispatcher.accept(signal);
     }
 
@@ -70,35 +74,37 @@ public final class Context {
         return this.scanInformationBuilder;
     }
 
-    public Optional<TypeSerializer> serializer() {
-        return ofNullable(this.serializer);
+    public void setDetectionResult(final T detectionResult) {
+        this.detectionResult = detectionResult;
     }
 
-    public void setSerializer(final TypeSerializer serializer) {
-        this.serializer = serializer;
+    public Optional<T> detectionResult() {
+        return Optional.ofNullable(detectionResult);
     }
 
-    public void setManuallyConfiguredSerializer(final TypeSerializer manuallyConfiguredSerializer) {
-        this.manuallyConfiguredSerializer = manuallyConfiguredSerializer;
+    public void setManuallyConfiguredResult(final T manuallyConfiguredResult) {
+        this.manuallyConfiguredResult = manuallyConfiguredResult;
     }
 
-    public void setManuallyConfiguredDeserializer(final TypeDeserializer manuallyConfiguredDeserializer) {
-        this.manuallyConfiguredDeserializer = manuallyConfiguredDeserializer;
+    public Optional<T> manuallyConfiguredResult() {
+        return Optional.ofNullable(manuallyConfiguredResult);
     }
 
-    public Optional<DetectionResult<DisambiguationResult>> fixedResult() {
-        if (manuallyConfiguredSerializer != null || manuallyConfiguredDeserializer != null) {
-            return Optional.of(success(disambiguationResult(manuallyConfiguredSerializer, manuallyConfiguredDeserializer)));
-        } else {
-            return Optional.empty();
+    public DetectionRequirementReasons detectionRequirements() {
+        return detectionRequirementReasons;
+    }
+
+    public RequiredAction changeRequirements(final RequirementsReducer reducer) {
+        final DetectionRequirementReasons oldReaons = detectionRequirementReasons;
+        final DetectionRequirementReasons newReasons = reducer.reduce(oldReaons);
+        this.detectionRequirementReasons = newReasons;
+        if (detectionRequirementReasons.isUnreasoned()) {
+            return unreasoned();
         }
-    }
-
-    public Optional<TypeDeserializer> deserializer() {
-        return ofNullable(this.deserializer);
-    }
-
-    public void setDeserializer(final TypeDeserializer deserializer) {
-        this.deserializer = deserializer;
+        if (oldReaons.hasChanged(newReasons)) {
+            return requirementsChanged();
+        } else {
+            return nothingChanged();
+        }
     }
 }

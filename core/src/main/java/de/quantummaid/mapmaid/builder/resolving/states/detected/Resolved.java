@@ -23,19 +23,14 @@ package de.quantummaid.mapmaid.builder.resolving.states.detected;
 
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
-import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.Report.success;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
@@ -43,23 +38,22 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.signals.Remove
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
-import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class Resolved extends StatefulDefinition {
+public final class Resolved<T> extends StatefulDefinition<T> {
 
-    private Resolved(final Context context) {
+    private Resolved(final Context<T> context) {
         super(context);
     }
 
-    public static StatefulDefinition resolved(final Context context) {
-        return new Resolved(context);
+    public static <T> StatefulDefinition<T> resolved(final Context<T> context) {
+        return new Resolved<>(context);
     }
 
     @Override
-    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+    public StatefulDefinition<T> changeRequirements(final RequirementsReducer reducer) {
+        final RequiredAction requiredAction = context.changeRequirements(reducer);
         return requiredAction.map(
                 () -> this,
                 () -> {
@@ -79,25 +73,10 @@ public final class Resolved extends StatefulDefinition {
     }
 
     @Override
-    public Optional<Report> getDefinition() {
+    public Report<T> getDefinition() {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        final DetectionRequirements requirements = scanInformationBuilder.detectionRequirements();
-        final TypeSerializer serializer;
-        if (requirements.serialization) {
-            serializer = context.serializer().orElseThrow();
-            scanInformationBuilder.setSerializer(serializer);
-        } else {
-            serializer = null;
-        }
-
-        final TypeDeserializer deserializer;
-        if (requirements.deserialization) {
-            deserializer = context.deserializer().orElseThrow();
-            scanInformationBuilder.setDeserializer(deserializer);
-        } else {
-            deserializer = null;
-        }
-        final Definition definition = generalDefinition(context.type(), serializer, deserializer);
-        return Optional.of(success(collectionResult(definition, scanInformationBuilder)));
+        final T detectionResult = context.detectionResult().orElseThrow();
+        final DetectionRequirementReasons detectionRequirements = context.detectionRequirements();
+        return success(collectionResult(detectionResult, scanInformationBuilder, detectionRequirements));
     }
 }

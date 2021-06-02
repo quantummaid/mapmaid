@@ -29,9 +29,9 @@ import de.quantummaid.reflectmaid.ReflectMaid;
 import java.util.Optional;
 
 @FunctionalInterface
-public interface StateFactory {
-    Optional<StateFactoryResult> create(ReflectMaid reflectMaid,
-                                        TypeIdentifier type,
-                                        Context context,
-                                        MapMaidConfiguration mapMaidConfiguration);
+public interface StateFactory<T> {
+    Optional<StateFactoryResult<T>> create(ReflectMaid reflectMaid,
+                                           TypeIdentifier type,
+                                           Context<T> context,
+                                           MapMaidConfiguration mapMaidConfiguration);
 }

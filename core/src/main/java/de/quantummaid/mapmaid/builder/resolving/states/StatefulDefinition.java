@@ -26,31 +26,29 @@ import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
-import java.util.Optional;
+public abstract class StatefulDefinition<T> {
+    public final Context<T> context;
 
-public abstract class StatefulDefinition {
-    public final Context context;
-
-    protected StatefulDefinition(final Context context) {
+    protected StatefulDefinition(final Context<T> context) {
         this.context = context;
     }
 
-    public abstract StatefulDefinition changeRequirements(RequirementsReducer reducer);
+    public abstract StatefulDefinition<T> changeRequirements(RequirementsReducer reducer);
 
     public TypeIdentifier type() {
         return context.type();
     }
 
     @SuppressWarnings("java:S1172")
-    public StatefulDefinition detect(final Detector detector) {
+    public StatefulDefinition<T> detect(final Detector<T> detector) {
         return this;
     }
 
-    public StatefulDefinition resolve() {
+    public StatefulDefinition<T> resolve(final Resolver<T> resolver) {
         return this;
     }
 
-    public Optional<Report> getDefinition() {
+    public Report<T> getDefinition() {
         throw new UnsupportedOperationException(this.getClass() + " " + this.context.toString());
     }
 }

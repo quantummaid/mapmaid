@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
@@ -35,10 +36,10 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
@@ -48,17 +49,17 @@ import static java.util.Optional.empty;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BuiltInPrimitivesFactory implements StateFactory {
+public final class BuiltInPrimitivesFactory implements StateFactory<DisambiguationResult> {
 
     public static BuiltInPrimitivesFactory builtInPrimitivesFactory() {
         return new BuiltInPrimitivesFactory();
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
-                                               final TypeIdentifier type,
-                                               final Context context,
-                                               final MapMaidConfiguration configuration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
+                                                                     final TypeIdentifier type,
+                                                                     final Context<DisambiguationResult> context,
+                                                                     final MapMaidConfiguration configuration) {
         if (type.isVirtual()) {
             return empty();
         }
@@ -69,9 +70,8 @@ public final class BuiltInPrimitivesFactory implements StateFactory {
             return empty();
         }
         final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType);
-        context.setManuallyConfiguredSerializer(serializer);
         final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType);
-        context.setManuallyConfiguredDeserializer(deserializer);
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
+        context.setManuallyConfiguredResult(duplexResult(serializer, deserializer));
+        return Optional.of(stateFactoryResult(unreasoned(context)));
     }
 }

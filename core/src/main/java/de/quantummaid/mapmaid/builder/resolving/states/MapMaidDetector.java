@@ -23,10 +23,9 @@ package de.quantummaid.mapmaid.builder.resolving.states;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
-import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -35,30 +34,29 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MapMaidDetector implements Detector {
+public final class MapMaidDetector implements Detector<DisambiguationResult> {
     private final SimpleDetector detector;
     private final Disambiguators disambiguators;
     private final List<TypeIdentifier> injectedTypes;
 
-    public static Detector mapMaidDetector(final SimpleDetector detector,
-                                           final Disambiguators disambiguators,
-                                           final List<TypeIdentifier> injectedTypes) {
+    public static MapMaidDetector mapMaidDetector(final SimpleDetector detector,
+                                                  final Disambiguators disambiguators,
+                                                  final List<TypeIdentifier> injectedTypes) {
         return new MapMaidDetector(detector, disambiguators, injectedTypes);
     }
 
     @Override
     public DetectionResult<DisambiguationResult> detect(
-            final DetectionRequirements detectionRequirements,
-            final Context context
+            final TypeIdentifier type,
+            final DetectionRequirementReasons detectionRequirements,
+            final ScanInformationBuilder scanInformationBuilder
     ) {
-        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        return context
-                .fixedResult()
-                .orElseGet(() -> detector.detect(
-                        context.type(),
-                        scanInformationBuilder,
-                        disambiguators,
-                        injectedTypes
-                ));
+        return detector.detect(
+                type,
+                scanInformationBuilder,
+                detectionRequirements,
+                disambiguators,
+                injectedTypes
+        );
     }
 }

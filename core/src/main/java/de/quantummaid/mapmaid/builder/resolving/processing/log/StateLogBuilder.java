@@ -32,15 +32,15 @@ import static de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog.s
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StateLogBuilder {
-    private final List<LogEntry> entries = new ArrayList<>();
+public final class StateLogBuilder<T> {
+    private final List<LogEntry<T>> entries = new ArrayList<>();
     private List<LoggedState> previousLoggedStates = List.of();
 
-    public static StateLogBuilder stateLogBuilder() {
-        return new StateLogBuilder();
+    public static <T> StateLogBuilder<T> stateLogBuilder() {
+        return new StateLogBuilder<>();
     }
 
-    public void log(final Signal signal, final List<LoggedState> loggedStates) {
+    public void log(final Signal<T> signal, final List<LoggedState> loggedStates) {
         final List<LoggedState> changedStates = loggedStates.stream()
                 .filter(loggedState -> !previousLoggedStates.contains(loggedState))
                 .collect(toList());
@@ -48,7 +48,7 @@ public final class StateLogBuilder {
         previousLoggedStates = loggedStates;
     }
 
-    public StateLog build() {
+    public StateLog<T> build() {
         return stateLog(entries);
     }
 }

@@ -42,4 +42,17 @@ public final class Lingo {
                     "There is no mode that has neither serialization and deserialization.");
         }
     }
+
+    public static String mode2(final boolean serializer, final boolean deserializer) {
+        if (serializer && deserializer) {
+            return DUPLEX;
+        } else if (deserializer) {
+            return "deserialization";
+        } else if (serializer) {
+            return "serialization";
+        } else {
+            throw new UnsupportedOperationException("This should never happen. " +
+                    "There is no mode that has neither serialization and deserialization.");
+        }
+    }
 }

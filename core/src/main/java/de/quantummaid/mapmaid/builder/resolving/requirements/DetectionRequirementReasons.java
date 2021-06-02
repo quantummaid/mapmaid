@@ -98,6 +98,11 @@ public final class DetectionRequirementReasons {
         return requirement.reasons();
     }
 
+    public boolean requires(final RequirementName requirementName) {
+        final DetectionRequirement requirement = detectionRequirements.get(requirementName);
+        return requirement.isRequired();
+    }
+
     public String summary() {
         return detectionRequirements.values().stream()
                 .map(detectionRequirement -> detectionRequirement.name().value() + ": " + detectionRequirement.numberOfReasons())

@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.exceptions;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -31,9 +32,9 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
 import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
@@ -41,27 +42,27 @@ import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdenti
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StackTraceStateFactory implements StateFactory {
+public final class StackTraceStateFactory implements StateFactory<DisambiguationResult> {
     private final TypeIdentifier targetType;
     private final int maxStackFrameCount;
 
-    public static StateFactory stackTraceStateFactory(final ReflectMaid reflectMaid,
-                                                      final int maxStackFrameCount) {
+    public static StackTraceStateFactory stackTraceStateFactory(final ReflectMaid reflectMaid,
+                                                                final int maxStackFrameCount) {
         final ResolvedType resolvedType = reflectMaid.resolve(StackTraceElement[].class);
         final TypeIdentifier stackTraceType = typeIdentifierFor(resolvedType);
         return new StackTraceStateFactory(stackTraceType, maxStackFrameCount);
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
-                                               final TypeIdentifier type,
-                                               final Context context,
-                                               final MapMaidConfiguration mapMaidConfiguration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
+                                                                     final TypeIdentifier type,
+                                                                     final Context<DisambiguationResult> context,
+                                                                     final MapMaidConfiguration mapMaidConfiguration) {
         if (!targetType.equals(type)) {
             return empty();
         }
         final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
-        context.setManuallyConfiguredSerializer(serializer);
-        return Optional.of(stateFactoryResult(unreasoned(context), List.of()));
+        context.setManuallyConfiguredResult(serializationOnlyResult(serializer));
+        return Optional.of(stateFactoryResult(unreasoned(context)));
     }
 }

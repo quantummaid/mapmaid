@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.states.detected;
 import de.quantummaid.mapmaid.builder.resolving.Context;
 import de.quantummaid.mapmaid.builder.resolving.Report;
 import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Lingo;
@@ -33,9 +33,9 @@ import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Optional;
-
 import static de.quantummaid.mapmaid.builder.resolving.Report.failure;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
@@ -43,23 +43,23 @@ import static java.lang.String.format;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public final class Undetectable extends StatefulDefinition {
+public final class Undetectable<T> extends StatefulDefinition<T> {
     private final String reason;
 
-    private Undetectable(final Context context,
+    private Undetectable(final Context<T> context,
                          final String reason) {
         super(context);
         this.reason = reason;
     }
 
-    public static StatefulDefinition undetectable(final Context context,
-                                                  final String reason) {
-        return new Undetectable(context, reason);
+    public static <T> StatefulDefinition<T> undetectable(final Context<T> context,
+                                                         final String reason) {
+        return new Undetectable<>(context, reason);
     }
 
     @Override
-    public StatefulDefinition changeRequirements(final RequirementsReducer reducer) {
-        final RequiredAction requiredAction = context.scanInformationBuilder().changeRequirements(reducer);
+    public StatefulDefinition<T> changeRequirements(final RequirementsReducer reducer) {
+        final RequiredAction requiredAction = context.changeRequirements(reducer);
         return requiredAction.map(
                 () -> this,
                 () -> toBeDetected(context),
@@ -68,11 +68,12 @@ public final class Undetectable extends StatefulDefinition {
     }
 
     @Override
-    public Optional<Report> getDefinition() {
+    public Report<T> getDefinition() {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        final CollectionResult collectionResult = collectionResult(null, scanInformationBuilder);
-        final DetectionRequirements detectionRequirements = context.scanInformationBuilder().detectionRequirements();
-        final String mode = Lingo.mode(detectionRequirements.serialization, detectionRequirements.deserialization);
-        return Optional.of(failure(collectionResult, format("unable to detect %s:%n%s", mode, reason)));
+        final DetectionRequirementReasons detectionRequirements = context.detectionRequirements();
+        final CollectionResult<T> collectionResult = collectionResult(null, scanInformationBuilder, detectionRequirements);
+        // TODO
+        final String mode = Lingo.mode(detectionRequirements.requires(SERIALIZATION), detectionRequirements.requires(DESERIALIZATION));
+        return failure(collectionResult, format("unable to detect %s:%n%s", mode, reason));
     }
 }

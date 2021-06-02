@@ -37,19 +37,19 @@ import static java.lang.String.format;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AddReasonSignal implements Signal {
+public final class AddReasonSignal<T> implements Signal<T> {
     private final TypeIdentifier target;
     private final RequirementName requirement;
     private final Reason reason;
 
-    public static Signal addReason(final RequirementName requirement,
-                                   final TypeIdentifier target,
-                                   final Reason reason) {
-        return new AddReasonSignal(target, requirement, reason);
+    public static <T> Signal<T> addReason(final RequirementName requirement,
+                                          final TypeIdentifier target,
+                                          final Reason reason) {
+        return new AddReasonSignal<>(target, requirement, reason);
     }
 
     @Override
-    public StatefulDefinition handleState(final StatefulDefinition definition) {
+    public StatefulDefinition<T> handleState(final StatefulDefinition<T> definition) {
         return definition.changeRequirements(current -> current.addReason(requirement, reason));
     }
 
