@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
 import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;

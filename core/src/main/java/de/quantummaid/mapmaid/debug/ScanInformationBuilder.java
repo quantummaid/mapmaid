@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;

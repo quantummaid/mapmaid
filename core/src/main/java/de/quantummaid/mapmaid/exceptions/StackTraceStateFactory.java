@@ -22,10 +22,10 @@
 package de.quantummaid.mapmaid.exceptions;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
+import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
@@ -35,8 +35,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
 import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static java.util.Optional.empty;

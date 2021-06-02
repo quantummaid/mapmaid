@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementName;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementName;
 
-import static de.quantummaid.mapmaid.builder.resolving.requirements.RequirementName.requirementName;
+import static de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementName.requirementName;
 
 public final class Requirements {
     public static final RequirementName SERIALIZATION = requirementName("serialization");

@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.Processor;
 
 public interface ManuallyAddedState {
     void addState(MapMaidConfiguration configuration, Processor<DisambiguationResult> processor);

@@ -1,12 +1,12 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration
-import de.quantummaid.mapmaid.builder.resolving.Context
+import de.quantummaid.mapmaid.builder.resolving.framework.Context
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult
+import de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned
 import de.quantummaid.mapmaid.debug.DebugInformation
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer

@@ -22,9 +22,10 @@
 package de.quantummaid.mapmaid.builder.resolving;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.processing.CollectionResult;
-import de.quantummaid.mapmaid.builder.resolving.processing.OnCollectionError;
-import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
+import de.quantummaid.mapmaid.builder.resolving.framework.Report;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.OnCollectionError;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
