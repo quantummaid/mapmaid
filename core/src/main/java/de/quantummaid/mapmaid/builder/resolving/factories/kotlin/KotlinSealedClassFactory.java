@@ -22,16 +22,17 @@
 package de.quantummaid.mapmaid.builder.resolving.factories.kotlin;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,17 +46,17 @@ import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifie
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class KotlinSealedClassFactory implements StateFactory<DisambiguationResult> {
+    private final MapMaidConfiguration mapMaidConfiguration;
 
-    public static KotlinSealedClassFactory kotlinSealedClassFactory() {
-        return new KotlinSealedClassFactory();
+    public static KotlinSealedClassFactory kotlinSealedClassFactory(final MapMaidConfiguration mapMaidConfiguration) {
+        return new KotlinSealedClassFactory(mapMaidConfiguration);
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
-                                                                     final TypeIdentifier type,
-                                                                     final Context<DisambiguationResult> context,
-                                                                     final MapMaidConfiguration mapMaidConfiguration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier type,
+                                                                     final Context<DisambiguationResult> context) {
         if (type.isVirtual()) {
             return empty();
         }

@@ -41,14 +41,14 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.injection.FixedInjector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidOnCollectionError;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.Processor;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
-import de.quantummaid.mapmaid.builder.resolving.MapMaidResolver;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.collections.BiMap;
@@ -83,14 +83,15 @@ import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinition
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Builder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.framework.Context.emptyContext;
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidDetector.mapMaidDetector;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidOnCollectionError.mapMaidOnCollectionError;
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidResolver.mapMaidResolver;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
+import static de.quantummaid.mapmaid.builder.resolving.framework.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.AddReasonSignal.addReason;
-import static de.quantummaid.mapmaid.builder.resolving.MapMaidDetector.mapMaidDetector;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
@@ -514,14 +515,9 @@ public final class MapMaidBuilder implements
 
         final Disambiguators disambiguators = this.advancedBuilder.buildDisambiguators();
         final Detector<DisambiguationResult> detector = mapMaidDetector(this.detector, disambiguators, injectionTypes);
-        final Resolver<DisambiguationResult> resolver = MapMaidResolver.mapMaidResolver();
-        final Map<TypeIdentifier, CollectionResult<DisambiguationResult>> result = processor.collect(
-                reflectMaid,
-                detector,
-                resolver,
-                mapMaidConfiguration,
-                mapMaidOnCollectionError(reflectMaid)
-        );
+        final Resolver<DisambiguationResult> resolver = mapMaidResolver();
+        final MapMaidOnCollectionError onError = mapMaidOnCollectionError(reflectMaid);
+        final Map<TypeIdentifier, CollectionResult<DisambiguationResult>> result = processor.collect(detector, resolver, onError);
 
         final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
         result.forEach((type, collectionResult) -> {

@@ -21,11 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +45,8 @@ public final class UndetectedFactory implements StateFactory<DisambiguationResul
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
-                                                                     final TypeIdentifier type,
-                                                                     final Context<DisambiguationResult> context,
-                                                                     final MapMaidConfiguration configuration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier type,
+                                                                     final Context<DisambiguationResult> context) {
         return of(stateFactoryResult(unreasoned(context)));
     }
 }

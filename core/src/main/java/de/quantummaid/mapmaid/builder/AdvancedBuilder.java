@@ -251,7 +251,7 @@ public final class AdvancedBuilder {
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
-                kotlinSealedClassFactory(),
+                kotlinSealedClassFactory(mapMaidConfiguration),
                 undetectedFactory()
         )
                 .forEach(this::withStateFactory);

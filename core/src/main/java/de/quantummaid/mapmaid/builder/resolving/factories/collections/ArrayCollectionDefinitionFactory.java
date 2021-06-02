@@ -21,13 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.resolving.factories.collections;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
@@ -55,10 +53,8 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory<Disa
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
-                                                                     final TypeIdentifier typeIdentifier,
-                                                                     final Context<DisambiguationResult> context,
-                                                                     final MapMaidConfiguration configuration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier typeIdentifier,
+                                                                     final Context<DisambiguationResult> context) {
         if (typeIdentifier.isVirtual()) {
             return empty();
         }

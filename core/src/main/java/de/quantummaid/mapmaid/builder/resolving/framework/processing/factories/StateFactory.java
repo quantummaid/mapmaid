@@ -21,17 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ReflectMaid;
 
 import java.util.Optional;
 
 @FunctionalInterface
 public interface StateFactory<T> {
-    Optional<StateFactoryResult<T>> create(ReflectMaid reflectMaid,
-                                           TypeIdentifier type,
-                                           Context<T> context,
-                                           MapMaidConfiguration mapMaidConfiguration);
+    Optional<StateFactoryResult<T>> create(TypeIdentifier type, Context<T> context);
 }

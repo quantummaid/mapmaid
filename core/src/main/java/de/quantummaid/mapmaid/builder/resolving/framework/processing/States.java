@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactories;
@@ -32,7 +31,6 @@ import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Sig
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -69,20 +67,16 @@ public final class States<T> {
         return new States<>(this.stateFactories, newStates);
     }
 
-    public States<T> apply(final ReflectMaid reflectMaid,
-                           final Signal<T> signal,
+    public States<T> apply(final Signal<T> signal,
                            final Processor<T> processor,
-                           final MapMaidConfiguration configuration,
                            final StateLogBuilder<T> stateLog) {
-        final States<T> newStates = apply(reflectMaid, signal, processor, configuration);
+        final States<T> newStates = apply(signal, processor);
         stateLog.log(signal, newStates.dumpForLogging());
         return newStates;
     }
 
-    private States<T> apply(final ReflectMaid reflectMaid,
-                            final Signal<T> signal,
-                            final Processor<T> processor,
-                            final MapMaidConfiguration configuration) {
+    private States<T> apply(final Signal<T> signal,
+                            final Processor<T> processor) {
         final Optional<TypeIdentifier> optionalTarget = signal.target();
         if (optionalTarget.isEmpty()) {
             final List<StatefulDefinition<T>> newStates = states.stream()
@@ -95,7 +89,7 @@ public final class States<T> {
 
             if (!contains(target, newStates)) {
                 final Context<T> context = emptyContext(processor::dispatch, target);
-                final StateFactoryResult<T> state = stateFactories.createState(reflectMaid, target, context, configuration);
+                final StateFactoryResult<T> state = stateFactories.createState(target, context);
                 newStates.add(state.initialState());
             }
 

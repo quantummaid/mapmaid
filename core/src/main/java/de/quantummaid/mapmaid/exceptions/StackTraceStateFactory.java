@@ -21,9 +21,8 @@
 
 package de.quantummaid.mapmaid.exceptions;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
@@ -54,10 +53,8 @@ public final class StackTraceStateFactory implements StateFactory<Disambiguation
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final ReflectMaid reflectMaid,
-                                                                     final TypeIdentifier type,
-                                                                     final Context<DisambiguationResult> context,
-                                                                     final MapMaidConfiguration mapMaidConfiguration) {
+    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier type,
+                                                                     final Context<DisambiguationResult> context) {
         if (!targetType.equals(type)) {
             return empty();
         }

@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
@@ -31,7 +30,6 @@ import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -72,12 +70,10 @@ public final class Processor<T> {
         this.states = this.states.addState(statefulDefinition);
     }
 
-    public Map<TypeIdentifier, CollectionResult<T>> collect(final ReflectMaid reflectMaid,
-                                                            final Detector<T> detector,
+    public Map<TypeIdentifier, CollectionResult<T>> collect(final Detector<T> detector,
                                                             final Resolver<T> resolver,
-                                                            final MapMaidConfiguration configuration,
                                                             final OnCollectionError<T> onError) {
-        resolveRecursively(reflectMaid, detector, resolver, configuration);
+        resolveRecursively(detector, resolver);
         final Map<TypeIdentifier, Report<T>> reports = states.collect();
         final Map<TypeIdentifier, CollectionResult<T>> definitions = new HashMap<>(reports.size());
         final Map<TypeIdentifier, CollectionResult<T>> all = new HashMap<>(reports.size());
@@ -98,20 +94,18 @@ public final class Processor<T> {
         return definitions;
     }
 
-    private void resolveRecursively(final ReflectMaid reflectMaid,
-                                    final Detector<T> detector,
-                                    final Resolver<T> resolver,
-                                    final MapMaidConfiguration configuration) {
+    private void resolveRecursively(final Detector<T> detector,
+                                    final Resolver<T> resolver) {
         while (!pendingSignals.isEmpty()) {
             final Signal<T> signal = pendingSignals.remove();
-            states = states.apply(reflectMaid, signal, this, configuration, log);
+            states = states.apply(signal, this, log);
         }
-        final States<T> detected = states.apply(reflectMaid, detect(detector), this, configuration, log);
-        final States<T> resolved = detected.apply(reflectMaid, resolve(resolver), this, configuration, log);
+        final States<T> detected = states.apply(detect(detector), this, log);
+        final States<T> resolved = detected.apply(resolve(resolver), this, log);
         states = resolved;
 
         if (!pendingSignals.isEmpty()) {
-            resolveRecursively(reflectMaid, detector, resolver, configuration);
+            resolveRecursively(detector, resolver);
         }
     }
 

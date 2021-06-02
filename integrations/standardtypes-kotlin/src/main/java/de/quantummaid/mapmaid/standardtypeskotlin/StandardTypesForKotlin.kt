@@ -1,10 +1,9 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration
-import de.quantummaid.mapmaid.builder.resolving.framework.Context
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
+import de.quantummaid.mapmaid.builder.resolving.framework.Context
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult
@@ -96,10 +95,8 @@ private class CustomFactory(
     }
 
     override fun create(
-        reflectMaid: ReflectMaid,
         typeIdentifier: TypeIdentifier,
         context: Context<DisambiguationResult>,
-        mapMaidConfiguration: MapMaidConfiguration
     ): Optional<StateFactoryResult<DisambiguationResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()

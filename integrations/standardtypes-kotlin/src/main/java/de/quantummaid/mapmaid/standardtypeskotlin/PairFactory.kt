@@ -1,8 +1,7 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration
-import de.quantummaid.mapmaid.builder.resolving.framework.Context
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
+import de.quantummaid.mapmaid.builder.resolving.framework.Context
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult
@@ -19,7 +18,6 @@ import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
 import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
-import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
 import java.util.*
 
@@ -109,10 +107,8 @@ private class PairDeserializer(
 class PairFactory : StateFactory<DisambiguationResult> {
 
     override fun create(
-        reflectMaid: ReflectMaid,
         typeIdentifier: TypeIdentifier,
         context: Context<DisambiguationResult>,
-        mapMaidConfiguration: MapMaidConfiguration
     ): Optional<StateFactoryResult<DisambiguationResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()
