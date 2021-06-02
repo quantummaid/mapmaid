@@ -25,7 +25,6 @@ public final class Lingo {
     public static final String SERIALIZATION_ONLY = "serialization-only";
     public static final String DESERIALIZATION_ONLY = "deserialization-only";
     public static final String DUPLEX = "duplex";
-    public static final String DISAMBIGUATOR = "disambiguator";
 
     private Lingo() {
     }
@@ -37,19 +36,6 @@ public final class Lingo {
             return DESERIALIZATION_ONLY;
         } else if (serializer) {
             return SERIALIZATION_ONLY;
-        } else {
-            throw new UnsupportedOperationException("This should never happen. " +
-                    "There is no mode that has neither serialization and deserialization.");
-        }
-    }
-
-    public static String mode2(final boolean serializer, final boolean deserializer) {
-        if (serializer && deserializer) {
-            return DUPLEX;
-        } else if (deserializer) {
-            return "deserialization";
-        } else if (serializer) {
-            return "serialization";
         } else {
             throw new UnsupportedOperationException("This should never happen. " +
                     "There is no mode that has neither serialization and deserialization.");

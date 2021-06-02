@@ -77,7 +77,7 @@ public final class ToBeDetected<T> extends StatefulDefinition<T> {
                 .orElseGet(() -> detector.detect(type(), requirements, scanInformationBuilder));
         if (result.isFailure()) {
             return undetectable(context, format("no %s detected:%n%s",
-                    Lingo.mode2(requirements.requires(SERIALIZATION), requirements.requires(DESERIALIZATION)),
+                    Lingo.mode(requirements.requires(SERIALIZATION), requirements.requires(DESERIALIZATION)),
                     result.reasonForFailure())
             );
         }

@@ -38,7 +38,7 @@ public final class SerializationOnlyExample {
                 .withDeserializedForm(fromDate(new GregorianCalendar(2010, Calendar.JANUARY, 1).getTime()))
                 .withSerializationSuccessful()
                 .withDeserializationFailing("java.util.Date: unable to detect deserialization-only:\n" +
-                        "no deserialization detected:\n" +
+                        "no deserialization-only detected:\n" +
                         "[Native java classes cannot be detected]")
                 .withDuplexFailing()
                 .run();
