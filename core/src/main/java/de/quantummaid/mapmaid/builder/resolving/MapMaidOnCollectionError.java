@@ -21,14 +21,13 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.OnCollectionError;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MapMaidOnCollectionError implements OnCollectionError<DisambiguationResult> {
+public final class MapMaidOnCollectionError implements OnCollectionError<MapMaidTypeScannerResult> {
     private final ReflectMaid reflectMaid;
 
     public static MapMaidOnCollectionError mapMaidOnCollectionError(final ReflectMaid reflectMaid) {
@@ -51,9 +50,9 @@ public final class MapMaidOnCollectionError implements OnCollectionError<Disambi
     }
 
     @Override
-    public void onCollectionError(final Map<TypeIdentifier, CollectionResult<DisambiguationResult>> results,
-                                  final StateLog<DisambiguationResult> log,
-                                  final Map<TypeIdentifier, Report<DisambiguationResult>> failures) {
+    public void onCollectionError(final Map<TypeIdentifier, CollectionResult<MapMaidTypeScannerResult>> results,
+                                  final StateLog<MapMaidTypeScannerResult> log,
+                                  final Map<TypeIdentifier, Report<MapMaidTypeScannerResult>> failures) {
         final DebugInformation debugInformation = debugInformation(results, log, reflectMaid);
         final StringJoiner errorMessageJoiner = new StringJoiner("\n\n");
         final List<ScanInformation> scanInformations = new ArrayList<>(failures.size());

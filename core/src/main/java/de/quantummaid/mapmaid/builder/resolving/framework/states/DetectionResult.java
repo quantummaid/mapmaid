@@ -115,6 +115,11 @@ public final class DetectionResult<T> {
         return success(mapped);
     }
 
+    public <X> DetectionResult<X> mapWithNull(final Function<T, X> mapper) {
+        final X mapped = mapper.apply(this.result);
+        return new DetectionResult<>(mapped, reasonsForFailure);
+    }
+
     @SuppressWarnings("unchecked")
     public <X> DetectionResult<X> flatMap(final Function<T, DetectionResult<X>> mapper) {
         if (isFailure()) {

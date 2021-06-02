@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.specs;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.LoggedState;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
@@ -42,12 +42,12 @@ public final class StateLogSpecs {
     @Test
     public void stateLogIsSerializable() {
         final MapMaid mapMaid1 = MapMaid.aMapMaid()
-                .serializingCustomObject(genericType(new TypeToken<StateLog<DisambiguationResult>>() {
+                .serializingCustomObject(genericType(new TypeToken<StateLog<MapMaidTypeScannerResult>>() {
                         }), builder -> builder
                         .withField("entries", genericType(new TypeToken<>() {
                         }), StateLog::entries)
                 )
-                .serializingCustomPrimitive(genericType(new TypeToken<Signal<DisambiguationResult>>() {
+                .serializingCustomPrimitive(genericType(new TypeToken<Signal<MapMaidTypeScannerResult>>() {
                 }), Signal::description)
                 .serializingCustomObject(LoggedState.class, builder -> builder
                         .withField("detectionRequirementReasons", String.class, LoggedState::buildDetectionRequirementReasons)
@@ -59,9 +59,9 @@ public final class StateLogSpecs {
         final MapMaid mapMaid2 = MapMaid.aMapMaid()
                 .serializingAndDeserializing(AString.class)
                 .build();
-        final StateLog<DisambiguationResult> stateLog = mapMaid2.debugInformation().stateLog();
+        final StateLog<MapMaidTypeScannerResult> stateLog = mapMaid2.debugInformation().stateLog();
 
-        final String json = mapMaid1.serializeToJson(stateLog, genericType(new TypeToken<StateLog<DisambiguationResult>>() {
+        final String json = mapMaid1.serializeToJson(stateLog, genericType(new TypeToken<StateLog<MapMaidTypeScannerResult>>() {
         }));
 
         final Gson gson = new Gson();

@@ -25,8 +25,8 @@ import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentif
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.debug.RequiredAction;
-import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -46,15 +46,13 @@ import static de.quantummaid.mapmaid.debug.RequiredAction.*;
 public final class Context<T> {
     private final Consumer<Signal<T>> dispatcher;
     private final TypeIdentifier type;
-    private T detectionResult;
+    private DetectionResult<T> detectionResult;
     private T manuallyConfiguredResult;
     private DetectionRequirements detectionRequirements;
-    private final ScanInformationBuilder scanInformationBuilder;
 
     public static <T> Context<T> emptyContext(final Consumer<Signal<T>> dispatcher,
                                               final TypeIdentifier type) {
-        final ScanInformationBuilder scanInformationBuilder = ScanInformationBuilder.scanInformationBuilder(type);
-        final Context<T> context = new Context<>(dispatcher, type, scanInformationBuilder);
+        final Context<T> context = new Context<>(dispatcher, type);
         context.detectionRequirements = empty(
                 List.of(SERIALIZATION, DESERIALIZATION),
                 List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
@@ -70,16 +68,12 @@ public final class Context<T> {
         this.dispatcher.accept(signal);
     }
 
-    public ScanInformationBuilder scanInformationBuilder() {
-        return this.scanInformationBuilder;
-    }
-
-    public void setDetectionResult(final T detectionResult) {
+    public void setDetectionResult(final DetectionResult<T> detectionResult) {
         this.detectionResult = detectionResult;
     }
 
-    public Optional<T> detectionResult() {
-        return Optional.ofNullable(detectionResult);
+    public DetectionResult<T> detectionResult() {
+        return detectionResult;
     }
 
     public void setManuallyConfiguredResult(final T manuallyConfiguredResult) {

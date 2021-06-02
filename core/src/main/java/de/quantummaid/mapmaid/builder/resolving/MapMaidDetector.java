@@ -21,21 +21,24 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
+import static de.quantummaid.mapmaid.debug.ScanInformationBuilder.scanInformationBuilder;
+
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MapMaidDetector implements Detector<DisambiguationResult> {
+public final class MapMaidDetector implements Detector<MapMaidTypeScannerResult> {
     private final SimpleDetector detector;
     private final Disambiguators disambiguators;
     private final List<TypeIdentifier> injectedTypes;
@@ -47,17 +50,18 @@ public final class MapMaidDetector implements Detector<DisambiguationResult> {
     }
 
     @Override
-    public DetectionResult<DisambiguationResult> detect(
+    public DetectionResult<MapMaidTypeScannerResult> detect(
             final TypeIdentifier type,
-            final DetectionRequirements detectionRequirements,
-            final ScanInformationBuilder scanInformationBuilder
+            final DetectionRequirements detectionRequirements
     ) {
-        return detector.detect(
+        final ScanInformationBuilder scanInformationBuilder = scanInformationBuilder(type);
+        final DetectionResult<DisambiguationResult> detectionResult = detector.detect(
                 type,
                 scanInformationBuilder,
                 detectionRequirements,
                 disambiguators,
                 injectedTypes
         );
+        return detectionResult.mapWithNull(result -> result(result, scanInformationBuilder));
     }
 }

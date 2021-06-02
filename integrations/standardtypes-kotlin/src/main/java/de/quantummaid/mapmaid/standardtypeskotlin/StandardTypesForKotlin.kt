@@ -1,9 +1,11 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
 import de.quantummaid.mapmaid.builder.resolving.framework.Context
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult
@@ -12,7 +14,6 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.standardtypeskotlin.CustomFactory.Companion.createCustomFactory
 import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
@@ -81,7 +82,7 @@ private class CustomFactory(
     private val targetType: ResolvedType,
     private val serializer: TypeSerializer,
     private val deserializer: TypeDeserializer
-) : StateFactory<DisambiguationResult> {
+) : StateFactory<MapMaidTypeScannerResult> {
 
     companion object {
         inline fun <reified T : Any> createCustomFactory(
@@ -96,8 +97,8 @@ private class CustomFactory(
 
     override fun create(
         typeIdentifier: TypeIdentifier,
-        context: Context<DisambiguationResult>,
-    ): Optional<StateFactoryResult<DisambiguationResult>> {
+        context: Context<MapMaidTypeScannerResult>,
+    ): Optional<StateFactoryResult<MapMaidTypeScannerResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()
         }
@@ -105,7 +106,7 @@ private class CustomFactory(
         if (type != targetType) {
             return Optional.empty()
         }
-        context.setManuallyConfiguredResult(duplexResult(serializer, deserializer))
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
         return Optional.of(stateFactoryResult(unreasoned(context)))
     }
 }

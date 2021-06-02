@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.AddReasonSignal;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
@@ -29,7 +29,6 @@ import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,39 +36,39 @@ import java.util.List;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
 
-public final class MapMaidResolver implements Resolver<DisambiguationResult> {
+public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult> {
 
-    public static Resolver<DisambiguationResult> mapMaidResolver() {
+    public static MapMaidResolver mapMaidResolver() {
         return new MapMaidResolver();
     }
 
     @Override
-    public List<Signal<DisambiguationResult>> resolve(final DisambiguationResult result,
-                                final TypeIdentifier type,
-                                final DetectionRequirements detectionRequirements) {
-        final List<Signal<DisambiguationResult>> signals = new ArrayList<>();
+    public List<Signal<MapMaidTypeScannerResult>> resolve(final MapMaidTypeScannerResult result,
+                                                          final TypeIdentifier type,
+                                                          final DetectionRequirements detectionRequirements) {
+        final List<Signal<MapMaidTypeScannerResult>> signals = new ArrayList<>();
         final Reason reason = becauseOf(type);
         if (detectionRequirements.requires(SERIALIZATION)) {
-            final TypeSerializer serializer = result.serializer();
+            final TypeSerializer serializer = result.disambiguationResult().serializer();
             final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
             requiredTypes.stream()
-                    .map(requiredType -> AddReasonSignal.<DisambiguationResult>addReason(SERIALIZATION, requiredType, reason))
+                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(SERIALIZATION, requiredType, reason))
                     .forEach(signals::add);
             if (serializer.forcesDependenciesToBeObjects()) {
                 requiredTypes.stream()
-                        .map(requiredType -> AddReasonSignal.<DisambiguationResult>addReason(OBJECT_ENFORCING, requiredType, reason))
+                        .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(OBJECT_ENFORCING, requiredType, reason))
                         .forEach(signals::add);
             }
         }
         if (detectionRequirements.requires(DESERIALIZATION)) {
-            final TypeDeserializer deserializer = result.deserializer();
+            final TypeDeserializer deserializer = result.disambiguationResult().deserializer();
             final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
             requiredTypes.stream()
-                    .map(requiredType -> AddReasonSignal.<DisambiguationResult>addReason(DESERIALIZATION, requiredType, reason))
+                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(DESERIALIZATION, requiredType, reason))
                     .forEach(signals::add);
             if (deserializer.forcesDependenciesToBeObjects()) {
                 requiredTypes.stream()
-                        .map(requiredType -> AddReasonSignal.<DisambiguationResult>addReason(OBJECT_ENFORCING, requiredType, reason))
+                        .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(OBJECT_ENFORCING, requiredType, reason))
                         .forEach(signals::add);
             }
         }

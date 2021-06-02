@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
@@ -38,15 +38,15 @@ import static java.util.Optional.of;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UndetectedFactory implements StateFactory<DisambiguationResult> {
+public final class UndetectedFactory implements StateFactory<MapMaidTypeScannerResult> {
 
     public static UndetectedFactory undetectedFactory() {
         return new UndetectedFactory();
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier type,
-                                                                     final Context<DisambiguationResult> context) {
+    public Optional<StateFactoryResult<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
+                                                                         final Context<MapMaidTypeScannerResult> context) {
         return of(stateFactoryResult(unreasoned(context)));
     }
 }

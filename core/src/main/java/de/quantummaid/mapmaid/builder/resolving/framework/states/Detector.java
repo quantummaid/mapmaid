@@ -21,13 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.states;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
-import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 
 public interface Detector<T> {
 
-    DetectionResult<T> detect(TypeIdentifier type,
-                              DetectionRequirements detectionRequirements,
-                              ScanInformationBuilder scanInformationBuilder);
+    DetectionResult<T> detect(TypeIdentifier type, DetectionRequirements detectionRequirements);
 }

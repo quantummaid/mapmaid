@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.autoload.Autoloadable;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
@@ -55,11 +55,11 @@ import static de.quantummaid.mapmaid.builder.MarshallerAutoloadingException.conf
 import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloadIfClassPresent;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
-import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.UndetectedFactory.undetectedFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
+import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.UndetectedFactory.undetectedFactory;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.exceptions.StackTraceStateFactory.stackTraceStateFactory;
@@ -91,7 +91,7 @@ public final class AdvancedBuilder {
     private boolean autoloadMarshallers = true;
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
-    private final List<StateFactory<DisambiguationResult>> stateFactories = new ArrayList<>();
+    private final List<StateFactory<MapMaidTypeScannerResult>> stateFactories = new ArrayList<>();
     private int maxStackFrameCount = DEFAULT_MAX_STACK_FRAME_COUNT;
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
@@ -138,7 +138,7 @@ public final class AdvancedBuilder {
         return this;
     }
 
-    public AdvancedBuilder withStateFactory(final StateFactory<DisambiguationResult> stateFactory) {
+    public AdvancedBuilder withStateFactory(final StateFactory<MapMaidTypeScannerResult> stateFactory) {
         validateNotNull(stateFactory, "stateFactory");
         stateFactories.add(stateFactory);
         return this;
@@ -244,7 +244,7 @@ public final class AdvancedBuilder {
         return mapMaidConfiguration;
     }
 
-    Processor<DisambiguationResult> processor() {
+    Processor<MapMaidTypeScannerResult> processor() {
         List.of(
                 throwableStateFactory(reflectMaid),
                 stackTraceStateFactory(reflectMaid, maxStackFrameCount),

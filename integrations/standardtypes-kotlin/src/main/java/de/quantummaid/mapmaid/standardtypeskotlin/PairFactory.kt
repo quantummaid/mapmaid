@@ -1,7 +1,10 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
 import de.quantummaid.mapmaid.builder.resolving.framework.Context
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult
@@ -16,7 +19,6 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker
 import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
 import java.util.*
@@ -104,12 +106,12 @@ private class PairDeserializer(
     }
 }
 
-class PairFactory : StateFactory<DisambiguationResult> {
+class PairFactory : StateFactory<MapMaidTypeScannerResult> {
 
     override fun create(
         typeIdentifier: TypeIdentifier,
-        context: Context<DisambiguationResult>,
-    ): Optional<StateFactoryResult<DisambiguationResult>> {
+        context: Context<MapMaidTypeScannerResult>,
+    ): Optional<StateFactoryResult<MapMaidTypeScannerResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()
         }
@@ -126,7 +128,7 @@ class PairFactory : StateFactory<DisambiguationResult> {
         val typeIdentifierSecond = TypeIdentifier.typeIdentifierFor(second)
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
-        context.setManuallyConfiguredResult(DisambiguationResult.duplexResult(serializer, deserializer))
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
         return Optional.of(stateFactoryResult(unreasoned(context)))
     }
 }

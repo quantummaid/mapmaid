@@ -21,11 +21,11 @@
 
 package de.quantummaid.mapmaid.exceptions;
 
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
@@ -33,15 +33,16 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.ThrowableSerializer.throwableSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
 import static java.util.Optional.empty;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ThrowableStateFactory implements StateFactory<DisambiguationResult> {
+public final class ThrowableStateFactory implements StateFactory<MapMaidTypeScannerResult> {
     private final TypeIdentifier stackTraceType;
 
     public static ThrowableStateFactory throwableStateFactory(final ReflectMaid reflectMaid) {
@@ -51,8 +52,8 @@ public final class ThrowableStateFactory implements StateFactory<DisambiguationR
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier type,
-                                                                     final Context<DisambiguationResult> context) {
+    public Optional<StateFactoryResult<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
+                                                                         final Context<MapMaidTypeScannerResult> context) {
         if (type.isVirtual()) {
             return empty();
         }
@@ -61,7 +62,7 @@ public final class ThrowableStateFactory implements StateFactory<DisambiguationR
             return empty();
         }
         final ThrowableSerializer serializer = throwableSerializer(stackTraceType);
-        context.setManuallyConfiguredResult(serializationOnlyResult(serializer));
+        context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
         return Optional.of(stateFactoryResult(unreasoned(context)));
     }
 }

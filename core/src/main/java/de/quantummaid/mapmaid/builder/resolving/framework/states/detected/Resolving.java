@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.framework.states.detected;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.RequiredAction;
@@ -60,8 +61,9 @@ public final class Resolving<T> extends StatefulDefinition<T> {
 
     @Override
     public StatefulDefinition<T> resolve(final Resolver<T> resolver) {
-        final T detectionResult = context.detectionResult().get();
-        final List<Signal<T>> signals = resolver.resolve(detectionResult, type(), context.detectionRequirements());
+        final DetectionResult<T> detectionResult = context.detectionResult();
+        final T result = detectionResult.result();
+        final List<Signal<T>> signals = resolver.resolve(result, type(), context.detectionRequirements());
         signals.forEach(context::dispatch);
         return resolved(context);
     }

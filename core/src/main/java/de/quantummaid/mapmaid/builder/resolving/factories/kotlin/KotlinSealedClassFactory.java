@@ -22,14 +22,14 @@
 package de.quantummaid.mapmaid.builder.resolving.factories.kotlin;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
@@ -47,7 +48,7 @@ import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class KotlinSealedClassFactory implements StateFactory<DisambiguationResult> {
+public final class KotlinSealedClassFactory implements StateFactory<MapMaidTypeScannerResult> {
     private final MapMaidConfiguration mapMaidConfiguration;
 
     public static KotlinSealedClassFactory kotlinSealedClassFactory(final MapMaidConfiguration mapMaidConfiguration) {
@@ -55,8 +56,8 @@ public final class KotlinSealedClassFactory implements StateFactory<Disambiguati
     }
 
     @Override
-    public Optional<StateFactoryResult<DisambiguationResult>> create(final TypeIdentifier type,
-                                                                     final Context<DisambiguationResult> context) {
+    public Optional<StateFactoryResult<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
+                                                                         final Context<MapMaidTypeScannerResult> context) {
         if (type.isVirtual()) {
             return empty();
         }
@@ -73,7 +74,7 @@ public final class KotlinSealedClassFactory implements StateFactory<Disambiguati
 
         final PolymorphicSerializer serializer = polymorphicSerializer(type, sealedSubclasses, nameToType, "type");
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
-        context.setManuallyConfiguredResult(duplexResult(serializer, deserializer));
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
         return Optional.of(stateFactoryResult(unreasoned(context)));
     }
 }

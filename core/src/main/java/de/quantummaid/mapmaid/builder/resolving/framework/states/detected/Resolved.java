@@ -29,7 +29,6 @@ import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDes
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.RequiredAction;
-import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -75,9 +74,8 @@ public final class Resolved<T> extends StatefulDefinition<T> {
 
     @Override
     public Report<T> getDefinition(final RequirementsDescriber requirementsDescriber) {
-        final T detectionResult = context.detectionResult().orElseThrow();
-        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
+        final T detectionResult = context.detectionResult().result();
         final DetectionRequirements detectionRequirements = context.detectionRequirements();
-        return success(collectionResult(detectionResult, scanInformationBuilder, detectionRequirements));
+        return success(collectionResult(detectionResult, detectionRequirements));
     }
 }
