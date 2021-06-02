@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.framework.processing.signals;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.injection.FixedInjector;
 import de.quantummaid.mapmaid.builder.injection.InjectionDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 
 import static de.quantummaid.mapmaid.builder.injection.FixedInjectionDeserializer.diDeserializer;

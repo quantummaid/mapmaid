@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -51,7 +51,7 @@ public final class Preferences<T, C> {
 
     public List<T> preferred(final List<T> options,
                              final C context,
-                             final DetectionRequirementReasons detectionRequirements,
+                             final DetectionRequirements detectionRequirements,
                              final ResolvedType containingType,
                              final Striker<T> striker) {
         final List<T> filtered = options.stream()

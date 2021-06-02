@@ -45,14 +45,16 @@ import de.quantummaid.mapmaid.builder.resolving.MapMaidOnCollectionError;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.Processor;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.debug.DebugInformation;
+import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
@@ -64,7 +66,6 @@ import de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
@@ -91,6 +92,7 @@ import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATIO
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.Context.emptyContext;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.AddReasonSignal.addReason;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
@@ -103,7 +105,6 @@ import static de.quantummaid.mapmaid.mapper.serialization.Serializer.serializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.lang.String.format;
@@ -517,11 +518,12 @@ public final class MapMaidBuilder implements
         final Detector<DisambiguationResult> detector = mapMaidDetector(this.detector, disambiguators, injectionTypes);
         final Resolver<DisambiguationResult> resolver = mapMaidResolver();
         final MapMaidOnCollectionError onError = mapMaidOnCollectionError(reflectMaid);
-        final Map<TypeIdentifier, CollectionResult<DisambiguationResult>> result = processor.collect(detector, resolver, onError);
+        final Map<TypeIdentifier, CollectionResult<DisambiguationResult>> result =
+                processor.collect(detector, resolver, onError, Lingo::mode);
 
         final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
         result.forEach((type, collectionResult) -> {
-            final DetectionRequirementReasons requirements = collectionResult.detectionRequirements();
+            final DetectionRequirements requirements = collectionResult.detectionRequirements();
             final TypeSerializer serializer;
             if (requirements.requires(SERIALIZATION)) {
                 serializer = collectionResult.definition().serializer();

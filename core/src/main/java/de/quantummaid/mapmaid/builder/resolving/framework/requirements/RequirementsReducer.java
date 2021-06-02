@@ -22,5 +22,5 @@
 package de.quantummaid.mapmaid.builder.resolving.framework.requirements;
 
 public interface RequirementsReducer {
-    DetectionRequirementReasons reduce(DetectionRequirementReasons current);
+    DetectionRequirements reduce(DetectionRequirements current);
 }

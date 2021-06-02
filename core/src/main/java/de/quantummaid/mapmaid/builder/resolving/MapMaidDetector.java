@@ -21,14 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -49,7 +49,7 @@ public final class MapMaidDetector implements Detector<DisambiguationResult> {
     @Override
     public DetectionResult<DisambiguationResult> detect(
             final TypeIdentifier type,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final ScanInformationBuilder scanInformationBuilder
     ) {
         return detector.detect(

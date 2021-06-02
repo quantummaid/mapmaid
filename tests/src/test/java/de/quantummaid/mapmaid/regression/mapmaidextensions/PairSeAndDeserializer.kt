@@ -11,7 +11,7 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker
 import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.GenericType
 import de.quantummaid.reflectmaid.ReflectMaid

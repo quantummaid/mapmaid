@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
@@ -34,14 +34,14 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.se
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SymmetryBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreaker;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -51,8 +51,8 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.combine;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.combine;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext.disambiguationContext;
@@ -98,7 +98,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializedObjectOptions serializedObjectOptions,
             final SerializersAndDeserializers serializersAndDeserializers,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final List<TypeIdentifier> injectedTypes) {
         if (type.assignableType().getPackageName().startsWith("java.")) {
             return failure("Native java classes cannot be detected");
@@ -140,7 +140,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final DisambiguationContext context) {
         final List<TypeSerializer> customPrimitiveSerializers = customPrimitiveSerializersAndDeserializers.serializers(type);
         final DetectionResult<TypeSerializer> customPrimitiveSerializer =
@@ -164,7 +164,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements) {
+            final DetectionRequirements detectionRequirements) {
         final List<TypeDeserializer> deserializers = customPrimitiveSerializersAndDeserializers.deserializers(type);
         final DetectionResult<TypeDeserializer> customPrimitiveDeserializer = pickDeserializer(deserializers);
         final DetectionResult<TypeDeserializer> serializedObjectDeserializer =
@@ -183,7 +183,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializersAndDeserializers customPrimitiveSerializersAndDeserializers,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final DisambiguationContext context) {
         final CustomPrimitiveSymmetryBuilder customPrimitiveSymmetryBuilder = customPrimitiveSymmetryBuilder();
         customPrimitiveSerializersAndDeserializers.serializers(type).forEach(serializer ->
@@ -221,7 +221,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType type,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final DisambiguationContext context) {
         final SymmetryBuilder symmetryBuilder = symmetryBuilder();
         final List<TypeDeserializer> deserializers = serializedObjectOptions.deserializers();
@@ -260,7 +260,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType type,
             final SerializersAndDeserializers serializersAndDeserializers,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final DisambiguationContext context) {
         final List<TypeSerializer> preferredCustomPrimitiveSerializers;
         if (serializersAndDeserializers.hasSerializers()) {
@@ -295,7 +295,7 @@ public final class NormalDisambiguator implements Disambiguator {
             final ResolvedType containingType,
             final SerializedObjectOptions serializedObjectOptions,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final DisambiguationContext context) {
         final SerializationFieldOptions serializationFieldOptions = serializedObjectOptions.serializationFieldOptions();
         final SerializationFieldOptions filteredSerializationFields;

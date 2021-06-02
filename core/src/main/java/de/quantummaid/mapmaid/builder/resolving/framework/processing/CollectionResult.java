@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,11 +34,11 @@ import lombok.ToString;
 public final class CollectionResult<T> {
     private final T definition;
     private final ScanInformationBuilder scanInformationBuilder;
-    private final DetectionRequirementReasons detectionRequirements;
+    private final DetectionRequirements detectionRequirements;
 
     public static <T> CollectionResult<T> collectionResult(final T definition,
                                                            final ScanInformationBuilder scanInformationBuilder,
-                                                           final DetectionRequirementReasons detectionRequirements) {
+                                                           final DetectionRequirements detectionRequirements) {
         return new CollectionResult<>(definition, scanInformationBuilder, detectionRequirements);
     }
 
@@ -50,7 +50,7 @@ public final class CollectionResult<T> {
         return this.scanInformationBuilder;
     }
 
-    public DetectionRequirementReasons detectionRequirements() {
+    public DetectionRequirements detectionRequirements() {
         return detectionRequirements;
     }
 }

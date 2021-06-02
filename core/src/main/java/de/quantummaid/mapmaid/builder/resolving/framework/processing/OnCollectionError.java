@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.framework.processing;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 import java.util.Map;
 

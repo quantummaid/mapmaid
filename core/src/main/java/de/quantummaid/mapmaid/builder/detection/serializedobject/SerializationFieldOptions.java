@@ -21,9 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -38,8 +38,8 @@ import java.util.function.Predicate;
 
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation.serializationFieldInstantiation;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;

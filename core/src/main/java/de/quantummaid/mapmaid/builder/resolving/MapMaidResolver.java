@@ -24,12 +24,12 @@ package de.quantummaid.mapmaid.builder.resolving;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.AddReasonSignal;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public final class MapMaidResolver implements Resolver<DisambiguationResult> {
     @Override
     public List<Signal<DisambiguationResult>> resolve(final DisambiguationResult result,
                                 final TypeIdentifier type,
-                                final DetectionRequirementReasons detectionRequirements) {
+                                final DetectionRequirements detectionRequirements) {
         final List<Signal<DisambiguationResult>> signals = new ArrayList<>();
         final Reason reason = becauseOf(type);
         if (detectionRequirements.requires(SERIALIZATION)) {

@@ -29,7 +29,7 @@ import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.S
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

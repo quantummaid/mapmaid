@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.SerializationFieldQuery;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedField;
 import lombok.AccessLevel;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery.publicFieldQuery;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 

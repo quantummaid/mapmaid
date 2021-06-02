@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.mapper.injector.InjectorLambda;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
@@ -43,7 +43,7 @@ import java.util.function.UnaryOperator;
 import static de.quantummaid.mapmaid.mapper.injector.InjectorLambda.noop;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.JSON;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.UNIVERSAL_OBJECT;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 

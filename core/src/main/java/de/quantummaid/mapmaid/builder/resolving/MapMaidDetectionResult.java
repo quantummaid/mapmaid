@@ -21,14 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

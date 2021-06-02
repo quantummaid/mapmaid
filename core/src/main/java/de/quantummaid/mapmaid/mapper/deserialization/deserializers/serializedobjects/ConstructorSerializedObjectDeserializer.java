@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
@@ -39,7 +39,7 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.stream.Collectors.toList;

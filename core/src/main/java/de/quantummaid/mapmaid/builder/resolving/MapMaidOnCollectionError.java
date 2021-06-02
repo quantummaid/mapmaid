@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.builder.resolving.framework.processing.OnCollectio
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

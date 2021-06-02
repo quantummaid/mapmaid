@@ -23,8 +23,8 @@ package de.quantummaid.mapmaid.builder.resolving.framework.states;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 
 public abstract class StatefulDefinition<T> {
     public final Context<T> context;
@@ -39,7 +39,7 @@ public abstract class StatefulDefinition<T> {
         return context.type();
     }
 
-    public StatefulDefinition<T> detect(final Detector<T> detector) {
+    public StatefulDefinition<T> detect(final Detector<T> detector, final RequirementsDescriber requirementsDescriber) {
         return this;
     }
 
@@ -47,7 +47,7 @@ public abstract class StatefulDefinition<T> {
         return this;
     }
 
-    public Report<T> getDefinition() {
+    public Report<T> getDefinition(final RequirementsDescriber requirementsDescriber) {
         throw new UnsupportedOperationException(this.getClass() + " " + this.context.toString());
     }
 }

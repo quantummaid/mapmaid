@@ -22,13 +22,13 @@
 package de.quantummaid.mapmaid.builder.resolving.framework.states;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 import java.util.List;
 
 public interface Resolver<T> {
     List<Signal<T>> resolve(T result,
                          TypeIdentifier type,
-                         DetectionRequirementReasons detectionRequirements);
+                         DetectionRequirements detectionRequirements);
 }

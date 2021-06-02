@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.mapper.definitions;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 public final class DefinitionNotFoundException extends RuntimeException {
     private DefinitionNotFoundException(final String msg) {

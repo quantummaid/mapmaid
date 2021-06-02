@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;

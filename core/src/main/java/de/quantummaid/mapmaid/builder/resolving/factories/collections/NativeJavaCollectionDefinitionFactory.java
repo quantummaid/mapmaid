@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResu
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 

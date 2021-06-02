@@ -24,18 +24,16 @@ package de.quantummaid.mapmaid.builder.resolving.framework.states.detected;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.builder.resolving.framework.Report.failure;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult.collectionResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.ToBeDetected.toBeDetected;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
@@ -68,12 +66,11 @@ public final class Undetectable<T> extends StatefulDefinition<T> {
     }
 
     @Override
-    public Report<T> getDefinition() {
+    public Report<T> getDefinition(final RequirementsDescriber requirementsDescriber) {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        final DetectionRequirementReasons detectionRequirements = context.detectionRequirements();
+        final DetectionRequirements detectionRequirements = context.detectionRequirements();
         final CollectionResult<T> collectionResult = collectionResult(null, scanInformationBuilder, detectionRequirements);
-        // TODO
-        final String mode = Lingo.mode(detectionRequirements.requires(SERIALIZATION), detectionRequirements.requires(DESERIALIZATION));
+        final String mode = requirementsDescriber.describe(detectionRequirements);
         return failure(collectionResult, format("unable to detect %s:%n%s", mode, reason));
     }
 }

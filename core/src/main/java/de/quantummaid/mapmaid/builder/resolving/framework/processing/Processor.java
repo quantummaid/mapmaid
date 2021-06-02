@@ -22,14 +22,15 @@
 package de.quantummaid.mapmaid.builder.resolving.framework.processing;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -72,9 +73,10 @@ public final class Processor<T> {
 
     public Map<TypeIdentifier, CollectionResult<T>> collect(final Detector<T> detector,
                                                             final Resolver<T> resolver,
-                                                            final OnCollectionError<T> onError) {
-        resolveRecursively(detector, resolver);
-        final Map<TypeIdentifier, Report<T>> reports = states.collect();
+                                                            final OnCollectionError<T> onError,
+                                                            final RequirementsDescriber requirementsDescriber) {
+        resolveRecursively(detector, resolver, requirementsDescriber);
+        final Map<TypeIdentifier, Report<T>> reports = states.collect(requirementsDescriber);
         final Map<TypeIdentifier, CollectionResult<T>> definitions = new HashMap<>(reports.size());
         final Map<TypeIdentifier, CollectionResult<T>> all = new HashMap<>(reports.size());
         final Map<TypeIdentifier, Report<T>> failures = smallMap();
@@ -95,17 +97,18 @@ public final class Processor<T> {
     }
 
     private void resolveRecursively(final Detector<T> detector,
-                                    final Resolver<T> resolver) {
+                                    final Resolver<T> resolver,
+                                    final RequirementsDescriber requirementsDescriber) {
         while (!pendingSignals.isEmpty()) {
             final Signal<T> signal = pendingSignals.remove();
             states = states.apply(signal, this, log);
         }
-        final States<T> detected = states.apply(detect(detector), this, log);
+        final States<T> detected = states.apply(detect(detector, requirementsDescriber), this, log);
         final States<T> resolved = detected.apply(resolve(resolver), this, log);
         states = resolved;
 
         if (!pendingSignals.isEmpty()) {
-            resolveRecursively(detector, resolver);
+            resolveRecursively(detector, resolver, requirementsDescriber);
         }
     }
 

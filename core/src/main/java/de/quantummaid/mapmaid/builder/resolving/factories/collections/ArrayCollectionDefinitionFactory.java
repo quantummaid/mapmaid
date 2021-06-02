@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResu
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
@@ -40,7 +40,7 @@ import static de.quantummaid.mapmaid.builder.resolving.framework.processing.fact
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ArrayCollectionSerializer.arraySerializer;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
 import static java.util.Optional.empty;
 
 @ToString

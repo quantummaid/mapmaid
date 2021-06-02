@@ -40,11 +40,11 @@ import static java.util.stream.Collectors.toMap;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DetectionRequirementReasons {
+public final class DetectionRequirements {
     private final Map<RequirementName, DetectionRequirement> detectionRequirements;
 
-    public static DetectionRequirementReasons empty(final List<RequirementName> primaryRequirements,
-                                                    final List<RequirementName> secondaryRequirements) {
+    public static DetectionRequirements empty(final List<RequirementName> primaryRequirements,
+                                              final List<RequirementName> secondaryRequirements) {
         final Map<RequirementName, DetectionRequirement> requirementMap = new LinkedHashMap<>();
         primaryRequirements.forEach(name -> {
             final DetectionRequirement requirement = primaryRequirement(name);
@@ -54,29 +54,29 @@ public final class DetectionRequirementReasons {
             final DetectionRequirement requirement = secondaryRequirement(name);
             requirementMap.put(name, requirement);
         });
-        return new DetectionRequirementReasons(requirementMap);
+        return new DetectionRequirements(requirementMap);
     }
 
-    public DetectionRequirementReasons addReason(final RequirementName requirement, final Reason reason) {
+    public DetectionRequirements addReason(final RequirementName requirement, final Reason reason) {
         return reduce(requirement, detectionRequirement -> detectionRequirement.addReason(reason));
     }
 
-    public DetectionRequirementReasons removeReason(final Reason reason) {
+    public DetectionRequirements removeReason(final Reason reason) {
         final Map<RequirementName, DetectionRequirement> newRequirements = detectionRequirements.entrySet().stream()
                 .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().removeReason(reason)));
-        return new DetectionRequirementReasons(newRequirements);
+        return new DetectionRequirements(newRequirements);
     }
 
-    private DetectionRequirementReasons reduce(final RequirementName requirement,
-                                               final Function<DetectionRequirement, DetectionRequirement> reducer) {
+    private DetectionRequirements reduce(final RequirementName requirement,
+                                         final Function<DetectionRequirement, DetectionRequirement> reducer) {
         final Map<RequirementName, DetectionRequirement> newRequirements = new LinkedHashMap<>(detectionRequirements);
         final DetectionRequirement detectionRequirement = newRequirements.get(requirement);
         final DetectionRequirement changedRequirement = reducer.apply(detectionRequirement);
         newRequirements.put(requirement, changedRequirement);
-        return new DetectionRequirementReasons(newRequirements);
+        return new DetectionRequirements(newRequirements);
     }
 
-    public boolean hasChanged(final DetectionRequirementReasons old) {
+    public boolean hasChanged(final DetectionRequirements old) {
         final Map<RequirementName, Boolean> currentDetectionRequirements = currentRequirements();
         final Map<RequirementName, Boolean> oldDetectionRequirements = old.currentRequirements();
         return !currentDetectionRequirements.equals(oldDetectionRequirements);

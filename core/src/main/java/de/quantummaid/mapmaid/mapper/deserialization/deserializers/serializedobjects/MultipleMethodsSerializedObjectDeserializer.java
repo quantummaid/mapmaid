@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;

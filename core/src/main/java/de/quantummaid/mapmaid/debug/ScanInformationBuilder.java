@@ -22,14 +22,14 @@
 package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -142,7 +142,7 @@ public final class ScanInformationBuilder {
     }
 
     public void setResult(final DisambiguationResult result,
-                          final DetectionRequirementReasons detectionRequirements) {
+                          final DetectionRequirements detectionRequirements) {
         if (detectionRequirements.requires(SERIALIZATION)) {
             serializer = result.serializer();
         }
@@ -153,7 +153,7 @@ public final class ScanInformationBuilder {
 
     public ScanInformation build(final SubReasonProvider serializationSubReasonProvider,
                                  final SubReasonProvider deserializationSubReasonProvider,
-                                 final DetectionRequirementReasons detectionRequirementReasons,
+                                 final DetectionRequirements detectionRequirements,
                                  final DisambiguationResult disambiguationResult) {
         if (disambiguationResult != null) {
             serializer = disambiguationResult.serializer();
@@ -172,8 +172,8 @@ public final class ScanInformationBuilder {
             this.deserializers.remove(deserializer);
         }
         final Reasons reasons = reasons(
-                detectionRequirementReasons.reasonsFor(DESERIALIZATION),
-                detectionRequirementReasons.reasonsFor(SERIALIZATION),
+                detectionRequirements.reasonsFor(DESERIALIZATION),
+                detectionRequirements.reasonsFor(SERIALIZATION),
                 serializationSubReasonProvider,
                 deserializationSubReasonProvider);
         return actualScanInformation(

@@ -28,9 +28,10 @@ import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.S
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.LoggedState;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -104,10 +105,10 @@ public final class States<T> {
         }
     }
 
-    public Map<TypeIdentifier, Report<T>> collect() {
+    public Map<TypeIdentifier, Report<T>> collect(final RequirementsDescriber requirementsDescriber) {
         final Map<TypeIdentifier, Report<T>> reports = new HashMap<>();
         states.forEach(statefulDefinition -> {
-            final Report<T> report = statefulDefinition.getDefinition();
+            final Report<T> report = statefulDefinition.getDefinition(requirementsDescriber);
             if (!report.isEmpty()) {
                 final TypeIdentifier type = statefulDefinition.context.type();
                 reports.put(type, report);
@@ -127,10 +128,10 @@ public final class States<T> {
         return states.stream()
                 .map(statefulDefinition -> {
                     final TypeIdentifier type = statefulDefinition.type();
-                    final DetectionRequirementReasons detectionRequirementReasons = statefulDefinition
+                    final DetectionRequirements detectionRequirements = statefulDefinition
                             .context
                             .detectionRequirements();
-                    return loggedState(type, statefulDefinition.getClass(), detectionRequirementReasons);
+                    return loggedState(type, statefulDefinition.getClass(), detectionRequirements);
                 })
                 .collect(toList());
     }

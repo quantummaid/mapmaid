@@ -21,11 +21,11 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
@@ -38,7 +38,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
 
 @ToString
 @EqualsAndHashCode
@@ -63,7 +63,7 @@ public final class SerializedObjectOptions {
     public DetectionResult<TypeSerializer> determineSerializer(final ResolvedType containingType,
                                                                final Preferences<SerializationField, DisambiguationContext> preferences,
                                                                final ScanInformationBuilder scanInformationBuilder,
-                                                               final DetectionRequirementReasons detectionRequirementReasons,
+                                                               final DetectionRequirements detectionRequirements,
                                                                final DisambiguationContext context) {
         if (this.serializationFieldOptions == null) {
             throw new UnsupportedOperationException("This should never happen");
@@ -76,7 +76,7 @@ public final class SerializedObjectOptions {
                         containingType,
                         preferences,
                         scanInformationBuilder,
-                        detectionRequirementReasons,
+                        detectionRequirements,
                         context)
                 );
     }

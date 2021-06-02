@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 
 public interface IrrefutableHint<T> {
-    TieBreakingReason isTieBreaking(T element, DetectionRequirementReasons detectionRequirements);
+    TieBreakingReason isTieBreaking(T element, DetectionRequirements detectionRequirements);
 }

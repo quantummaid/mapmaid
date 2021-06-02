@@ -23,8 +23,9 @@ package de.quantummaid.mapmaid.builder.resolving.framework.states.detected;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.debug.RequiredAction;
@@ -73,10 +74,10 @@ public final class Resolved<T> extends StatefulDefinition<T> {
     }
 
     @Override
-    public Report<T> getDefinition() {
-        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
+    public Report<T> getDefinition(final RequirementsDescriber requirementsDescriber) {
         final T detectionResult = context.detectionResult().orElseThrow();
-        final DetectionRequirementReasons detectionRequirements = context.detectionRequirements();
+        final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
+        final DetectionRequirements detectionRequirements = context.detectionRequirements();
         return success(collectionResult(detectionResult, scanInformationBuilder, detectionRequirements));
     }
 }

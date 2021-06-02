@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework;
 
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
-import static de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons.empty;
+import static de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements.empty;
 import static de.quantummaid.mapmaid.debug.RequiredAction.*;
 
 @ToString
@@ -48,14 +48,14 @@ public final class Context<T> {
     private final TypeIdentifier type;
     private T detectionResult;
     private T manuallyConfiguredResult;
-    private DetectionRequirementReasons detectionRequirementReasons;
+    private DetectionRequirements detectionRequirements;
     private final ScanInformationBuilder scanInformationBuilder;
 
     public static <T> Context<T> emptyContext(final Consumer<Signal<T>> dispatcher,
                                               final TypeIdentifier type) {
         final ScanInformationBuilder scanInformationBuilder = ScanInformationBuilder.scanInformationBuilder(type);
         final Context<T> context = new Context<>(dispatcher, type, scanInformationBuilder);
-        context.detectionRequirementReasons = empty(
+        context.detectionRequirements = empty(
                 List.of(SERIALIZATION, DESERIALIZATION),
                 List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
         );
@@ -90,15 +90,15 @@ public final class Context<T> {
         return Optional.ofNullable(manuallyConfiguredResult);
     }
 
-    public DetectionRequirementReasons detectionRequirements() {
-        return detectionRequirementReasons;
+    public DetectionRequirements detectionRequirements() {
+        return detectionRequirements;
     }
 
     public RequiredAction changeRequirements(final RequirementsReducer reducer) {
-        final DetectionRequirementReasons oldReaons = detectionRequirementReasons;
-        final DetectionRequirementReasons newReasons = reducer.reduce(oldReaons);
-        this.detectionRequirementReasons = newReasons;
-        if (detectionRequirementReasons.isUnreasoned()) {
+        final DetectionRequirements oldReaons = detectionRequirements;
+        final DetectionRequirements newReasons = reducer.reduce(oldReaons);
+        this.detectionRequirements = newReasons;
+        if (detectionRequirements.isUnreasoned()) {
             return unreasoned();
         }
         if (oldReaons.hasChanged(newReasons)) {

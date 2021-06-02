@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.shared.identifier;
+package de.quantummaid.mapmaid.builder.resolving.framework.identifier;
 
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
@@ -28,42 +28,35 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
-import static java.lang.String.format;
-import static java.util.UUID.randomUUID;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class VirtualTypeIdentifier implements TypeIdentifier {
-    private final String id;
+public final class RealTypeIdentifier implements TypeIdentifier {
+    private final ResolvedType resolvedType;
 
-    public static TypeIdentifier virtualTypeIdentifier(final String id) {
-        validateNotNull(id, "id");
-        return new VirtualTypeIdentifier(id);
-    }
-
-    public static TypeIdentifier uniqueVirtualTypeIdentifier() {
-        final String id = randomUUID().toString();
-        return new VirtualTypeIdentifier(id);
-    }
-
-    @Override
-    public boolean isVirtual() {
-        return true;
+    public static TypeIdentifier realTypeIdentifier(final ResolvedType type) {
+        validateNotNull(type, "type");
+        return new RealTypeIdentifier(type);
     }
 
     @Override
     public ResolvedType getRealType() {
-        throw new UnsupportedOperationException(format("Virtual type '%s' does not have a real type", description()));
+        return resolvedType;
     }
 
     @Override
     public String description() {
-        return format("<virtual type '%s'>", this.id);
+        return resolvedType.description();
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return false;
     }
 
     @Override
     public String simpleDescription() {
-        return description();
+        return resolvedType.simpleDescription();
     }
 }

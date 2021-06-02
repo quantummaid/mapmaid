@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

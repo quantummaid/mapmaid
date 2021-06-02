@@ -24,9 +24,9 @@ package de.quantummaid.mapmaid.debug;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
@@ -38,7 +38,7 @@ import lombok.ToString;
 import java.util.*;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -65,7 +65,7 @@ public final class DebugInformation {
         results.forEach(
                 (typeIdentifier, result) -> {
                     final ScanInformationBuilder scanInformationBuilder = result.scanInformation();
-                    final DetectionRequirementReasons detectionRequirements = result.detectionRequirements();
+                    final DetectionRequirements detectionRequirements = result.detectionRequirements();
                     final ScanInformation scanInformation =
                             scanInformationBuilder.build(
                                     serializationSubReasonProvider,

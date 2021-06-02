@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 import java.util.Optional;
 

@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.success;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceClass.equivalenceClass;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.EquivalenceSignature.allOfDeserializer;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;

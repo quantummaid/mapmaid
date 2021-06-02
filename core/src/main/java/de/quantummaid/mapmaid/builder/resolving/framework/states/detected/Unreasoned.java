@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.framework.states.detected;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import lombok.EqualsAndHashCode;
@@ -54,7 +55,7 @@ public final class Unreasoned<T> extends StatefulDefinition<T> {
     }
 
     @Override
-    public Report<T> getDefinition() {
+    public Report<T> getDefinition(final RequirementsDescriber requirementsDescriber) {
         return Report.empty();
     }
 }

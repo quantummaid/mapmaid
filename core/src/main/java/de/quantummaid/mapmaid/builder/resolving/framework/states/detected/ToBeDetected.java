@@ -21,20 +21,18 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.states.detected;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.Lingo;
 import de.quantummaid.mapmaid.debug.RequiredAction;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Resolving.resolving;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Undetectable.undetectable;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
@@ -68,16 +66,16 @@ public final class ToBeDetected<T> extends StatefulDefinition<T> {
     }
 
     @Override
-    public StatefulDefinition<T> detect(final Detector<T> detector) {
+    public StatefulDefinition<T> detect(final Detector<T> detector, final RequirementsDescriber requirementsDescriber) {
         final ScanInformationBuilder scanInformationBuilder = context.scanInformationBuilder();
-        final DetectionRequirementReasons requirements = context.detectionRequirements();
+        final DetectionRequirements requirements = context.detectionRequirements();
         final DetectionResult<T> result = context
                 .manuallyConfiguredResult()
                 .map(DetectionResult::success)
                 .orElseGet(() -> detector.detect(type(), requirements, scanInformationBuilder));
         if (result.isFailure()) {
             return undetectable(context, format("no %s detected:%n%s",
-                    Lingo.mode(requirements.requires(SERIALIZATION), requirements.requires(DESERIALIZATION)),
+                    requirementsDescriber.describe(requirements),
                     result.reasonForFailure())
             );
         }

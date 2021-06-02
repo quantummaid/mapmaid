@@ -21,9 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing.signals;
 
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +37,15 @@ import java.util.Optional;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DetectSignal<T> implements Signal<T> {
     private final Detector<T> detector;
+    private final RequirementsDescriber requirementsDescriber;
 
-    public static <T> Signal<T> detect(final Detector<T> detector) {
-        return new DetectSignal<>(detector);
+    public static <T> Signal<T> detect(final Detector<T> detector, final RequirementsDescriber requirementsDescriber) {
+        return new DetectSignal<>(detector, requirementsDescriber);
     }
 
     @Override
     public StatefulDefinition<T> handleState(final StatefulDefinition<T> definition) {
-        return definition.detect(detector);
+        return definition.detect(detector, requirementsDescriber);
     }
 
     @Override

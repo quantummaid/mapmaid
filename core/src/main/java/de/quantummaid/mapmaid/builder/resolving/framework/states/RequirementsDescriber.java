@@ -19,31 +19,10 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.shared.identifier;
+package de.quantummaid.mapmaid.builder.resolving.framework.states;
 
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
-
-public interface TypeIdentifier {
-
-    static TypeIdentifier virtualTypeIdentifier(final String id) {
-        return VirtualTypeIdentifier.virtualTypeIdentifier(id);
-    }
-
-    static TypeIdentifier uniqueVirtualTypeIdentifier() {
-        return VirtualTypeIdentifier.uniqueVirtualTypeIdentifier();
-    }
-
-    static TypeIdentifier typeIdentifierFor(final ResolvedType resolvedType) {
-        return realTypeIdentifier(resolvedType);
-    }
-
-    boolean isVirtual();
-
-    ResolvedType getRealType();
-
-    String description();
-
-    String simpleDescription();
+public interface RequirementsDescriber {
+    String describe(DetectionRequirements detectionRequirements);
 }

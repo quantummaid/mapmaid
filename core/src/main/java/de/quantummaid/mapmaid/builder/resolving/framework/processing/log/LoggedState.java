@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.framework.processing.log;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -35,15 +35,15 @@ import static java.lang.String.format;
 public final class LoggedState {
     private final TypeIdentifier type;
     private final Class<?> state;
-    private final DetectionRequirementReasons detectionRequirementReasons;
+    private final DetectionRequirements detectionRequirements;
 
     public static LoggedState loggedState(final TypeIdentifier type,
                                           final Class<?> state,
-                                          final DetectionRequirementReasons detectionRequirementReasons) {
+                                          final DetectionRequirements detectionRequirements) {
         validateNotNull(type, "type");
         validateNotNull(state, "state");
-        validateNotNull(detectionRequirementReasons, "detectionRequirementReasons");
-        return new LoggedState(type, state, detectionRequirementReasons);
+        validateNotNull(detectionRequirements, "detectionRequirementReasons");
+        return new LoggedState(type, state, detectionRequirements);
     }
 
     public String buildTypeDescription() {
@@ -55,7 +55,7 @@ public final class LoggedState {
     }
 
     public String buildDetectionRequirementReasons() {
-        return detectionRequirementReasons.summary();
+        return detectionRequirements.summary();
     }
 
     String dump() {
@@ -63,7 +63,7 @@ public final class LoggedState {
                 "%s: %s (%s)",
                 type.simpleDescription(),
                 state,
-                detectionRequirementReasons.summary()
+                detectionRequirements.summary()
         );
     }
 }

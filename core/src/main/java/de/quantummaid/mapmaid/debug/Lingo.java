@@ -21,12 +21,21 @@
 
 package de.quantummaid.mapmaid.debug;
 
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
+
 public final class Lingo {
     public static final String SERIALIZATION_ONLY = "serialization-only";
     public static final String DESERIALIZATION_ONLY = "deserialization-only";
     public static final String DUPLEX = "duplex";
 
     private Lingo() {
+    }
+
+    public static String mode(final DetectionRequirements detectionRequirements) {
+        return mode(detectionRequirements.requires(SERIALIZATION), detectionRequirements.requires(DESERIALIZATION));
     }
 
     public static String mode(final boolean serializer, final boolean deserializer) {

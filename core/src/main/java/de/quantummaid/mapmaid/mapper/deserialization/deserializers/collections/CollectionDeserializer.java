@@ -30,7 +30,7 @@ import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection;
 import de.quantummaid.mapmaid.mapper.universal.UniversalNull;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 
 import java.util.ArrayList;

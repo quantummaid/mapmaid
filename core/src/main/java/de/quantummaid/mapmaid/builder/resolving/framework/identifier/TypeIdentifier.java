@@ -19,18 +19,31 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.testsupport.givenwhenthen;
+package de.quantummaid.mapmaid.builder.resolving.framework.identifier;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 
-public interface ToStage {
-    default Then toTheType(final Class<?> type) {
-        final GenericType<?> genericType = GenericType.genericType(type);
-        return toTheType(genericType);
+import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier.realTypeIdentifier;
+
+public interface TypeIdentifier {
+
+    static TypeIdentifier virtualTypeIdentifier(final String id) {
+        return VirtualTypeIdentifier.virtualTypeIdentifier(id);
     }
 
-    Then toTheType(GenericType<?> genericType);
+    static TypeIdentifier uniqueVirtualTypeIdentifier() {
+        return VirtualTypeIdentifier.uniqueVirtualTypeIdentifier();
+    }
 
-    Then toTheType(TypeIdentifier fullType);
+    static TypeIdentifier typeIdentifierFor(final ResolvedType resolvedType) {
+        return realTypeIdentifier(resolvedType);
+    }
+
+    boolean isVirtual();
+
+    ResolvedType getRealType();
+
+    String description();
+
+    String simpleDescription();
 }

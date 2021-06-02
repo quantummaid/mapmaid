@@ -21,10 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirementReasons;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.success;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
@@ -63,7 +63,7 @@ public final class SerializationFieldInstantiation {
             final ResolvedType containingType,
             final Preferences<SerializationField, DisambiguationContext> preferences,
             final ScanInformationBuilder scanInformationBuilder,
-            final DetectionRequirementReasons detectionRequirements,
+            final DetectionRequirements detectionRequirements,
             final DisambiguationContext context) {
         final List<SerializationField> serializationFieldList = new ArrayList<>(this.fields.size());
         final List<String> problems = smallList();

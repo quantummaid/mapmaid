@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
@@ -34,8 +34,8 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.success;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.success;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;

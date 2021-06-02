@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.mapper.schema;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 
 import java.util.*;
 

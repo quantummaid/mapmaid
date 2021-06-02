@@ -12,7 +12,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeseriali
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.standardtypeskotlin.CustomFactory.Companion.createCustomFactory
 import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
