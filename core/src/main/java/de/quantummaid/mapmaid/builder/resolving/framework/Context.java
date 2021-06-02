@@ -26,19 +26,16 @@ import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Sig
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
-import de.quantummaid.mapmaid.debug.RequiredAction;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequiredAction;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
-import static de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements.empty;
-import static de.quantummaid.mapmaid.debug.RequiredAction.*;
+import static de.quantummaid.mapmaid.builder.resolving.framework.states.RequiredAction.*;
 
 @ToString
 @EqualsAndHashCode
@@ -51,12 +48,10 @@ public final class Context<T> {
     private DetectionRequirements detectionRequirements;
 
     public static <T> Context<T> emptyContext(final Consumer<Signal<T>> dispatcher,
-                                              final TypeIdentifier type) {
+                                              final TypeIdentifier type,
+                                              final DetectionRequirements detectionRequirements) {
         final Context<T> context = new Context<>(dispatcher, type);
-        context.detectionRequirements = empty(
-                List.of(SERIALIZATION, DESERIALIZATION),
-                List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
-        );
+        context.detectionRequirements = detectionRequirements;
         return context;
     }
 

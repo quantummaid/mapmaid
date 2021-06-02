@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
 import static de.quantummaid.mapmaid.builder.MapMaidConfiguration.emptyMapMaidConfiguration;
 import static de.quantummaid.mapmaid.builder.MarshallerAutoloadingException.conflictingMarshallersForTypes;
 import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloadIfClassPresent;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
@@ -255,7 +256,10 @@ public final class AdvancedBuilder {
                 undetectedFactory()
         )
                 .forEach(this::withStateFactory);
-        return Processor.processor(stateFactories);
+        return Processor.processor(stateFactories,
+                List.of(SERIALIZATION, DESERIALIZATION),
+                List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
+        );
     }
 
     private void autoload() {

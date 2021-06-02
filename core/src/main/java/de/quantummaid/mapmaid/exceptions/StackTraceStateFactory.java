@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
@@ -36,7 +36,6 @@ import java.util.Optional;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
 import static java.util.Optional.empty;
@@ -54,13 +53,13 @@ public final class StackTraceStateFactory implements StateFactory<MapMaidTypeSca
     }
 
     @Override
-    public Optional<StateFactoryResult<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
-                                                                     final Context<MapMaidTypeScannerResult> context) {
+    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
+                                                                         final Context<MapMaidTypeScannerResult> context) {
         if (!targetType.equals(type)) {
             return empty();
         }
         final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
         context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
-        return Optional.of(stateFactoryResult(unreasoned(context)));
+        return Optional.of(unreasoned(context));
     }
 }

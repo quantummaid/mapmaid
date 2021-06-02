@@ -26,7 +26,7 @@ import de.quantummaid.mapmaid.builder.resolving.framework.Report;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementsReducer;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.debug.RequiredAction;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.RequiredAction;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

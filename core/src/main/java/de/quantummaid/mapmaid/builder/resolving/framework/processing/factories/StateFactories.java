@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -44,10 +45,10 @@ public final class StateFactories<T> {
         return new StateFactories<>(stateFactories);
     }
 
-    public StateFactoryResult<T> createState(final TypeIdentifier type,
+    public StatefulDefinition<T> createState(final TypeIdentifier type,
                                              final Context<T> context) {
         for (final StateFactory<T> stateFactory : stateFactories) {
-            final Optional<StateFactoryResult<T>> statefulDefinition = stateFactory.create(type, context);
+            final Optional<StatefulDefinition<T>> statefulDefinition = stateFactory.create(type, context);
             if (statefulDefinition.isPresent()) {
                 return statefulDefinition.get();
             }

@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
@@ -37,7 +37,6 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ArrayCollectionSerializer.arraySerializer;
@@ -53,7 +52,7 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory<MapM
     }
 
     @Override
-    public Optional<StateFactoryResult<MapMaidTypeScannerResult>> create(final TypeIdentifier typeIdentifier,
+    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier typeIdentifier,
                                                                          final Context<MapMaidTypeScannerResult> context) {
         if (typeIdentifier.isVirtual()) {
             return empty();
@@ -69,6 +68,6 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory<MapM
                 arraySerializer(componentTypeIdentifier),
                 arrayDeserializer(componentTypeIdentifier, componentType)
         ), typeIdentifier));
-        return Optional.of(stateFactoryResult(unreasoned(context)));
+        return Optional.of(unreasoned(context));
     }
 }

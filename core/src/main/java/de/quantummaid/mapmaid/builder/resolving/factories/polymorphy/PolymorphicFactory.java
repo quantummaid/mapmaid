@@ -19,17 +19,18 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.factories.kotlin;
+package de.quantummaid.mapmaid.builder.resolving.factories.polymorphy;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
+import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.collections.BiMap;
-import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
-import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -38,42 +39,52 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
-import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;
-import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class KotlinSealedClassFactory implements StateFactory<MapMaidTypeScannerResult> {
-    private final MapMaidConfiguration mapMaidConfiguration;
+public final class PolymorphicFactory implements StateFactory<MapMaidTypeScannerResult> {
+    private final TypeIdentifier superType;
+    private final List<ResolvedType> subTypes;
+    private final MapMaidConfiguration configuration;
+    private final RequiredCapabilities capabilities;
 
-    public static KotlinSealedClassFactory kotlinSealedClassFactory(final MapMaidConfiguration mapMaidConfiguration) {
-        return new KotlinSealedClassFactory(mapMaidConfiguration);
+    public static PolymorphicFactory polymorphicFactory(final TypeIdentifier superType,
+                                                        final List<ResolvedType> subTypes,
+                                                        final MapMaidConfiguration configuration,
+                                                        final RequiredCapabilities capabilities) {
+        return new PolymorphicFactory(superType, subTypes, configuration, capabilities);
     }
 
     @Override
     public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
                                                                          final Context<MapMaidTypeScannerResult> context) {
-        if (type.isVirtual()) {
-            return empty();
+        if (!superType.equals(type)) {
+            return Optional.empty();
         }
-        final ResolvedType resolvedType = type.getRealType();
-        final List<ResolvedType> sealedSubclasses = resolvedType.sealedSubclasses();
-        if (sealedSubclasses.isEmpty()) {
-            return empty();
-        }
-
-        final List<TypeIdentifier> subtypes = sealedSubclasses.stream()
+        final List<TypeIdentifier> subTypeIdentifiers = subTypes.stream()
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
-        final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subtypes, mapMaidConfiguration);
-
-        final PolymorphicSerializer serializer = polymorphicSerializer(type, sealedSubclasses, nameToType, "type");
-        final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
-        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
-        return Optional.of(unreasoned(context));
+        final BiMap<String, TypeIdentifier> nameToType = nameToIdentifier(subTypeIdentifiers, configuration);
+        final String typeIdentifierKey = configuration.getTypeIdentifierKey();
+        final TypeSerializer serializer;
+        if (capabilities.hasSerialization()) {
+            serializer = polymorphicSerializer(superType, subTypes, nameToType, typeIdentifierKey);
+        } else {
+            serializer = null;
+        }
+        final TypeDeserializer deserializer;
+        if (capabilities.hasDeserialization()) {
+            deserializer = polymorphicDeserializer(superType, nameToType, typeIdentifierKey);
+        } else {
+            deserializer = null;
+        }
+        context.setManuallyConfiguredResult(result(disambiguationResult(serializer, deserializer), superType));
+        final StatefulDefinition<MapMaidTypeScannerResult> statefulDefinition = unreasoned(context);
+        return Optional.of(statefulDefinition);
     }
 }

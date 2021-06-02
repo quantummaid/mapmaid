@@ -23,15 +23,15 @@ package de.quantummaid.mapmaid.builder.resolving.framework.processing;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.Report;
+import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactories;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.LoggedState;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
 import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementName;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +41,7 @@ import java.util.*;
 
 import static de.quantummaid.mapmaid.builder.resolving.framework.Context.emptyContext;
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.log.LoggedState.loggedState;
+import static de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements.empty;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -50,11 +51,15 @@ import static java.util.stream.Collectors.toList;
 public final class States<T> {
     private final StateFactories<T> stateFactories;
     private final List<StatefulDefinition<T>> states;
+    private final List<RequirementName> primaryRequirements;
+    private final List<RequirementName> secondaryRequirements;
 
     public static <T> States<T> states(final List<StatefulDefinition<T>> initialDefinitions,
-                                       final StateFactories<T> stateFactories) {
+                                       final StateFactories<T> stateFactories,
+                                       final List<RequirementName> primaryRequirements,
+                                       final List<RequirementName> secondaryRequirements) {
         final List<StatefulDefinition<T>> states = new ArrayList<>(initialDefinitions);
-        return new States<>(stateFactories, states);
+        return new States<>(stateFactories, states, primaryRequirements, secondaryRequirements);
     }
 
     public States<T> addState(final StatefulDefinition<T> statefulDefinition) {
@@ -65,7 +70,7 @@ public final class States<T> {
         }
         final List<StatefulDefinition<T>> newStates = new ArrayList<>(this.states);
         newStates.add(statefulDefinition);
-        return new States<>(this.stateFactories, newStates);
+        return new States<>(this.stateFactories, newStates, primaryRequirements, secondaryRequirements);
     }
 
     public States<T> apply(final Signal<T> signal,
@@ -83,15 +88,16 @@ public final class States<T> {
             final List<StatefulDefinition<T>> newStates = states.stream()
                     .map(signal::handleState)
                     .collect(toList());
-            return new States<>(this.stateFactories, newStates);
+            return new States<>(stateFactories, newStates, primaryRequirements, secondaryRequirements);
         } else {
             final TypeIdentifier target = optionalTarget.get();
             final List<StatefulDefinition<T>> newStates = new ArrayList<>(states);
 
             if (!contains(target, newStates)) {
-                final Context<T> context = emptyContext(processor::dispatch, target);
-                final StateFactoryResult<T> state = stateFactories.createState(target, context);
-                newStates.add(state.initialState());
+                final DetectionRequirements detectionRequirements = empty(primaryRequirements, secondaryRequirements);
+                final Context<T> context = emptyContext(processor::dispatch, target, detectionRequirements);
+                final StatefulDefinition<T> state = stateFactories.createState(target, context);
+                newStates.add(state);
             }
 
             newStates.replaceAll(statefulDefinition -> {
@@ -101,7 +107,7 @@ public final class States<T> {
                     return statefulDefinition;
                 }
             });
-            return new States<>(this.stateFactories, newStates);
+            return new States<>(this.stateFactories, newStates, primaryRequirements, secondaryRequirements);
         }
     }
 

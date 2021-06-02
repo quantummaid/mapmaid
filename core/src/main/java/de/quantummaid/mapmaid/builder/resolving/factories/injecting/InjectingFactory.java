@@ -19,34 +19,43 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
+package de.quantummaid.mapmaid.builder.resolving.factories.injecting;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
+import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import java.util.Optional;
 
+import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
-import static java.util.Optional.of;
 
-@ToString
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UndetectedFactory implements StateFactory<MapMaidTypeScannerResult> {
+public final class InjectingFactory implements StateFactory<MapMaidTypeScannerResult> {
+    private final TypeIdentifier targetType;
+    private final TypeDeserializer deserializer;
 
-    public static UndetectedFactory undetectedFactory() {
-        return new UndetectedFactory();
+    public static InjectingFactory injectingFactory(final TypeIdentifier targetType, final TypeDeserializer deserializer) {
+        return new InjectingFactory(targetType, deserializer);
     }
 
     @Override
     public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
                                                                          final Context<MapMaidTypeScannerResult> context) {
-        return of(unreasoned(context));
+        if (!targetType.equals(type)) {
+            return Optional.empty();
+        }
+        final TypeSerializer serializer = injectionSerializer(targetType);
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), targetType));
+        final StatefulDefinition<MapMaidTypeScannerResult> statefulDefinition = unreasoned(context);
+        return Optional.of(statefulDefinition);
     }
 }

@@ -23,10 +23,11 @@ package de.quantummaid.mapmaid.builder.resolving.framework.processing.factories;
 
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 
 import java.util.Optional;
 
 @FunctionalInterface
 public interface StateFactory<T> {
-    Optional<StateFactoryResult<T>> create(TypeIdentifier type, Context<T> context);
+    Optional<StatefulDefinition<T>> create(TypeIdentifier type, Context<T> context);
 }

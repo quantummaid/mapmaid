@@ -6,8 +6,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResu
 import de.quantummaid.mapmaid.builder.resolving.framework.Context
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult
+import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition
 import de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned
 import de.quantummaid.mapmaid.debug.DebugInformation
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback
@@ -111,7 +110,7 @@ class PairFactory : StateFactory<MapMaidTypeScannerResult> {
     override fun create(
         typeIdentifier: TypeIdentifier,
         context: Context<MapMaidTypeScannerResult>,
-    ): Optional<StateFactoryResult<MapMaidTypeScannerResult>> {
+    ): Optional<StatefulDefinition<MapMaidTypeScannerResult>> {
         if (typeIdentifier.isVirtual) {
             return Optional.empty()
         }
@@ -129,6 +128,6 @@ class PairFactory : StateFactory<MapMaidTypeScannerResult> {
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
-        return Optional.of(stateFactoryResult(unreasoned(context)))
+        return Optional.of(unreasoned(context))
     }
 }

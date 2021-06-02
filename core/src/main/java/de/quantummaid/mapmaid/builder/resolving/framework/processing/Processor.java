@@ -27,10 +27,10 @@ import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.S
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLogBuilder;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
+import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementName;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Detector;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.RequirementsDescriber;
 import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -45,7 +45,6 @@ import static de.quantummaid.mapmaid.builder.resolving.framework.processing.sign
 import static de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.ResolveSignal.resolve;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 
 @ToString
 @EqualsAndHashCode
@@ -55,20 +54,17 @@ public final class Processor<T> {
     private final Queue<Signal<T>> pendingSignals;
     private final StateLogBuilder<T> log;
 
-    public static <T> Processor<T> processor(final List<StateFactory<T>> stateFactories) {
+    public static <T> Processor<T> processor(final List<StateFactory<T>> stateFactories,
+                                             final List<RequirementName> primaryRequirements,
+                                             final List<RequirementName> secondaryRequirements) {
         final Queue<Signal<T>> pendingSignals = new LinkedList<>();
-        final States<T> states = states(smallList(), stateFactories(stateFactories));
+        final States<T> states = states(smallList(), stateFactories(stateFactories), primaryRequirements, secondaryRequirements);
         final StateLogBuilder<T> log = stateLogBuilder();
         return new Processor<>(states, pendingSignals, log);
     }
 
     public void dispatch(final Signal<T> signal) {
         this.pendingSignals.add(signal);
-    }
-
-    public void addState(final StatefulDefinition<T> statefulDefinition) {
-        validateNotNull(statefulDefinition, "statefulDefinition");
-        this.states = this.states.addState(statefulDefinition);
     }
 
     public Map<TypeIdentifier, CollectionResult<T>> collect(final Detector<T> detector,

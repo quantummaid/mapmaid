@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.framework.Context;
 import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult;
+import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
@@ -41,7 +41,6 @@ import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactoryResult.stateFactoryResult;
 import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static java.util.Optional.empty;
 
@@ -55,7 +54,7 @@ public final class BuiltInPrimitivesFactory implements StateFactory<MapMaidTypeS
     }
 
     @Override
-    public Optional<StateFactoryResult<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
+    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
                                                                          final Context<MapMaidTypeScannerResult> context) {
         if (type.isVirtual()) {
             return empty();
@@ -69,6 +68,6 @@ public final class BuiltInPrimitivesFactory implements StateFactory<MapMaidTypeS
         final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType);
         final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType);
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
-        return Optional.of(stateFactoryResult(unreasoned(context)));
+        return Optional.of(unreasoned(context));
     }
 }

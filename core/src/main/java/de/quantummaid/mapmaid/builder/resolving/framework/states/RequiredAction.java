@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.debug;
+package de.quantummaid.mapmaid.builder.resolving.framework.states;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
