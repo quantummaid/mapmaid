@@ -258,7 +258,7 @@ public final class AdvancedBuilder {
                 .forEach(this::withStateFactory);
         return Processor.processor(stateFactories,
                 List.of(SERIALIZATION, DESERIALIZATION),
-                List.of(OBJECT_ENFORCING, INLINED_PRIMITIVE)
+                List.of(OBJECT_ENFORCING)
         );
     }
 

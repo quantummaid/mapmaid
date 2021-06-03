@@ -72,7 +72,7 @@ public final class StateLogSpecs {
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 0, object: 0, primitive: 0\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 0, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"ToBeDetected\"\n" +
                 "        }\n" +
@@ -82,7 +82,7 @@ public final class StateLogSpecs {
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0, primitive: 0\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"ToBeDetected\"\n" +
                 "        }\n" +
@@ -92,7 +92,7 @@ public final class StateLogSpecs {
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0, primitive: 0\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"Resolving\"\n" +
                 "        }\n" +
@@ -102,7 +102,7 @@ public final class StateLogSpecs {
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0, primitive: 0\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"Resolved\"\n" +
                 "        }\n" +
