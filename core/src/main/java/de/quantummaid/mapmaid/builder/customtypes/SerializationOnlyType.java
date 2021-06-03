@@ -26,7 +26,7 @@ import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionSerializ
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import java.util.Optional;
 

@@ -21,20 +21,20 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.AddReasonSignal;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.Resolver;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.reflectmaid.typescanner.Reason;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.signals.AddReasonSignal;
+import de.quantummaid.reflectmaid.typescanner.signals.Signal;
+import de.quantummaid.reflectmaid.typescanner.states.Resolver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
-import static de.quantummaid.mapmaid.debug.Reason.becauseOf;
+import static de.quantummaid.reflectmaid.typescanner.Reason.becauseOf;
 
 public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult> {
 
@@ -52,11 +52,11 @@ public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult>
             final TypeSerializer serializer = result.disambiguationResult().serializer();
             final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
             requiredTypes.stream()
-                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(SERIALIZATION, requiredType, reason))
+                    .map(requiredType -> new AddReasonSignal<MapMaidTypeScannerResult>(requiredType, SERIALIZATION, reason))
                     .forEach(signals::add);
             if (serializer.forcesDependenciesToBeObjects()) {
                 requiredTypes.stream()
-                        .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(OBJECT_ENFORCING, requiredType, reason))
+                        .map(requiredType -> new AddReasonSignal<MapMaidTypeScannerResult>(requiredType, OBJECT_ENFORCING, reason))
                         .forEach(signals::add);
             }
         }
@@ -64,11 +64,11 @@ public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult>
             final TypeDeserializer deserializer = result.disambiguationResult().deserializer();
             final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
             requiredTypes.stream()
-                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(DESERIALIZATION, requiredType, reason))
+                    .map(requiredType -> new AddReasonSignal<MapMaidTypeScannerResult>(requiredType, DESERIALIZATION, reason))
                     .forEach(signals::add);
             if (deserializer.forcesDependenciesToBeObjects()) {
                 requiredTypes.stream()
-                        .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReason(OBJECT_ENFORCING, requiredType, reason))
+                        .map(requiredType -> new AddReasonSignal<MapMaidTypeScannerResult>(requiredType, OBJECT_ENFORCING, reason))
                         .forEach(signals::add);
             }
         }

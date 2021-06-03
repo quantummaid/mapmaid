@@ -22,8 +22,8 @@
 package de.quantummaid.mapmaid.builder.resolving;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

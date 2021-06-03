@@ -25,17 +25,17 @@ import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer00;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Query;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Common.createDuplexType;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Builder00<X> {

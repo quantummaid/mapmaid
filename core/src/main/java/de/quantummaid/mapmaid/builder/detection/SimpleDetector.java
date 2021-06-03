@@ -31,13 +31,13 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -47,13 +47,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions.serializationFieldOptions;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions.serializedObjectOptions;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.failure;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -93,7 +93,7 @@ public final class SimpleDetector {
         if (typeIdentifier.isVirtual()) {
             return failure("can only detect real types");
         }
-        final ResolvedType type = typeIdentifier.getRealType();
+        final ResolvedType type = typeIdentifier.realType();
         final Optional<DetectionResult<DisambiguationResult>> isNotSupported = validateForSupportedFeatures(type);
         if (isNotSupported.isPresent()) {
             return isNotSupported.get();

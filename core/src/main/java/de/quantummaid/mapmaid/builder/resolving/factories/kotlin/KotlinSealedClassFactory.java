@@ -23,27 +23,25 @@ package de.quantummaid.mapmaid.builder.resolving.factories.kotlin;
 
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;
-import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -55,15 +53,15 @@ public final class KotlinSealedClassFactory implements StateFactory<MapMaidTypeS
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
+                                                               final Context<MapMaidTypeScannerResult> context) {
         if (type.isVirtual()) {
-            return empty();
+            return null;
         }
-        final ResolvedType resolvedType = type.getRealType();
+        final ResolvedType resolvedType = type.realType();
         final List<ResolvedType> sealedSubclasses = resolvedType.sealedSubclasses();
         if (sealedSubclasses.isEmpty()) {
-            return empty();
+            return null;
         }
 
         final List<TypeIdentifier> subtypes = sealedSubclasses.stream()
@@ -74,6 +72,6 @@ public final class KotlinSealedClassFactory implements StateFactory<MapMaidTypeS
         final PolymorphicSerializer serializer = polymorphicSerializer(type, sealedSubclasses, nameToType, "type");
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
-        return Optional.of(unreasoned(context));
+        return new Unreasoned<>(context);
     }
 }

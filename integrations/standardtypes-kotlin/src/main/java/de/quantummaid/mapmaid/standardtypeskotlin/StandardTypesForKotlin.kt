@@ -4,11 +4,6 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
-import de.quantummaid.mapmaid.builder.resolving.framework.Context
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition
-import de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
@@ -16,9 +11,13 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.
 import de.quantummaid.mapmaid.standardtypeskotlin.CustomFactory.Companion.createCustomFactory
 import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
+import de.quantummaid.reflectmaid.typescanner.Context
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned
 import java.time.Duration
 import java.time.Instant
-import java.util.*
 
 fun MapMaidBuilder.withSupportForStandardKotlinTypes(preRegisterTypes: Boolean = false): MapMaidBuilder {
     val reflectMaid = reflectMaid()
@@ -97,15 +96,15 @@ private class CustomFactory(
     override fun create(
         typeIdentifier: TypeIdentifier,
         context: Context<MapMaidTypeScannerResult>,
-    ): Optional<StatefulDefinition<MapMaidTypeScannerResult>> {
-        if (typeIdentifier.isVirtual) {
-            return Optional.empty()
+    ): StatefulDefinition<MapMaidTypeScannerResult>? {
+        if (typeIdentifier.isVirtual()) {
+            return null
         }
-        val type: ResolvedType = typeIdentifier.realType
+        val type: ResolvedType = typeIdentifier.realType()
         if (type != targetType) {
-            return Optional.empty()
+            return null
         }
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
-        return Optional.of(unreasoned(context))
+        return Unreasoned(context)
     }
 }

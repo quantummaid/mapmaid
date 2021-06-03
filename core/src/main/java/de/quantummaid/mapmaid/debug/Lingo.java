@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.debug;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
 
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;

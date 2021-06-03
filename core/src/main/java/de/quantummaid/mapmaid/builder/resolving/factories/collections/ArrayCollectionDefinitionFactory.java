@@ -22,25 +22,23 @@
 package de.quantummaid.mapmaid.builder.resolving.factories.collections;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Optional;
-
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ArrayCollectionDeserializer.arrayDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ArrayCollectionSerializer.arraySerializer;
-import static java.util.Optional.empty;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @ToString
 @EqualsAndHashCode
@@ -52,22 +50,22 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory<MapM
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier typeIdentifier,
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier typeIdentifier,
                                                                          final Context<MapMaidTypeScannerResult> context) {
         if (typeIdentifier.isVirtual()) {
-            return empty();
+            return null;
         }
-        final ResolvedType type = typeIdentifier.getRealType();
+        final ResolvedType type = typeIdentifier.realType();
 
         if (!(type instanceof ArrayType)) {
-            return empty();
+            return null;
         }
         final ResolvedType componentType = ((ArrayType) type).componentType();
         final TypeIdentifier componentTypeIdentifier = typeIdentifierFor(componentType);
-        context.setManuallyConfiguredResult(MapMaidTypeScannerResult.result(duplexResult(
+        context.setManuallyConfiguredResult(result(duplexResult(
                 arraySerializer(componentTypeIdentifier),
                 arrayDeserializer(componentTypeIdentifier, componentType)
         ), typeIdentifier));
-        return Optional.of(unreasoned(context));
+        return new Unreasoned<>(context);
     }
 }

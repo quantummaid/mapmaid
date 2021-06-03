@@ -11,16 +11,16 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker
 import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.ReflectMaid
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
 import java.util.*
 
 open class PolymorphisticCustomMapMaidType<T>(
-        private val typeIdentifier: TypeIdentifier,
-        val subClasses: List<Class<out T>>,
-        val reflectMaid: ReflectMaid,
-        additionalRequiredTypes: List<Class<*>> = emptyList()
+    private val typeIdentifier: TypeIdentifier,
+    val subClasses: List<Class<out T>>,
+    val reflectMaid: ReflectMaid,
+    additionalRequiredTypes: List<Class<*>> = emptyList()
 ) : CustomType<T> {
     private val typeToClass = subClasses
             .map { it.simpleName to it }

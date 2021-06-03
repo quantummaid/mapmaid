@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.polymorphy;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 public interface PolymorphicTypeIdentifierExtractor {
     String extract(TypeIdentifier typeIdentifier);

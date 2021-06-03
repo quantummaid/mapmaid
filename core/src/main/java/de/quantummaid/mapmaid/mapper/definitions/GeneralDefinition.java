@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.mapper.definitions;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

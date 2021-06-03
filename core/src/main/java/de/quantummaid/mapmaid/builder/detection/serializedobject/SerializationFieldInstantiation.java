@@ -21,15 +21,15 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Preferences;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.success;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationFields.serializationFields;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer.serializedObjectSerializer;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.failure;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.success;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 

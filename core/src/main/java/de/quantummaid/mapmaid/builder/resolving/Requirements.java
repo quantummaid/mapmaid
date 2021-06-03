@@ -21,15 +21,13 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementName;
-
-import static de.quantummaid.mapmaid.builder.resolving.framework.requirements.RequirementName.requirementName;
+import de.quantummaid.reflectmaid.typescanner.requirements.RequirementName;
 
 public final class Requirements {
-    public static final RequirementName SERIALIZATION = requirementName("serialization");
-    public static final RequirementName DESERIALIZATION = requirementName("deserialization");
-    public static final RequirementName OBJECT_ENFORCING = requirementName("object");
-    public static final RequirementName INLINED_PRIMITIVE = requirementName("primitive");
+    public static final RequirementName SERIALIZATION = new RequirementName("serialization");
+    public static final RequirementName DESERIALIZATION = new RequirementName("deserialization");
+    public static final RequirementName OBJECT_ENFORCING = new RequirementName("object");
+    public static final RequirementName INLINED_PRIMITIVE = new RequirementName("primitive");
 
     private Requirements() {
     }

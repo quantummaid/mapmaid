@@ -64,7 +64,7 @@ public final class PolymorphySpecs {
                 aMapMaid()
                         .deserializingSubtypes(AnInterface.class, AnImplementation1.class, AnImplementation2.class)
                         .withAdvancedSettings(advancedBuilder -> advancedBuilder.withTypeIdentifierExtractor(typeIdentifier -> {
-                            final Class<?> assignableType = typeIdentifier.getRealType().assignableType();
+                            final Class<?> assignableType = typeIdentifier.realType().assignableType();
                             if (assignableType.equals(AnImplementation1.class)) {
                                 return "impl1";
                             } else if (assignableType.equals(AnImplementation2.class)) {

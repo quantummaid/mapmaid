@@ -22,23 +22,20 @@
 package de.quantummaid.mapmaid.exceptions;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
-import static java.util.Optional.empty;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StackTraceStateFactory implements StateFactory<MapMaidTypeScannerResult> {
@@ -53,13 +50,13 @@ public final class StackTraceStateFactory implements StateFactory<MapMaidTypeSca
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
+                                                               final Context<MapMaidTypeScannerResult> context) {
         if (!targetType.equals(type)) {
-            return empty();
+            return null;
         }
         final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
         context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
-        return Optional.of(unreasoned(context));
+        return new Unreasoned<>(context);
     }
 }

@@ -23,7 +23,7 @@ package de.quantummaid.mapmaid.builder.injection;
 
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import static java.lang.String.format;
 

@@ -23,12 +23,12 @@ package de.quantummaid.mapmaid.builder.builder;
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.reflectmaid.GenericType;
+import de.quantummaid.reflectmaid.typescanner.Reason;
 
-import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
-import static de.quantummaid.mapmaid.debug.Reason.reason;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static de.quantummaid.reflectmaid.typescanner.Reason.manuallyAdded;
+import static de.quantummaid.reflectmaid.typescanner.Reason.reason;
 
 public interface ProgrammaticTypeBuilder {
 

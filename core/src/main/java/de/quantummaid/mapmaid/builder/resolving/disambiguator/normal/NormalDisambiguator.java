@@ -21,7 +21,6 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
@@ -34,15 +33,16 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.se
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SymmetryBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreaker;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +51,6 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.combine;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.SerializersAndDeserializers.serializersAndDeserializers;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext.disambiguationContext;
@@ -60,6 +58,8 @@ import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.Pick
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.customprimitive.CustomPrimitiveSymmetryBuilder.customPrimitiveSymmetryBuilder;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions.serializedObjectOptions;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SymmetryBuilder.symmetryBuilder;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.combine;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.failure;
 import static java.lang.String.format;
 
 @ToString

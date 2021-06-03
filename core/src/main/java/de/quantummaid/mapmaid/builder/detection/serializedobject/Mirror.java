@@ -21,10 +21,10 @@
 
 package de.quantummaid.mapmaid.builder.detection.serializedobject;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ArrayType;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -47,8 +47,8 @@ public final class Mirror {
             return false;
         }
 
-        final ResolvedType typeA = typeIdentifierA.getRealType();
-        final ResolvedType typeB = typeIdentifierB.getRealType();
+        final ResolvedType typeA = typeIdentifierA.realType();
+        final ResolvedType typeB = typeIdentifierB.realType();
 
         final Optional<ResolvedType> componentA = collectionComponent(typeA);
         final Optional<ResolvedType> componentB = collectionComponent(typeB);

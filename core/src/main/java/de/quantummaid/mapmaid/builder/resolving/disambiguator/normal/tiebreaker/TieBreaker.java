@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +34,10 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult.followUpFailure;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.IrrefutableHints.irrefutableHints;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreakingReason.notATieBreakingReason;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.failure;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.followUpFailure;
 import static java.lang.String.format;
 
 @ToString

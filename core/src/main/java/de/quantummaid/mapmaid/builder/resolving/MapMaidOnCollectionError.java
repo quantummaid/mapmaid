@@ -21,14 +21,14 @@
 
 package de.quantummaid.mapmaid.builder.resolving;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.Report;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.OnCollectionError;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.typescanner.CollectionResult;
+import de.quantummaid.reflectmaid.typescanner.OnCollectionError;
+import de.quantummaid.reflectmaid.typescanner.Report;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.log.StateLog;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

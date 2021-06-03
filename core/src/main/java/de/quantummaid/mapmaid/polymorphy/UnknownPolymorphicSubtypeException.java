@@ -24,7 +24,7 @@ package de.quantummaid.mapmaid.polymorphy;
 import de.quantummaid.mapmaid.debug.MapMaidException;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import java.util.List;
 

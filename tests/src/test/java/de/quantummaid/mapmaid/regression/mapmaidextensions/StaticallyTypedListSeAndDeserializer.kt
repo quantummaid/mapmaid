@@ -11,11 +11,11 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker
 import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalCollection
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.GenericType
 import de.quantummaid.reflectmaid.ReflectMaid
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier.Companion.typeIdentifierFor
 import java.util.*
 
 class StaticallyTypedListSeAndDeserializer(private val genericType: GenericType<*>,

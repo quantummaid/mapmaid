@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.lang.String.format;
 
 @ToString
@@ -57,7 +57,7 @@ public final class ListCollectionDeserializer implements CollectionDeserializer 
 
     @Override
     public TypeIdentifier contentType() {
-        return realTypeIdentifier(this.componentType);
+        return typeIdentifierFor(this.componentType);
     }
 
     @Override

@@ -23,13 +23,14 @@ package de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserializat
 
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Deserializer00;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder.emptyBuilder;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 public final class Builder00<X> extends AbstractBuilder<X, Deserializer00<X>> {
 
@@ -39,7 +40,7 @@ public final class Builder00<X> extends AbstractBuilder<X, Deserializer00<X>> {
 
     public static <X> Builder00<X> serializedObjectBuilder00(final ReflectMaid reflectMaid, final GenericType<X> type) {
         final ResolvedType resolvedType = reflectMaid.resolve(type);
-        final TypeIdentifier typeIdentifier = TypeIdentifier.typeIdentifierFor(resolvedType);
+        final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
         final Builder builder = emptyBuilder(reflectMaid, typeIdentifier);
         return new Builder00<>(builder);
     }

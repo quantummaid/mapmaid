@@ -46,14 +46,8 @@ import de.quantummaid.mapmaid.builder.resolving.MapMaidOnCollectionError;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidResolver;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.Processor;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.Lingo;
-import de.quantummaid.mapmaid.debug.Reason;
 import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
@@ -67,6 +61,13 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.CollectionResult;
+import de.quantummaid.reflectmaid.typescanner.Processor;
+import de.quantummaid.reflectmaid.typescanner.Reason;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.signals.AddReasonSignal;
+import de.quantummaid.reflectmaid.typescanner.signals.Signal;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +80,8 @@ import static de.quantummaid.mapmaid.MapMaid.mapMaid;
 import static de.quantummaid.mapmaid.builder.AdvancedBuilder.advancedBuilder;
 import static de.quantummaid.mapmaid.builder.RequiredCapabilities.*;
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
+import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType.createCustomPrimitive;
+import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.createCustomPrimitive;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Builder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidDetector.mapMaidDetector;
@@ -89,17 +92,16 @@ import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATIO
 import static de.quantummaid.mapmaid.builder.resolving.factories.customtype.CustomTypeFactory.customTypeFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.injecting.InjectingFactory.injectingFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.polymorphy.PolymorphicFactory.polymorphicFactory;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.AddReasonSignal.addReason;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
-import static de.quantummaid.mapmaid.debug.Reason.manuallyAdded;
 import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
 import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
 import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.serializer;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static de.quantummaid.reflectmaid.typescanner.Reason.manuallyAdded;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.util.Arrays.asList;
 
 @ToString
@@ -262,10 +264,10 @@ public final class MapMaidBuilder implements
 
     private MapMaidBuilder withType(final RequiredCapabilities capabilities, final TypeIdentifier typeIdentifier, final Reason reason) {
         if (capabilities.hasSerialization()) {
-            signals.add(addReason(SERIALIZATION, typeIdentifier, reason));
+            signals.add(new AddReasonSignal<>(typeIdentifier, SERIALIZATION, reason));
         }
         if (capabilities.hasDeserialization()) {
-            signals.add(addReason(DESERIALIZATION, typeIdentifier, reason));
+            signals.add(new AddReasonSignal<>(typeIdentifier, DESERIALIZATION, reason));
         }
         return this;
     }
@@ -291,7 +293,7 @@ public final class MapMaidBuilder implements
     public <T, B> MapMaidBuilder serializingCustomPrimitive(final TypeIdentifier typeIdentifier,
                                                             final Class<B> baseType,
                                                             final CustomCustomPrimitiveSerializer<T, B> serializer) {
-        final SerializationOnlyType<T> serializationOnlyType = SerializationOnlyType.createCustomPrimitive(typeIdentifier, serializer, baseType);
+        final SerializationOnlyType<T> serializationOnlyType = createCustomPrimitive(typeIdentifier, serializer, baseType);
         return serializing(serializationOnlyType);
     }
 
@@ -307,7 +309,7 @@ public final class MapMaidBuilder implements
     public <T, B> MapMaidBuilder deserializingCustomPrimitive(final TypeIdentifier typeIdentifier,
                                                               final Class<B> baseType,
                                                               final CustomCustomPrimitiveDeserializer<T, B> deserializer) {
-        final DeserializationOnlyType<T> deserializationOnlyType = DeserializationOnlyType.createCustomPrimitive(typeIdentifier, deserializer, baseType);
+        final DeserializationOnlyType<T> deserializationOnlyType = createCustomPrimitive(typeIdentifier, deserializer, baseType);
         return deserializing(deserializationOnlyType);
     }
 
@@ -459,17 +461,17 @@ public final class MapMaidBuilder implements
 
         final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
         result.forEach((type, collectionResult) -> {
-            final DetectionRequirements requirements = collectionResult.detectionRequirements();
+            final DetectionRequirements requirements = collectionResult.getDetectionRequirements();
             final TypeSerializer serializer;
             if (requirements.requires(SERIALIZATION)) {
-                serializer = collectionResult.definition().disambiguationResult().serializer();
+                serializer = collectionResult.getDefinition().disambiguationResult().serializer();
             } else {
                 serializer = null;
             }
 
             final TypeDeserializer deserializer;
             if (requirements.requires(DESERIALIZATION)) {
-                deserializer = collectionResult.definition().disambiguationResult().deserializer();
+                deserializer = collectionResult.getDefinition().disambiguationResult().deserializer();
             } else {
                 deserializer = null;
             }

@@ -22,12 +22,11 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
@@ -60,7 +60,7 @@ public final class MultipleMethodsSerializedObjectDeserializer implements Serial
                 .stream().collect(
                         toMap(
                                 Entry::getKey,
-                                e -> RealTypeIdentifier.realTypeIdentifier(e.getValue().getParameters().get(0).getType())));
+                                e -> typeIdentifierFor(e.getValue().getParameters().get(0).getType())));
         final DeserializationFields deserializationFields = deserializationFields(fieldMap);
         final Map<String, Executor> methodExecutors = new LinkedHashMap<>(methods.size());
         methods.forEach((name, method) -> methodExecutors.put(name, method.createExecutor()));

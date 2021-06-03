@@ -29,9 +29,9 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.polymorphy.finiteresolver.FiniteTypeResolver;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +43,7 @@ import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForPolymo
 import static de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker.serializationTracker;
 import static de.quantummaid.mapmaid.polymorphy.TypeFieldNormalizer.determineTypeField;
 import static de.quantummaid.mapmaid.polymorphy.finiteresolver.FiniteTypeResolver.finiteTypeResolver;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

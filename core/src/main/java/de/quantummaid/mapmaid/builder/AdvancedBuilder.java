@@ -27,8 +27,6 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.NormalDisambiguator;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.Processor;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.UniversalObjectMarshallerAndUnmarshaller;
@@ -41,6 +39,9 @@ import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Processor;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.factories.UndetectedFactory;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,6 @@ import static de.quantummaid.mapmaid.builder.resolving.factories.collections.Arr
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
-import static de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.UndetectedFactory.undetectedFactory;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.exceptions.StackTraceStateFactory.stackTraceStateFactory;
@@ -253,7 +253,7 @@ public final class AdvancedBuilder {
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
                 kotlinSealedClassFactory(mapMaidConfiguration),
-                undetectedFactory()
+                new UndetectedFactory<MapMaidTypeScannerResult>()
         )
                 .forEach(this::withStateFactory);
         return Processor.processor(stateFactories,

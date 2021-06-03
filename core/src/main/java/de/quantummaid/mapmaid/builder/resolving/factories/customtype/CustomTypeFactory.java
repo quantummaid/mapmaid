@@ -24,20 +24,18 @@ package de.quantummaid.mapmaid.builder.resolving.factories.customtype;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.customtypes.CustomType;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static java.lang.String.format;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -51,13 +49,12 @@ public final class CustomTypeFactory implements StateFactory<MapMaidTypeScannerR
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
+                                                               final Context<MapMaidTypeScannerResult> context) {
         final TypeIdentifier typeIdentifier = customType.type();
         if (!typeIdentifier.equals(type)) {
-            return Optional.empty();
+            return null;
         }
-        final StatefulDefinition<MapMaidTypeScannerResult> statefulDefinition = unreasoned(context);
         final TypeSerializer serializer;
         if (capabilities.hasSerialization()) {
             serializer = customType.serializer()
@@ -75,7 +72,6 @@ public final class CustomTypeFactory implements StateFactory<MapMaidTypeScannerR
             deserializer = null;
         }
         context.setManuallyConfiguredResult(result(disambiguationResult(serializer, deserializer), typeIdentifier));
-        return Optional.of(statefulDefinition);
-
+        return new Unreasoned<>(context);
     }
 }

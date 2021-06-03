@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.specs;
 
+import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.domain.AComplexType;
 import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.mapmaid.mapper.deserialization.PredeserializedObjectCannotBeDeserialized;
@@ -43,10 +44,11 @@ public final class IndirectInjectionSpecs {
                 "number1", "1",
                 "number2", "2"
         );
+        final MapMaid build = aMapMaid()
+                .deserializing(AComplexType.class)
+                .build();
         given(
-                aMapMaid()
-                        .deserializing(AComplexType.class)
-                        .build())
+                build)
                 .when().mapMaidDeserializesTheMap(input).toTheType(AComplexType.class)
                 .anExceptionIsThrownWithAMessageContaining("Pre-deserialized objects are not supported for " +
                         "deserialization'. Please use injections to add pre-deserialized objects.")

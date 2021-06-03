@@ -22,16 +22,16 @@
 package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.domain.*;
-import de.quantummaid.mapmaid.testsupport.givenwhenthen.Given;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
+import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
 
 public final class RecursionSpecs {
 
     @Test
     public void recursionRecipeCanDetectCustomPrimitives() {
-        Given.given(
+        given(
                 aMapMaid().serializingAndDeserializing(AString.class).build()
         )
                 .when().theDefinitionsAreQueried()
@@ -41,7 +41,7 @@ public final class RecursionSpecs {
 
     @Test
     public void recursionRecipeCanDetectRequiredTypesForSerializedObjects() {
-        Given.given(
+        given(
                 aMapMaid().serializingAndDeserializing(AComplexNestedValidatedType.class).build()
         )
                 .when().theDefinitionsAreQueried()
@@ -51,7 +51,7 @@ public final class RecursionSpecs {
 
     @Test
     public void recursionRecipeCanDetectThroughCollections() {
-        Given.given(
+        given(
                 aMapMaid().serializingAndDeserializing(AComplexTypeWithCollections.class).build()
         )
                 .when().theDefinitionsAreQueried()
@@ -61,7 +61,7 @@ public final class RecursionSpecs {
 
     @Test
     public void recursionRecipeCanAutoloadPrimitiveDataTypes() {
-        Given.given(
+        given(
                 aMapMaid().serializingAndDeserializing(AComplexNestedValidatedType.class).build()
         )
                 .when().theDefinitionsAreQueried()

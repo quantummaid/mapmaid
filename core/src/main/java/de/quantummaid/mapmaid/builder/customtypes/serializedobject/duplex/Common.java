@@ -25,7 +25,7 @@ import de.quantummaid.mapmaid.builder.customtypes.DuplexType;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.Builder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import static de.quantummaid.mapmaid.builder.customtypes.DuplexType.duplexType;
 
@@ -34,11 +34,10 @@ final class Common {
     private Common() {
     }
 
-    @SuppressWarnings("unchecked")
     static <T> DuplexType<T> createDuplexType(final Builder builder) {
         final TypeIdentifier type = builder.getType();
         final TypeSerializer serializer = builder.createSerializer();
         final TypeDeserializer deserializer = builder.createDeserializer();
-        return (DuplexType<T>) duplexType(type, serializer, deserializer);
+        return duplexType(type, serializer, deserializer);
     }
 }

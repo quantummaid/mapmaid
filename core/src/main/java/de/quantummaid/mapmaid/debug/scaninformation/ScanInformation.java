@@ -21,7 +21,7 @@
 
 package de.quantummaid.mapmaid.debug.scaninformation;
 
-import de.quantummaid.mapmaid.debug.Reason;
+import de.quantummaid.reflectmaid.typescanner.Reason;
 
 import java.util.List;
 

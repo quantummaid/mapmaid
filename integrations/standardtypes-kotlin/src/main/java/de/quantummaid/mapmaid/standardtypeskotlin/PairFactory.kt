@@ -3,11 +3,6 @@ package de.quantummaid.mapmaid.standardtypeskotlin
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
-import de.quantummaid.mapmaid.builder.resolving.framework.Context
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition
-import de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned
 import de.quantummaid.mapmaid.debug.DebugInformation
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer
@@ -20,7 +15,11 @@ import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
-import java.util.*
+import de.quantummaid.reflectmaid.typescanner.Context
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned
 
 private class PairSerializer(
     private val typeIdentifierFirst: TypeIdentifier,
@@ -110,13 +109,13 @@ class PairFactory : StateFactory<MapMaidTypeScannerResult> {
     override fun create(
         typeIdentifier: TypeIdentifier,
         context: Context<MapMaidTypeScannerResult>,
-    ): Optional<StatefulDefinition<MapMaidTypeScannerResult>> {
-        if (typeIdentifier.isVirtual) {
-            return Optional.empty()
+    ): StatefulDefinition<MapMaidTypeScannerResult>? {
+        if (typeIdentifier.isVirtual()) {
+            return null
         }
-        val type: ResolvedType = typeIdentifier.realType
+        val type: ResolvedType = typeIdentifier.realType()
         if (type.assignableType() != Pair::class.java) {
-            return Optional.empty()
+            return null
         }
 
         val typeParameters = type.typeParameters()
@@ -128,6 +127,6 @@ class PairFactory : StateFactory<MapMaidTypeScannerResult> {
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
-        return Optional.of(unreasoned(context))
+        return Unreasoned(context)
     }
 }

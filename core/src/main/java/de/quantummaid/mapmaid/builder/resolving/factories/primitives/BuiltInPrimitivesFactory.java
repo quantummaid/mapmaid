@@ -22,27 +22,24 @@
 package de.quantummaid.mapmaid.builder.resolving.factories.primitives;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
-import static java.util.Optional.empty;
 
 @ToString
 @EqualsAndHashCode
@@ -54,20 +51,20 @@ public final class BuiltInPrimitivesFactory implements StateFactory<MapMaidTypeS
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
                                                                          final Context<MapMaidTypeScannerResult> context) {
         if (type.isVirtual()) {
-            return empty();
+            return null;
         }
 
-        final ResolvedType realType = type.getRealType();
+        final ResolvedType realType = type.realType();
         final Class<?> assignableType = realType.assignableType();
         if (!CUSTOM_PRIMITIVE_MAPPINGS.isPrimitiveType(assignableType)) {
-            return empty();
+            return null;
         }
         final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType);
         final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType);
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
-        return Optional.of(unreasoned(context));
+        return new Unreasoned<>(context);
     }
 }

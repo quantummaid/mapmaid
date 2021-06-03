@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.mapper.schema;
 
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 public interface SchemaCallback {
 

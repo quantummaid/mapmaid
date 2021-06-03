@@ -24,11 +24,11 @@ package de.quantummaid.mapmaid.specs;
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.LoggedState;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.signals.Signal;
 import de.quantummaid.mapmaid.domain.AString;
 import de.quantummaid.reflectmaid.TypeToken;
+import de.quantummaid.reflectmaid.typescanner.log.LoggedState;
+import de.quantummaid.reflectmaid.typescanner.log.StateLog;
+import de.quantummaid.reflectmaid.typescanner.signals.Signal;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

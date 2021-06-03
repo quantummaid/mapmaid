@@ -24,23 +24,21 @@ package de.quantummaid.mapmaid.builder.resolving.factories.polymorphy;
 import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
 import de.quantummaid.mapmaid.builder.RequiredCapabilities;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.mapmaid.collections.BiMap;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
-import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicDeserializer.polymorphicDeserializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicSerializer.polymorphicSerializer;
 import static de.quantummaid.mapmaid.polymorphy.PolymorphicUtils.nameToIdentifier;
@@ -61,10 +59,10 @@ public final class PolymorphicFactory implements StateFactory<MapMaidTypeScanner
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier type,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
+                                                               final Context<MapMaidTypeScannerResult> context) {
         if (!superType.equals(type)) {
-            return Optional.empty();
+            return null;
         }
         final List<TypeIdentifier> subTypeIdentifiers = subTypes.stream()
                 .map(TypeIdentifier::typeIdentifierFor)
@@ -83,8 +81,7 @@ public final class PolymorphicFactory implements StateFactory<MapMaidTypeScanner
         } else {
             deserializer = null;
         }
-        context.setManuallyConfiguredResult(result(disambiguationResult(serializer, deserializer), superType));
-        final StatefulDefinition<MapMaidTypeScannerResult> statefulDefinition = unreasoned(context);
-        return Optional.of(statefulDefinition);
+        context.setManuallyConfiguredResult(MapMaidTypeScannerResult.result(disambiguationResult(serializer, deserializer), superType));
+        return new Unreasoned<>(context);
     }
 }

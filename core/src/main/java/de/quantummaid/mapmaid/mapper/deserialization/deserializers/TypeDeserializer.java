@@ -29,8 +29,8 @@ import de.quantummaid.mapmaid.mapper.deserialization.validation.ExceptionTracker
 import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.schema.SchemaCallback;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import java.util.List;
 

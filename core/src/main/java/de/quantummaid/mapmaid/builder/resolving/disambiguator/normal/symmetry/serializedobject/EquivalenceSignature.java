@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject;
 
-import de.quantummaid.mapmaid.builder.resolving.framework.states.DetectionResult;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldInstantiation;
 import de.quantummaid.mapmaid.builder.detection.serializedobject.SerializationFieldOptions;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguationContext;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.Combinations.allCombinations;
+import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 

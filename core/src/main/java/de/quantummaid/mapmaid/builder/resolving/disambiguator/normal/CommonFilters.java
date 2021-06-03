@@ -31,10 +31,10 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.MethodCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.languages.Language;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedField;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import java.util.function.Predicate;
 import java.util.regex.Matcher;

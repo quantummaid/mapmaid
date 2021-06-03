@@ -22,25 +22,23 @@
 package de.quantummaid.mapmaid.builder.resolving.factories.collections;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.Context;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.framework.states.StatefulDefinition;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
+import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.CollectionInformation.collectionInformations;
-import static de.quantummaid.mapmaid.builder.resolving.framework.states.detected.Unreasoned.unreasoned;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.collections.ListCollectionDeserializer.listDeserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.serializers.collections.ListCollectionSerializer.listSerializer;
 import static de.quantummaid.reflectmaid.TypeVariableName.typeVariableName;
 import static java.lang.String.format;
-import static java.util.Optional.empty;
 
 public final class NativeJavaCollectionDefinitionFactory implements StateFactory<MapMaidTypeScannerResult> {
     private final Map<Class<?>, CollectionInformation> collectionInformations = collectionInformations();
@@ -50,15 +48,15 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
     }
 
     @Override
-    public Optional<StatefulDefinition<MapMaidTypeScannerResult>> create(final TypeIdentifier typeIdentifier,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
+    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier typeIdentifier,
+                                                               final Context<MapMaidTypeScannerResult> context) {
         if (typeIdentifier.isVirtual()) {
-            return empty();
+            return null;
         }
-        final ResolvedType type = typeIdentifier.getRealType();
+        final ResolvedType type = typeIdentifier.realType();
 
         if (!this.collectionInformations.containsKey(type.assignableType())) {
-            return empty();
+            return null;
         }
         if (type.typeParameters().size() != 1) {
             throw new UnsupportedOperationException(format(
@@ -71,6 +69,6 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
                 listSerializer(genericType),
                 listDeserializer(genericType, collectionInformation.mapper())
         ), typeIdentifier));
-        return Optional.of(unreasoned(context));
+        return new Unreasoned<>(context);
     }
 }

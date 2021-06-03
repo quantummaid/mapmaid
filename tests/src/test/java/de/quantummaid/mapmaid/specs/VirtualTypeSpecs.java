@@ -23,12 +23,12 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import org.junit.jupiter.api.Test;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier.virtualTypeIdentifier;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.virtualTypeIdentifier;
 
 public final class VirtualTypeSpecs {
 

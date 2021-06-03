@@ -22,14 +22,15 @@
 package de.quantummaid.mapmaid.debug;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.identifier.TypeIdentifier;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.CollectionResult;
-import de.quantummaid.mapmaid.builder.resolving.framework.processing.log.StateLog;
-import de.quantummaid.mapmaid.builder.resolving.framework.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.CollectionResult;
+import de.quantummaid.reflectmaid.typescanner.SubReasonProvider;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.log.StateLog;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,9 @@ import lombok.ToString;
 
 import java.util.*;
 
-import static de.quantummaid.mapmaid.builder.resolving.framework.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.joining;
@@ -64,14 +65,14 @@ public final class DebugInformation {
                 typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
         results.forEach(
                 (typeIdentifier, result) -> {
-                    final ScanInformationBuilder scanInformationBuilder = result.definition().scanInformationBuilder();
-                    final DetectionRequirements detectionRequirements = result.detectionRequirements();
+                    final ScanInformationBuilder scanInformationBuilder = result.getDefinition().scanInformationBuilder();
+                    final DetectionRequirements detectionRequirements = result.getDetectionRequirements();
                     final ScanInformation scanInformation =
                             scanInformationBuilder.build(
                                     serializationSubReasonProvider,
                                     deserializationSubReasonProvider,
                                     detectionRequirements,
-                                    result.definition().disambiguationResult()
+                                    result.getDefinition().disambiguationResult()
                             );
                     scanInformations.put(typeIdentifier, scanInformation);
                 }
@@ -88,7 +89,7 @@ public final class DebugInformation {
     }
 
     public ScanInformation scanInformationFor(final ResolvedType type) {
-        return scanInformationFor(realTypeIdentifier(type));
+        return scanInformationFor(typeIdentifierFor(type));
     }
 
     public ScanInformation scanInformationFor(final TypeIdentifier type) {
@@ -101,7 +102,7 @@ public final class DebugInformation {
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final ResolvedType type) {
-        return optionalScanInformationFor(realTypeIdentifier(type));
+        return optionalScanInformationFor(typeIdentifierFor(type));
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final TypeIdentifier type) {
