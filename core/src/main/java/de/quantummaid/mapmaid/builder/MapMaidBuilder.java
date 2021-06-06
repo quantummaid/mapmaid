@@ -66,7 +66,7 @@ import de.quantummaid.reflectmaid.typescanner.Processor;
 import de.quantummaid.reflectmaid.typescanner.Reason;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
-import de.quantummaid.reflectmaid.typescanner.signals.AddReasonSignal;
+import de.quantummaid.reflectmaid.typescanner.scopes.Scope;
 import de.quantummaid.reflectmaid.typescanner.signals.Signal;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -102,6 +102,8 @@ import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validate
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static de.quantummaid.reflectmaid.typescanner.Reason.manuallyAdded;
 import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.reflectmaid.typescanner.scopes.Scope.rootScope;
+import static de.quantummaid.reflectmaid.typescanner.signals.AddReasonSignal.addReasonSignal;
 import static java.util.Arrays.asList;
 
 @ToString
@@ -264,10 +266,10 @@ public final class MapMaidBuilder implements
 
     private MapMaidBuilder withType(final RequiredCapabilities capabilities, final TypeIdentifier typeIdentifier, final Reason reason) {
         if (capabilities.hasSerialization()) {
-            signals.add(new AddReasonSignal<>(typeIdentifier, SERIALIZATION, reason));
+            signals.add(addReasonSignal(typeIdentifier, SERIALIZATION, reason));
         }
         if (capabilities.hasDeserialization()) {
-            signals.add(new AddReasonSignal<>(typeIdentifier, DESERIALIZATION, reason));
+            signals.add(addReasonSignal(typeIdentifier, DESERIALIZATION, reason));
         }
         return this;
     }
@@ -456,11 +458,12 @@ public final class MapMaidBuilder implements
         final MapMaidDetector detector = mapMaidDetector(this.detector, disambiguators, injectionTypes);
         final MapMaidResolver resolver = mapMaidResolver();
         final MapMaidOnCollectionError onError = mapMaidOnCollectionError(reflectMaid);
-        final Map<TypeIdentifier, CollectionResult<MapMaidTypeScannerResult>> result =
+        final Map<TypeIdentifier, Map<Scope, CollectionResult<MapMaidTypeScannerResult>>> result =
                 processor.collect(detector, resolver, onError, Lingo::mode);
 
         final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
-        result.forEach((type, collectionResult) -> {
+        result.forEach((type, collectionResultByScope) -> {
+            final CollectionResult<MapMaidTypeScannerResult> collectionResult = collectionResultByScope.get(rootScope());
             final DetectionRequirements requirements = collectionResult.getDetectionRequirements();
             final TypeSerializer serializer;
             if (requirements.requires(SERIALIZATION)) {

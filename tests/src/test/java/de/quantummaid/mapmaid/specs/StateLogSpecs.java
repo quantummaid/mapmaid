@@ -77,7 +77,7 @@ public final class StateLogSpecs {
                 "          \"state\": \"ToBeDetected\"\n" +
                 "        }\n" +
                 "      ],\n" +
-                "      \"signal\": \"add serialization to AString\"\n" +
+                "      \"signal\": \"add serialization to AString in /\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"changedStates\": [\n" +
@@ -87,7 +87,7 @@ public final class StateLogSpecs {
                 "          \"state\": \"ToBeDetected\"\n" +
                 "        }\n" +
                 "      ],\n" +
-                "      \"signal\": \"add deserialization to AString\"\n" +
+                "      \"signal\": \"add deserialization to AString in /\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"changedStates\": [\n" +

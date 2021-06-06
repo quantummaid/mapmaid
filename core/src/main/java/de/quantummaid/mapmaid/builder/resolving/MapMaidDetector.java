@@ -27,10 +27,12 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.scopes.Scope;
 import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import de.quantummaid.reflectmaid.typescanner.states.Detector;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -49,10 +51,12 @@ public final class MapMaidDetector implements Detector<MapMaidTypeScannerResult>
         return new MapMaidDetector(detector, disambiguators, injectedTypes);
     }
 
+    @NotNull
     @Override
     public DetectionResult<MapMaidTypeScannerResult> detect(
-            final TypeIdentifier type,
-            final DetectionRequirements detectionRequirements
+            @NotNull final TypeIdentifier type,
+            @NotNull final Scope scope,
+            @NotNull final DetectionRequirements detectionRequirements
     ) {
         final ScanInformationBuilder scanInformationBuilder = scanInformationBuilder(type);
         final DetectionResult<DisambiguationResult> detectionResult = detector.detect(
