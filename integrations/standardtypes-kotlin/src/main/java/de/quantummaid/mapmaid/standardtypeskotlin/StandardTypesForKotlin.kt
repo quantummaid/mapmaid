@@ -1,25 +1,22 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
 import de.quantummaid.mapmaid.builder.MapMaidBuilder
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration
-import de.quantummaid.mapmaid.builder.resolving.Context
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal.addManualDeserializer
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer
-import de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.standardtypeskotlin.CustomFactory.Companion.createCustomFactory
 import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
+import de.quantummaid.reflectmaid.typescanner.Context
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier.Companion.typeIdentifierFor
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
 import java.time.Duration
 import java.time.Instant
-import java.util.*
 
 fun MapMaidBuilder.withSupportForStandardKotlinTypes(preRegisterTypes: Boolean = false): MapMaidBuilder {
     val reflectMaid = reflectMaid()
@@ -59,7 +56,7 @@ private class SimpleSerializer<T>(
     }
 
     override fun description(): String {
-        return description;
+        return description
     }
 }
 
@@ -79,10 +76,11 @@ private class SimpleDeserializer<T : Any>(
 }
 
 private class CustomFactory(
-    private val targetType: ResolvedType,
+    targetType: ResolvedType,
     private val serializer: TypeSerializer,
     private val deserializer: TypeDeserializer
-) : StateFactory {
+) : StateFactory<MapMaidTypeScannerResult> {
+    private val targetTypeIdentifier = typeIdentifierFor(targetType)
 
     companion object {
         inline fun <reified T : Any> createCustomFactory(
@@ -95,27 +93,14 @@ private class CustomFactory(
         }
     }
 
+    override fun applies(type: TypeIdentifier): Boolean {
+        return targetTypeIdentifier == type
+    }
+
     override fun create(
-        reflectMaid: ReflectMaid,
-        typeIdentifier: TypeIdentifier,
-        context: Context,
-        mapMaidConfiguration: MapMaidConfiguration
-    ): Optional<StateFactoryResult> {
-        if (typeIdentifier.isVirtual) {
-            return Optional.empty()
-        }
-        val type: ResolvedType = typeIdentifier.realType
-        if (type != targetType) {
-            return Optional.empty()
-        }
-        return Optional.of(
-            stateFactoryResult(
-                unreasoned(context),
-                listOf(
-                    addManualSerializer(typeIdentifier, serializer),
-                    addManualDeserializer(typeIdentifier, deserializer)
-                )
-            )
-        )
+        type: TypeIdentifier,
+        context: Context<MapMaidTypeScannerResult>,
+    ) {
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type))
     }
 }

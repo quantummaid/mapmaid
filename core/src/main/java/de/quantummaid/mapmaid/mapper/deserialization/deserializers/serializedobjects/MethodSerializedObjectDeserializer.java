@@ -22,11 +22,11 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.lang.reflect.Modifier.isStatic;
@@ -70,7 +70,7 @@ public final class MethodSerializedObjectDeserializer implements SerializedObjec
         final Map<String, TypeIdentifier> parameterFields = parameters.stream()
                 .collect(Collectors.toMap(
                         ResolvedParameter::name,
-                        resolvedParameter -> realTypeIdentifier(resolvedParameter.getType())
+                        resolvedParameter -> typeIdentifierFor(resolvedParameter.getType())
                 ));
         final Executor executor = factoryMethod.createExecutor();
         return new MethodSerializedObjectDeserializer(deserializationFields(parameterFields), factoryMethod, executor, parameterNames);

@@ -21,57 +21,44 @@
 
 package de.quantummaid.mapmaid.exceptions;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Optional;
-
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
 import static de.quantummaid.mapmaid.exceptions.ThrowableSerializer.throwableSerializer;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
-import static java.util.Optional.empty;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ThrowableStateFactory implements StateFactory {
-    private final TypeIdentifier throwableType;
+public final class ThrowableStateFactory implements StateFactory<MapMaidTypeScannerResult> {
     private final TypeIdentifier stackTraceType;
 
     public static ThrowableStateFactory throwableStateFactory(final ReflectMaid reflectMaid) {
         final ResolvedType stackTraceResolvedType = reflectMaid.resolve(StackTraceElement[].class);
         final TypeIdentifier stackTraceType = typeIdentifierFor(stackTraceResolvedType);
-        final ResolvedType throwableResolvedType = reflectMaid.resolve(Throwable.class);
-        final TypeIdentifier throwableType = typeIdentifierFor(throwableResolvedType);
-        return new ThrowableStateFactory(throwableType, stackTraceType);
+        return new ThrowableStateFactory(stackTraceType);
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
-                                               final TypeIdentifier type,
-                                               final Context context,
-                                               final MapMaidConfiguration mapMaidConfiguration) {
+    public boolean applies(@NotNull final TypeIdentifier type) {
         if (type.isVirtual()) {
-            return empty();
+            return false;
         }
-        final Class<?> assignableType = type.getRealType().assignableType();
-        if (!Throwable.class.isAssignableFrom(assignableType)) {
-            return empty();
-        }
+        final Class<?> assignableType = type.realType().assignableType();
+        return Throwable.class.isAssignableFrom(assignableType);
+    }
+
+    @Override
+    public void create(final TypeIdentifier type,
+                       final Context<MapMaidTypeScannerResult> context) {
         final ThrowableSerializer serializer = throwableSerializer(stackTraceType);
-        return Optional.of(
-                stateFactoryResult(
-                        unreasoned(context),
-                        List.of(addManualSerializer(type, serializer))
-                )
-        );
+        context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
     }
 }

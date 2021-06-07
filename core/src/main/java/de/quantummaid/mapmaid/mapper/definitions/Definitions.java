@@ -22,7 +22,7 @@
 package de.quantummaid.mapmaid.mapper.definitions;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

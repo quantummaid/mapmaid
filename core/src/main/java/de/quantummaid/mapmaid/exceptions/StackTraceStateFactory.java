@@ -21,52 +21,42 @@
 
 package de.quantummaid.mapmaid.exceptions;
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration;
-import de.quantummaid.mapmaid.builder.resolving.Context;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Context;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Optional;
-
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult.stateFactoryResult;
-import static de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal.addManualSerializer;
-import static de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned.unreasoned;
+import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
+import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
 import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
-import static de.quantummaid.mapmaid.shared.identifier.TypeIdentifier.typeIdentifierFor;
-import static java.util.Optional.empty;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StackTraceStateFactory implements StateFactory {
+public final class StackTraceStateFactory implements StateFactory<MapMaidTypeScannerResult> {
     private final TypeIdentifier targetType;
     private final int maxStackFrameCount;
 
-    public static StateFactory stackTraceStateFactory(final ReflectMaid reflectMaid,
-                                                      final int maxStackFrameCount) {
+    public static StackTraceStateFactory stackTraceStateFactory(final ReflectMaid reflectMaid,
+                                                                final int maxStackFrameCount) {
         final ResolvedType resolvedType = reflectMaid.resolve(StackTraceElement[].class);
         final TypeIdentifier stackTraceType = typeIdentifierFor(resolvedType);
         return new StackTraceStateFactory(stackTraceType, maxStackFrameCount);
     }
 
     @Override
-    public Optional<StateFactoryResult> create(final ReflectMaid reflectMaid,
-                                               final TypeIdentifier type,
-                                               final Context context,
-                                               final MapMaidConfiguration mapMaidConfiguration) {
-        if (!targetType.equals(type)) {
-            return empty();
-        }
+    public boolean applies(@NotNull final TypeIdentifier type) {
+        return targetType.equals(type);
+    }
+
+    @Override
+    public void create(final TypeIdentifier type,
+                       final Context<MapMaidTypeScannerResult> context) {
         final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
-        return Optional.of(
-                stateFactoryResult(
-                        unreasoned(context),
-                        List.of(addManualSerializer(targetType, serializer))
-                )
-        );
+        context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
     }
 }

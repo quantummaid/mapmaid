@@ -21,12 +21,12 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker;
 
-import de.quantummaid.mapmaid.builder.detection.DetectionResult;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.MappingFunction;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.states.DetectionResult;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +34,10 @@ import lombok.ToString;
 
 import java.util.List;
 
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.failure;
-import static de.quantummaid.mapmaid.builder.detection.DetectionResult.followUpFailure;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.IrrefutableHints.irrefutableHints;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.tiebreaker.TieBreakingReason.notATieBreakingReason;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.failure;
+import static de.quantummaid.reflectmaid.typescanner.states.DetectionResult.followUpFailure;
 import static java.lang.String.format;
 
 @ToString
@@ -67,15 +67,17 @@ public final class TieBreaker {
     public DetectionResult<TypeSerializer> breakTieForSerializationOnly(
             final DetectionResult<TypeSerializer> customPrimitive,
             final DetectionResult<TypeSerializer> serializedObject,
-            final ScanInformationBuilder scanInformationBuilder) {
+            final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirements detectionRequirements) {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
-            customPrimitiveBreaking = this.customPrimitiveSerializationHints.isTieBreaking(customPrimitive.result(),
-                    detectionRequirements);
+            customPrimitiveBreaking = customPrimitiveSerializationHints.isTieBreaking(
+                    customPrimitive.result(),
+                    detectionRequirements
+            );
         } else {
             customPrimitiveBreaking = notATieBreakingReason();
         }
@@ -109,11 +111,11 @@ public final class TieBreaker {
     public DetectionResult<TypeDeserializer> breakTieForDeserializationOnly(
             final DetectionResult<TypeDeserializer> customPrimitive,
             final DetectionResult<TypeDeserializer> serializedObject,
-            final ScanInformationBuilder scanInformationBuilder) {
+            final ScanInformationBuilder scanInformationBuilder,
+            final DetectionRequirements detectionRequirements) {
         if (customPrimitive.isFailure() && serializedObject.isFailure()) {
             return followUpFailure(customPrimitive, serializedObject);
         }
-        final DetectionRequirements detectionRequirements = scanInformationBuilder.detectionRequirements();
         final TieBreakingReason customPrimitiveBreaking;
         if (!customPrimitive.isFailure()) {
             customPrimitiveBreaking = this.customPrimitiveDeserializationHints.isTieBreaking(

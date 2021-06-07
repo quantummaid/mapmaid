@@ -104,8 +104,9 @@ public final class Then {
     }
 
     public Then anExceptionIsThrownWithAMessageContainingLine(final String expectedMessage) {
-        assertThat(thenData.getException(), not(is(nullValue())));
-        final String message = thenData.getException().getMessage();
+        final Exception exception = thenData.getException();
+        assertThat(exception, not(is(nullValue())));
+        final String message = exception.getMessage();
         final List<String> lines = message.lines()
                 .map(String::trim)
                 .collect(toList());

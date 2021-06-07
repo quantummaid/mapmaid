@@ -21,25 +21,33 @@
 
 package de.quantummaid.mapmaid.debug;
 
-import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.CollectionResult;
+import de.quantummaid.reflectmaid.typescanner.SubReasonProvider;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.log.StateLog;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.scopes.Scope;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import static de.quantummaid.mapmaid.debug.scaninformation.NeverScannedScanInformation.neverScanned;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
+import static de.quantummaid.reflectmaid.typescanner.scopes.Scope.rootScope;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 
 @ToString
 @EqualsAndHashCode
@@ -47,22 +55,34 @@ import static java.util.stream.Collectors.joining;
 public final class DebugInformation {
     private final ReflectMaid reflectMaid;
     private final Map<TypeIdentifier, ScanInformation> scanInformations;
-    private final StateLog stateLog;
+    private final StateLog<MapMaidTypeScannerResult> stateLog;
 
     public static DebugInformation debugInformation(
-            final Map<TypeIdentifier, ScanInformationBuilder> scanInformationBuilders,
-            final StateLog stateLog,
+            final Map<TypeIdentifier, ? extends Map<Scope, CollectionResult<MapMaidTypeScannerResult>>> resultsByScope,
+            final StateLog<MapMaidTypeScannerResult> stateLog,
             final ReflectMaid reflectMaid
     ) {
-        final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(scanInformationBuilders.size());
+        final Map<TypeIdentifier, CollectionResult<MapMaidTypeScannerResult>> results = resultsByScope.entrySet().stream()
+                .collect(toMap(Entry::getKey, entry -> {
+                    final Map<Scope, CollectionResult<MapMaidTypeScannerResult>> byScope = entry.getValue();
+                    return byScope.get(rootScope());
+                }));
+        final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(results.size());
         final SubReasonProvider serializationSubReasonProvider =
-                typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
+                typeIdentifier -> scanInformations.get(typeIdentifier.getTypeIdentifier()).reasonsForSerialization();
         final SubReasonProvider deserializationSubReasonProvider =
-                typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
-        scanInformationBuilders.forEach(
-                (typeIdentifier, scanInformationBuilder) -> {
+                typeIdentifier -> scanInformations.get(typeIdentifier.getTypeIdentifier()).reasonsForDeserialization();
+        results.forEach(
+                (typeIdentifier, result) -> {
+                    final ScanInformationBuilder scanInformationBuilder = result.getDefinition().scanInformationBuilder();
+                    final DetectionRequirements detectionRequirements = result.getDetectionRequirements();
                     final ScanInformation scanInformation =
-                            scanInformationBuilder.build(serializationSubReasonProvider, deserializationSubReasonProvider);
+                            scanInformationBuilder.build(
+                                    serializationSubReasonProvider,
+                                    deserializationSubReasonProvider,
+                                    detectionRequirements,
+                                    result.getDefinition().disambiguationResult()
+                            );
                     scanInformations.put(typeIdentifier, scanInformation);
                 }
         );
@@ -78,7 +98,7 @@ public final class DebugInformation {
     }
 
     public ScanInformation scanInformationFor(final ResolvedType type) {
-        return scanInformationFor(realTypeIdentifier(type));
+        return scanInformationFor(typeIdentifierFor(type));
     }
 
     public ScanInformation scanInformationFor(final TypeIdentifier type) {
@@ -91,7 +111,7 @@ public final class DebugInformation {
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final ResolvedType type) {
-        return optionalScanInformationFor(realTypeIdentifier(type));
+        return optionalScanInformationFor(typeIdentifierFor(type));
     }
 
     public Optional<ScanInformation> optionalScanInformationFor(final TypeIdentifier type) {
@@ -105,7 +125,7 @@ public final class DebugInformation {
         return new ArrayList<>(this.scanInformations.values());
     }
 
-    public StateLog stateLog() {
+    public StateLog<MapMaidTypeScannerResult> stateLog() {
         return stateLog;
     }
 

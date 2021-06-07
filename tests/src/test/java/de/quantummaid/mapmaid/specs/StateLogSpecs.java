@@ -23,13 +23,14 @@ package de.quantummaid.mapmaid.specs;
 
 import com.google.gson.Gson;
 import de.quantummaid.mapmaid.MapMaid;
-import de.quantummaid.mapmaid.builder.resolving.processing.log.LogEntry;
-import de.quantummaid.mapmaid.builder.resolving.processing.log.LoggedState;
-import de.quantummaid.mapmaid.builder.resolving.processing.log.StateLog;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.domain.AString;
+import de.quantummaid.reflectmaid.TypeToken;
+import de.quantummaid.reflectmaid.typescanner.log.LoggedState;
+import de.quantummaid.reflectmaid.typescanner.log.StateLog;
+import de.quantummaid.reflectmaid.typescanner.signals.Signal;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
 import static de.quantummaid.reflectmaid.GenericType.genericType;
@@ -41,9 +42,13 @@ public final class StateLogSpecs {
     @Test
     public void stateLogIsSerializable() {
         final MapMaid mapMaid1 = MapMaid.aMapMaid()
-                .serializingCustomObject(StateLog.class, builder -> builder
-                        .withField("entries", genericType(List.class, LogEntry.class), StateLog::entries)
+                .serializingCustomObject(genericType(new TypeToken<StateLog<MapMaidTypeScannerResult>>() {
+                        }), builder -> builder
+                        .withField("entries", genericType(new TypeToken<>() {
+                        }), StateLog::entries)
                 )
+                .serializingCustomPrimitive(genericType(new TypeToken<Signal<MapMaidTypeScannerResult>>() {
+                }), Signal::description)
                 .serializingCustomObject(LoggedState.class, builder -> builder
                         .withField("detectionRequirementReasons", String.class, LoggedState::buildDetectionRequirementReasons)
                         .withField("type", String.class, LoggedState::buildTypeDescription)
@@ -54,9 +59,10 @@ public final class StateLogSpecs {
         final MapMaid mapMaid2 = MapMaid.aMapMaid()
                 .serializingAndDeserializing(AString.class)
                 .build();
-        final StateLog stateLog = mapMaid2.debugInformation().stateLog();
+        final StateLog<MapMaidTypeScannerResult> stateLog = mapMaid2.debugInformation().stateLog();
 
-        final String json = mapMaid1.serializeToJson(stateLog);
+        final String json = mapMaid1.serializeToJson(stateLog, genericType(new TypeToken<StateLog<MapMaidTypeScannerResult>>() {
+        }));
 
         final Gson gson = new Gson();
         final Map<?, ?> actualMap = gson.fromJson(json, Map.class);
@@ -66,27 +72,27 @@ public final class StateLogSpecs {
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 0, object: 0, primitive: 0, manual serializer: false, manual deserializer: false\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 0, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"ToBeDetected\"\n" +
                 "        }\n" +
                 "      ],\n" +
-                "      \"signal\": \"add serialization to AString\"\n" +
+                "      \"signal\": \"add serialization to AString in /\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0, primitive: 0, manual serializer: false, manual deserializer: false\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"ToBeDetected\"\n" +
                 "        }\n" +
                 "      ],\n" +
-                "      \"signal\": \"add deserialization to AString\"\n" +
+                "      \"signal\": \"add deserialization to AString in /\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0, primitive: 0, manual serializer: false, manual deserializer: false\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"Resolving\"\n" +
                 "        }\n" +
@@ -96,7 +102,7 @@ public final class StateLogSpecs {
                 "    {\n" +
                 "      \"changedStates\": [\n" +
                 "        {\n" +
-                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0, primitive: 0, manual serializer: false, manual deserializer: false\",\n" +
+                "          \"detectionRequirementReasons\": \"serialization: 1, deserialization: 1, object: 0\",\n" +
                 "          \"type\": \"de.quantummaid.mapmaid.domain.AString\",\n" +
                 "          \"state\": \"Resolved\"\n" +
                 "        }\n" +

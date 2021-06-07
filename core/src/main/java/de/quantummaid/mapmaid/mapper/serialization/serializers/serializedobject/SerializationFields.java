@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject;
 
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

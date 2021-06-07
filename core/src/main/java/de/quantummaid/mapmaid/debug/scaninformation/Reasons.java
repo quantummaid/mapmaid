@@ -21,8 +21,8 @@
 
 package de.quantummaid.mapmaid.debug.scaninformation;
 
-import de.quantummaid.mapmaid.debug.Reason;
-import de.quantummaid.mapmaid.debug.SubReasonProvider;
+import de.quantummaid.reflectmaid.typescanner.Reason;
+import de.quantummaid.reflectmaid.typescanner.SubReasonProvider;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;

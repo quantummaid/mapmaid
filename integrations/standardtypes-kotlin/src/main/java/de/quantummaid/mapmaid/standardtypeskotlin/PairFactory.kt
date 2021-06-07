@@ -1,12 +1,8 @@
 package de.quantummaid.mapmaid.standardtypeskotlin
 
-import de.quantummaid.mapmaid.builder.MapMaidConfiguration
-import de.quantummaid.mapmaid.builder.resolving.Context
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactoryResult
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualDeserializerSignal
-import de.quantummaid.mapmaid.builder.resolving.processing.signals.AddManualSerializerSignal
-import de.quantummaid.mapmaid.builder.resolving.states.detected.Unreasoned
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult
 import de.quantummaid.mapmaid.debug.DebugInformation
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializerCallback
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer
@@ -17,11 +13,11 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker
 import de.quantummaid.mapmaid.mapper.universal.Universal
 import de.quantummaid.mapmaid.mapper.universal.UniversalObject
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings
-import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
-import java.util.*
+import de.quantummaid.reflectmaid.typescanner.Context
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
 
 private class PairSerializer(
     private val typeIdentifierFirst: TypeIdentifier,
@@ -106,21 +102,21 @@ private class PairDeserializer(
     }
 }
 
-class PairFactory : StateFactory {
+class PairFactory : StateFactory<MapMaidTypeScannerResult> {
+
+    override fun applies(type: TypeIdentifier): Boolean {
+        if (type.isVirtual()) {
+            return false
+        }
+        val resolvedType: ResolvedType = type.realType()
+        return resolvedType.assignableType() == Pair::class.java
+    }
 
     override fun create(
-        reflectMaid: ReflectMaid,
         typeIdentifier: TypeIdentifier,
-        context: Context,
-        mapMaidConfiguration: MapMaidConfiguration
-    ): Optional<StateFactoryResult> {
-        if (typeIdentifier.isVirtual) {
-            return Optional.empty()
-        }
-        val type: ResolvedType = typeIdentifier.realType
-        if (type.assignableType() != Pair::class.java) {
-            return Optional.empty()
-        }
+        context: Context<MapMaidTypeScannerResult>,
+    ) {
+        val type: ResolvedType = typeIdentifier.realType()
 
         val typeParameters = type.typeParameters()
         val first = typeParameters[0]
@@ -130,14 +126,6 @@ class PairFactory : StateFactory {
         val typeIdentifierSecond = TypeIdentifier.typeIdentifierFor(second)
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
-        return Optional.of(
-            StateFactoryResult.stateFactoryResult(
-                Unreasoned.unreasoned(context),
-                listOf(
-                    AddManualSerializerSignal.addManualSerializer(typeIdentifier, serializer),
-                    AddManualDeserializerSignal.addManualDeserializer(typeIdentifier, deserializer)
-                )
-            )
-        )
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
     }
 }

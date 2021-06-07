@@ -21,16 +21,16 @@
 
 package de.quantummaid.mapmaid.debug;
 
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirementReasons;
-import de.quantummaid.mapmaid.builder.resolving.requirements.DetectionRequirements;
-import de.quantummaid.mapmaid.builder.resolving.requirements.RequirementsReducer;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.debug.scaninformation.Reasons;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializedObjectSerializer;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.SubReasonProvider;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +39,10 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.debug.RequiredAction.*;
 import static de.quantummaid.mapmaid.debug.scaninformation.ActualScanInformation.actualScanInformation;
 import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 
@@ -50,7 +51,6 @@ import static de.quantummaid.mapmaid.debug.scaninformation.Reasons.reasons;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScanInformationBuilder {
     private final TypeIdentifier type;
-    private DetectionRequirementReasons detectionRequirementReasons = DetectionRequirementReasons.empty();
     private final Map<TypeSerializer, List<String>> serializers;
     private final Map<SerializationField, List<String>> serializationFields;
     private final Map<TypeDeserializer, List<String>> deserializers;
@@ -76,28 +76,6 @@ public final class ScanInformationBuilder {
     public void resetScan() {
         this.serializers.clear();
         this.deserializers.clear();
-    }
-
-    public RequiredAction changeRequirements(final RequirementsReducer reducer) {
-        final DetectionRequirementReasons oldReaons = this.detectionRequirementReasons;
-        final DetectionRequirementReasons newReasons = reducer.reduce(oldReaons);
-        this.detectionRequirementReasons = newReasons;
-        if (detectionRequirements().isUnreasoned()) {
-            return unreasoned();
-        }
-        if (oldReaons.hasChanged(newReasons)) {
-            return requirementsChanged();
-        } else {
-            return nothingChanged();
-        }
-    }
-
-    public DetectionRequirementReasons detectionRequirementReasons() {
-        return detectionRequirementReasons;
-    }
-
-    public DetectionRequirements detectionRequirements() {
-        return this.detectionRequirementReasons.detectionRequirements();
     }
 
     public void ignoreAllOtherSerializers(final TypeSerializer serializer,
@@ -164,41 +142,49 @@ public final class ScanInformationBuilder {
         }
     }
 
-    public void setSerializer(final TypeSerializer serializer) {
-        this.serializer = serializer;
-    }
-
-    public void setDeserializer(final TypeDeserializer deserializer) {
-        this.deserializer = deserializer;
+    public void setResult(final DisambiguationResult result,
+                          final DetectionRequirements detectionRequirements) {
+        if (detectionRequirements.requires(SERIALIZATION)) {
+            serializer = result.serializer();
+        }
+        if (detectionRequirements.requires(DESERIALIZATION)) {
+            deserializer = result.deserializer();
+        }
     }
 
     public ScanInformation build(final SubReasonProvider serializationSubReasonProvider,
-                                 final SubReasonProvider deserializationSubReasonProvider) {
-        if (this.serializer != null) {
-            if (this.serializer instanceof SerializedObjectSerializer) {
+                                 final SubReasonProvider deserializationSubReasonProvider,
+                                 final DetectionRequirements detectionRequirements,
+                                 final DisambiguationResult disambiguationResult) {
+        if (disambiguationResult != null) {
+            serializer = disambiguationResult.serializer();
+            deserializer = disambiguationResult.deserializer();
+        }
+        if (serializer != null) {
+            if (serializer instanceof SerializedObjectSerializer) {
                 final SerializedObjectSerializer serializedObjectSerializer =
-                        (SerializedObjectSerializer) this.serializer;
-                serializedObjectSerializer.fields().fields().forEach(this.serializationFields::remove);
+                        (SerializedObjectSerializer) serializer;
+                serializedObjectSerializer.fields().fields().forEach(serializationFields::remove);
             } else {
-                this.serializers.remove(this.serializer);
+                this.serializers.remove(serializer);
             }
         }
         if (this.deserializer != null) {
-            this.deserializers.remove(this.deserializer);
+            this.deserializers.remove(deserializer);
         }
         final Reasons reasons = reasons(
-                this.detectionRequirementReasons.deserializationReasons,
-                this.detectionRequirementReasons.serializationReasons,
+                detectionRequirements.reasonsFor(DESERIALIZATION),
+                detectionRequirements.reasonsFor(SERIALIZATION),
                 serializationSubReasonProvider,
                 deserializationSubReasonProvider);
         return actualScanInformation(
-                this.type,
+                type,
                 reasons,
-                this.serializer,
-                this.deserializer,
-                this.serializers,
-                this.serializationFields,
-                this.deserializers
+                serializer,
+                deserializer,
+                serializers,
+                serializationFields,
+                deserializers
         );
     }
 }

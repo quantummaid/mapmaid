@@ -22,11 +22,11 @@
 package de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects;
 
 import de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields;
-import de.quantummaid.mapmaid.shared.identifier.TypeIdentifier;
 import de.quantummaid.reflectmaid.Executor;
 import de.quantummaid.reflectmaid.resolvedtype.ClassType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedConstructor;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedParameter;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.DeserializationFields.deserializationFields;
 import static de.quantummaid.mapmaid.mapper.deserialization.deserializers.serializedobjects.SerializedObjectDeserializer.createDescription;
-import static de.quantummaid.mapmaid.shared.identifier.RealTypeIdentifier.realTypeIdentifier;
+import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.stream.Collectors.toList;
@@ -70,7 +70,7 @@ public final class ConstructorSerializedObjectDeserializer implements Serialized
         final Map<String, TypeIdentifier> parameterFields = parameters.stream()
                 .collect(toMap(
                         ResolvedParameter::name,
-                        parameter -> realTypeIdentifier(parameter.getType())
+                        parameter -> typeIdentifierFor(parameter.getType())
                 ));
         final Executor executor = factoryConstructor.createExecutor();
         return new ConstructorSerializedObjectDeserializer(deserializationFields(parameterFields), factoryConstructor, executor, parameterNames);

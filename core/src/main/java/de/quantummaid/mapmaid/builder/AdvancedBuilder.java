@@ -22,12 +22,11 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.autoload.Autoloadable;
+import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.NormalDisambiguator;
-import de.quantummaid.mapmaid.builder.resolving.processing.Processor;
-import de.quantummaid.mapmaid.builder.resolving.processing.factories.StateFactory;
 import de.quantummaid.mapmaid.mapper.marshalling.Marshaller;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.UniversalObjectMarshallerAndUnmarshaller;
@@ -40,6 +39,10 @@ import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
+import de.quantummaid.reflectmaid.typescanner.Processor;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactories;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
+import de.quantummaid.reflectmaid.typescanner.factories.UndetectedFactory;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -52,13 +55,13 @@ import java.util.stream.Collectors;
 import static de.quantummaid.mapmaid.builder.MapMaidConfiguration.emptyMapMaidConfiguration;
 import static de.quantummaid.mapmaid.builder.MarshallerAutoloadingException.conflictingMarshallersForTypes;
 import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloadIfClassPresent;
+import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.UndetectedFactory.undetectedFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
-import static de.quantummaid.mapmaid.builder.resolving.processing.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
+import static de.quantummaid.mapmaid.builder.resolving.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
+import static de.quantummaid.mapmaid.builder.resolving.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
+import static de.quantummaid.mapmaid.builder.resolving.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
+import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
 import static de.quantummaid.mapmaid.exceptions.StackTraceStateFactory.stackTraceStateFactory;
@@ -70,6 +73,7 @@ import static de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers.mar
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry.unmarshallerRegistry;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.modifier.EmptyCollectionStrippingMarshallingModifier.emptyCollectionStrippingMarshallingModifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static de.quantummaid.reflectmaid.typescanner.scopes.Scope.rootScope;
 import static java.util.stream.Collectors.groupingBy;
 
 @ToString
@@ -90,7 +94,7 @@ public final class AdvancedBuilder {
     private boolean autoloadMarshallers = true;
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
-    private final List<StateFactory> stateFactories = new ArrayList<>();
+    private final List<StateFactory<MapMaidTypeScannerResult>> stateFactories = new ArrayList<>();
     private int maxStackFrameCount = DEFAULT_MAX_STACK_FRAME_COUNT;
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
@@ -137,7 +141,7 @@ public final class AdvancedBuilder {
         return this;
     }
 
-    public AdvancedBuilder withStateFactory(final StateFactory stateFactory) {
+    public AdvancedBuilder withStateFactory(final StateFactory<MapMaidTypeScannerResult> stateFactory) {
         validateNotNull(stateFactory, "stateFactory");
         stateFactories.add(stateFactory);
         return this;
@@ -243,18 +247,27 @@ public final class AdvancedBuilder {
         return mapMaidConfiguration;
     }
 
-    Processor processor() {
+    Processor<MapMaidTypeScannerResult> processor() {
         List.of(
                 throwableStateFactory(reflectMaid),
                 stackTraceStateFactory(reflectMaid, maxStackFrameCount),
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
-                kotlinSealedClassFactory(),
-                undetectedFactory()
+                kotlinSealedClassFactory(mapMaidConfiguration),
+                new UndetectedFactory<MapMaidTypeScannerResult>()
         )
                 .forEach(this::withStateFactory);
-        return Processor.processor(stateFactories);
+        return Processor.processor(
+                new StateFactories<>(
+                        Map.of(
+                                rootScope(), stateFactories
+                        ),
+                        new UndetectedFactory<>()
+                ),
+                List.of(SERIALIZATION, DESERIALIZATION),
+                List.of(OBJECT_ENFORCING)
+        );
     }
 
     private void autoload() {
