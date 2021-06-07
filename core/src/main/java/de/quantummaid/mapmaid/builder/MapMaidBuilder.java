@@ -27,7 +27,6 @@ import de.quantummaid.mapmaid.builder.builder.customobjects.CustomObjectsBuilder
 import de.quantummaid.mapmaid.builder.builder.customobjects.DeserializationOnlyBuilder;
 import de.quantummaid.mapmaid.builder.builder.customobjects.DuplexBuilder;
 import de.quantummaid.mapmaid.builder.builder.customobjects.SerializationOnlyBuilder;
-import de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors;
 import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionFactory;
 import de.quantummaid.mapmaid.builder.customcollection.InlinedCollectionListExtractor;
 import de.quantummaid.mapmaid.builder.customtypes.CustomType;
@@ -38,7 +37,6 @@ import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPr
 import de.quantummaid.mapmaid.builder.customtypes.customprimitive.CustomCustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Builder00;
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject;
-import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.injection.FixedInjector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidDetector;
@@ -120,7 +118,6 @@ public final class MapMaidBuilder implements
         CustomCollectionBuilder {
     private final ReflectMaid reflectMaid;
     private final List<Signal<MapMaidTypeScannerResult>> signals = new ArrayList<>();
-    private final SimpleDetector detector = ConventionalDetectors.conventionalDetector();
     private final List<TypeIdentifier> injectionTypes = new ArrayList<>();
     private final AdvancedBuilder advancedBuilder;
     private final List<Recipe> recipes = smallList();
@@ -455,7 +452,7 @@ public final class MapMaidBuilder implements
         signals.forEach(processor::dispatch);
 
         final Disambiguators disambiguators = advancedBuilder.buildDisambiguators();
-        final MapMaidDetector detector = mapMaidDetector(this.detector, disambiguators, injectionTypes);
+        final MapMaidDetector detector = mapMaidDetector(disambiguators, injectionTypes);
         final MapMaidResolver resolver = mapMaidResolver();
         final MapMaidOnCollectionError onError = mapMaidOnCollectionError(reflectMaid);
         final Map<TypeIdentifier, Map<Scope, CollectionResult<MapMaidTypeScannerResult>>> result =

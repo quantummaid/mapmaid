@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.builder.conventional.ConventionalDetectors.conventionalDetector;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.debug.ScanInformationBuilder.scanInformationBuilder;
 
@@ -45,9 +46,9 @@ public final class MapMaidDetector implements Detector<MapMaidTypeScannerResult>
     private final Disambiguators disambiguators;
     private final List<TypeIdentifier> injectedTypes;
 
-    public static MapMaidDetector mapMaidDetector(final SimpleDetector detector,
-                                                  final Disambiguators disambiguators,
+    public static MapMaidDetector mapMaidDetector(final Disambiguators disambiguators,
                                                   final List<TypeIdentifier> injectedTypes) {
+        final SimpleDetector detector = conventionalDetector();
         return new MapMaidDetector(detector, disambiguators, injectedTypes);
     }
 
