@@ -13,9 +13,8 @@ import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
 import de.quantummaid.reflectmaid.typescanner.Context
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier.Companion.typeIdentifierFor
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned
 import java.time.Duration
 import java.time.Instant
 
@@ -57,7 +56,7 @@ private class SimpleSerializer<T>(
     }
 
     override fun description(): String {
-        return description;
+        return description
     }
 }
 
@@ -77,10 +76,11 @@ private class SimpleDeserializer<T : Any>(
 }
 
 private class CustomFactory(
-    private val targetType: ResolvedType,
+    targetType: ResolvedType,
     private val serializer: TypeSerializer,
     private val deserializer: TypeDeserializer
 ) : StateFactory<MapMaidTypeScannerResult> {
+    private val targetTypeIdentifier = typeIdentifierFor(targetType)
 
     companion object {
         inline fun <reified T : Any> createCustomFactory(
@@ -93,18 +93,14 @@ private class CustomFactory(
         }
     }
 
+    override fun applies(type: TypeIdentifier): Boolean {
+        return targetTypeIdentifier == type
+    }
+
     override fun create(
-        typeIdentifier: TypeIdentifier,
+        type: TypeIdentifier,
         context: Context<MapMaidTypeScannerResult>,
-    ): StatefulDefinition<MapMaidTypeScannerResult>? {
-        if (typeIdentifier.isVirtual()) {
-            return null
-        }
-        val type: ResolvedType = typeIdentifier.realType()
-        if (type != targetType) {
-            return null
-        }
-        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
-        return Unreasoned(context)
+    ) {
+        context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type))
     }
 }

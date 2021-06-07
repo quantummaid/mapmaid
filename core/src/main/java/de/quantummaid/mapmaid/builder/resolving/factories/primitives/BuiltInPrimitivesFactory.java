@@ -28,12 +28,11 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
@@ -51,20 +50,22 @@ public final class BuiltInPrimitivesFactory implements StateFactory<MapMaidTypeS
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
+    public boolean applies(@NotNull final TypeIdentifier type) {
         if (type.isVirtual()) {
-            return null;
+            return false;
         }
-
         final ResolvedType realType = type.realType();
         final Class<?> assignableType = realType.assignableType();
-        if (!CUSTOM_PRIMITIVE_MAPPINGS.isPrimitiveType(assignableType)) {
-            return null;
-        }
+        return CUSTOM_PRIMITIVE_MAPPINGS.isPrimitiveType(assignableType);
+    }
+
+    @Override
+    public void create(final TypeIdentifier type,
+                       final Context<MapMaidTypeScannerResult> context) {
+        final ResolvedType realType = type.realType();
+        final Class<?> assignableType = realType.assignableType();
         final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType);
         final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType);
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
-        return new Unreasoned<>(context);
     }
 }

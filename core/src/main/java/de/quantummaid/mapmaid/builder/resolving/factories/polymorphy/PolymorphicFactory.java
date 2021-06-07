@@ -31,10 +31,9 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -59,11 +58,13 @@ public final class PolymorphicFactory implements StateFactory<MapMaidTypeScanner
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
-                                                               final Context<MapMaidTypeScannerResult> context) {
-        if (!superType.equals(type)) {
-            return null;
-        }
+    public boolean applies(@NotNull final TypeIdentifier type) {
+        return superType.equals(type);
+    }
+
+    @Override
+    public void create(@NotNull final TypeIdentifier type,
+                       @NotNull final Context<MapMaidTypeScannerResult> context) {
         final List<TypeIdentifier> subTypeIdentifiers = subTypes.stream()
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
@@ -82,6 +83,5 @@ public final class PolymorphicFactory implements StateFactory<MapMaidTypeScanner
             deserializer = null;
         }
         context.setManuallyConfiguredResult(MapMaidTypeScannerResult.result(disambiguationResult(serializer, deserializer), superType));
-        return new Unreasoned<>(context);
     }
 }

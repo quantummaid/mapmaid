@@ -30,10 +30,9 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -53,17 +52,20 @@ public final class KotlinSealedClassFactory implements StateFactory<MapMaidTypeS
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
-                                                               final Context<MapMaidTypeScannerResult> context) {
+    public boolean applies(@NotNull final TypeIdentifier type) {
         if (type.isVirtual()) {
-            return null;
+            return false;
         }
         final ResolvedType resolvedType = type.realType();
         final List<ResolvedType> sealedSubclasses = resolvedType.sealedSubclasses();
-        if (sealedSubclasses.isEmpty()) {
-            return null;
-        }
+        return !sealedSubclasses.isEmpty();
+    }
 
+    @Override
+    public void create(final TypeIdentifier type,
+                       final Context<MapMaidTypeScannerResult> context) {
+        final ResolvedType resolvedType = type.realType();
+        final List<ResolvedType> sealedSubclasses = resolvedType.sealedSubclasses();
         final List<TypeIdentifier> subtypes = sealedSubclasses.stream()
                 .map(TypeIdentifier::typeIdentifierFor)
                 .collect(toList());
@@ -72,6 +74,5 @@ public final class KotlinSealedClassFactory implements StateFactory<MapMaidTypeS
         final PolymorphicSerializer serializer = polymorphicSerializer(type, sealedSubclasses, nameToType, "type");
         final PolymorphicDeserializer deserializer = polymorphicDeserializer(type, nameToType, "type");
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
-        return new Unreasoned<>(context);
     }
 }

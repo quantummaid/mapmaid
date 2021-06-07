@@ -27,8 +27,7 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -48,16 +47,19 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier typeIdentifier,
-                                                               final Context<MapMaidTypeScannerResult> context) {
-        if (typeIdentifier.isVirtual()) {
-            return null;
+    public boolean applies(@NotNull final TypeIdentifier type) {
+        if (type.isVirtual()) {
+            return false;
         }
-        final ResolvedType type = typeIdentifier.realType();
+        final ResolvedType resolvedType = type.realType();
+        final Class<?> assignableType = resolvedType.assignableType();
+        return collectionInformations.containsKey(assignableType);
+    }
 
-        if (!this.collectionInformations.containsKey(type.assignableType())) {
-            return null;
-        }
+    @Override
+    public void create(final TypeIdentifier typeIdentifier,
+                       final Context<MapMaidTypeScannerResult> context) {
+        final ResolvedType type = typeIdentifier.realType();
         if (type.typeParameters().size() != 1) {
             throw new UnsupportedOperationException(format(
                     "This should never happen. A collection of type '%s' has more than one type parameter",
@@ -69,6 +71,5 @@ public final class NativeJavaCollectionDefinitionFactory implements StateFactory
                 listSerializer(genericType),
                 listDeserializer(genericType, collectionInformation.mapper())
         ), typeIdentifier));
-        return new Unreasoned<>(context);
     }
 }

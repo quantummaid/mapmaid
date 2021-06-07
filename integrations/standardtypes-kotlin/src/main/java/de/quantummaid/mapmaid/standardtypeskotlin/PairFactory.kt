@@ -18,8 +18,6 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
 import de.quantummaid.reflectmaid.typescanner.Context
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned
 
 private class PairSerializer(
     private val typeIdentifierFirst: TypeIdentifier,
@@ -106,17 +104,19 @@ private class PairDeserializer(
 
 class PairFactory : StateFactory<MapMaidTypeScannerResult> {
 
+    override fun applies(type: TypeIdentifier): Boolean {
+        if (type.isVirtual()) {
+            return false
+        }
+        val resolvedType: ResolvedType = type.realType()
+        return resolvedType.assignableType() == Pair::class.java
+    }
+
     override fun create(
         typeIdentifier: TypeIdentifier,
         context: Context<MapMaidTypeScannerResult>,
-    ): StatefulDefinition<MapMaidTypeScannerResult>? {
-        if (typeIdentifier.isVirtual()) {
-            return null
-        }
+    ) {
         val type: ResolvedType = typeIdentifier.realType()
-        if (type.assignableType() != Pair::class.java) {
-            return null
-        }
 
         val typeParameters = type.typeParameters()
         val first = typeParameters[0]
@@ -127,6 +127,5 @@ class PairFactory : StateFactory<MapMaidTypeScannerResult> {
         val serializer = PairSerializer(typeIdentifierFirst, typeIdentifierSecond)
         val deserializer = PairDeserializer(typeIdentifierFirst, typeIdentifierSecond)
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), typeIdentifier))
-        return Unreasoned(context)
     }
 }

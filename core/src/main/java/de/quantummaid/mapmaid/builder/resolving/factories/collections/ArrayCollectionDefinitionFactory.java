@@ -27,12 +27,11 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
@@ -50,22 +49,24 @@ public final class ArrayCollectionDefinitionFactory implements StateFactory<MapM
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier typeIdentifier,
-                                                                         final Context<MapMaidTypeScannerResult> context) {
-        if (typeIdentifier.isVirtual()) {
-            return null;
+    public boolean applies(@NotNull final TypeIdentifier type) {
+        if (type.isVirtual()) {
+            return false;
         }
-        final ResolvedType type = typeIdentifier.realType();
+        final ResolvedType resolvedType = type.realType();
 
-        if (!(type instanceof ArrayType)) {
-            return null;
-        }
+        return resolvedType.isArray();
+    }
+
+    @Override
+    public void create(final TypeIdentifier typeIdentifier,
+                       final Context<MapMaidTypeScannerResult> context) {
+        final ResolvedType type = typeIdentifier.realType();
         final ResolvedType componentType = ((ArrayType) type).componentType();
         final TypeIdentifier componentTypeIdentifier = typeIdentifierFor(componentType);
         context.setManuallyConfiguredResult(result(duplexResult(
                 arraySerializer(componentTypeIdentifier),
                 arrayDeserializer(componentTypeIdentifier, componentType)
         ), typeIdentifier));
-        return new Unreasoned<>(context);
     }
 }

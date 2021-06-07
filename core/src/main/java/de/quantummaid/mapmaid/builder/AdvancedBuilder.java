@@ -40,6 +40,7 @@ import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Processor;
+import de.quantummaid.reflectmaid.typescanner.factories.StateFactories;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
 import de.quantummaid.reflectmaid.typescanner.factories.UndetectedFactory;
 import lombok.AccessLevel;
@@ -72,6 +73,7 @@ import static de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers.mar
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry.unmarshallerRegistry;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.modifier.EmptyCollectionStrippingMarshallingModifier.emptyCollectionStrippingMarshallingModifier;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static de.quantummaid.reflectmaid.typescanner.scopes.Scope.rootScope;
 import static java.util.stream.Collectors.groupingBy;
 
 @ToString
@@ -256,7 +258,13 @@ public final class AdvancedBuilder {
                 new UndetectedFactory<MapMaidTypeScannerResult>()
         )
                 .forEach(this::withStateFactory);
-        return Processor.processor(stateFactories,
+        return Processor.processor(
+                new StateFactories<>(
+                        Map.of(
+                                rootScope(), stateFactories
+                        ),
+                        new UndetectedFactory<>()
+                ),
                 List.of(SERIALIZATION, DESERIALIZATION),
                 List.of(OBJECT_ENFORCING)
         );

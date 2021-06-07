@@ -29,10 +29,9 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.disambiguationResult;
@@ -49,12 +48,15 @@ public final class CustomTypeFactory implements StateFactory<MapMaidTypeScannerR
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
-                                                               final Context<MapMaidTypeScannerResult> context) {
+    public boolean applies(@NotNull final TypeIdentifier type) {
         final TypeIdentifier typeIdentifier = customType.type();
-        if (!typeIdentifier.equals(type)) {
-            return null;
-        }
+        return typeIdentifier.equals(type);
+    }
+
+    @Override
+    public void create(@NotNull final TypeIdentifier type,
+                       @NotNull final Context<MapMaidTypeScannerResult> context) {
+        final TypeIdentifier typeIdentifier = customType.type();
         final TypeSerializer serializer;
         if (capabilities.hasSerialization()) {
             serializer = customType.serializer()
@@ -72,6 +74,5 @@ public final class CustomTypeFactory implements StateFactory<MapMaidTypeScannerR
             deserializer = null;
         }
         context.setManuallyConfiguredResult(result(disambiguationResult(serializer, deserializer), typeIdentifier));
-        return new Unreasoned<>(context);
     }
 }

@@ -27,10 +27,9 @@ import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
@@ -48,17 +47,18 @@ public final class ThrowableStateFactory implements StateFactory<MapMaidTypeScan
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
-                                                               final Context<MapMaidTypeScannerResult> context) {
+    public boolean applies(@NotNull final TypeIdentifier type) {
         if (type.isVirtual()) {
-            return null;
+            return false;
         }
         final Class<?> assignableType = type.realType().assignableType();
-        if (!Throwable.class.isAssignableFrom(assignableType)) {
-            return null;
-        }
+        return Throwable.class.isAssignableFrom(assignableType);
+    }
+
+    @Override
+    public void create(final TypeIdentifier type,
+                       final Context<MapMaidTypeScannerResult> context) {
         final ThrowableSerializer serializer = throwableSerializer(stackTraceType);
         context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
-        return new Unreasoned<>(context);
     }
 }

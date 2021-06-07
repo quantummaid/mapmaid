@@ -27,10 +27,9 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
-import de.quantummaid.reflectmaid.typescanner.states.StatefulDefinition;
-import de.quantummaid.reflectmaid.typescanner.states.detected.Unreasoned;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.injection.InjectionSerializer.injectionSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
@@ -46,13 +45,14 @@ public final class InjectingFactory implements StateFactory<MapMaidTypeScannerRe
     }
 
     @Override
-    public StatefulDefinition<MapMaidTypeScannerResult> create(final TypeIdentifier type,
-                                                               final Context<MapMaidTypeScannerResult> context) {
-        if (!targetType.equals(type)) {
-            return null;
-        }
+    public boolean applies(@NotNull final TypeIdentifier type) {
+        return targetType.equals(type);
+    }
+
+    @Override
+    public void create(@NotNull final TypeIdentifier type,
+                       @NotNull final Context<MapMaidTypeScannerResult> context) {
         final TypeSerializer serializer = injectionSerializer(targetType);
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), targetType));
-        return new Unreasoned<>(context);
     }
 }
