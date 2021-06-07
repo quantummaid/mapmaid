@@ -69,9 +69,9 @@ public final class DebugInformation {
                 }));
         final Map<TypeIdentifier, ScanInformation> scanInformations = new HashMap<>(results.size());
         final SubReasonProvider serializationSubReasonProvider =
-                typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForSerialization();
+                typeIdentifier -> scanInformations.get(typeIdentifier.getTypeIdentifier()).reasonsForSerialization();
         final SubReasonProvider deserializationSubReasonProvider =
-                typeIdentifier -> scanInformations.get(typeIdentifier).reasonsForDeserialization();
+                typeIdentifier -> scanInformations.get(typeIdentifier.getTypeIdentifier()).reasonsForDeserialization();
         results.forEach(
                 (typeIdentifier, result) -> {
                     final ScanInformationBuilder scanInformationBuilder = result.getDefinition().scanInformationBuilder();

@@ -49,7 +49,7 @@ public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult>
                                                           final Scope scope,
                                                           final DetectionRequirements detectionRequirements) {
         final List<Signal<MapMaidTypeScannerResult>> signals = new ArrayList<>();
-        final Reason reason = becauseOf(type);
+        final Reason reason = becauseOf(type, scope);
         if (detectionRequirements.requires(SERIALIZATION)) {
             final TypeSerializer serializer = result.disambiguationResult().serializer();
             final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
