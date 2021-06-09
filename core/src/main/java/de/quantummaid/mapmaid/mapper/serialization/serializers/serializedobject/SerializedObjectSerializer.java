@@ -71,7 +71,7 @@ public final class SerializedObjectSerializer implements TypeSerializer {
                                final CustomPrimitiveMappings customPrimitiveMappings,
                                final DebugInformation debugInformation) {
         final Map<String, Universal> map = new HashMap<>(10);
-        this.fields.fields().forEach(serializationField -> {
+        fields.fields().forEach(serializationField -> {
             final TypeIdentifier type = serializationField.type();
             final Object value = ofNullable(object).map(serializationField::query).orElse(null);
             final Universal serializedValue = callback.serializeDefinition(type, value, tracker);

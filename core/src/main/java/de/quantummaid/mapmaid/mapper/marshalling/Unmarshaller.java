@@ -23,4 +23,8 @@ package de.quantummaid.mapmaid.mapper.marshalling;
 
 public interface Unmarshaller<T> {
     Object unmarshal(T input) throws Exception; // NOSONAR
+
+    default boolean acceptsNull() {
+        return false;
+    }
 }

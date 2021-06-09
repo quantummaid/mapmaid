@@ -36,4 +36,9 @@ public final class UniversalObjectMarshallerAndUnmarshaller implements Marshalle
     public Object unmarshal(final Object input) throws Exception {
         return input;
     }
+
+    @Override
+    public boolean acceptsNull() {
+        return true;
+    }
 }

@@ -23,9 +23,11 @@ package de.quantummaid.mapmaid.specs;
 
 import de.quantummaid.mapmaid.domain.ANumber;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.specs.examples.customprimitives.success.tostring.MyCustomPrimitive;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
@@ -50,5 +52,17 @@ public final class UniversalTypeSpecs {
         )
                 .when().mapMaidMarshalsFromUniversalObject(List.of("a", "b", "c"), MarshallingType.JSON)
                 .theSerializationResultWas("[\"a\",\"b\",\"c\"]");
+    }
+
+    @Test
+    public void nullCanBeDeserializedFromUniversalType() {
+        given(
+                aMapMaid()
+                        .deserializing(MyCustomPrimitive.class)
+                        .build()
+        )
+                .when().mapMaidDeserializesTheMap((Map<String, Object>) null).toTheType(MyCustomPrimitive.class)
+                .noExceptionHasBeenThrown()
+                .theDeserializedObjectIs(null);
     }
 }

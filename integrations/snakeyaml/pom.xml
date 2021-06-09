@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>integrations-parent</artifactId>
-        <version>0.10.11</version>
+        <version>0.10.12</version>
     </parent>
 
     <groupId>de.quantummaid.mapmaid.integrations</groupId>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.28</version>
+            <version>1.29</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
