@@ -50,8 +50,10 @@ final class Unmarshallers {
 
     <M> Universal unmarshall(final M input,
                              final MarshallingType<M> marshallingType) {
-        validateNotNull(input, "input");
         final Unmarshaller<M> unmarshaller = unmarshallers.getForType(marshallingType);
+        if (!unmarshaller.acceptsNull()) {
+            validateNotNull(input, "input");
+        }
         try {
             final Object unmarshalled = unmarshaller.unmarshal(input);
             return fromNativeJava(unmarshalled);
