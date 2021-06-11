@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.exceptions;
+package de.quantummaid.mapmaid.builder.recipes.throwablesupport;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.reflectmaid.ReflectMaid;
@@ -33,32 +33,30 @@ import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
-import static de.quantummaid.mapmaid.exceptions.ThrowableSerializer.throwableSerializer;
+import static de.quantummaid.mapmaid.builder.recipes.throwablesupport.StackTraceSerializer.stackTraceSerializer;
 import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ThrowableStateFactory implements StateFactory<MapMaidTypeScannerResult> {
-    private final TypeIdentifier stackTraceType;
+public final class StackTraceStateFactory implements StateFactory<MapMaidTypeScannerResult> {
+    private final TypeIdentifier targetType;
+    private final int maxStackFrameCount;
 
-    public static ThrowableStateFactory throwableStateFactory(final ReflectMaid reflectMaid) {
-        final ResolvedType stackTraceResolvedType = reflectMaid.resolve(StackTraceElement[].class);
-        final TypeIdentifier stackTraceType = typeIdentifierFor(stackTraceResolvedType);
-        return new ThrowableStateFactory(stackTraceType);
+    public static StackTraceStateFactory stackTraceStateFactory(final ReflectMaid reflectMaid,
+                                                                final int maxStackFrameCount) {
+        final ResolvedType resolvedType = reflectMaid.resolve(StackTraceElement[].class);
+        final TypeIdentifier stackTraceType = typeIdentifierFor(resolvedType);
+        return new StackTraceStateFactory(stackTraceType, maxStackFrameCount);
     }
 
     @Override
     public boolean applies(@NotNull final TypeIdentifier type) {
-        if (type.isVirtual()) {
-            return false;
-        }
-        final Class<?> assignableType = type.realType().assignableType();
-        return Throwable.class.isAssignableFrom(assignableType);
+        return targetType.equals(type);
     }
 
     @Override
     public void create(final TypeIdentifier type,
                        final Context<MapMaidTypeScannerResult> context) {
-        final ThrowableSerializer serializer = throwableSerializer(stackTraceType);
+        final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
         context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
     }
 }

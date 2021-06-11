@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.specs;
+package de.quantummaid.mapmaid.specs.throwablemapping;
 
 import org.junit.jupiter.api.Test;
 

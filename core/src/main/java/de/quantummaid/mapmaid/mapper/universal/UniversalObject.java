@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 
 import static de.quantummaid.mapmaid.mapper.universal.Universal.fromNativeJava;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toMap;
@@ -71,6 +72,10 @@ public final class UniversalObject implements Universal {
         final Map<String, Universal> copy = new LinkedHashMap<>(map);
         copy.remove(name);
         return universalObject(copy);
+    }
+
+    public Map<String, Universal> toUniversalMap() {
+        return unmodifiableMap(map);
     }
 
     @Override

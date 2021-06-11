@@ -22,6 +22,7 @@
 package de.quantummaid.mapmaid.builder;
 
 import de.quantummaid.mapmaid.builder.autoload.Autoloadable;
+import de.quantummaid.mapmaid.builder.recipes.Recipe;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguator;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
@@ -36,10 +37,13 @@ import de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.modifier.MarshallingModifier;
 import de.quantummaid.mapmaid.mapper.marshalling.string.StringUnmarshaller;
+import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.mapmaid.polymorphy.PolymorphicTypeIdentifierExtractor;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Processor;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactories;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
 import de.quantummaid.reflectmaid.typescanner.factories.UndetectedFactory;
@@ -55,6 +59,7 @@ import java.util.stream.Collectors;
 import static de.quantummaid.mapmaid.builder.MapMaidConfiguration.emptyMapMaidConfiguration;
 import static de.quantummaid.mapmaid.builder.MarshallerAutoloadingException.conflictingMarshallersForTypes;
 import static de.quantummaid.mapmaid.builder.autoload.ActualAutoloadable.autoloadIfClassPresent;
+import static de.quantummaid.mapmaid.builder.recipes.throwablesupport.ThrowableSupport.throwableSupport;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators.disambiguators;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.DisambiguatorBuilder.defaultDisambiguatorBuilder;
@@ -64,14 +69,13 @@ import static de.quantummaid.mapmaid.builder.resolving.factories.kotlin.KotlinSe
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
-import static de.quantummaid.mapmaid.exceptions.StackTraceStateFactory.stackTraceStateFactory;
-import static de.quantummaid.mapmaid.exceptions.ThrowableStateFactory.throwableStateFactory;
 import static de.quantummaid.mapmaid.mapper.marshalling.MarshallingType.UNIVERSAL_OBJECT;
 import static de.quantummaid.mapmaid.mapper.marshalling.UniversalObjectMarshallerAndUnmarshaller.universalObjectMarshallerAndUnmarshaller;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry.marshallerRegistry;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers.marshallers;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry.unmarshallerRegistry;
 import static de.quantummaid.mapmaid.mapper.marshalling.registry.modifier.EmptyCollectionStrippingMarshallingModifier.emptyCollectionStrippingMarshallingModifier;
+import static de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers.superTypeSerializers;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.typescanner.scopes.Scope.rootScope;
 import static java.util.stream.Collectors.groupingBy;
@@ -86,6 +90,7 @@ public final class AdvancedBuilder {
             autoloadIfClassPresent("de.quantummaid.mapmaid.minimaljson.MinimalJsonMarshallerAndUnmarshaller")
     );
     private final ReflectMaid reflectMaid;
+    private final List<Recipe> recipes = smallList();
     private final DisambiguatorBuilder defaultDisambiguatorBuilder = defaultDisambiguatorBuilder();
     private final MapMaidConfiguration mapMaidConfiguration = emptyMapMaidConfiguration();
     private Map<MarshallingType<?>, Marshaller<?>> marshallerMap = smallMap();
@@ -95,6 +100,7 @@ public final class AdvancedBuilder {
     private List<MarshallerAndUnmarshaller<?>> autoloadedMarshallers = null;
     private Supplier<List<MarshallerAndUnmarshaller<?>>> autoloadMethod = this::autoloadMarshallers;
     private final List<StateFactory<MapMaidTypeScannerResult>> stateFactories = new ArrayList<>();
+    private final Map<TypeIdentifier, TypeSerializer> superTypeSerializers = new LinkedHashMap<>();
     private int maxStackFrameCount = DEFAULT_MAX_STACK_FRAME_COUNT;
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
@@ -107,6 +113,11 @@ public final class AdvancedBuilder {
 
     public ReflectMaid reflectMaid() {
         return reflectMaid;
+    }
+
+    public AdvancedBuilder withRecipe(final Recipe recipe) {
+        recipes.add(recipe);
+        return this;
     }
 
     public AdvancedBuilder withTypeIdentifierKey(final String typeIdentifierKey) {
@@ -147,6 +158,13 @@ public final class AdvancedBuilder {
         return this;
     }
 
+    public AdvancedBuilder withSuperTypeSerializer(final TypeIdentifier superType, final TypeSerializer serializer) {
+        validateNotNull(superType, "superType");
+        validateNotNull(serializer, "serializer");
+        superTypeSerializers.put(superType, serializer);
+        return this;
+    }
+
     public AdvancedBuilder withMaximumNumberOfStackFramesWhenSerializingExceptions(final int maxStackFrameCount) {
         this.maxStackFrameCount = maxStackFrameCount;
         return this;
@@ -178,26 +196,18 @@ public final class AdvancedBuilder {
     }
 
     public AdvancedBuilder usingJsonMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
-        validateNotNull(marshaller, "jsonMarshaller");
-        validateNotNull(unmarshaller, "jsonUnmarshaller");
         return usingMarshaller(MarshallingType.JSON, marshaller, unmarshaller);
     }
 
     public AdvancedBuilder usingJsonMarshaller(final Marshaller<String> marshaller, final Unmarshaller<String> unmarshaller) {
-        validateNotNull(marshaller, "jsonMarshaller");
-        validateNotNull(unmarshaller, "jsonUnmarshaller");
         return usingMarshaller(MarshallingType.JSON, marshaller, unmarshaller);
     }
 
     public AdvancedBuilder usingYamlMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
-        validateNotNull(marshaller, "yamlMarshaller");
-        validateNotNull(unmarshaller, "yamlUnmarshaller");
         return usingMarshaller(MarshallingType.YAML, marshaller, unmarshaller);
     }
 
     public AdvancedBuilder usingXmlMarshaller(final Marshaller<String> marshaller, final StringUnmarshaller unmarshaller) {
-        validateNotNull(marshaller, "xmlMarshaller");
-        validateNotNull(unmarshaller, "xmlUnmarshaller");
         return usingMarshaller(MarshallingType.XML, marshaller, unmarshaller);
     }
 
@@ -212,10 +222,19 @@ public final class AdvancedBuilder {
         return withMarshallingModifier(modifier);
     }
 
+    List<Recipe> buildRecipes() {
+        withRecipe(throwableSupport(maxStackFrameCount));
+        return recipes;
+    }
+
     Disambiguators buildDisambiguators() {
         final NormalDisambiguator defaultDisambiguator = this.defaultDisambiguatorBuilder.build();
         final Map<ResolvedType, Disambiguator> specialDisambiguators = smallMap();
         return disambiguators(defaultDisambiguator, specialDisambiguators);
+    }
+
+    SupertypeSerializers buildSupertypeSerializers() {
+        return superTypeSerializers(superTypeSerializers);
     }
 
     Marshallers buildMarshallers() {
@@ -249,13 +268,10 @@ public final class AdvancedBuilder {
 
     Processor<MapMaidTypeScannerResult> processor() {
         List.of(
-                throwableStateFactory(reflectMaid),
-                stackTraceStateFactory(reflectMaid, maxStackFrameCount),
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
-                kotlinSealedClassFactory(mapMaidConfiguration),
-                new UndetectedFactory<MapMaidTypeScannerResult>()
+                kotlinSealedClassFactory(mapMaidConfiguration)
         )
                 .forEach(this::withStateFactory);
         return Processor.processor(

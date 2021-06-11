@@ -19,11 +19,9 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.exceptions;
+package de.quantummaid.mapmaid.builder.recipes.throwablesupport;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
-import de.quantummaid.reflectmaid.ReflectMaid;
-import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory;
@@ -31,32 +29,28 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import static de.quantummaid.mapmaid.builder.recipes.throwablesupport.ThrowableSerializer.throwableSerializer;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
-import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
-import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StackTraceStateFactory implements StateFactory<MapMaidTypeScannerResult> {
-    private final TypeIdentifier targetType;
-    private final int maxStackFrameCount;
+public final class ThrowableStateFactory implements StateFactory<MapMaidTypeScannerResult> {
+    private final TypeIdentifier throwableType;
+    private final ThrowableSerializer serializer;
 
-    public static StackTraceStateFactory stackTraceStateFactory(final ReflectMaid reflectMaid,
-                                                                final int maxStackFrameCount) {
-        final ResolvedType resolvedType = reflectMaid.resolve(StackTraceElement[].class);
-        final TypeIdentifier stackTraceType = typeIdentifierFor(resolvedType);
-        return new StackTraceStateFactory(stackTraceType, maxStackFrameCount);
+    public static ThrowableStateFactory throwableStateFactory(final TypeIdentifier throwableType,
+                                                              final ThrowableSerializer serializer) {
+        return new ThrowableStateFactory(throwableType, serializer);
     }
 
     @Override
     public boolean applies(@NotNull final TypeIdentifier type) {
-        return targetType.equals(type);
+        return throwableType.equals(type);
     }
 
     @Override
     public void create(final TypeIdentifier type,
                        final Context<MapMaidTypeScannerResult> context) {
-        final StackTraceSerializer serializer = stackTraceSerializer(targetType, maxStackFrameCount);
         context.setManuallyConfiguredResult(result(serializationOnlyResult(serializer), type));
     }
 }

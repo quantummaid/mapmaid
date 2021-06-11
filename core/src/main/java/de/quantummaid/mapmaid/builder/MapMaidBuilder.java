@@ -39,14 +39,8 @@ import de.quantummaid.mapmaid.builder.customtypes.serializedobject.duplex.Builde
 import de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject;
 import de.quantummaid.mapmaid.builder.injection.FixedInjector;
 import de.quantummaid.mapmaid.builder.recipes.Recipe;
-import de.quantummaid.mapmaid.builder.resolving.MapMaidDetector;
-import de.quantummaid.mapmaid.builder.resolving.MapMaidOnCollectionError;
-import de.quantummaid.mapmaid.builder.resolving.MapMaidResolver;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
-import de.quantummaid.mapmaid.debug.DebugInformation;
-import de.quantummaid.mapmaid.debug.Lingo;
-import de.quantummaid.mapmaid.mapper.definitions.Definition;
 import de.quantummaid.mapmaid.mapper.definitions.Definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.Deserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
@@ -55,23 +49,22 @@ import de.quantummaid.mapmaid.mapper.injector.InjectorFactory;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.UnmarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.serialization.Serializer;
-import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.reflectmaid.GenericType;
 import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
-import de.quantummaid.reflectmaid.typescanner.CollectionResult;
 import de.quantummaid.reflectmaid.typescanner.Processor;
 import de.quantummaid.reflectmaid.typescanner.Reason;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
-import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
-import de.quantummaid.reflectmaid.typescanner.scopes.Scope;
 import de.quantummaid.reflectmaid.typescanner.signals.Signal;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static de.quantummaid.mapmaid.MapMaid.mapMaid;
@@ -82,25 +75,18 @@ import static de.quantummaid.mapmaid.builder.customtypes.DeserializationOnlyType
 import static de.quantummaid.mapmaid.builder.customtypes.SerializationOnlyType.createCustomPrimitive;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.deserialization_only.Builder00.serializedObjectBuilder00;
 import static de.quantummaid.mapmaid.builder.customtypes.serializedobject.serialization_only.SerializationOnlySerializedObject.serializationOnlySerializedObject;
-import static de.quantummaid.mapmaid.builder.resolving.MapMaidDetector.mapMaidDetector;
-import static de.quantummaid.mapmaid.builder.resolving.MapMaidOnCollectionError.mapMaidOnCollectionError;
-import static de.quantummaid.mapmaid.builder.resolving.MapMaidResolver.mapMaidResolver;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.DESERIALIZATION;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.SERIALIZATION;
+import static de.quantummaid.mapmaid.builder.resolving.TypeScannerHandler.handleStateMachine;
 import static de.quantummaid.mapmaid.builder.resolving.factories.customtype.CustomTypeFactory.customTypeFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.injecting.InjectingFactory.injectingFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.polymorphy.PolymorphicFactory.polymorphicFactory;
-import static de.quantummaid.mapmaid.collections.Collection.smallList;
-import static de.quantummaid.mapmaid.debug.DebugInformation.debugInformation;
-import static de.quantummaid.mapmaid.mapper.definitions.Definitions.definitions;
-import static de.quantummaid.mapmaid.mapper.definitions.GeneralDefinition.generalDefinition;
-import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.theDeserializer;
+import static de.quantummaid.mapmaid.mapper.deserialization.Deserializer.deserializer;
 import static de.quantummaid.mapmaid.mapper.serialization.Serializer.serializer;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static de.quantummaid.reflectmaid.GenericType.genericType;
 import static de.quantummaid.reflectmaid.typescanner.Reason.manuallyAdded;
 import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
-import static de.quantummaid.reflectmaid.typescanner.scopes.Scope.rootScope;
 import static de.quantummaid.reflectmaid.typescanner.signals.AddReasonSignal.addReasonSignal;
 import static java.util.Arrays.asList;
 
@@ -120,7 +106,6 @@ public final class MapMaidBuilder implements
     private final List<Signal<MapMaidTypeScannerResult>> signals = new ArrayList<>();
     private final List<TypeIdentifier> injectionTypes = new ArrayList<>();
     private final AdvancedBuilder advancedBuilder;
-    private final List<Recipe> recipes = smallList();
     private final ValidationMappings validationMappings = ValidationMappings.empty();
     private final ValidationErrorsMapping validationErrorsMapping = validationErrors -> {
         throw AggregatedValidationException.fromList(validationErrors);
@@ -405,7 +390,7 @@ public final class MapMaidBuilder implements
     }
 
     public MapMaidBuilder usingRecipe(final Recipe recipe) {
-        this.recipes.add(recipe);
+        advancedBuilder.withRecipe(recipe);
         return this;
     }
 
@@ -436,7 +421,7 @@ public final class MapMaidBuilder implements
     }
 
     public MapMaidBuilder withAdvancedSettings(final Consumer<AdvancedBuilder> configurator) {
-        configurator.accept(this.advancedBuilder);
+        configurator.accept(advancedBuilder);
         return this;
     }
 
@@ -445,62 +430,25 @@ public final class MapMaidBuilder implements
     }
 
     public MapMaid build() {
-        recipes.forEach(Recipe::init);
+        final List<Recipe> recipes = advancedBuilder.buildRecipes();
         recipes.forEach(recipe -> recipe.cook(this));
 
+        final SupertypeSerializers supertypeSerializers = advancedBuilder.buildSupertypeSerializers();
         final Processor<MapMaidTypeScannerResult> processor = advancedBuilder.processor();
-        signals.forEach(processor::dispatch);
-
         final Disambiguators disambiguators = advancedBuilder.buildDisambiguators();
-        final MapMaidDetector detector = mapMaidDetector(disambiguators, injectionTypes);
-        final MapMaidResolver resolver = mapMaidResolver();
-        final MapMaidOnCollectionError onError = mapMaidOnCollectionError(reflectMaid);
-        final Map<TypeIdentifier, Map<Scope, CollectionResult<MapMaidTypeScannerResult>>> result =
-                processor.collect(detector, resolver, onError, Lingo::mode);
-
-        final Map<TypeIdentifier, Definition> definitionsMap = new HashMap<>(result.size());
-        result.forEach((type, collectionResultByScope) -> {
-            final CollectionResult<MapMaidTypeScannerResult> collectionResult = collectionResultByScope.get(rootScope());
-            final DetectionRequirements requirements = collectionResult.getDetectionRequirements();
-            final TypeSerializer serializer;
-            if (requirements.requires(SERIALIZATION)) {
-                serializer = collectionResult.getDefinition().disambiguationResult().serializer();
-            } else {
-                serializer = null;
-            }
-
-            final TypeDeserializer deserializer;
-            if (requirements.requires(DESERIALIZATION)) {
-                deserializer = collectionResult.getDefinition().disambiguationResult().deserializer();
-            } else {
-                deserializer = null;
-            }
-            final Definition definition = generalDefinition(type, serializer, deserializer);
-            definitionsMap.put(type, definition);
-        });
-
-        final DebugInformation debugInformation = debugInformation(result, processor.log(), reflectMaid);
-        final Definitions definitions = definitions(definitionsMap, debugInformation);
+        final Definitions definitions = handleStateMachine(
+                processor, disambiguators, injectionTypes, signals, supertypeSerializers, reflectMaid);
 
         final Marshallers marshallers = advancedBuilder.buildMarshallers();
         final Serializer serializer = serializer(
-                marshallers,
-                definitions,
-                CUSTOM_PRIMITIVE_MAPPINGS,
-                debugInformation
-        );
+                marshallers, definitions, supertypeSerializers, CUSTOM_PRIMITIVE_MAPPINGS);
 
         final UnmarshallerRegistry unmarshallerRegistry = advancedBuilder.buildUnmarshallerRegistry();
         final InjectorFactory injectorFactory = InjectorFactory.emptyInjectorFactory(reflectMaid);
-        final Deserializer deserializer = theDeserializer(
-                unmarshallerRegistry,
-                definitions,
-                CUSTOM_PRIMITIVE_MAPPINGS,
-                this.validationMappings,
-                this.validationErrorsMapping,
-                debugInformation,
-                injectorFactory
+        final Deserializer deserializer = deserializer(
+                unmarshallerRegistry, definitions, CUSTOM_PRIMITIVE_MAPPINGS,
+                validationMappings, validationErrorsMapping, injectorFactory
         );
-        return mapMaid(reflectMaid, serializer, deserializer, debugInformation);
+        return mapMaid(reflectMaid, serializer, deserializer, definitions.debugInformation());
     }
 }

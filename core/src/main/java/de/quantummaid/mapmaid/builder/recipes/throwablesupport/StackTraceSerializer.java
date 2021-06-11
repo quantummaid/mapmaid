@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.exceptions;
+package de.quantummaid.mapmaid.builder.recipes.throwablesupport;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
