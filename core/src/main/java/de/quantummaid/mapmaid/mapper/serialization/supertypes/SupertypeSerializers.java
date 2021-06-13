@@ -54,8 +54,8 @@ public final class SupertypeSerializers {
 
     public boolean hasRegisteredSupertype(final ResolvedType resolvedType) {
         final TypeIdentifier typeIdentifier = typeIdentifierFor(resolvedType);
-        final List<TypeIdentifier> superTypeSerializers = detectSuperTypeSerializersFor(typeIdentifier);
-        return !superTypeSerializers.isEmpty();
+        final List<TypeIdentifier> serializers = detectSuperTypeSerializersFor(typeIdentifier);
+        return !serializers.isEmpty();
     }
 
     public List<TypeIdentifier> detectSuperTypeSerializersFor(final TypeIdentifier typeIdentifier) {
