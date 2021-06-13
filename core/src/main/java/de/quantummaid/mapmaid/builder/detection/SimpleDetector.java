@@ -131,6 +131,7 @@ public final class SimpleDetector {
                 customPrimitiveOptions, scanInformationBuilder, detectionRequirements, injectedTypes, supertypeSerializers);
     }
 
+    @SuppressWarnings("java:S107")
     private DetectionResult<DisambiguationResult> disambiguate(final ResolvedType type,
                                                                final Disambiguators disambiguators,
                                                                final SerializedObjectOptions serializedObjectOptions,
