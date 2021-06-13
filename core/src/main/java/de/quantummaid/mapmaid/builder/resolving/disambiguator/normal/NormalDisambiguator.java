@@ -39,6 +39,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimiti
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
@@ -99,15 +100,16 @@ public final class NormalDisambiguator implements Disambiguator {
             final SerializersAndDeserializers serializersAndDeserializers,
             final ScanInformationBuilder scanInformationBuilder,
             final DetectionRequirements detectionRequirements,
-            final List<TypeIdentifier> injectedTypes) {
-        if (type.assignableType().getPackageName().startsWith("java.")) {
+            final List<TypeIdentifier> injectedTypes,
+            final SupertypeSerializers supertypeSerializers) {
+        if (type.assignableType().getPackageName().startsWith("java.") && !supertypeSerializers.hasRegisteredSupertype(type)) {
             return failure("Native java classes cannot be detected");
         }
-        final DisambiguationContext context = disambiguationContext(injectedTypes);
+        final DisambiguationContext context = disambiguationContext(injectedTypes, supertypeSerializers);
         final SerializedObjectOptions filteredSerializedObjectOptions = filterSerializedObjectOptions(
                 type, serializedObjectOptions, scanInformationBuilder, detectionRequirements, context);
         final SerializersAndDeserializers preferredCustomPrimitiveSerializersAndDeserializers;
-        if (!detectionRequirements.requires(OBJECT_ENFORCING)) {
+        if (!detectionRequirements.requires(OBJECT_ENFORCING) && !supertypeSerializers.hasRegisteredSupertype(type)) {
             preferredCustomPrimitiveSerializersAndDeserializers =
                     filterCustomPrimitiveOptions(
                             type, serializersAndDeserializers, scanInformationBuilder, detectionRequirements, context);

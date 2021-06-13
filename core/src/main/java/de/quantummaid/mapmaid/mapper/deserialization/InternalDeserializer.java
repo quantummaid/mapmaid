@@ -33,7 +33,6 @@ import de.quantummaid.mapmaid.mapper.injector.Injector;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.mapper.universal.UniversalInjection;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
-import de.quantummaid.mapmaid.shared.validators.NotNullValidator;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -44,6 +43,7 @@ import java.util.Optional;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
 import static de.quantummaid.mapmaid.mapper.deserialization.PredeserializedObjectCannotBeDeserialized.predeserializedObjectCannotBeDeserialized;
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 
 @ToString
@@ -57,9 +57,9 @@ final class InternalDeserializer implements DeserializerCallback {
     static InternalDeserializer internalDeserializer(final Definitions definitions,
                                                      final CustomPrimitiveMappings customPrimitiveMappings,
                                                      final ValidationErrorsMapping validationErrorsMapping) {
-        NotNullValidator.validateNotNull(definitions, "definitions");
-        NotNullValidator.validateNotNull(customPrimitiveMappings, "customPrimitiveMappings");
-        NotNullValidator.validateNotNull(validationErrorsMapping, "validationErrorsMapping");
+        validateNotNull(definitions, "definitions");
+        validateNotNull(customPrimitiveMappings, "customPrimitiveMappings");
+        validateNotNull(validationErrorsMapping, "validationErrorsMapping");
         return new InternalDeserializer(definitions, customPrimitiveMappings, validationErrorsMapping);
     }
 

@@ -24,15 +24,54 @@ package de.quantummaid.mapmaid.mapper.definitions;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface Definition {
-    Optional<TypeSerializer> serializer();
+import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
+import static java.util.Optional.ofNullable;
 
-    Optional<TypeDeserializer> deserializer();
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Definition {
+    private final TypeIdentifier type;
+    private final TypeSerializer serializer;
+    private final TypeDeserializer deserializer;
+    private final List<TypeIdentifier> superTypeSerializers;
 
-    TypeIdentifier type();
+    public static Definition definition(final TypeIdentifier type,
+                                        final TypeSerializer serializer,
+                                        final TypeDeserializer deserializer,
+                                        final List<TypeIdentifier> superTypeSerializers) {
+        validateNotNull(type, "type");
+        if (serializer == null) {
+            validateNotNull(deserializer, "deserializer");
+        }
+        if (deserializer == null) {
+            validateNotNull(serializer, "serializer");
+        }
+        validateNotNull(superTypeSerializers, "superTypeSerializers");
+        return new Definition(type, serializer, deserializer, superTypeSerializers);
+    }
 
-    Optional<TypeIdentifier> parent();
+    public Optional<TypeSerializer> serializer() {
+        return ofNullable(this.serializer);
+    }
+
+    public Optional<TypeDeserializer> deserializer() {
+        return ofNullable(this.deserializer);
+    }
+
+    public TypeIdentifier type() {
+        return this.type;
+    }
+
+    public List<TypeIdentifier> superTypeSerializers() {
+        return superTypeSerializers;
+    }
 }

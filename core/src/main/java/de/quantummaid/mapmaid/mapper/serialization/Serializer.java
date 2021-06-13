@@ -29,6 +29,7 @@ import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.MarshallerRegistry;
 import de.quantummaid.mapmaid.mapper.marshalling.registry.Marshallers;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker;
 import de.quantummaid.mapmaid.mapper.universal.Universal;
 import de.quantummaid.mapmaid.shared.mapping.CustomPrimitiveMappings;
@@ -38,16 +39,19 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+import static de.quantummaid.mapmaid.mapper.serialization.universalmerger.UniversalMerger.mergeUniversal;
 import static de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker.serializationTracker;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 @ToString
 @EqualsAndHashCode
@@ -56,14 +60,16 @@ import static java.util.Objects.isNull;
 public final class Serializer implements SerializationCallback {
     private final Marshallers marshallers;
     private final Definitions definitions;
+    private final SupertypeSerializers supertypeSerializers;
     private final CustomPrimitiveMappings customPrimitiveMappings;
     private final DebugInformation debugInformation;
 
     public static Serializer serializer(final Marshallers marshallers,
                                         final Definitions definitions,
-                                        final CustomPrimitiveMappings customPrimitiveMappings,
-                                        final DebugInformation debugInformation) {
-        return new Serializer(marshallers, definitions, customPrimitiveMappings, debugInformation);
+                                        final SupertypeSerializers supertypeSerializers,
+                                        final CustomPrimitiveMappings customPrimitiveMappings) {
+        final DebugInformation debugInformation = definitions.debugInformation();
+        return new Serializer(marshallers, definitions, supertypeSerializers, customPrimitiveMappings, debugInformation);
     }
 
     public Set<MarshallingType<?>> supportedMarshallingTypes() {
@@ -105,26 +111,26 @@ public final class Serializer implements SerializationCallback {
         if (isNull(object)) {
             return universalNull();
         }
-        final SerializationTracker childTracker = tracker.trackToProhibitCyclicReferences(object);
-        final Definition definition = lookupDefinition(type);
-        return definition.serializer()
+        final Definition definition = definitions.getDefinitionForType(type);
+        final TypeSerializer typeSerializer = definition.serializer()
                 .orElseThrow(() -> {
                     final ScanInformation scanInformation = debugInformation.scanInformationFor(type);
                     return mapMaidException(
                             format("No serializer configured for type '%s'", definition.type().description()), scanInformation);
+                });
+        return tracker.trackToProhibitCyclicReferences(object)
+                .map(childTracker -> {
+                    final Universal serialized = typeSerializer
+                            .serialize(object, this, childTracker, customPrimitiveMappings, debugInformation);
+                    final List<Universal> superTypeUniversals = definition.superTypeSerializers().stream()
+                            .map(supertypeSerializers::superTypeSerializer)
+                            .map(serializer -> serializer.serialize(object, this, childTracker, customPrimitiveMappings, debugInformation))
+                            .collect(toList());
+                    return mergeUniversal(serialized, superTypeUniversals);
                 })
-                .serialize(object, this, childTracker, customPrimitiveMappings, debugInformation);
-    }
-
-    private Definition lookupDefinition(final TypeIdentifier type) {
-        final Definition definition = definitions.getDefinitionForType(type);
-        return definition.parent()
-                .map(this::lookupDefinition)
-                .orElse(definition);
-    }
-
-    public Definitions getDefinitions() {
-        return definitions;
+                .orElseGet(() ->
+                        typeSerializer.serializeAlreadySeenObject(object, this, tracker, customPrimitiveMappings, debugInformation)
+                );
     }
 
     public Universal schema(final TypeIdentifier typeIdentifier) {
@@ -132,5 +138,9 @@ public final class Serializer implements SerializationCallback {
         final Definition definition = definitions.getDefinitionForType(typeIdentifier);
         final TypeSerializer serializer = definition.serializer().orElseThrow();
         return serializer.schema(this::schema);
+    }
+
+    public Definitions getDefinitions() {
+        return definitions;
     }
 }

@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.exceptions;
+package de.quantummaid.mapmaid.builder.recipes.throwablesupport;
 
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.reflectmaid.ReflectMaid;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.serializationOnlyResult;
-import static de.quantummaid.mapmaid.exceptions.StackTraceSerializer.stackTraceSerializer;
+import static de.quantummaid.mapmaid.builder.recipes.throwablesupport.StackTraceSerializer.stackTraceSerializer;
 import static de.quantummaid.reflectmaid.typescanner.TypeIdentifier.typeIdentifierFor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

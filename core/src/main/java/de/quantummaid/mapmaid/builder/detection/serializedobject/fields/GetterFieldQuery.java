@@ -51,6 +51,10 @@ public final class GetterFieldQuery implements SerializationFieldQuery {
         return executor.execute(object, emptyList());
     }
 
+    public ResolvedMethod method() {
+        return this.method;
+    }
+
     @Override
     public String describe() {
         return format("getter method '%s'", this.method.describe());

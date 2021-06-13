@@ -97,7 +97,7 @@ public final class CustomDynamoDbMarshallerRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
+    public void cook(final MapMaidBuilder builder) {
         final AttributeValueMarshaller attributeValueMarshaller = attributeValueMarshaller();
         final TopLevelMapMarshaller<AttributeValue> topLevelMapMarshaller = topLevelMapMarshaller(attributeValueMarshaller);
 
@@ -124,7 +124,7 @@ public final class CustomDynamoDbMarshallerRecipe implements Recipe {
 
         final CustomDynamoDbMarshallerAndUnmarshaller marshallerAndUnmarshaller =
                 customDynamoDbMarshallerAndUnmarshaller(marshaller, unmarshaller);
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(marshallerAndUnmarshaller));
+        builder.withAdvancedSettings(advancedBuilder -> advancedBuilder.usingMarshaller(marshallerAndUnmarshaller));
     }
 
     private MarshallerAndUnmarshaller<String> provideInternalMarshaller() {

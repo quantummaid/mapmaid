@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.10.13</version>
+        <version>0.10.14</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -59,6 +59,13 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.30</version>
             </dependency>
+            <dependency>
+                <groupId>de.quantummaid.reflectmaid</groupId>
+                <artifactId>reflectmaid-bom</artifactId>
+                <version>0.2.14</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -71,12 +78,10 @@
         <dependency>
             <groupId>de.quantummaid.reflectmaid</groupId>
             <artifactId>reflectmaid-core</artifactId>
-            <version>0.2.14</version>
         </dependency>
         <dependency>
             <groupId>de.quantummaid.reflectmaid</groupId>
             <artifactId>reflectmaid-typescanner</artifactId>
-            <version>0.2.14</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -65,13 +65,14 @@ public final class SerializedObjectOptions {
                                                                final ScanInformationBuilder scanInformationBuilder,
                                                                final DetectionRequirements detectionRequirements,
                                                                final DisambiguationContext context) {
-        if (this.serializationFieldOptions == null) {
+        if (serializationFieldOptions == null) {
             throw new UnsupportedOperationException("This should never happen");
         }
-        if (this.serializationFieldOptions.isEmpty()) {
+        final boolean mayBeEmpty = context.hasRegisteredSupertype(containingType);
+        if (!mayBeEmpty && serializationFieldOptions.isEmpty()) {
             return failure("No serialization fields");
         }
-        return this.serializationFieldOptions.instantiateAll()
+        return serializationFieldOptions.instantiateAll()
                 .flatMap(instantiation -> instantiation.instantiate(
                         containingType,
                         preferences,

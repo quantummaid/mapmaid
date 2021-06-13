@@ -30,7 +30,7 @@ import java.util.*;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalObject.universalObject;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalString.universalString;
-import static de.quantummaid.mapmaid.polymorphy.TypeFieldNormalizer.determineTypeField;
+import static de.quantummaid.mapmaid.mapper.serialization.universalmerger.FieldNormalizer.determineField;
 import static java.util.stream.Collectors.toList;
 
 public final class SchemaSupport {
@@ -72,7 +72,7 @@ public final class SchemaSupport {
             return Map.of(ONE_OF, updated);
         }
         final Map<String, Object> properties = new LinkedHashMap<>((Map<String, Object>) objectSchema.get(PROPERTIES));
-        final String normalizedKey = determineTypeField(key, properties.keySet());
+        final String normalizedKey = determineField(key, properties.keySet());
         properties.put(normalizedKey, childSchema);
         final Map<String, Object> copy = new LinkedHashMap<>(objectSchema);
         copy.put(PROPERTIES, properties);

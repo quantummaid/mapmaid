@@ -30,8 +30,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static de.quantummaid.mapmaid.mapper.serialization.tracker.CircularReferenceException.circularReferenceException;
+import java.util.Optional;
 
 @ToString
 @EqualsAndHashCode
@@ -43,14 +42,14 @@ public final class SerializationTracker {
         return new SerializationTracker(Collection.smallList());
     }
 
-    public SerializationTracker trackToProhibitCyclicReferences(final Object object) {
+    public Optional<SerializationTracker> trackToProhibitCyclicReferences(final Object object) {
         NotNullValidator.validateNotNull(object, "object");
         final TrackedObject trackedObject = TrackedObject.trackedObject(object);
         if (visitedObjects.contains(trackedObject)) {
-            throw circularReferenceException(object);
+            return Optional.empty();
         }
         final List<TrackedObject> newVisitedObjects = new ArrayList<>(this.visitedObjects);
         newVisitedObjects.add(trackedObject);
-        return new SerializationTracker(newVisitedObjects);
+        return Optional.of(new SerializationTracker(newVisitedObjects));
     }
 }

@@ -21,7 +21,9 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
+import de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldQuery;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.Filter;
+import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.preferences.FilterResult;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByConstructorDeserializer;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveByMethodDeserializer;
@@ -32,10 +34,12 @@ import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.queries.PublicFieldQuery;
 import de.quantummaid.reflectmaid.languages.Language;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedField;
 import de.quantummaid.reflectmaid.resolvedtype.resolver.ResolvedMethod;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,6 +167,61 @@ final class CommonFilters {
                 resolvedField -> !resolvedField.isPublic(),
                 "only public fields are serialized"
         );
+    }
+
+    static Filter<SerializationField, DisambiguationContext> ignoreNonPublicGetters() {
+        return ignoreGettersThat(method -> {
+            if (method.isPublic()) {
+                return allowed();
+            } else {
+                return denied("only public getters are considered");
+            }
+        });
+    }
+
+    static Filter<SerializationField, DisambiguationContext> ignoreGettersBasedOnGetCauseMethodInheritedFromThrowable() {
+        return ignoreGetterInheritedFromThrowable("getCause", Throwable.class);
+    }
+
+    static Filter<SerializationField, DisambiguationContext> ignoreGettersBasedOnGetMessageMethodInheritedFromThrowable() {
+        return ignoreGetterInheritedFromThrowable("getMessage", String.class);
+    }
+
+    private static Filter<SerializationField, DisambiguationContext> ignoreGetterInheritedFromThrowable(final String name,
+                                                                                                        final Class<?> returnValue) {
+
+        return ignoreGettersThat(method -> {
+            if (!method.name().equals(name)) {
+                return allowed();
+            }
+            if (!method.returnType()
+                    .map(ResolvedType::assignableType)
+                    .map(returnValue::equals)
+                    .orElse(false)
+            ) {
+                return allowed();
+            }
+            final ResolvedType declaringType = method.getDeclaringType();
+            final boolean isInheritedFromThrowable = declaringType.allSupertypes().stream()
+                    .map(ResolvedType::assignableType)
+                    .anyMatch(Throwable.class::equals);
+            if (isInheritedFromThrowable) {
+                return denied(name + " inherited from Throwable is ignored");
+            } else {
+                return allowed();
+            }
+        });
+    }
+
+    private static Filter<SerializationField, DisambiguationContext> ignoreGettersThat(final Function<ResolvedMethod, FilterResult> filter) {
+        return (field, context, containingType) -> {
+            if (!(field.getQuery() instanceof GetterFieldQuery)) {
+                return allowed();
+            }
+            final GetterFieldQuery query = (GetterFieldQuery) field.getQuery();
+            final ResolvedMethod method = query.method();
+            return filter.apply(method);
+        };
     }
 
     private static Filter<SerializationField, DisambiguationContext> ignoreFieldsThat(

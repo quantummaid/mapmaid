@@ -143,7 +143,10 @@ public final class DisambiguatorBuilder {
                 ignoreStaticFields(),
                 ignoreTransientFields(),
                 ignoreNonPublicFields(),
-                ignoreInjectedFields()
+                ignoreInjectedFields(),
+                ignoreNonPublicGetters(),
+                ignoreGettersBasedOnGetCauseMethodInheritedFromThrowable(),
+                ignoreGettersBasedOnGetMessageMethodInheritedFromThrowable()
         ));
     }
 

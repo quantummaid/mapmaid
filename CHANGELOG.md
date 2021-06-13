@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.14](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.10.14/jar) - 2021-06-13
+### Added
+- Support for common supertype fields.
+
 ## [0.10.13](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.10.13/jar) - 2021-06-11
 ### Changed
 - Update dependencies.

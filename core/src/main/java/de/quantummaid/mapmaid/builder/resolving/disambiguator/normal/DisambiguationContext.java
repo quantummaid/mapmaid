@@ -21,6 +21,8 @@
 
 package de.quantummaid.mapmaid.builder.resolving.disambiguator.normal;
 
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
+import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -34,12 +36,18 @@ import java.util.List;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DisambiguationContext {
     private final List<TypeIdentifier> injectedTypes;
+    private final SupertypeSerializers supertypeSerializers;
 
-    public static DisambiguationContext disambiguationContext(final List<TypeIdentifier> injectedTypes) {
-        return new DisambiguationContext(injectedTypes);
+    public static DisambiguationContext disambiguationContext(final List<TypeIdentifier> injectedTypes,
+                                                              final SupertypeSerializers supertypeSerializers) {
+        return new DisambiguationContext(injectedTypes, supertypeSerializers);
     }
 
     public boolean isInjected(final TypeIdentifier typeIdentifier) {
         return this.injectedTypes.contains(typeIdentifier);
+    }
+
+    public boolean hasRegisteredSupertype(final ResolvedType resolvedType) {
+        return supertypeSerializers.hasRegisteredSupertype(resolvedType);
     }
 }

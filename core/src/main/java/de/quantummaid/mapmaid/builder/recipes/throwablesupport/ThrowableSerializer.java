@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.exceptions;
+package de.quantummaid.mapmaid.builder.recipes.throwablesupport;
 
 import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.mapper.serialization.SerializationCallback;
@@ -32,7 +32,9 @@ import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static de.quantummaid.mapmaid.mapper.universal.UniversalCollection.universalCollection;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
@@ -44,10 +46,12 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThrowableSerializer implements TypeSerializer {
+    private final TypeIdentifier throwableType;
     private final TypeIdentifier stackTraceType;
 
-    public static ThrowableSerializer throwableSerializer(final TypeIdentifier stackTraceType) {
-        return new ThrowableSerializer(stackTraceType);
+    public static ThrowableSerializer throwableSerializer(final TypeIdentifier throwableType,
+                                                          final TypeIdentifier stackTraceType) {
+        return new ThrowableSerializer(throwableType, stackTraceType);
     }
 
     @Override
@@ -57,36 +61,11 @@ public class ThrowableSerializer implements TypeSerializer {
                                final CustomPrimitiveMappings customPrimitiveMappings,
                                final DebugInformation debugInformation) {
         final Throwable throwable = (Throwable) object;
-        return recursiveMappedExceptionFrom(
-                throwable,
-                new HashSet<>(),
-                callback,
-                tracker
-        );
-    }
-
-    private Universal recursiveMappedExceptionFrom(
-            final Throwable throwable,
-            final Set<Throwable> seen,
-            final SerializationCallback callback,
-            final SerializationTracker tracker
-    ) {
-        if (seen.contains(throwable)) {
-            return exceptionMap(
-                    throwable.getMessage(),
-                    throwable.getClass().getCanonicalName(),
-                    null,
-                    null,
-                    emptyList()
-            );
-        } else {
-            seen.add(throwable);
-        }
         final Throwable cause = throwable.getCause();
 
         final Universal mappedCause;
-        if (cause != null && cause != throwable) {
-            mappedCause = recursiveMappedExceptionFrom(cause, seen, callback, tracker);
+        if (cause != null) {
+            mappedCause = callback.serializeDefinition(throwableType, cause, tracker);
         } else {
             mappedCause = null;
         }
@@ -98,8 +77,24 @@ public class ThrowableSerializer implements TypeSerializer {
                 frames,
                 mappedCause,
                 stream(suppressed)
-                        .map(it -> recursiveMappedExceptionFrom(it, seen, callback, tracker))
+                        .map(it -> callback.serializeDefinition(throwableType, it, tracker))
                         .collect(toList())
+        );
+    }
+
+    @Override
+    public Universal serializeAlreadySeenObject(final Object object,
+                                                final SerializationCallback callback,
+                                                final SerializationTracker tracker,
+                                                final CustomPrimitiveMappings customPrimitiveMappings,
+                                                final DebugInformation debugInformation) {
+        final Throwable throwable = (Throwable) object;
+        return exceptionMap(
+                throwable.getMessage(),
+                throwable.getClass().getCanonicalName(),
+                null,
+                null,
+                emptyList()
         );
     }
 
@@ -133,7 +128,7 @@ public class ThrowableSerializer implements TypeSerializer {
 
     @Override
     public List<TypeIdentifier> requiredTypes() {
-        return List.of(stackTraceType);
+        return List.of(throwableType, stackTraceType);
     }
 
     @Override

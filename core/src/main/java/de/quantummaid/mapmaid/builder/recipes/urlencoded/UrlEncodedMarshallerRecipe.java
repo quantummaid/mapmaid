@@ -45,8 +45,8 @@ public final class UrlEncodedMarshallerRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder mapMaidBuilder) {
-        mapMaidBuilder.withAdvancedSettings(advancedBuilder -> advancedBuilder
+    public void cook(final MapMaidBuilder builder) {
+        builder.withAdvancedSettings(advancedBuilder -> advancedBuilder
                 .usingMarshaller(urlEncodedMarshallerAndUnmarshaller()));
     }
 }

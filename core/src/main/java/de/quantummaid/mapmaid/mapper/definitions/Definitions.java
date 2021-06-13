@@ -48,13 +48,17 @@ public final class Definitions {
 
     public Definition getDefinitionForType(final TypeIdentifier targetType) {
         return getOptionalDefinitionForType(targetType)
-                .orElseThrow(() -> definitionNotFound(targetType, this.debugInformation.dumpAll()));
+                .orElseThrow(() -> definitionNotFound(targetType, debugInformation.dumpAll()));
     }
 
     public Optional<Definition> getOptionalDefinitionForType(final TypeIdentifier targetType) {
-        if (!this.definitions.containsKey(targetType)) {
+        if (!definitions.containsKey(targetType)) {
             return Optional.empty();
         }
-        return of(this.definitions.get(targetType));
+        return of(definitions.get(targetType));
+    }
+
+    public DebugInformation debugInformation() {
+        return debugInformation;
     }
 }

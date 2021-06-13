@@ -19,12 +19,30 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.mapper.serialization;
+package de.quantummaid.mapmaid.specs.examples.serializedobjects.success.private_getter;
 
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
-public interface SerializationContextInjector {
+@RequiredArgsConstructor
+public final class PrivateGetterDto {
+    private final String field0;
+    private final String field1;
+    private final String field2;
+    private final String field3;
 
-    Map<String, Object> inject(Map<String, Object> input);
+    public String getField0() {
+        return field0;
+    }
 
+    public String getField1() {
+        return field1;
+    }
+
+    public String getField2() {
+        return field2;
+    }
+
+    private String getField3() {
+        return field3;
+    }
 }

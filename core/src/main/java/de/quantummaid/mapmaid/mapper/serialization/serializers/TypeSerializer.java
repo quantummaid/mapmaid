@@ -32,6 +32,7 @@ import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 
 import java.util.List;
 
+import static de.quantummaid.mapmaid.mapper.serialization.tracker.CircularReferenceException.circularReferenceException;
 import static java.lang.String.format;
 
 public interface TypeSerializer extends MappingFunction {
@@ -51,5 +52,13 @@ public interface TypeSerializer extends MappingFunction {
 
     default boolean forcesDependenciesToBeObjects() {
         return false;
+    }
+
+    default Universal serializeAlreadySeenObject(final Object object,
+                                                 final SerializationCallback callback,
+                                                 final SerializationTracker tracker,
+                                                 final CustomPrimitiveMappings customPrimitiveMappings,
+                                                 final DebugInformation debugInformation) {
+        throw circularReferenceException(object);
     }
 }

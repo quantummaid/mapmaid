@@ -25,6 +25,7 @@ import de.quantummaid.mapmaid.builder.detection.SimpleDetector;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult;
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.Disambiguators;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
 import de.quantummaid.reflectmaid.typescanner.scopes.Scope;
@@ -45,11 +46,13 @@ public final class MapMaidDetector implements Detector<MapMaidTypeScannerResult>
     private final SimpleDetector detector;
     private final Disambiguators disambiguators;
     private final List<TypeIdentifier> injectedTypes;
+    private final SupertypeSerializers supertypeSerializers;
 
     public static MapMaidDetector mapMaidDetector(final Disambiguators disambiguators,
-                                                  final List<TypeIdentifier> injectedTypes) {
+                                                  final List<TypeIdentifier> injectedTypes,
+                                                  final SupertypeSerializers supertypeSerializers) {
         final SimpleDetector detector = conventionalDetector();
-        return new MapMaidDetector(detector, disambiguators, injectedTypes);
+        return new MapMaidDetector(detector, disambiguators, injectedTypes, supertypeSerializers);
     }
 
     @NotNull
@@ -65,7 +68,8 @@ public final class MapMaidDetector implements Detector<MapMaidTypeScannerResult>
                 scanInformationBuilder,
                 detectionRequirements,
                 disambiguators,
-                injectedTypes
+                injectedTypes,
+                supertypeSerializers
         );
         return detectionResult.mapWithNull(result -> result(result, scanInformationBuilder));
     }
