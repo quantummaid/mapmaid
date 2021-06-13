@@ -23,6 +23,7 @@ package de.quantummaid.mapmaid.builder.resolving.disambiguator;
 
 import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.serializedobject.SerializedObjectOptions;
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
@@ -37,5 +38,6 @@ public interface Disambiguator {
                                                        SerializersAndDeserializers serializersAndDeserializers,
                                                        ScanInformationBuilder scanInformationBuilder,
                                                        DetectionRequirements detectionRequirements,
-                                                       List<TypeIdentifier> injectedTypes);
+                                                       List<TypeIdentifier> injectedTypes,
+                                                       SupertypeSerializers supertypeSerializers);
 }

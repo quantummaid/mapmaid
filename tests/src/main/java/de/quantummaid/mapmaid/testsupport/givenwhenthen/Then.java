@@ -25,6 +25,8 @@ import de.quantummaid.mapmaid.debug.DebugInformation;
 import de.quantummaid.mapmaid.debug.scaninformation.ScanInformation;
 import de.quantummaid.mapmaid.mapper.deserialization.validation.AggregatedValidationException;
 import de.quantummaid.mapmaid.mapper.marshalling.MarshallingType;
+import de.quantummaid.mapmaid.testsupport.givenwhenthen.structurevalidation.StructureValidations;
+import de.quantummaid.mapmaid.testsupport.givenwhenthen.structurevalidation.validators.StructureValidator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.core.StringContains;
@@ -161,6 +163,13 @@ public final class Then {
                 .collect(toList());
         assertThat(actualTypes, containsInAnyOrder(types));
         assertThat(countSerializedObjects(debugInformation), is(types.length));
+        return this;
+    }
+
+    public Then theSerializationResultMatches(final StructureValidator validator) {
+        final Object serializationResult = thenData.getSerializationResult();
+        final StructureValidations result = validator.validate(serializationResult);
+        assertThat(result.render(), result.isValid(), is(true));
         return this;
     }
 

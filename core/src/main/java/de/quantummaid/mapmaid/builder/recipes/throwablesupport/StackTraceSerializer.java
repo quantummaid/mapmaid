@@ -80,6 +80,6 @@ public final class StackTraceSerializer implements TypeSerializer {
 
     @Override
     public String description() {
-        return null;
+        return "stacktrace special serializer";
     }
 }

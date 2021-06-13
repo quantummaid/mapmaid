@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.polymorphy;
+package de.quantummaid.mapmaid.mapper.serialization.universalmerger;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,14 +28,14 @@ import java.util.regex.Pattern;
 
 import static java.util.Comparator.comparing;
 
-public final class TypeFieldNormalizer {
+public final class FieldNormalizer {
     private static final String PADDING = "_";
     private static final Predicate<String> IS_PADDING = Pattern.compile("_*").asMatchPredicate();
 
-    private TypeFieldNormalizer() {
+    private FieldNormalizer() {
     }
 
-    public static String determineTypeField(final String base, final Collection<String> existingFields) {
+    public static String determineField(final String base, final Collection<String> existingFields) {
         final int padLength = findTypeField(base, existingFields)
                 .map(String::length)
                 .map(length -> length - base.length())

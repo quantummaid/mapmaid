@@ -45,7 +45,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
-import static de.quantummaid.mapmaid.mapper.serialization.UniversalMerger.mergeUniversal;
+import static de.quantummaid.mapmaid.mapper.serialization.universalmerger.UniversalMerger.mergeUniversal;
 import static de.quantummaid.mapmaid.mapper.serialization.tracker.SerializationTracker.serializationTracker;
 import static de.quantummaid.mapmaid.mapper.universal.UniversalNull.universalNull;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
@@ -123,7 +123,7 @@ public final class Serializer implements SerializationCallback {
                     final Universal serialized = typeSerializer
                             .serialize(object, this, childTracker, customPrimitiveMappings, debugInformation);
                     final List<Universal> superTypeUniversals = definition.superTypeSerializers().stream()
-                            .map(supertypeSerializers::supertypeSerializer)
+                            .map(supertypeSerializers::superTypeSerializer)
                             .map(serializer -> serializer.serialize(object, this, childTracker, customPrimitiveMappings, debugInformation))
                             .collect(toList());
                     return mergeUniversal(serialized, superTypeUniversals);

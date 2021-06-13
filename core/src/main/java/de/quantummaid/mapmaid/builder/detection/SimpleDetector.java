@@ -34,6 +34,7 @@ import de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.symmetry.se
 import de.quantummaid.mapmaid.debug.ScanInformationBuilder;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
@@ -89,7 +90,8 @@ public final class SimpleDetector {
                                                         final ScanInformationBuilder scanInformationBuilder,
                                                         final DetectionRequirements detectionRequirements,
                                                         final Disambiguators disambiguators,
-                                                        final List<TypeIdentifier> injectedTypes) {
+                                                        final List<TypeIdentifier> injectedTypes,
+                                                        final SupertypeSerializers supertypeSerializers) {
         if (typeIdentifier.isVirtual()) {
             return failure("can only detect real types");
         }
@@ -126,7 +128,7 @@ public final class SimpleDetector {
         final SerializersAndDeserializers customPrimitiveOptions =
                 serializersAndDeserializers(customPrimitiveSerializers, customPrimitiveDeserializers);
         return disambiguate(type, disambiguators, serializedObjectOptions,
-                customPrimitiveOptions, scanInformationBuilder, detectionRequirements, injectedTypes);
+                customPrimitiveOptions, scanInformationBuilder, detectionRequirements, injectedTypes, supertypeSerializers);
     }
 
     private DetectionResult<DisambiguationResult> disambiguate(final ResolvedType type,
@@ -135,7 +137,8 @@ public final class SimpleDetector {
                                                                final SerializersAndDeserializers customPrimitiveOptions,
                                                                final ScanInformationBuilder scanInformationBuilder,
                                                                final DetectionRequirements detectionRequirements,
-                                                               final List<TypeIdentifier> injectedTypes) {
+                                                               final List<TypeIdentifier> injectedTypes,
+                                                               final SupertypeSerializers supertypeSerializers) {
         final Disambiguator disambiguator = disambiguators.disambiguatorFor(type);
         return disambiguator.disambiguate(
                 type,
@@ -143,7 +146,9 @@ public final class SimpleDetector {
                 customPrimitiveOptions,
                 scanInformationBuilder,
                 detectionRequirements,
-                injectedTypes);
+                injectedTypes,
+                supertypeSerializers
+        );
     }
 
     private static Optional<DetectionResult<DisambiguationResult>> validateForSupportedFeatures(

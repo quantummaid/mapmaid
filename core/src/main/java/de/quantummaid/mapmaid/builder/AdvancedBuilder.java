@@ -102,6 +102,7 @@ public final class AdvancedBuilder {
     private final List<StateFactory<MapMaidTypeScannerResult>> stateFactories = new ArrayList<>();
     private final Map<TypeIdentifier, TypeSerializer> superTypeSerializers = new LinkedHashMap<>();
     private int maxStackFrameCount = DEFAULT_MAX_STACK_FRAME_COUNT;
+    private boolean registerThrowableSerializationSupport = true;
 
     public static AdvancedBuilder advancedBuilder(final ReflectMaid reflectMaid) {
         final AdvancedBuilder advancedBuilder = new AdvancedBuilder(reflectMaid);
@@ -222,8 +223,15 @@ public final class AdvancedBuilder {
         return withMarshallingModifier(modifier);
     }
 
+    public AdvancedBuilder doNotRegisterThrowableSerializationSupport() {
+        registerThrowableSerializationSupport = false;
+        return this;
+    }
+
     List<Recipe> buildRecipes() {
-        withRecipe(throwableSupport(maxStackFrameCount));
+        if (registerThrowableSerializationSupport) {
+            withRecipe(throwableSupport(maxStackFrameCount));
+        }
         return recipes;
     }
 

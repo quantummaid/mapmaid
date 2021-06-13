@@ -42,7 +42,7 @@ import java.util.List;
 import static de.quantummaid.mapmaid.mapper.deserialization.WrongInputStructureException.wrongInputStructureException;
 import static de.quantummaid.mapmaid.mapper.schema.SchemaSupport.schemaForPolymorphicParent;
 import static de.quantummaid.mapmaid.polymorphy.MissingPolymorphicTypeFieldException.missingPolymorphicTypeFieldException;
-import static de.quantummaid.mapmaid.polymorphy.TypeFieldNormalizer.findTypeField;
+import static de.quantummaid.mapmaid.mapper.serialization.universalmerger.FieldNormalizer.findTypeField;
 import static de.quantummaid.mapmaid.polymorphy.UnknownPolymorphicSubtypeException.unknownPolymorphicSubtypeException;
 import static java.lang.String.format;
 

@@ -23,13 +23,17 @@ package de.quantummaid.mapmaid.builder.resolving;
 
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.TypeDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer;
+import de.quantummaid.mapmaid.mapper.serialization.supertypes.SupertypeSerializers;
 import de.quantummaid.reflectmaid.typescanner.Reason;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import de.quantummaid.reflectmaid.typescanner.requirements.DetectionRequirements;
+import de.quantummaid.reflectmaid.typescanner.requirements.RequirementName;
 import de.quantummaid.reflectmaid.typescanner.scopes.Scope;
 import de.quantummaid.reflectmaid.typescanner.signals.AddReasonSignal;
 import de.quantummaid.reflectmaid.typescanner.signals.Signal;
 import de.quantummaid.reflectmaid.typescanner.states.Resolver;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +41,12 @@ import java.util.List;
 import static de.quantummaid.mapmaid.builder.resolving.Requirements.*;
 import static de.quantummaid.reflectmaid.typescanner.Reason.becauseOf;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult> {
+    private final SupertypeSerializers supertypeSerializers;
 
-    public static MapMaidResolver mapMaidResolver() {
-        return new MapMaidResolver();
+    public static MapMaidResolver mapMaidResolver(final SupertypeSerializers supertypeSerializers) {
+        return new MapMaidResolver(supertypeSerializers);
     }
 
     @Override
@@ -52,28 +58,40 @@ public final class MapMaidResolver implements Resolver<MapMaidTypeScannerResult>
         final Reason reason = becauseOf(type, scope);
         if (detectionRequirements.requires(SERIALIZATION)) {
             final TypeSerializer serializer = result.disambiguationResult().serializer();
-            final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
-            requiredTypes.stream()
-                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReasonSignal(requiredType, scope, SERIALIZATION, reason))
-                    .forEach(signals::add);
-            if (serializer.forcesDependenciesToBeObjects()) {
-                requiredTypes.stream()
-                        .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReasonSignal(requiredType, scope, OBJECT_ENFORCING, reason))
-                        .forEach(signals::add);
-            }
+            addSignalsOfSerializer(serializer, scope, reason, signals);
+            supertypeSerializers.detectSuperTypeSerializersFor(type).stream()
+                    .map(supertypeSerializers::superTypeSerializer)
+                    .forEach(superTypeSerializer -> addSignalsOfSerializer(superTypeSerializer, scope, reason, signals));
         }
         if (detectionRequirements.requires(DESERIALIZATION)) {
             final TypeDeserializer deserializer = result.disambiguationResult().deserializer();
             final List<TypeIdentifier> requiredTypes = deserializer.requiredTypes();
-            requiredTypes.stream()
-                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReasonSignal(requiredType, scope, DESERIALIZATION, reason))
-                    .forEach(signals::add);
-            if (deserializer.forcesDependenciesToBeObjects()) {
-                requiredTypes.stream()
-                        .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReasonSignal(requiredType, scope, OBJECT_ENFORCING, reason))
-                        .forEach(signals::add);
-            }
+            addSignals(requiredTypes, DESERIALIZATION, scope, reason, signals, deserializer.forcesDependenciesToBeObjects());
         }
         return signals;
+    }
+
+    private static void addSignalsOfSerializer(final TypeSerializer serializer,
+                                               final Scope scope,
+                                               final Reason reason,
+                                               final List<Signal<MapMaidTypeScannerResult>> signals) {
+        final List<TypeIdentifier> requiredTypes = serializer.requiredTypes();
+        addSignals(requiredTypes, SERIALIZATION, scope, reason, signals, serializer.forcesDependenciesToBeObjects());
+    }
+
+    private static void addSignals(final List<TypeIdentifier> requiredTypes,
+                                   final RequirementName requirementName,
+                                   final Scope scope,
+                                   final Reason reason,
+                                   final List<Signal<MapMaidTypeScannerResult>> signals,
+                                   final boolean forcesDependenciesToBeObjects) {
+        requiredTypes.stream()
+                .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReasonSignal(requiredType, scope, requirementName, reason))
+                .forEach(signals::add);
+        if (forcesDependenciesToBeObjects) {
+            requiredTypes.stream()
+                    .map(requiredType -> AddReasonSignal.<MapMaidTypeScannerResult>addReasonSignal(requiredType, scope, OBJECT_ENFORCING, reason))
+                    .forEach(signals::add);
+        }
     }
 }

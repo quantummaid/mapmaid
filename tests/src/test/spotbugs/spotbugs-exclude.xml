@@ -76,4 +76,8 @@
     <Match>
         <Bug pattern="BC_BAD_CAST_TO_ABSTRACT_COLLECTION"/>
     </Match>
+    <Match>
+        <Class name="de.quantummaid.mapmaid.specs.SuperClassSerializer"/>
+        <Bug pattern="NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE"/>
+    </Match>
 </FindBugsFilter>

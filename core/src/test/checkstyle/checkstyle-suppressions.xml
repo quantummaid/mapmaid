@@ -56,8 +56,10 @@
     <suppress checks="CommentsIndentation" files="UsageExamples" />
     <suppress checks="MagicNumber|ParameterNumber|TrailingComment" files="Deserializer[0-9]*" />
     <suppress checks="ParameterNumber" files="ActualScanInformation" />
-    <suppress checks="ClassFanOutComplexity" files="Deserializer" />
+    <suppress checks="ClassFanOutComplexity" files="AdvancedBuilder" />
     <suppress checks="MethodCount" files="MapMaid" />
+    <suppress checks="MethodCount" files="AdvancedBuilder" />
+    <suppress checks="ParameterNumber" files="SimpleDetector" />
     <suppress checks="TrailingComment" files="CustomPrimitiveDeserializer|SerializedObjectDeserializer|Marshaller|CollectionInformation" />
     <suppress checks="TrailingComment" files="ConventionalDefinitionFactories|Unmarshaller|CustomType|StatefulDefinition|MapMaid|TieBreaker" />
     <suppress checks="MethodCount" files="DuplexType" />
