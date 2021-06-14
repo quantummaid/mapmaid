@@ -19,17 +19,24 @@
  * under the License.
  */
 
-package de.quantummaid.mapmaid.documentation.registration.recipes;
+package de.quantummaid.mapmaid.specs.examples.serializedobjects.success.boolean_starting_with_is;
 
-import de.quantummaid.mapmaid.builder.MapMaidBuilder;
-import de.quantummaid.mapmaid.builder.recipes.Recipe;
+import org.junit.jupiter.api.Test;
 
-//Showcase start recipe
-public final class MyRecipe implements Recipe {
+import static de.quantummaid.mapmaid.specs.examples.system.ScenarioBuilder.scenarioBuilderFor;
 
-    @Override
-    public void apply(final MapMaidBuilder builder) {
-        builder.serializingAndDeserializing(MyCustomClass.class);
+public final class BooleanStartingWithIsExample {
+
+    @Test
+    public void deserializationOnlyExample() {
+        scenarioBuilderFor(BooleanStartingWithIs.class)
+                .withSerializedForm(
+                        "{\n" +
+                                "   \"queueUrl\": \"foo\",\n" +
+                                "   \"isFifoQueue\": true\n" +
+                                "}")
+                .withDeserializedForm(new BooleanStartingWithIs("foo", true))
+                .withAllScenariosSuccessful()
+                .run();
     }
 }
-//Showcase end recipe

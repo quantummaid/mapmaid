@@ -31,17 +31,16 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldQuery.getterFieldQuery;
-import static java.lang.String.valueOf;
+import static de.quantummaid.mapmaid.mapper.serialization.serializers.serializedobject.SerializationField.serializationField;
 import static java.lang.Void.TYPE;
 import static java.util.Collections.emptyList;
-import static java.util.Locale.US;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GetterFieldDetector implements FieldDetector {
+public final class BooleanGetterFieldDetector implements FieldDetector {
 
-    public static FieldDetector getterFieldDetector() {
-        return new GetterFieldDetector();
+    public static FieldDetector booleanGetterFieldDetector() {
+        return new BooleanGetterFieldDetector();
     }
 
     @Override
@@ -50,23 +49,16 @@ public final class GetterFieldDetector implements FieldDetector {
             return emptyList();
         }
         return type.methods().stream()
-                .filter(resolvedMethod -> resolvedMethod.name().startsWith("get"))
+                .filter(resolvedMethod -> resolvedMethod.name().startsWith("is"))
                 .filter(resolvedMethod -> !resolvedMethod.isStatic())
                 .filter(resolvedMethod -> resolvedMethod.getMethod().getReturnType() != TYPE)
                 .filter(resolvedMethod -> resolvedMethod.getParameters().isEmpty())
                 .map(resolvedMethod -> {
                     final ResolvedType resolvedType = resolvedMethod.returnType().orElseThrow();
-                    final String name = extractGetterFieldName(resolvedMethod.name());
+                    final String name = resolvedMethod.name();
                     final SerializationFieldQuery query = getterFieldQuery(resolvedMethod);
-                    return SerializationField.serializationField(resolvedType, name, query);
+                    return serializationField(resolvedType, name, query);
                 })
                 .collect(toList());
-    }
-
-    private static String extractGetterFieldName(final String methodName) {
-        final String withoutGet = methodName.substring(3);
-        final String firstCharacter = valueOf(withoutGet.charAt(0));
-        final String lowercaseFirstCharacter = firstCharacter.toLowerCase(US);
-        return lowercaseFirstCharacter + withoutGet.substring(1);
     }
 }

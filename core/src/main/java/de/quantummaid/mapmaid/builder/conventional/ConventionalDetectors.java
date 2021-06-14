@@ -29,6 +29,7 @@ import lombok.ToString;
 import static de.quantummaid.mapmaid.builder.conventional.DetectorBuilder.detectorBuilder;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.ConstructorBasedDeserializationDetector.constructorBased;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.deserialization.SetterBasedDeserializationDetector.setterBasedDeserializationDetector;
+import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.BooleanGetterFieldDetector.booleanGetterFieldDetector;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.GetterFieldDetector.getterFieldDetector;
 import static de.quantummaid.mapmaid.builder.detection.serializedobject.fields.ModifierFieldDetector.modifierBased;
 
@@ -43,6 +44,7 @@ public final class ConventionalDetectors {
         return detectorBuilder()
                 .withFactoryAndConstructorBasedCustomPrimitiveFactory()
                 .withFieldDetector(getterFieldDetector())
+                .withFieldDetector(booleanGetterFieldDetector())
                 .withSerializedObjectDeserializer(setterBasedDeserializationDetector())
                 .withFieldDetector(modifierBased())
                 .withSerializedObjectDeserializer(StaticMethodDeserializationDetector.staticMethodBased())

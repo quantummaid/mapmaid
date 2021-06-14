@@ -43,7 +43,7 @@ public final class ThrowableSupport implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder builder) {
+    public void apply(final MapMaidBuilder builder) {
         final ReflectMaid reflectMaid = builder.reflectMaid();
         final TypeIdentifier throwableType = resolve(reflectMaid, Throwable.class);
         final TypeIdentifier stackTraceType = resolve(reflectMaid, StackTraceElement[].class);
