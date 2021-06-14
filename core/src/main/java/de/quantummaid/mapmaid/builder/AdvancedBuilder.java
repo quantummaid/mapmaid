@@ -229,8 +229,13 @@ public final class AdvancedBuilder {
     }
 
     List<Recipe> buildRecipes() {
+        return recipes;
+    }
+
+    List<Recipe> recipesConfiguredThroughBuilder() {
+        final List<Recipe> recipes = new ArrayList<>();
         if (registerThrowableSerializationSupport) {
-            withRecipe(throwableSupport(maxStackFrameCount));
+            recipes.add(throwableSupport(maxStackFrameCount));
         }
         return recipes;
     }

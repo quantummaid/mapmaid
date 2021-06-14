@@ -25,5 +25,5 @@ import de.quantummaid.mapmaid.builder.MapMaidBuilder;
 
 @FunctionalInterface
 public interface Recipe {
-    void cook(MapMaidBuilder builder);
+    void apply(MapMaidBuilder builder);
 }

@@ -67,7 +67,7 @@ public final class ClassScannerRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder builder) {
+    public void apply(final MapMaidBuilder builder) {
         this.classes.forEach(clazz -> addReferencesIn(clazz, builder));
     }
 

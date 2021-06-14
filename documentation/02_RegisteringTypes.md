@@ -199,7 +199,7 @@ To bundle together common configuration options, you can implement the `Recipe` 
 public final class MyRecipe implements Recipe {
 
     @Override
-    public void cook(final MapMaidBuilder builder) {
+    public void apply(final MapMaidBuilder builder) {
         builder.serializingAndDeserializing(MyCustomClass.class);
     }
 }

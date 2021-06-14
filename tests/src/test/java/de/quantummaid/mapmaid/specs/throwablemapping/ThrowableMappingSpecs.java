@@ -21,6 +21,7 @@
 
 package de.quantummaid.mapmaid.specs.throwablemapping;
 
+import de.quantummaid.mapmaid.MapMaid;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.Map;
 import static de.quantummaid.mapmaid.MapMaid.aMapMaid;
 import static de.quantummaid.mapmaid.specs.exceptions.exceptionbuilder.ExceptionBuilder.anUnsupportedOperationException;
 import static de.quantummaid.mapmaid.testsupport.givenwhenthen.Given.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 public final class ThrowableMappingSpecs {
 
@@ -353,5 +356,17 @@ public final class ThrowableMappingSpecs {
                                 )
                         )
                 ));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void maxStackSizeCanBeConfiguredInRecipe() {
+        final MapMaid mapMaid = aMapMaid()
+                .serializing(Throwable.class)
+                .usingRecipe(builder -> builder.withAdvancedSettings(advancedBuilder -> advancedBuilder.withMaximumNumberOfStackFramesWhenSerializingExceptions(1)))
+                .build();
+        final Map<String, Object> map = (Map<String, Object>) mapMaid.serializeToUniversalObject(new UnsupportedOperationException(), Throwable.class);
+        final List<String> frames = (List<String>) map.get("frames");
+        assertThat(frames, hasSize(2));
     }
 }

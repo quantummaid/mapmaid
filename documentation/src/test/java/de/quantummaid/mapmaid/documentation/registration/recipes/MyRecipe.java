@@ -28,7 +28,7 @@ import de.quantummaid.mapmaid.builder.recipes.Recipe;
 public final class MyRecipe implements Recipe {
 
     @Override
-    public void cook(final MapMaidBuilder builder) {
+    public void apply(final MapMaidBuilder builder) {
         builder.serializingAndDeserializing(MyCustomClass.class);
     }
 }

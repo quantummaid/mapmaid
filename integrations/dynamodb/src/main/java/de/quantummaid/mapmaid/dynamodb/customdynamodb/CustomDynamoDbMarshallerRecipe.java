@@ -97,7 +97,7 @@ public final class CustomDynamoDbMarshallerRecipe implements Recipe {
     }
 
     @Override
-    public void cook(final MapMaidBuilder builder) {
+    public void apply(final MapMaidBuilder builder) {
         final AttributeValueMarshaller attributeValueMarshaller = attributeValueMarshaller();
         final TopLevelMapMarshaller<AttributeValue> topLevelMapMarshaller = topLevelMapMarshaller(attributeValueMarshaller);
 

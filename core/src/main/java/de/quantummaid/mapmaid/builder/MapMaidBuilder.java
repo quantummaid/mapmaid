@@ -431,7 +431,9 @@ public final class MapMaidBuilder implements
 
     public MapMaid build() {
         final List<Recipe> recipes = advancedBuilder.buildRecipes();
-        recipes.forEach(recipe -> recipe.cook(this));
+        recipes.forEach(recipe -> recipe.apply(this));
+        final List<Recipe> recipesConfiguredThroughBuilder = advancedBuilder.recipesConfiguredThroughBuilder();
+        recipesConfiguredThroughBuilder.forEach(recipe -> recipe.apply(this));
 
         final SupertypeSerializers supertypeSerializers = advancedBuilder.buildSupertypeSerializers();
         final Processor<MapMaidTypeScannerResult> processor = advancedBuilder.processor();
