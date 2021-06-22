@@ -233,11 +233,11 @@ public final class AdvancedBuilder {
     }
 
     List<Recipe> recipesConfiguredThroughBuilder() {
-        final List<Recipe> recipes = new ArrayList<>();
+        final List<Recipe> recipesThroughBuilder = new ArrayList<>();
         if (registerThrowableSerializationSupport) {
-            recipes.add(throwableSupport(maxStackFrameCount));
+            recipesThroughBuilder.add(throwableSupport(maxStackFrameCount));
         }
-        return recipes;
+        return recipesThroughBuilder;
     }
 
     Disambiguators buildDisambiguators() {

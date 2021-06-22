@@ -46,6 +46,9 @@
         <plugin-update-file-checksum>d25694f9d0674135a9b37b909e84d640</plugin-update-file-checksum>
         <sonar.coverage.jacoco.xmlReportPaths>../coverage/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/structurevalidation/**/*,
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencyManagement>
