@@ -59,7 +59,7 @@
 
     <properties>
         <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
-        <kotlin.version>1.4.32</kotlin.version>
+        <kotlin.version>1.5.20</kotlin.version>
         <dependency-update-file-checksum>8f6ea182969b0fcce9fae1bb13579713</dependency-update-file-checksum>
     </properties>
 

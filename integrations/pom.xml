@@ -39,6 +39,7 @@
         <module>dynamodb</module>
         <module>snakeyaml</module>
         <module>standardtypes-kotlin</module>
+        <module>validatedtypes-kotlin</module>
     </modules>
 
     <properties>
