@@ -73,6 +73,11 @@
                 <artifactId>mapmaid-standardtypes-kotlin</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.quantummaid.mapmaid.integrations</groupId>
+                <artifactId>mapmaid-validatedtypes-kotlin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
