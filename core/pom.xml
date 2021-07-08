@@ -26,7 +26,7 @@
     <parent>
         <groupId>de.quantummaid.mapmaid</groupId>
         <artifactId>mapmaid-parent</artifactId>
-        <version>0.10.15</version>
+        <version>0.10.16</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -52,7 +52,7 @@
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
-                <version>1.4.32</version>
+                <version>1.5.20</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -62,7 +62,7 @@
             <dependency>
                 <groupId>de.quantummaid.reflectmaid</groupId>
                 <artifactId>reflectmaid-bom</artifactId>
-                <version>0.2.14</version>
+                <version>0.2.15</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -92,6 +92,12 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>${kotlin.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

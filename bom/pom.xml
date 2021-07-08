@@ -31,7 +31,7 @@
 
     <groupId>de.quantummaid.mapmaid</groupId>
     <artifactId>mapmaid-bom</artifactId>
-    <version>0.10.15</version>
+    <version>0.10.16</version>
     <packaging>pom</packaging>
 
     <name>MapMaid - BOM</name>
@@ -71,6 +71,11 @@
             <dependency>
                 <groupId>de.quantummaid.mapmaid.integrations</groupId>
                 <artifactId>mapmaid-standardtypes-kotlin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.quantummaid.mapmaid.integrations</groupId>
+                <artifactId>mapmaid-validatedtypes-kotlin</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
