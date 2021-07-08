@@ -5,14 +5,35 @@ import de.quantummaid.mapmaid.validatedtypeskotlin.validation.IntValidator.Compa
 import de.quantummaid.mapmaid.validatedtypeskotlin.validation.IntValidator.Companion.max
 import de.quantummaid.mapmaid.validatedtypeskotlin.validation.IntValidator.Companion.min
 import de.quantummaid.mapmaid.validatedtypeskotlin.validation.LongValidator
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.allOf
 import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.length
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.lowercase
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.maxLength
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.maxUtf8ByteLength
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.minLength
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.regex
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.trimmed
+import de.quantummaid.mapmaid.validatedtypeskotlin.validation.StringValidator.Companion.whitelistIgnoringCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class MyInt(value: String) : ValidatedInt(allOf(max(5), min(3)), value)
 class MyLong(value: String) : ValidatedLong(LongValidator.allOf(LongValidator.max(5), LongValidator.min(3)), value)
-class MyString(value: String) : ValidatedString(length(10, 20), value)
+class MyString(value: String) : ValidatedString(
+    allOf(
+        trimmed(),
+        lowercase(),
+        minLength(10),
+        maxLength(20),
+        length(10, 20),
+        whitelistIgnoringCase(listOf("abcdefghij")),
+        regex(Regex(".*")),
+        maxUtf8ByteLength(200)
+    ),
+    value
+)
+
 class MyUrl(value: String) : ValidatedUrl(value)
 class MyEmailAddress(value: String) : ValidatedEmail(value)
 class MyUuid(value: String) : ValidatedUuid(value)
