@@ -57,16 +57,14 @@ fun interface StringValidator {
             )
         }
 
-        fun whitelistIgnoringCase(
-            whitelist: Collection<String>
-        ): StringValidator {
+        fun whitelistIgnoringCase(whitelist: Collection<String>): StringValidator {
             val whitelistAsString = whitelist.joinToString()
             val whitelistHashSet = whitelist.map { it.trim().toLowerCase() }.toHashSet()
             return allOf(trimmed(), lowercase(), StringValidator {
                 validate(
                     it,
                     whitelistHashSet.contains(it)
-                ) { "invalid string, must be(case sensitive) one of ${whitelistAsString}" }
+                ) { "invalid string, must be (case sensitive) one of ${whitelistAsString}" }
             })
         }
 
