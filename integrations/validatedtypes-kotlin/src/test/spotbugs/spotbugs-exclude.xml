@@ -30,4 +30,7 @@
     <Match>
         <Bug pattern="BC_BAD_CAST_TO_ABSTRACT_COLLECTION"/>
     </Match>
+    <Match>
+        <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
+    </Match>
 </FindBugsFilter>
