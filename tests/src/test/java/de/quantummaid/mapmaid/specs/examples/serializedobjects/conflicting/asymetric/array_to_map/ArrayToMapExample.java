@@ -36,8 +36,7 @@ public final class ArrayToMapExample {
                         "   \"names\": [ \"foo\" ]\n" +
                         "}")
                 .withDeserializedForm(ARequest.aRequest(new Name[]{Name.fromStringValue("foo")}))
-                .withSerializationFailing("java.util.Map<de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example1.Name," +
-                        " de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example1.Name>: unable to detect serialization-only")
+                .withSerializationSuccessful("{\"names\":{\"foo\":\"foo\"}}")
                 .withDeserializationSuccessful()
                 .withDuplexFailing()
                 .run();
