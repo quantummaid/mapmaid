@@ -66,6 +66,7 @@ import static de.quantummaid.mapmaid.builder.resolving.disambiguator.normal.Disa
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.ArrayCollectionDefinitionFactory.arrayFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.collections.NativeJavaCollectionDefinitionFactory.nativeJavaCollectionsFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.kotlin.KotlinSealedClassFactory.kotlinSealedClassFactory;
+import static de.quantummaid.mapmaid.builder.resolving.factories.maps.MapDefinitionFactory.mapFactory;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitivesFactory.builtInPrimitivesFactory;
 import static de.quantummaid.mapmaid.collections.Collection.smallList;
 import static de.quantummaid.mapmaid.collections.Collection.smallMap;
@@ -284,6 +285,7 @@ public final class AdvancedBuilder {
                 builtInPrimitivesFactory(),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
+                mapFactory(),
                 kotlinSealedClassFactory(mapMaidConfiguration)
         )
                 .forEach(this::withStateFactory);

@@ -21,8 +21,6 @@ fun interface StringValidator {
 
         fun trimmed(): StringValidator {
             return StringValidator {
-                //TODO: use proper regex replacement of multiple whitespaces which is \h instead of \s
-                //TODO: replace trim with proper \h regex replacement
                 it.trim()
             }
         }

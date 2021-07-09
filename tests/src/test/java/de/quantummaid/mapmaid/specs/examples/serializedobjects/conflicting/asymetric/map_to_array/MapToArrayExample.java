@@ -38,9 +38,6 @@ public final class MapToArrayExample {
                         "  ]\n" +
                         "}")
                 .withSerializationSuccessful()
-                .withDeserializationFailing(
-                        "java.util.Map<de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example1.Name, " +
-                                "de.quantummaid.mapmaid.specs.examples.customprimitives.success.normal.example1.Name>: unable to detect deserialization-only")
                 .withDuplexFailing("de.quantummaid.mapmaid.specs.examples.serializedobjects.conflicting.asymetric.map_to_array.ARequest: unable to detect duplex:\n" +
                         "no duplex detected:")
                 .run();
