@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.18](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.10.18/jar) - 2021-07-18
+### Added
+- Convenience methods for standard types.
+- Support for mixed-type collections and mapped.
+- Registered primitives will cause boxed primitives to be also registered and vice versa.
+- Support for autodetection of value types that use the validated types framework.
+### Changed
+- Update dependencies.
+
 ## [0.10.17](https://search.maven.org/artifact/de.quantummaid.mapmaid/core/0.10.17/jar) - 2021-07-11
 ### Changed
 - Update dependencies.

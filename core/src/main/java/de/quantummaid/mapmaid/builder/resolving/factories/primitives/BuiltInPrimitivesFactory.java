@@ -24,6 +24,7 @@ package de.quantummaid.mapmaid.builder.resolving.factories.primitives;
 import de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult;
 import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimitives.CustomPrimitiveDeserializer;
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.reflectmaid.ReflectMaid;
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType;
 import de.quantummaid.reflectmaid.typescanner.Context;
 import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
@@ -34,19 +35,44 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import static de.quantummaid.mapmaid.builder.conventional.ConventionalDefinitionFactories.CUSTOM_PRIMITIVE_MAPPINGS;
 import static de.quantummaid.mapmaid.builder.resolving.MapMaidTypeScannerResult.result;
 import static de.quantummaid.mapmaid.builder.resolving.disambiguator.DisambiguationResult.duplexResult;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitiveDeserializer.builtInPrimitiveDeserializer;
 import static de.quantummaid.mapmaid.builder.resolving.factories.primitives.BuiltInPrimitiveSerializer.builtInPrimitiveSerializer;
+import static java.util.Optional.ofNullable;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BuiltInPrimitivesFactory implements StateFactory<MapMaidTypeScannerResult> {
+    private static final Map<Class<?>, Class<?>> ALSO_REGISTER = new LinkedHashMap<>();
 
-    public static BuiltInPrimitivesFactory builtInPrimitivesFactory() {
-        return new BuiltInPrimitivesFactory();
+    static {
+        ALSO_REGISTER.put(double.class, Double.class);
+        ALSO_REGISTER.put(Double.class, double.class);
+        ALSO_REGISTER.put(float.class, Float.class);
+        ALSO_REGISTER.put(Float.class, float.class);
+        ALSO_REGISTER.put(long.class, Long.class);
+        ALSO_REGISTER.put(Long.class, long.class);
+        ALSO_REGISTER.put(int.class, Integer.class);
+        ALSO_REGISTER.put(Integer.class, int.class);
+        ALSO_REGISTER.put(short.class, Short.class);
+        ALSO_REGISTER.put(Short.class, short.class);
+        ALSO_REGISTER.put(byte.class, Byte.class);
+        ALSO_REGISTER.put(Byte.class, byte.class);
+        ALSO_REGISTER.put(char.class, Character.class);
+        ALSO_REGISTER.put(Character.class, char.class);
+    }
+
+    private final ReflectMaid reflectMaid;
+
+    public static BuiltInPrimitivesFactory builtInPrimitivesFactory(final ReflectMaid reflectMaid) {
+        return new BuiltInPrimitivesFactory(reflectMaid);
     }
 
     @Override
@@ -64,8 +90,13 @@ public final class BuiltInPrimitivesFactory implements StateFactory<MapMaidTypeS
                        final Context<MapMaidTypeScannerResult> context) {
         final ResolvedType realType = type.realType();
         final Class<?> assignableType = realType.assignableType();
-        final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType);
-        final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType);
+        final List<TypeIdentifier> alsoRegister = ofNullable(ALSO_REGISTER.get(assignableType))
+                .map(reflectMaid::resolve)
+                .map(TypeIdentifier::typeIdentifierFor)
+                .map(List::of)
+                .orElseGet(List::of);
+        final CustomPrimitiveSerializer serializer = builtInPrimitiveSerializer(assignableType, alsoRegister);
+        final CustomPrimitiveDeserializer deserializer = builtInPrimitiveDeserializer(assignableType, alsoRegister);
         context.setManuallyConfiguredResult(result(duplexResult(serializer, deserializer), type));
     }
 }

@@ -9,6 +9,7 @@ import de.quantummaid.mapmaid.mapper.deserialization.deserializers.customprimiti
 import de.quantummaid.mapmaid.mapper.serialization.serializers.TypeSerializer
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer
 import de.quantummaid.mapmaid.standardtypeskotlin.CustomFactory.Companion.createCustomFactory
+import de.quantummaid.mapmaid.standardtypeskotlin.mixedcollections.withMixedCollectionSerializationSupport
 import de.quantummaid.reflectmaid.ReflectMaid
 import de.quantummaid.reflectmaid.resolvedtype.ResolvedType
 import de.quantummaid.reflectmaid.typescanner.Context
@@ -17,6 +18,18 @@ import de.quantummaid.reflectmaid.typescanner.TypeIdentifier.Companion.typeIdent
 import de.quantummaid.reflectmaid.typescanner.factories.StateFactory
 import java.time.Duration
 import java.time.Instant
+
+fun MapMaidBuilder.withAllCommonTypesPreRegistered(): MapMaidBuilder {
+    withSupportForStandardKotlinTypes(true)
+    withMixedCollectionSerializationSupport()
+    serializingAndDeserializing(String::class.java)
+    serializingAndDeserializing(Int::class.java)
+    serializingAndDeserializing(Long::class.java)
+    serializingAndDeserializing(Double::class.java)
+    serializingAndDeserializing(Float::class.java)
+    serializingAndDeserializing(Char::class.java)
+    return this
+}
 
 fun MapMaidBuilder.withSupportForStandardKotlinTypes(preRegisterTypes: Boolean = false): MapMaidBuilder {
     val reflectMaid = reflectMaid()

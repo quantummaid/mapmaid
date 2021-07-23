@@ -27,6 +27,8 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static de.quantummaid.mapmaid.debug.MapMaidException.mapMaidException;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -65,6 +67,10 @@ public final class UniversalString implements UniversalPrimitive {
         return universalString(booleanValue.toString());
     }
 
+    public static UniversalString universalStringFromCharacter(final Character characterValue) {
+        return universalString(characterValue.toString());
+    }
+
     @Override
     public Object toNativeJava() {
         return this.value;
@@ -72,5 +78,13 @@ public final class UniversalString implements UniversalPrimitive {
 
     public String toNativeStringValue() {
         return this.value;
+    }
+
+    public Character toNativeCharacterValue() {
+        final char[] charArray = value.toCharArray();
+        if (charArray.length != 1) {
+            throw mapMaidException("cannot convert string '" + value + "' to a character");
+        }
+        return charArray[0];
     }
 }

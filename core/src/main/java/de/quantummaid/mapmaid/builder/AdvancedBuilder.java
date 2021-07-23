@@ -282,7 +282,7 @@ public final class AdvancedBuilder {
 
     Processor<MapMaidTypeScannerResult> processor() {
         List.of(
-                builtInPrimitivesFactory(),
+                builtInPrimitivesFactory(reflectMaid),
                 arrayFactory(),
                 nativeJavaCollectionsFactory(),
                 mapFactory(),

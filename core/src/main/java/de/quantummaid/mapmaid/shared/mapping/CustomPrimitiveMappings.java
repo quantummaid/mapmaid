@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static de.quantummaid.mapmaid.shared.mapping.Mapping.mapping;
 import static de.quantummaid.mapmaid.shared.mapping.TypeMappings.typeMappings;
 import static de.quantummaid.mapmaid.shared.validators.NotNullValidator.validateNotNull;
 import static java.lang.String.format;
@@ -44,18 +45,19 @@ import static java.util.stream.Collectors.toMap;
 public final class CustomPrimitiveMappings {
     private final Map<Class<?>, UniversalTypeMapper> mappings;
     private final TypeMappings typeMappings = typeMappings(
-            Mapping.mapping(UniversalDouble.class, UniversalDouble.class, identity()),
-            Mapping.mapping(UniversalDouble.class, UniversalLong.class, UniversalLong::universalLongFromUniversalDouble),
-            Mapping.mapping(UniversalDouble.class, UniversalString.class, UniversalString::universalStringFromUniversalDouble),
-            Mapping.mapping(UniversalLong.class, UniversalLong.class, identity()),
-            Mapping.mapping(UniversalLong.class, UniversalDouble.class, UniversalDouble::universalDoubleFromUniversalLong),
-            Mapping.mapping(UniversalLong.class, UniversalString.class, UniversalString::universalStringFromUniversalLong),
-            Mapping.mapping(UniversalString.class, UniversalString.class, identity()),
-            Mapping.mapping(UniversalString.class, UniversalDouble.class, UniversalDouble::universalDoubleFromUniversalString),
-            Mapping.mapping(UniversalString.class, UniversalLong.class, UniversalLong::universalLongFromUniversalString),
-            Mapping.mapping(UniversalString.class, UniversalBoolean.class, UniversalBoolean::universalBooleanFromUniversalString),
-            Mapping.mapping(UniversalBoolean.class, UniversalBoolean.class, identity()),
-            Mapping.mapping(UniversalBoolean.class, UniversalString.class, UniversalString::universalStringFromUniversalBoolean));
+            mapping(UniversalDouble.class, UniversalDouble.class, identity()),
+            mapping(UniversalDouble.class, UniversalLong.class, UniversalLong::universalLongFromUniversalDouble),
+            mapping(UniversalDouble.class, UniversalString.class, UniversalString::universalStringFromUniversalDouble),
+            mapping(UniversalLong.class, UniversalLong.class, identity()),
+            mapping(UniversalLong.class, UniversalDouble.class, UniversalDouble::universalDoubleFromUniversalLong),
+            mapping(UniversalLong.class, UniversalString.class, UniversalString::universalStringFromUniversalLong),
+            mapping(UniversalString.class, UniversalString.class, identity()),
+            mapping(UniversalString.class, UniversalDouble.class, UniversalDouble::universalDoubleFromUniversalString),
+            mapping(UniversalString.class, UniversalLong.class, UniversalLong::universalLongFromUniversalString),
+            mapping(UniversalString.class, UniversalBoolean.class, UniversalBoolean::universalBooleanFromUniversalString),
+            mapping(UniversalBoolean.class, UniversalBoolean.class, identity()),
+            mapping(UniversalBoolean.class, UniversalString.class, UniversalString::universalStringFromUniversalBoolean)
+    );
 
     public static CustomPrimitiveMappings customPrimitiveMappings(final UniversalTypeMapper... mappings) {
         validateNotNull(mappings, "mappings");
