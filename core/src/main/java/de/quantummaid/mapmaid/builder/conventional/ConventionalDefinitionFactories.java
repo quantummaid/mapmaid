@@ -80,7 +80,13 @@ public final class ConventionalDefinitionFactories {
                     UniversalDouble::toNativeFloatExact),
             universalTypeMapper(Float.class, UniversalDouble.class,
                     UniversalDouble::universalDoubleFromFloat,
-                    UniversalDouble::toNativeFloatExact)
+                    UniversalDouble::toNativeFloatExact),
+            universalTypeMapper(char.class, UniversalString.class,
+                    UniversalString::universalStringFromCharacter,
+                    UniversalString::toNativeCharacterValue),
+            universalTypeMapper(Character.class, UniversalString.class,
+                    UniversalString::universalStringFromCharacter,
+                    UniversalString::toNativeCharacterValue)
     );
 
     private ConventionalDefinitionFactories() {

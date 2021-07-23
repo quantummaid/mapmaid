@@ -27,4 +27,7 @@
     <Match>
         <Bug pattern="NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE"/>
     </Match>
+    <Match>
+        <Bug pattern="BC_BAD_CAST_TO_ABSTRACT_COLLECTION"/>
+    </Match>
 </FindBugsFilter>

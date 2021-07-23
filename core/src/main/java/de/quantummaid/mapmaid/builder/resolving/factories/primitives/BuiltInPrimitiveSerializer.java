@@ -22,19 +22,29 @@
 package de.quantummaid.mapmaid.builder.resolving.factories.primitives;
 
 import de.quantummaid.mapmaid.mapper.serialization.serializers.customprimitives.CustomPrimitiveSerializer;
+import de.quantummaid.reflectmaid.typescanner.TypeIdentifier;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
 
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BuiltInPrimitiveSerializer implements CustomPrimitiveSerializer {
     private final Class<?> baseType;
+    private final List<TypeIdentifier> alsoRegister;
 
-    public static CustomPrimitiveSerializer builtInPrimitiveSerializer(final Class<?> baseType) {
-        return new BuiltInPrimitiveSerializer(baseType);
+    public static CustomPrimitiveSerializer builtInPrimitiveSerializer(final Class<?> baseType,
+                                                                       final List<TypeIdentifier> alsoRegister) {
+        return new BuiltInPrimitiveSerializer(baseType, alsoRegister);
+    }
+
+    @Override
+    public List<TypeIdentifier> requiredTypes() {
+        return alsoRegister;
     }
 
     @Override

@@ -379,6 +379,12 @@ public final class MapMaid {
     }
 
     public <T> T deserializeFromUniversalObject(final Object input,
+                                                final Class<T> targetType) {
+        final GenericType<T> genericType = genericType(targetType);
+        return deserializeFromUniversalObject(input, genericType);
+    }
+
+    public <T> T deserializeFromUniversalObject(final Object input,
                                                 final GenericType<T> targetType) {
         return deserializeFromUniversalObject(input, targetType, injector -> {
         });
